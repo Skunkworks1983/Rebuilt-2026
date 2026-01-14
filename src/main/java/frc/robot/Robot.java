@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.net.WebServer;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.Mode;
@@ -45,6 +47,8 @@ public class Robot extends LoggedRobot {
         Logger.recordMetadata("GitDirty", "Unknown");
         break;
     }
+
+    WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
 
     // Set up data receivers & replay source
     switch (Constants.currentMode) {

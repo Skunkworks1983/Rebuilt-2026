@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.TestPathCommands;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -212,6 +213,8 @@ public class RobotContainer {
               () -> -xboxController.getRightX()));
     }
     Logger.recordOutput("Control Scheme", Constants.controlScheme);
+
+    TestPathCommands.publishTestPaths(drive);
 
     // Lock to 0° when A button is held
     // controller
