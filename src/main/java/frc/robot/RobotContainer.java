@@ -19,7 +19,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.TestPathCommands;
-import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -85,10 +84,10 @@ public class RobotContainer {
         drive =
             new Drive(
                 new GyroIOPigeon2(),
-                new ModuleIOTalonFX(TunerConstants.FrontLeft),
-                new ModuleIOTalonFX(TunerConstants.FrontRight),
-                new ModuleIOTalonFX(TunerConstants.BackLeft),
-                new ModuleIOTalonFX(TunerConstants.BackRight),
+                new ModuleIOTalonFX(Constants.tunerConstants.getFrontLeft()),
+                new ModuleIOTalonFX(Constants.tunerConstants.getFrontRight()),
+                new ModuleIOTalonFX(Constants.tunerConstants.getBackLeft()),
+                new ModuleIOTalonFX(Constants.tunerConstants.getBackRight()),
                 (pose) -> {},
                 (pose) -> {});
 
@@ -128,10 +127,14 @@ public class RobotContainer {
         drive =
             new Drive(
                 new GyroIOSim(simulation.getGyroSimulation()),
-                new ModuleIOTalonFXSim(TunerConstants.FrontLeft, simulation.getModules()[0]),
-                new ModuleIOTalonFXSim(TunerConstants.FrontRight, simulation.getModules()[1]),
-                new ModuleIOTalonFXSim(TunerConstants.BackLeft, simulation.getModules()[2]),
-                new ModuleIOTalonFXSim(TunerConstants.BackRight, simulation.getModules()[3]),
+                new ModuleIOTalonFXSim(
+                    Constants.tunerConstants.getFrontLeft(), simulation.getModules()[0]),
+                new ModuleIOTalonFXSim(
+                    Constants.tunerConstants.getFrontRight(), simulation.getModules()[1]),
+                new ModuleIOTalonFXSim(
+                    Constants.tunerConstants.getBackLeft(), simulation.getModules()[2]),
+                new ModuleIOTalonFXSim(
+                    Constants.tunerConstants.getBackRight(), simulation.getModules()[3]),
                 simulation::setSimulationWorldPose,
                 (pose) -> {});
 
