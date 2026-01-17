@@ -30,159 +30,152 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
+
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkBoolean;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class TestPathCommands {
-  private static Command generateTestCommand(
-      Distance distance,
-      Rotation2d direction,
-      Rotation2d targetEndAngle,
-      boolean isRobotRelative,
-      LinearVelocity maxVelocity,
-      LinearAcceleration maxAcceleration,
-      AngularVelocity maxAngularVelocity,
-      AngularAcceleration maxAngularAcceleration,
-      Drive drive) {
-    if (DriverStation.getAlliance().isPresent()
-        && DriverStation.getAlliance().get() == DriverStation.Alliance.Red
-        && !isRobotRelative) {
-      // Flip direction for red alliance so 0 degrees is always forward (only applies to field
-      // relative)
-      direction = direction.plus(new Rotation2d(Degrees.of(180)));
-    }
-    Translation2d initialLoc = drive.getPose().getTranslation();
+        private static Command generateTestCommand(
+                        Distance distance,
+                        Rotation2d direction,
+                        Rotation2d targetEndAngle,
+                        boolean isRobotRelative,
+                        LinearVelocity maxVelocity,
+                        LinearAcceleration maxAcceleration,
+                        AngularVelocity maxAngularVelocity,
+                        AngularAcceleration maxAngularAcceleration,
+                        Drive drive) {
+                if (DriverStation.getAlliance().isPresent()
+                                && DriverStation.getAlliance().get() == DriverStation.Alliance.Red
+                                && !isRobotRelative) {
+                        // Flip direction for red alliance so 0 degrees is always forward (only applies to field relative)
+                        direction = direction.plus(new Rotation2d(Degrees.of(180)));
+                }
+                Translation2d initialLoc = drive.getPose().getTranslation();
 
-    Translation2d offset = new Translation2d(distance.in(Meters), direction);
+                Translation2d offset = new Translation2d(distance.in(Meters), direction);
 
-    List<Waypoint> waypoints;
-    if (isRobotRelative) {
-      Translation2d finalLoc =
-          initialLoc.plus(
-              offset.rotateBy(drive.getPose().getRotation().plus(new Rotation2d(Degrees.of(180)))));
-      Logger.recordOutput("TestPaths/TargetPose", new Pose2d(finalLoc, targetEndAngle));
+                List<Waypoint> waypoints;
+                if (isRobotRelative) {
+                        Translation2d finalLoc = initialLoc.plus(offset.rotateBy(
+                                        drive.getPose().getRotation().plus(new Rotation2d(Degrees.of(180)))));
+                        Logger.recordOutput("TestPaths/TargetPose", new Pose2d(finalLoc, targetEndAngle));
 
-      waypoints =
-          PathPlannerPath.waypointsFromPoses(
-              new Pose2d(initialLoc, offset.getAngle().plus(drive.getRotation())),
-              new Pose2d(finalLoc, offset.getAngle().plus(drive.getRotation())));
-    } else {
-      Translation2d finalLoc = initialLoc.plus(offset);
-      Logger.recordOutput("TestPaths/TargetPose", new Pose2d(finalLoc, targetEndAngle));
+                        waypoints = PathPlannerPath.waypointsFromPoses(
+                                        new Pose2d(initialLoc, offset.getAngle().plus(drive.getRotation())),
+                                        new Pose2d(finalLoc, offset.getAngle().plus(drive.getRotation())));
+                } else {
+                        Translation2d finalLoc = initialLoc.plus(offset);
+                        Logger.recordOutput("TestPaths/TargetPose", new Pose2d(finalLoc, targetEndAngle));
 
-      waypoints =
-          PathPlannerPath.waypointsFromPoses(
-              new Pose2d(initialLoc, offset.getAngle()), new Pose2d(finalLoc, offset.getAngle()));
-    }
-    PathConstraints constraints =
-        new PathConstraints(
-            maxVelocity, maxAcceleration, maxAngularVelocity, maxAngularAcceleration);
+                        waypoints = PathPlannerPath.waypointsFromPoses(
+                                        new Pose2d(initialLoc, offset.getAngle()),
+                                        new Pose2d(finalLoc, offset.getAngle()));
 
-    PathPlannerPath path =
-        new PathPlannerPath(
-            waypoints,
-            constraints,
-            new IdealStartingState(0, drive.getRotation()),
-            new GoalEndState(0, targetEndAngle));
-    // Since the translations of this path is generated directly from the robot's position, don'
-    // tflip path
-    path.preventFlipping = true;
-    Logger.recordOutput(
-        "TestPaths/PathHeading", offset.getAngle().plus(drive.getRotation()).getDegrees());
-    Logger.recordOutput(
-        "TestPaths/Generated Path", Pose2d.struct, path.getPathPoses().toArray(new Pose2d[0]));
-    return AutoBuilder.followPath(path);
-  }
+                }
+                PathConstraints constraints = new PathConstraints(
+                                maxVelocity, maxAcceleration, maxAngularVelocity, maxAngularAcceleration);
 
-  public static Command getTestPath(
-      Supplier<LinearVelocity> maxVelocity,
-      Supplier<Distance> distance,
-      Supplier<Rotation2d> direction,
-      BooleanSupplier useTargetEndAngle,
-      Supplier<Rotation2d> targetEndAngle,
-      BooleanSupplier isRobotRelative,
-      Drive drive) {
-    return Commands.defer(
-        () ->
-            generateTestCommand(
-                distance.get(),
-                direction.get(),
-                useTargetEndAngle.getAsBoolean() ? targetEndAngle.get() : drive.getRotation(),
-                isRobotRelative.getAsBoolean(),
-                maxVelocity.get(),
-                MetersPerSecondPerSecond.of(TestPathCommandConstants.maxAccelerationMPSPS.get()),
-                DegreesPerSecond.of(TestPathCommandConstants.maxAngularVelocityDPS.get()),
-                DegreesPerSecondPerSecond.of(
-                    TestPathCommandConstants.maxAngularAccelerationDPSPS.get()),
-                drive),
-        Set.of(drive));
-  }
+                PathPlannerPath path = new PathPlannerPath(waypoints, constraints,
+                                new IdealStartingState(0, drive.getRotation()),
+                                new GoalEndState(0, targetEndAngle));
+                // Since the translations of this path is generated directly from the robot's position, don' tflip path
+                path.preventFlipping = true;
+                Logger.recordOutput("TestPaths/PathHeading", offset.getAngle().plus(drive.getRotation()).getDegrees());
+                Logger.recordOutput("TestPaths/Generated Path", Pose2d.struct,
+                                path.getPathPoses().toArray(new Pose2d[0]));
+                return AutoBuilder.followPath(path);
+        }
 
-  public static void publishTestPaths(Drive drive) {
-    LoggedNetworkBoolean isRobotOriented =
-        new LoggedNetworkBoolean("TestPaths/Is Robot Oriented?", false);
-    LoggedNetworkBoolean useTargetEndAngle =
-        new LoggedNetworkBoolean("TestPaths/Use target end angle?", false);
+        public static Command getTestPath(
+                        Supplier<LinearVelocity> maxVelocity,
+                        Supplier<Distance> distance,
+                        Supplier<Rotation2d> direction,
+                        BooleanSupplier useTargetEndAngle,
+                        Supplier<Rotation2d> targetEndAngle,
+                        BooleanSupplier isRobotRelative,
+                        Drive drive) {
+                return Commands.defer(
+                                () -> generateTestCommand(
+                                                distance.get(),
+                                                direction.get(),
+                                                useTargetEndAngle.getAsBoolean() ? targetEndAngle.get()
+                                                                : drive.getRotation(),
+                                                isRobotRelative.getAsBoolean(),
+                                                maxVelocity.get(),
+                                                MetersPerSecondPerSecond.of(
+                                                                TestPathCommandConstants.maxAccelerationMPSPS.get()),
+                                                DegreesPerSecond.of(
+                                                                TestPathCommandConstants.maxAngularVelocityDPS.get()),
+                                                DegreesPerSecondPerSecond.of(
+                                                                TestPathCommandConstants.maxAngularAccelerationDPSPS
+                                                                                .get()),
+                                                drive),
+                                Set.of(drive));
+        }
 
-    LoggedNetworkNumber maxVelocity =
-        new LoggedNetworkNumber(
-            "TestPaths/Max Velocity Meters Per Sec", TestPathCommandConstants.maxVelocityMPS.get());
+        public static void publishTestPaths(Drive drive) {
+                LoggedNetworkBoolean isRobotOriented = new LoggedNetworkBoolean("TestPaths/Is Robot Oriented?", false);
+                LoggedNetworkBoolean useTargetEndAngle = new LoggedNetworkBoolean("TestPaths/Use target end angle?",
+                                false);
 
-    LoggedNetworkNumber distance = new LoggedNetworkNumber("TestPaths/Distance Meters", 2.0);
-    LoggedNetworkNumber direction = new LoggedNetworkNumber("TestPaths/Direction Degrees", 0.0);
-    LoggedNetworkNumber targetEndAngle =
-        new LoggedNetworkNumber("TestPaths/Target End Angle Degrees", 0.0);
+                LoggedNetworkNumber maxVelocity = new LoggedNetworkNumber(
+                                "TestPaths/Max Velocity Meters Per Sec", TestPathCommandConstants.maxVelocityMPS.get());
 
-    SmartDashboard.putData(
-        "TestPaths/Follow Path (Distance and Angle)",
-        getTestPath(
-            () -> MetersPerSecond.of(maxVelocity.get()),
-            () -> Meters.of(distance.get()),
-            () -> new Rotation2d(Degrees.of(direction.get())),
-            () -> useTargetEndAngle.get(),
-            () -> new Rotation2d(Degrees.of(targetEndAngle.get())),
-            () -> isRobotOriented.get(),
-            drive));
-    SmartDashboard.putData(
-        "TestPaths/Move Forward Distance",
-        getTestPath(
-            () -> MetersPerSecond.of(maxVelocity.get()),
-            () -> Meters.of(distance.get()),
-            () -> new Rotation2d(Degrees.of(0)),
-            () -> useTargetEndAngle.get(),
-            () -> new Rotation2d(Degrees.of(targetEndAngle.get())),
-            () -> isRobotOriented.get(),
-            drive));
-    SmartDashboard.putData(
-        "TestPaths/Move Back Distance",
-        getTestPath(
-            () -> MetersPerSecond.of(maxVelocity.get()),
-            () -> Meters.of(distance.get()),
-            () -> new Rotation2d(Degrees.of(180)),
-            () -> useTargetEndAngle.get(),
-            () -> new Rotation2d(Degrees.of(targetEndAngle.get())),
-            () -> isRobotOriented.get(),
-            drive));
-    SmartDashboard.putData(
-        "TestPaths/Move Left Distance",
-        getTestPath(
-            () -> MetersPerSecond.of(maxVelocity.get()),
-            () -> Meters.of(distance.get()),
-            () -> new Rotation2d(Degrees.of(90)),
-            () -> useTargetEndAngle.get(),
-            () -> new Rotation2d(Degrees.of(targetEndAngle.get())),
-            () -> isRobotOriented.get(),
-            drive));
-    SmartDashboard.putData(
-        "TestPaths/Move Right Distance",
-        getTestPath(
-            () -> MetersPerSecond.of(maxVelocity.get()),
-            () -> Meters.of(distance.get()),
-            () -> new Rotation2d(Degrees.of(270)),
-            () -> useTargetEndAngle.get(),
-            () -> new Rotation2d(Degrees.of(targetEndAngle.get())),
-            () -> isRobotOriented.get(),
-            drive));
-  }
+                LoggedNetworkNumber distance = new LoggedNetworkNumber("TestPaths/Distance Meters", 2.0);
+                LoggedNetworkNumber direction = new LoggedNetworkNumber("TestPaths/Direction Degrees", 0.0);
+                LoggedNetworkNumber targetEndAngle = new LoggedNetworkNumber("TestPaths/Target End Angle Degrees", 0.0);
+
+                SmartDashboard.putData(
+                                "TestPaths/Follow Path (Distance and Angle)",
+                                getTestPath(
+                                                () -> MetersPerSecond.of(maxVelocity.get()),
+                                                () -> Meters.of(distance.get()),
+                                                () -> new Rotation2d(Degrees.of(direction.get())),
+                                                () -> useTargetEndAngle.get(),
+                                                () -> new Rotation2d(Degrees.of(targetEndAngle.get())),
+                                                () -> isRobotOriented.get(),
+                                                drive));
+                SmartDashboard.putData(
+                                "TestPaths/Move Forward Distance",
+                                getTestPath(
+                                                () -> MetersPerSecond.of(maxVelocity.get()),
+                                                () -> Meters.of(distance.get()),
+                                                () -> new Rotation2d(Degrees.of(0)),
+                                                () -> useTargetEndAngle.get(),
+                                                () -> new Rotation2d(Degrees.of(targetEndAngle.get())),
+                                                () -> isRobotOriented.get(),
+                                                drive));
+                SmartDashboard.putData(
+                                "TestPaths/Move Back Distance",
+                                getTestPath(
+                                                () -> MetersPerSecond.of(maxVelocity.get()),
+                                                () -> Meters.of(distance.get()),
+                                                () -> new Rotation2d(Degrees.of(180)),
+                                                () -> useTargetEndAngle.get(),
+                                                () -> new Rotation2d(Degrees.of(targetEndAngle.get())),
+                                                () -> isRobotOriented.get(),
+                                                drive));
+                SmartDashboard.putData(
+                                "TestPaths/Move Left Distance",
+                                getTestPath(
+                                                () -> MetersPerSecond.of(maxVelocity.get()),
+                                                () -> Meters.of(distance.get()),
+                                                () -> new Rotation2d(Degrees.of(90)),
+                                                () -> useTargetEndAngle.get(),
+                                                () -> new Rotation2d(Degrees.of(targetEndAngle.get())),
+                                                () -> isRobotOriented.get(),
+                                                drive));
+                SmartDashboard.putData(
+                                "TestPaths/Move Right Distance",
+                                getTestPath(
+                                                () -> MetersPerSecond.of(maxVelocity.get()),
+                                                () -> Meters.of(distance.get()),
+                                                () -> new Rotation2d(Degrees.of(270)),
+                                                () -> useTargetEndAngle.get(),
+                                                () -> new Rotation2d(Degrees.of(targetEndAngle.get())),
+                                                () -> isRobotOriented.get(),
+                                                drive));
+        }
 }
