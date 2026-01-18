@@ -25,6 +25,9 @@ public final class Constants {
   public static final boolean tuningMode = false;
   public static final boolean disableHAL = false;
 
+  public static final int bottomCollectorMotorID = 43;
+  public static final int topCollectorMotorID = 42;
+
   public static enum Mode {
     /** Running on a real robot. */
     REAL,

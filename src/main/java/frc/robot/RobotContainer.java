@@ -16,9 +16,13 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.commands.CollectorCommand;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.TestPathCommands;
+import frc.robot.subsystems.collector.Collector;
+import frc.robot.subsystems.collector.CollectorIOTalonFX;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -46,10 +50,12 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final Vision vision;
+  private final Collector collector;
 
   // Controller
   private final Joystick leftJoystick;
   private final Joystick rightJoystick;
+  private final Joystick buttonJoystick;
 
   /**
    * Xbox Controller for simulation.
@@ -70,11 +76,13 @@ public class RobotContainer {
     if (Constants.controlScheme == Constants.ControlScheme.OI) {
       leftJoystick = new Joystick(0);
       rightJoystick = new Joystick(1);
+      buttonJoystick = new Joystick(2);
       xboxController = null;
     } else {
       xboxController = new XboxController(0);
       leftJoystick = null;
       rightJoystick = null;
+      buttonJoystick = null;
     }
     switch (Constants.currentMode) {
       case REAL:
@@ -94,6 +102,10 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive, new VisionIOLimelight(VisionConstants.camera0Name, drive::getRotation));
+
+        collector = 
+            new Collector(
+                new CollectorIOTalonFX(Constants.bottomCollectorMotorID), new CollectorIOTalonFX(Constants.topCollectorMotorID));
 
         // This is a solution to the vision-drive cross dependency issue that hurts my eys, but it
         // does work
@@ -149,6 +161,9 @@ public class RobotContainer {
                     VisionConstants.camera1Name,
                     VisionConstants.robotToCamera1,
                     simulation::getSimulatedDriveTrainPose));
+
+        collector = null;
+
         break;
 
       default:
@@ -164,6 +179,9 @@ public class RobotContainer {
                 (pose) -> {});
 
         vision = new Vision(drive, new VisionIO() {}, new VisionIO() {});
+
+        collector = null;
+
         break;
     }
 
@@ -199,6 +217,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Default command, normal field-relative drive
+    JoystickButton collectorIntake;
     if (Constants.controlScheme == Constants.ControlScheme.OI) {
       drive.setDefaultCommand(
           DriveCommands.joystickDrive(
@@ -206,6 +225,7 @@ public class RobotContainer {
               () -> -leftJoystick.getY(), // -X (used to be)
               () -> -leftJoystick.getX(), // -Y (used to be)
               () -> rightJoystick.getX())); // Confirm if negitive or not
+      collectorIntake = new JoystickButton(buttonJoystick, 1);
     } else {
 
       drive.setDefaultCommand(
@@ -214,10 +234,16 @@ public class RobotContainer {
               () -> -xboxController.getLeftY(),
               () -> -xboxController.getLeftX(),
               () -> -xboxController.getRightX()));
+      collectorIntake = new JoystickButton(xboxController, 1);
     }
+
+    collectorIntake.whileTrue(new CollectorCommand(collector));
+
     Logger.recordOutput("Control Scheme", Constants.controlScheme);
 
     TestPathCommands.publishTestPaths(drive);
+
+
 
     // Lock to 0° when A button is held
     // controller
