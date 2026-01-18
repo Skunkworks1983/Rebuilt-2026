@@ -23,4 +23,9 @@ public interface PivotIO {
   public default void setVoltage(double voltage) {}
 
   public default void updateInputs(PivotIOInputs inputs) {}
+
+  public default void setPID(double kP, double kI, double kD, double kS, double kV, double kA) {}
+
+  public default void setMotionConstraints(
+      double maxVelocity, double maxAcceleration, double maxJerk) {}
 }
