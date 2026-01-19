@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants.ControlScheme;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.TestPathCommands;
 import frc.robot.subsystems.drive.Drive;
@@ -59,6 +60,8 @@ public class RobotContainer {
    */
   private final XboxController xboxController;
 
+  private final Joystick logitechController;
+
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
 
@@ -71,8 +74,16 @@ public class RobotContainer {
       leftJoystick = new Joystick(0);
       rightJoystick = new Joystick(1);
       xboxController = null;
-    } else {
+      logitechController = null;
+    } else if (Constants.controlScheme == ControlScheme.XBOX) {
       xboxController = new XboxController(0);
+      leftJoystick = null;
+      rightJoystick = null;
+      logitechController = null;
+    } else {
+      logitechController = new Joystick(0);
+
+      xboxController = null;
       leftJoystick = null;
       rightJoystick = null;
     }
@@ -206,14 +217,20 @@ public class RobotContainer {
               () -> -leftJoystick.getY(), // -X (used to be)
               () -> -leftJoystick.getX(), // -Y (used to be)
               () -> rightJoystick.getX())); // Confirm if negitive or not
-    } else {
-
+    } else if (Constants.controlScheme == ControlScheme.XBOX) {
       drive.setDefaultCommand(
           DriveCommands.joystickDrive(
               drive,
               () -> -xboxController.getLeftY(),
               () -> -xboxController.getLeftX(),
               () -> -xboxController.getRightX()));
+    } else {
+      drive.setDefaultCommand(
+          DriveCommands.joystickDrive(
+              drive,
+              () -> logitechController.getRawAxis(1),
+              () -> logitechController.getRawAxis(0),
+              () -> -logitechController.getRawAxis(2)));
     }
     Logger.recordOutput("Control Scheme", Constants.controlScheme);
 
