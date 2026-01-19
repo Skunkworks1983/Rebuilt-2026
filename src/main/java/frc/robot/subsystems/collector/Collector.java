@@ -8,12 +8,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Collector extends SubsystemBase {
 
-  private final CollectorIO bottomCollectorMotor;
+  //private final CollectorIO bottomCollectorMotor;
   private final CollectorIO topCollectorMotor;
   private final CollectorIOInputsAutoLogged inputs = new CollectorIOInputsAutoLogged();
 
-  public Collector(CollectorIO bottomCollectorMotor, CollectorIO topCollectoroMotor) {
-    this.bottomCollectorMotor = bottomCollectorMotor;
+  public Collector(CollectorIO topCollectoroMotor) {
+    //his.bottomCollectorMotor = bottomCollectorMotor;
     this.topCollectorMotor = topCollectoroMotor;
   }
 
@@ -21,12 +21,12 @@ public class Collector extends SubsystemBase {
 
   @Override
   public void periodic() {
-    bottomCollectorMotor.updateInputs(inputs);
+    //bottomCollectorMotor.updateInputs(inputs);
     topCollectorMotor.updateInputs(inputs);
   }
 
   public void setCollectorVelocity(double bottomMotorSpeed, double topMotorSpeed) {
-    bottomCollectorMotor.setCollectorVelocity(bottomMotorSpeed);
+    //bottomCollectorMotor.setCollectorVelocity(bottomMotorSpeed);
     topCollectorMotor.setCollectorVelocity(topMotorSpeed);
   }
 }

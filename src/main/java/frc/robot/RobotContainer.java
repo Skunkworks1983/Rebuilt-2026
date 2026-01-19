@@ -105,7 +105,7 @@ public class RobotContainer {
 
         collector = 
             new Collector(
-                new CollectorIOTalonFX(Constants.bottomCollectorMotorID), new CollectorIOTalonFX(Constants.topCollectorMotorID));
+                new CollectorIOTalonFX(Constants.topCollectorMotorID));
 
         // This is a solution to the vision-drive cross dependency issue that hurts my eys, but it
         // does work

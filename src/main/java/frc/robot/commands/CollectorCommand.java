@@ -29,9 +29,6 @@ public class CollectorCommand extends Command {
         SmartDashboard.getNumber("collector/bottomMotor", 0.6),
         SmartDashboard.getNumber("collector/topmMotor", -0.6));
 
-    System.out.println(
-        SmartDashboard.getNumber("collector/bottomMotor", 0.6) + " " + 
-        SmartDashboard.getNumber("collector/topMotor", -0.6));
   }
 
   @Override
