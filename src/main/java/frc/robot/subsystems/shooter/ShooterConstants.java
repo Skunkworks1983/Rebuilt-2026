@@ -28,4 +28,10 @@ public class ShooterConstants {
   public static final double flywheelStatorCurrentLimitAmps = 120.0;
 
   public static final InvertedValue flywheelMotorInverted = InvertedValue.Clockwise_Positive;
+
+  public static int pivotMotorOneId;
+
+public static int pivotSecondaryMotorId;
+
+public static MotorAlignmentValue pivotFollowerMotorAlignment;
 }

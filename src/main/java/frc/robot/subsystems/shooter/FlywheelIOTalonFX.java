@@ -1,10 +1,11 @@
 package frc.robot.subsystems.shooter;
 
-import static frc.robot.util.PhoenixUtil.*;
+import static frc.robot.util.PhoenixUtil.tryUntilOk;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVelocityTorqueCurrentFOC;
@@ -12,6 +13,7 @@ import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
@@ -138,13 +140,11 @@ public class FlywheelIOTalonFX implements FlywheelIO {
   }
 
   @Override
-  public void setMotionConstraints(double maxAcceleration, double maxJerk) {
-    TalonFXConfiguration config = new TalonFXConfiguration();
-    config.MotionMagic.MotionMagicAcceleration = maxAcceleration;
-    config.MotionMagic.MotionMagicJerk = maxJerk;
+  public void setMotionConstraints(AngularAcceleration maxAcceleration, double maxJerk) {
+    MotionMagicConfigs config = new TalonFXConfiguration().MotionMagic.withMotionMagicAcceleration(maxAcceleration).withMotionMagicJerk(maxJerk);
 
-    tryUntilOk(5, () -> flywheelMotor.getConfigurator().apply(config.MotionMagic));
-    tryUntilOk(5, () -> flywheelFollower.getConfigurator().apply(config.MotionMagic));
+    tryUntilOk(5, () -> flywheelMotor.getConfigurator().apply(config));
+    tryUntilOk(5, () -> flywheelFollower.getConfigurator().apply(config));
   }
 
   @Override
