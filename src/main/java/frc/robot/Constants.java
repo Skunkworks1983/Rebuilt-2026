@@ -8,6 +8,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.RobotBase;
+import frc.robot.generated.TunerConstants;
 
 /**
  * This class defines the runtime mode used by AdvantageKit. The mode is always "real" when running
@@ -18,6 +19,8 @@ public final class Constants {
   public static final Mode simMode = Mode.SIM;
   public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
   public static final ControlScheme controlScheme = ControlScheme.OI;
+  public static final RobotHardware robotHardware = RobotHardware.Swerveles;
+  public static final TunerConstants tunerConstants = TunerConstants.getTunerConstants();
 
   public static final boolean tuningMode = false;
   public static final boolean disableHAL = false;
@@ -36,5 +39,11 @@ public final class Constants {
   public static enum ControlScheme {
     OI,
     XBOX
+  }
+
+  public static enum RobotHardware {
+    Swerveles,
+    Reefscape,
+    Rebuilt
   }
 }

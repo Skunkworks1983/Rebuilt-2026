@@ -12,30 +12,40 @@ import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import frc.robot.Constants;
 import frc.robot.generated.TunerConstants;
 import java.util.Queue;
 
 /** IO implementation for Pigeon 2. */
 public class GyroIOPigeon2 implements GyroIO {
-  private final Pigeon2 pigeon =
-      new Pigeon2(TunerConstants.DrivetrainConstants.Pigeon2Id, TunerConstants.kCANBus);
-  private final StatusSignal<Angle> yaw = pigeon.getYaw();
+  private final Pigeon2 pigeon;
+  private final StatusSignal<Angle> yaw;
   private final Queue<Double> yawPositionQueue;
   private final Queue<Double> yawTimestampQueue;
-  private final StatusSignal<AngularVelocity> yawVelocity = pigeon.getAngularVelocityZWorld();
+  private final StatusSignal<AngularVelocity> yawVelocity;
 
   public GyroIOPigeon2() {
-    if (TunerConstants.DrivetrainConstants.Pigeon2Configs != null) {
-      pigeon.getConfigurator().apply(TunerConstants.DrivetrainConstants.Pigeon2Configs);
+    TunerConstants constants = Constants.tunerConstants;
+    SwerveDrivetrainConstants driveConstants = constants.getSwerveDrivetrainConstants();
+
+    pigeon = new Pigeon2(driveConstants.Pigeon2Id, constants.getCANBus());
+
+    if (constants.getSwerveDrivetrainConstants().Pigeon2Configs != null) {
+      pigeon.getConfigurator().apply(driveConstants.Pigeon2Configs);
     } else {
       pigeon.getConfigurator().apply(new Pigeon2Configuration());
     }
 
     pigeon.getConfigurator().setYaw(0.0);
+
+    yaw = pigeon.getYaw();
+    yawVelocity = pigeon.getAngularVelocityZWorld();
+
     yaw.setUpdateFrequency(Drive.ODOMETRY_FREQUENCY);
     yawVelocity.setUpdateFrequency(50.0);
     pigeon.optimizeBusUtilization();
