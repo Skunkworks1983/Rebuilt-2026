@@ -4,11 +4,12 @@
 
 package frc.robot.subsystems.collector;
 
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
- * This is the actual collector subsystem
+ * This is the collector subsystem, uses IO's to switch between front and back
  *
  * @author Liam B
  */
@@ -16,6 +17,8 @@ public class Collector extends SubsystemBase {
     private final CollectorIO collectorIO;
     private final CollectorIOInputsAutoLogged inputs = new CollectorIOInputsAutoLogged();
 
+    /**@param collectorIO
+     */
     public Collector(CollectorIO collectorIO) {
         this.collectorIO = collectorIO;
     }
@@ -25,18 +28,31 @@ public class Collector extends SubsystemBase {
         collectorIO.updateInputs(inputs);
     }
 
+    
+    /**Sets the velocity of our collector motors
+     * @param
+    */
     public void setCollectorVelocity(AngularVelocity velocity) {
         collectorIO.setCollectorVelocity(velocity);
     }
 
-    public void setCollectorDown(AngularVelocity velocity) {
-        collectorIO.setCollectorDown(velocity);
+    /**Puts the collector into a down position
+     * @param
+     */
+    public void setCollectorDown(Angle angle) {
+        collectorIO.setCollectorDown(angle);
     }
 
-    public void setCollectorUp(AngularVelocity velocity) {
-        collectorIO.setCollectorUp(velocity);
+    /**Puts the collector into an up position
+     * @param
+     */
+    public void setCollectorUp(Angle angle) {
+        collectorIO.setCollectorUp(angle);
     }
 
+    /**Checks to see if the collector is down
+     * This is to help ensure that we only have one collector down at a time
+     */
     public boolean canCollectorGoDown() {
         return collectorIO.canCollectorGoDown();
     }

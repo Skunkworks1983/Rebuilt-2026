@@ -8,6 +8,8 @@ import org.littletonrobotics.junction.AutoLog;
 
 import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 
 /** Main CollectorIO, Implemented by both back and front collectors.
@@ -17,11 +19,26 @@ import edu.wpi.first.units.measure.AngularVelocity;
 public interface CollectorIO {
     @AutoLog
     public static class CollectorIOInputs {
-        public boolean connected = false;
-        public double positionRad = 0.0;
-        public double velocityRad = 0.0;
-        public double appliedVolts = 0.0;
-        public double currentAmps = 0.0;
+        // Turn Motor Inputs
+        public boolean turnConnected = false;
+        public Rotation2d turnPosition = Rotation2d.kZero;
+        public double turnVelocityRadPerSec = 0.0;
+        public double turnAppliedVolts = 0.0;
+        public double turnCurrentAmps = 0.0;
+
+        // Lower Intake Motor Inputs
+        public boolean lowerConnected = false;
+        public double lowerPositionRad = 0.0;
+        public double lowerVelocityRadPerSec = 0.0;
+        public double lowerAppliedVolts = 0.0;
+        public double lowerCurrentAmps = 0.0;
+
+        // Upper Intake Motor Inputs
+        public boolean upperConnected = false;
+        public double upperPositionRad = 0.0;
+        public double upperVelocityRadPerSec = 0.0;
+        public double upperAppliedVolts = 0.0;
+        public double upperCurrentAmps = 0.0;
     }
 
     /**Updates our inputs for all motors 
@@ -37,12 +54,12 @@ public interface CollectorIO {
     /**Puts the collector into a down position
      * @param
      */
-    public default void setCollectorDown(AngularVelocity velocity) {}
+    public default void setCollectorDown(Angle angle) {}
 
     /**Puts the collector into an up position
      * @param
      */
-    public default void setCollectorUp(AngularVelocity velocity) {}
+    public default void setCollectorUp(Angle angle) {}
 
     /**Checks to see if the collector is down
      * This is to help ensure that we only have one collector down at a time
