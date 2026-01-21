@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.IndexerConstants;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.IndexerCommand;
 import frc.robot.commands.TestPathCommands;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -233,6 +234,9 @@ public class RobotContainer {
               () -> -xboxController.getRightX()));
       runIndexer = new JoystickButton(xboxController, IndexerConstants.runIdexerButtonID);
     }
+
+    runIndexer.whileTrue(
+        new IndexerCommand(indexer, IndexerConstants.indexerMotorVelocityRotPerSec));
     Logger.recordOutput("Control Scheme", Constants.controlScheme);
 
     TestPathCommands.publishTestPaths(drive);

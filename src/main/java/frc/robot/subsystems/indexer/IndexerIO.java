@@ -19,5 +19,5 @@ public interface IndexerIO {
   public default void updateInputs(IndexerIOInputs inputs) {}
 
   // specify a velocity at which to run the indexer (just a .set for now, will correct later)
-  public default void setIndexerVelocity(Double VelocityDegPerSec) {}
+  public default void setIndexerVelocity(Double VelocityRoatationsPerSec) {}
 }

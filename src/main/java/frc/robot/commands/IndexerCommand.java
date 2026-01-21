@@ -11,13 +11,16 @@ public class IndexerCommand extends Command {
 
   Indexer indexer;
 
-  public IndexerCommand(Indexer indexer) {
+  double velocityRotationsPerSec;
+
+  public IndexerCommand(Indexer indexer, double velocityRoatationsPerSec) {
     this.indexer = indexer;
+    this.velocityRotationsPerSec = velocityRoatationsPerSec;
   }
 
   @Override
   public void initialize() {
-    indexer.setIndexerVelocity(2);
+    indexer.setIndexerVelocity(velocityRotationsPerSec);
   }
 
   @Override

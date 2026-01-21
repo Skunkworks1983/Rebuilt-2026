@@ -7,7 +7,7 @@ package frc.robot.subsystems.indexer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
- * {@summary} Requires one IndexerIOTalonFX
+ * {@summary} Requires one IndexerIOTalonFX and can run said motor at a defined velocity
  *
  * @author Cyrus M.
  */
@@ -25,7 +25,7 @@ public class Indexer extends SubsystemBase {
     indexerMotor.updateInputs(inputs);
   }
 
-  public void setIndexerVelocity(double VelocityDegPerSec) {
-    indexerMotor.setIndexerVelocity(VelocityDegPerSec);
+  public void setIndexerVelocity(double VelocityRotationsPerSec) {
+    indexerMotor.setIndexerVelocity(VelocityRotationsPerSec);
   }
 }
