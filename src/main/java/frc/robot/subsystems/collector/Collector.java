@@ -39,15 +39,8 @@ public class Collector extends SubsystemBase {
     /**Puts the collector into a down position
      * @param
      */
-    public void setCollectorDown(Angle angle) {
-        collectorIO.setCollectorDown(angle);
-    }
-
-    /**Puts the collector into an up position
-     * @param
-     */
-    public void setCollectorUp(Angle angle) {
-        collectorIO.setCollectorUp(angle);
+    public void setCollectorPos(Angle angle) {
+        collectorIO.setCollectorPos(angle);
     }
 
     /**Checks to see if the collector is down

@@ -196,18 +196,23 @@ public class CollectorBackIO implements CollectorIO {
 
     /** Sets the velocity of our collector motors
      * @param
-    */
-    public void setCollectorVelocity(AngularVelocity velocity) {}
+     */
+    public void setCollectorVelocity(AngularVelocity velocity) {
+    }
 
-    /** Puts the collector into a down position
+    /** Sets the collectors position
      * @param
      */
-    public void setCollectorDown(Angle angle) {}
+    public void setCollectorPosition(Angle angle) {
+        turnMotor.setPosition(angle);
+    }
 
-    /** Puts the collector into an up position
+    /** Sets the collectors position
      * @param
      */
-    public void setCollectorUp(Angle angle) {}
+    public void setCollectorTurnMotorVelocity(AngularVelocity velocity) {
+        turnMotor.setControl(velocityVoltageRequest.withVelocity(velocity));
+    }
 
     /** Checks to see if the collector is down
      * This is to help ensure that we only have one collector down at a time

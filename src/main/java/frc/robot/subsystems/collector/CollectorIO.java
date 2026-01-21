@@ -54,12 +54,8 @@ public interface CollectorIO {
     /**Puts the collector into a down position
      * @param
      */
-    public default void setCollectorDown(Angle angle) {}
+    public default void setCollectorPos(Angle angle) {}
 
-    /**Puts the collector into an up position
-     * @param
-     */
-    public default void setCollectorUp(Angle angle) {}
 
     /**Checks to see if the collector is down
      * This is to help ensure that we only have one collector down at a time

@@ -201,12 +201,7 @@ public class CollectorFrontIO implements CollectorIO {
     /** Puts the collector into a down position
      * @param
      */
-    public void setCollectorDown(Angle angle) {}
-
-    /** Puts the collector into an up position
-     * @param
-     */
-    public void setCollectorUp(Angle angle) {}
+    public void setCollectorPos(Angle angle) {}
 
     /** Checks to see if the collector is down
      * This is to help ensure that we only have one collector down at a time
