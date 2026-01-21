@@ -25,6 +25,19 @@ public final class Constants {
   public static final boolean tuningMode = false;
   public static final boolean disableHAL = false;
 
+  public static final class IndexerConstants {
+
+    public static final int indexerMotorID = 0;
+
+    public static final int runIdexerButtonID = 2;
+
+    public static final class indexerConfigs {
+      public static final double kP = 0.1;
+      public static final double kI = 0.01;
+      public static final double kD = 0.01;
+    }
+  }
+
   public static enum Mode {
     /** Running on a real robot. */
     REAL,

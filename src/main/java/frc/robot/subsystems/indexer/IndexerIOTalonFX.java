@@ -6,6 +6,9 @@ package frc.robot.subsystems.indexer;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
@@ -14,16 +17,20 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
+import frc.robot.Constants.IndexerConstants.indexerConfigs;
 
 /** Add your docs here. */
 public class IndexerIOTalonFX implements IndexerIO {
+
+  VelocityVoltage velocityVoltageRequest = new VelocityVoltage(0);
 
   private final TalonFX indexerMotor;
 
   private final Debouncer indexerDebouncer = new Debouncer(0.5, DebounceType.kFalling);
 
+  // create status signals
   public final StatusSignal<Angle> indexerPosition;
-  public final StatusSignal<AngularVelocity> indexerVelocity;
+  public final StatusSignal<AngularVelocity> indexerAngularVelocity;
   public final StatusSignal<Voltage> indexerVoltage;
   public final StatusSignal<Current> indexerCurrent;
 
@@ -31,27 +38,36 @@ public class IndexerIOTalonFX implements IndexerIO {
 
     indexerMotor = new TalonFX(motorID);
 
+    // assigns values to the statussignals
     indexerPosition = indexerMotor.getPosition();
-    indexerVelocity = indexerMotor.getVelocity();
+    indexerAngularVelocity = indexerMotor.getVelocity();
     indexerVoltage = indexerMotor.getMotorVoltage();
     indexerCurrent = indexerMotor.getStatorCurrent();
+
+    // creates and applies slot0 configs
+    TalonFXConfiguration configs = new TalonFXConfiguration();
+    Slot0Configs slot0Configs = configs.Slot0;
+    slot0Configs.kP = indexerConfigs.kP;
+    slot0Configs.kI = indexerConfigs.kI;
+    slot0Configs.kD = indexerConfigs.kD;
+    indexerMotor.getConfigurator().apply(configs);
   }
 
   @Override
   public void updateInputs(IndexerIOInputs inputs) {
-
+    // update the indexer inputs
     var IndexerStatus =
         BaseStatusSignal.refreshAll(
-            indexerPosition, indexerVelocity, indexerVoltage, indexerCurrent);
+            indexerPosition, indexerAngularVelocity, indexerVoltage, indexerCurrent);
 
     inputs.connected = indexerDebouncer.calculate(IndexerStatus.isOK());
-    inputs.positionRad = Units.rotationsToRadians(indexerPosition.getValueAsDouble());
-    inputs.velocityRad = Units.rotationsToRadians(indexerVelocity.getValueAsDouble());
+    inputs.positionDeg = Units.rotationsToDegrees(indexerPosition.getValueAsDouble());
+    inputs.angularVelocityDeg = Units.rotationsToDegrees(indexerAngularVelocity.getValueAsDouble());
     inputs.appliedVolts = indexerVoltage.getValueAsDouble();
     inputs.currentAmps = indexerCurrent.getValueAsDouble();
   }
 
-  public void setIndexerSpeed(double speed) { //replace the .set with something better later
-    indexerMotor.set(speed);
+  public void setIndexerVelocity(Double VelocityRotationsPerSec) {
+    indexerMotor.setControl(velocityVoltageRequest.withVelocity(VelocityRotationsPerSec));
   }
 }

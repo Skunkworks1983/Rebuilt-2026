@@ -6,17 +6,26 @@ package frc.robot.subsystems.indexer;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+/**
+ * {@summary} Requires one IndexerIOTalonFX
+ *
+ * @author Cyrus M.
+ */
 public class Indexer extends SubsystemBase {
 
-  IndexerIO indexerIOMotor;
+  IndexerIO indexerMotor;
   public final IndexerIOInputsAutoLogged inputs = new IndexerIOInputsAutoLogged();
 
   public Indexer(IndexerIO indexerMotor) {
-    this.indexerIOMotor = indexerIOMotor;
+    this.indexerMotor = indexerMotor;
   }
 
   @Override
   public void periodic() {
-    indexerIOMotor.updateInputs(inputs);
+    indexerMotor.updateInputs(inputs);
+  }
+
+  public void setIndexerVelocity(double VelocityDegPerSec) {
+    indexerMotor.setIndexerVelocity(VelocityDegPerSec);
   }
 }
