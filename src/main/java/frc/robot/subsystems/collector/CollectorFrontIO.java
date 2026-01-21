@@ -40,6 +40,8 @@ public class CollectorFrontIO implements CollectorIO {
         public static final int turnMotorID = 0;
         public static final int intakeMotorLowerID = 0;
         public static final int intakeMotorUpperID = 0;
+
+        public static final double turnMotorGearRatio = 0.0;
     }
 
     // Motors and Hardware objects
@@ -219,6 +221,13 @@ public class CollectorFrontIO implements CollectorIO {
     */
     public AngularVelocity getVelocityOfTurn() {
         return turnMotor.getVelocity().getValue();
+    }
+
+    /** Gets the turn motors gear ratio 
+     * @return
+    */
+    public double getTurnGearRatio(){
+        return Constants.turnMotorGearRatio;
     }
 
     /** Sets the velocity of our collector motors

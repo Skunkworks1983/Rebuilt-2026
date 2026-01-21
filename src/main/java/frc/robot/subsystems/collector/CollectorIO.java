@@ -41,6 +41,12 @@ public interface CollectorIO {
         public double upperCurrentAmps = 0.0;
     }
 
+    
+    /** Updates our inputs for all motors 
+     * @param
+    */
+    public default void updateInputs(CollectorIOInputs inputs) {}
+    
     /** Gets the position of the collector 
      * @return
     */
@@ -69,10 +75,12 @@ public interface CollectorIO {
         return AngularVelocity.ofBaseUnits(0, null);
     }
 
-    /** Updates our inputs for all motors 
-     * @param
+    /** Gets the turn motors gear ratio 
+     * @return
     */
-    public default void updateInputs(CollectorIOInputs inputs) {}
+    public default double getTurnGearRatio(){
+        return 0.0;
+    }
 
     /** Sets the velocity of our collector motors
      * @param

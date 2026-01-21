@@ -56,6 +56,13 @@ public class Collector extends SubsystemBase {
         return collectorIO.getVelocityOfTurn();
     }
 
+    /** Gets the turn motors gear ratio 
+     * @return
+    */
+    public double getTurnGearRatio(){
+        return collectorIO.getTurnGearRatio();
+    }
+
     /** Sets the velocity of our collector motors
      * @param
     */

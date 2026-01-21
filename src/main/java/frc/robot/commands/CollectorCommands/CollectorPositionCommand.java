@@ -5,10 +5,12 @@
 package frc.robot.commands.CollectorCommands;
 
 import static edu.wpi.first.units.Units.Revolutions;
+import static edu.wpi.first.units.Units.RevolutionsPerSecond;
 
 import com.ctre.phoenix6.controls.PositionVoltage;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.Timer;
@@ -23,6 +25,7 @@ public class CollectorPositionCommand extends Command {
   TrapezoidProfile.State goal;
   TrapezoidProfile.State startPosition;
   Angle setAngle;
+  double tolerance = 0.2; //revolutions
 
   final TrapezoidProfile trapazoidProfile=
       new TrapezoidProfile(
@@ -51,12 +54,20 @@ public class CollectorPositionCommand extends Command {
     //OOOOOOOOOO French Revolutions
     goal = new TrapezoidProfile.State(newSetPoint.in(Revolutions), 0);
     positionVoltage = new PositionVoltage(0);
-    startPosition = new TrapezoidProfile.State();
+    startPosition = new TrapezoidProfile.State(collector.getPosition().in(Revolutions), 
+                                               collector.getVelocityOfTurn().in(RevolutionsPerSecond));
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+
+    State positionGoal = trapazoidProfile.calculate(time.get(), startPosition, goal);
+    positionVoltage.Position =
+    positionGoal.position * collector.getTurnGearRatio();
+
+    collector.setCollectorTurnMotorVelocity(positionVoltage.getVelocityMeasure());
+  }
 
   // Called once the command ends or is interrupted.
   @Override
@@ -65,6 +76,7 @@ public class CollectorPositionCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+        return (Math.abs(collector.getPosition().in(Revolutions) - setAngle.in(Revolutions)))
+        < tolerance;
   }
 }
