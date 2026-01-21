@@ -41,23 +41,56 @@ public interface CollectorIO {
         public double upperCurrentAmps = 0.0;
     }
 
-    /**Updates our inputs for all motors 
+    /** Gets the position of the collector 
+     * @return
+    */
+    public default Angle getPosition() {
+        return Angle.ofBaseUnits(0, null);
+    }
+
+    /** Gets the velocity of the collectors intake upper motor
+     * @return
+    */
+    public default AngularVelocity getVelocityOfIntakeLower() {
+        return AngularVelocity.ofBaseUnits(0, null);
+    }
+
+    /** Gets the velocity of the collectors intake lower motor 
+     * @return
+    */
+    public default AngularVelocity getVelocityOfIntakeUpper() {
+        return AngularVelocity.ofBaseUnits(0, null);
+    }
+
+    /** Gets the velocity of the turn motor 
+     * @return
+    */
+    public default AngularVelocity getVelocityOfTurn() {
+        return AngularVelocity.ofBaseUnits(0, null);
+    }
+
+    /** Updates our inputs for all motors 
      * @param
     */
     public default void updateInputs(CollectorIOInputs inputs) {}
 
-    /**Sets the velocity of our collector motors
+    /** Sets the velocity of our collector motors
      * @param
     */
     public default void setCollectorVelocity(AngularVelocity velocity) {}
 
-    /**Puts the collector into a down position
+    /** Sets the collectors position
      * @param
      */
     public default void setCollectorPos(Angle angle) {}
 
+    /** Sets the collectors turn motor velocity
+     * @param
+     */
+    public default void setCollectorTurnMotorVelocity(AngularVelocity velocity) {}
 
-    /**Checks to see if the collector is down
+
+    /** Checks to see if the collector is down
      * This is to help ensure that we only have one collector down at a time
      */
     public default boolean canCollectorGoDown() {

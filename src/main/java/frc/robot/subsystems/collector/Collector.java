@@ -28,22 +28,56 @@ public class Collector extends SubsystemBase {
         collectorIO.updateInputs(inputs);
     }
 
-    
-    /**Sets the velocity of our collector motors
+    /** Gets the position of the collector 
+     * @return
+    */
+    public Angle getPosition() {
+        return collectorIO.getPosition();
+    }
+
+    /** Gets the velocity of the collectors intake upper motor
+     * @return
+    */
+    public AngularVelocity getVelocityOfIntakeLower() {
+        return collectorIO.getVelocityOfIntakeLower();
+    }
+
+    /** Gets the velocity of the collectors intake lower motor 
+     * @return
+    */
+    public AngularVelocity getVelocityOfIntakeUpper() {
+        return collectorIO.getVelocityOfIntakeUpper();
+    }
+
+    /** Gets the velocity of the turn motor 
+     * @return
+    */
+    public AngularVelocity getVelocityOfTurn() {
+        return collectorIO.getVelocityOfTurn();
+    }
+
+    /** Sets the velocity of our collector motors
      * @param
     */
     public void setCollectorVelocity(AngularVelocity velocity) {
         collectorIO.setCollectorVelocity(velocity);
     }
 
-    /**Puts the collector into a down position
+    /** Puts the collector into a down position
      * @param
      */
     public void setCollectorPos(Angle angle) {
         collectorIO.setCollectorPos(angle);
     }
 
-    /**Checks to see if the collector is down
+    /** Sets the collectors turn motor velocity
+     * @param
+     */
+    public void setCollectorTurnMotorVelocity(AngularVelocity velocity) {
+        collectorIO.setCollectorTurnMotorVelocity(velocity);
+    }
+
+    /** Checks to see if the collector is down
      * This is to help ensure that we only have one collector down at a time
      */
     public boolean canCollectorGoDown() {

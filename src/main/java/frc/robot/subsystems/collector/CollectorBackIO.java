@@ -26,6 +26,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.PhoenixOdometryThread;
@@ -194,6 +195,34 @@ public class CollectorBackIO implements CollectorIO {
         inputs.upperCurrentAmps = upperCurrent.getValueAsDouble();
     }
 
+    /** Gets the position of the collector 
+     * @return
+    */
+    public Angle getPosition() {
+        return turnMotor.getPosition().getValue();
+    }
+
+    /** Gets the velocity of the collectors intake upper motor
+     * @return
+    */
+    public AngularVelocity getVelocityOfIntakeLower() {
+        return intakeMotorLower.getVelocity().getValue();
+    }
+
+    /** Gets the velocity of the collectors intake lower motor 
+     * @return
+    */
+    public AngularVelocity getVelocityOfIntakeUpper() {
+        return intakeMotorUpper.getVelocity().getValue();
+    }
+
+    /** Gets the velocity of the turn motor 
+     * @return
+    */
+    public AngularVelocity getVelocityOfTurn() {
+        return turnMotor.getVelocity().getValue();
+    }
+
     /** Sets the velocity of our collector motors
      * @param
      */
@@ -207,7 +236,7 @@ public class CollectorBackIO implements CollectorIO {
         turnMotor.setPosition(angle);
     }
 
-    /** Sets the collectors position
+    /** Sets the collectors turn motor velocity
      * @param
      */
     public void setCollectorTurnMotorVelocity(AngularVelocity velocity) {
