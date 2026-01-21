@@ -13,7 +13,7 @@ public class Collector extends SubsystemBase {
   private final CollectorIOInputsAutoLogged inputs = new CollectorIOInputsAutoLogged();
 
   public Collector(CollectorIO topCollectoroMotor) {
-    //his.bottomCollectorMotor = bottomCollectorMotor;
+    //his.bottomCollectorMotor = bottomCollectorMotor; code temporarily removed due to changes in prototype, remove or return as needed
     this.topCollectorMotor = topCollectoroMotor;
   }
 
@@ -21,7 +21,7 @@ public class Collector extends SubsystemBase {
 
   @Override
   public void periodic() {
-    //bottomCollectorMotor.updateInputs(inputs);
+    //bottomCollectorMotor.updateInputs(inputs); 
     topCollectorMotor.updateInputs(inputs);
   }
 
