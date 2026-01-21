@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.collector;
 
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
@@ -24,15 +25,15 @@ public class Collector extends SubsystemBase {
         collectorIO.updateInputs(inputs);
     }
 
-    public void setCollectorVelocity(double velocity) {
+    public void setCollectorVelocity(AngularVelocity velocity) {
         collectorIO.setCollectorVelocity(velocity);
     }
 
-    public void setCollectorDown(double velocity) {
+    public void setCollectorDown(AngularVelocity velocity) {
         collectorIO.setCollectorDown(velocity);
     }
 
-    public void setCollectorUp(double velocity) {
+    public void setCollectorUp(AngularVelocity velocity) {
         collectorIO.setCollectorUp(velocity);
     }
 

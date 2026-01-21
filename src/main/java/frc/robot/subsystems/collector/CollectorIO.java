@@ -6,9 +6,12 @@ package frc.robot.subsystems.collector;
 
 import org.littletonrobotics.junction.AutoLog;
 
-/**
- * This is the IO for the collector
- *
+import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
+
+import edu.wpi.first.units.measure.AngularVelocity;
+
+/** Main CollectorIO, Implemented by both back and front collectors.
+ * 
  * @author Liam B
  */
 public interface CollectorIO {
@@ -21,14 +24,29 @@ public interface CollectorIO {
         public double currentAmps = 0.0;
     }
 
+    /**Updates our inputs for all motors 
+     * @param
+    */
     public default void updateInputs(CollectorIOInputs inputs) {}
 
-    public default void setCollectorVelocity(double velocity) {}
+    /**Sets the velocity of our collector motors
+     * @param
+    */
+    public default void setCollectorVelocity(AngularVelocity velocity) {}
 
-    public default void setCollectorDown(double velocity) {}
+    /**Puts the collector into a down position
+     * @param
+     */
+    public default void setCollectorDown(AngularVelocity velocity) {}
 
-    public default void setCollectorUp(double velocity) {}
+    /**Puts the collector into an up position
+     * @param
+     */
+    public default void setCollectorUp(AngularVelocity velocity) {}
 
+    /**Checks to see if the collector is down
+     * This is to help ensure that we only have one collector down at a time
+     */
     public default boolean canCollectorGoDown() {
         return false;
     }

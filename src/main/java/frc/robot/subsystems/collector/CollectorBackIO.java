@@ -6,7 +6,14 @@ package frc.robot.subsystems.collector;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 
-/** Add your docs here. */
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
+
+/** This CollectorIO pretains to the back collector, it has the functions of raising
+ *      lowering, and of course collecting.
+ * 
+ * @author Liam B
+ */
 public class CollectorBackIO implements CollectorIO {
     public static class Constants {
         public static final int turnMotorID = 0;
@@ -17,7 +24,8 @@ public class CollectorBackIO implements CollectorIO {
     private final TalonFX turnMotor;
     private final TalonFX intakeMotorLower;
     private final TalonFX intakeMotorUpper;
-    /**Instanciates, configures, and sets inputs for motors */
+    
+    /**Instanciates, configures, and sets up the IO inputs for motors */
     public CollectorBackIO() {
         turnMotor = new TalonFX(Constants.turnMotorID);
         intakeMotorLower = new TalonFX(Constants.intakeMotorLowerID);
@@ -33,17 +41,17 @@ public class CollectorBackIO implements CollectorIO {
     /**Sets the velocity of our collector motors
      * @param
     */
-    public void setCollectorVelocity(double velocity) {}
+    public void setCollectorVelocity(AngularVelocity velocity) {}
 
     /**Puts the collector into a down position
      * @param
      */
-    public void setCollectorDown(double velocity) {}
+    public void setCollectorDown(AngularVelocity velocity) {}
 
     /**Puts the collector into an up position
      * @param
      */
-    public void setCollectorUp(double velocity) {}
+    public void setCollectorUp(AngularVelocity velocity) {}
 
     /**Checks to see if the collector is down
      * This is to help ensure that we only have one collector down at a time
