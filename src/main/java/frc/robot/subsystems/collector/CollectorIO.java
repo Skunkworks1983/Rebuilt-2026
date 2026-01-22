@@ -46,7 +46,7 @@ public interface CollectorIO {
      * @param
     */
     public default void updateInputs(CollectorIOInputs inputs) {}
-    
+
     /** Gets the position of the collector 
      * @return
     */
@@ -82,7 +82,7 @@ public interface CollectorIO {
         return 0.0;
     }
 
-    /** Sets the velocity of our collector motors
+    /** Sets the velocity of our intake collector motors
      * @param
     */
     public default void setCollectorVelocity(AngularVelocity velocity) {}
@@ -101,7 +101,7 @@ public interface CollectorIO {
     /** Checks to see if the collector is down
      * This is to help ensure that we only have one collector down at a time
      */
-    public default boolean canCollectorGoDown() {
+    public default boolean isCollectorDown() {
         return false;
     }
 }

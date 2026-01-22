@@ -8,6 +8,8 @@ import static frc.robot.util.PhoenixUtil.tryUntilOk;
 
 import java.util.Queue;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -28,6 +30,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.PhoenixOdometryThread;
 
@@ -100,11 +103,24 @@ public class CollectorBackIO implements CollectorIO {
         intakeMotorLower = new TalonFX(Constants.intakeMotorLowerID);
         intakeMotorUpper = new TalonFX(Constants.intakeMotorUpperID);
 
-        // PID config for turnMotor
+        // Config for turnMotor
         var turnConfig = new TalonFXConfiguration();
-        turnConfig.Slot0.kP = 0;
-        turnConfig.Slot0.kD = 0;
-        turnConfig.Slot0.kI = 0;
+
+        // Pid Configs for Turn Motor
+        var turnSlot0Configs = turnConfig.Slot0;
+        turnSlot0Configs.kP = 0;
+        turnSlot0Configs.kD = 0;
+        turnSlot0Configs.kI = 0;
+        turnSlot0Configs.kS = 0.25;
+        turnSlot0Configs.kV = 0.12;
+        turnSlot0Configs.kA = 0.01;
+
+        // Motion Magic Configs for Turn Motor
+        var turnMotionMagicConfig = turnConfig.MotionMagic;
+        turnMotionMagicConfig.MotionMagicCruiseVelocity = 80;
+        turnMotionMagicConfig.MotionMagicAcceleration = 160;
+
+        // Applying Turn Motor Configs
         tryUntilOk(5, () -> turnMotor.getConfigurator().apply(turnConfig, 0.25));
 
         // PID config for intakeMotorLower
@@ -112,6 +128,8 @@ public class CollectorBackIO implements CollectorIO {
         lowerConfig.Slot0.kP = 0;
         lowerConfig.Slot0.kD = 0;
         lowerConfig.Slot0.kI = 0;
+
+        // Applying Lower Intake Configs
         tryUntilOk(5, () -> intakeMotorLower.getConfigurator().apply(lowerConfig, 0.25));
 
         // PID config for intakeMotorUpper
@@ -119,6 +137,8 @@ public class CollectorBackIO implements CollectorIO {
         upperConfig.Slot0.kP = 0;
         upperConfig.Slot0.kD = 0;
         upperConfig.Slot0.kI = 0;
+
+        //Applying Upper Intake Configs
         tryUntilOk(5, () -> intakeMotorUpper.getConfigurator().apply(upperConfig, 0.25));
 
         // Create timestamp queue
@@ -160,6 +180,7 @@ public class CollectorBackIO implements CollectorIO {
             turnAppliedVolts,
             turnCurrent);
         ParentDevice.optimizeBusUtilizationForAll(turnMotor, intakeMotorLower, intakeMotorUpper);
+
     }
 
     @Override
@@ -232,7 +253,7 @@ public class CollectorBackIO implements CollectorIO {
         return Constants.turnMotorGearRatio;
     }
 
-    /** Sets the velocity of our collector motors
+    /** Sets the velocity of our intake collector motors
      * @param
      */
     public void setCollectorVelocity(AngularVelocity velocity) {
@@ -255,7 +276,7 @@ public class CollectorBackIO implements CollectorIO {
     /** Checks to see if the collector is down
      * This is to help ensure that we only have one collector down at a time
      */
-    public boolean canCollectorGoDown() {
+    public boolean isCollectorDown() {
         return false;
     }
 }

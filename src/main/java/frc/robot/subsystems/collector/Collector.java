@@ -4,9 +4,14 @@
 
 package frc.robot.subsystems.collector;
 
+import static edu.wpi.first.units.Units.Volts;
+
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 /**
  * This is the collector subsystem, uses IO's to switch between front and back
@@ -87,7 +92,7 @@ public class Collector extends SubsystemBase {
     /** Checks to see if the collector is down
      * This is to help ensure that we only have one collector down at a time
      */
-    public boolean canCollectorGoDown() {
-        return collectorIO.canCollectorGoDown();
+    public boolean isCollectorDown() {
+        return collectorIO.isCollectorDown();
     }
 }
