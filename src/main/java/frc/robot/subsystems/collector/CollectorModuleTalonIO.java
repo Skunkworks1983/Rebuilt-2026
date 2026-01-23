@@ -39,7 +39,7 @@ import frc.robot.subsystems.drive.PhoenixOdometryThread;
  * 
  * @author Liam B
  */
-public class CollectorBackIO implements CollectorIO {
+public class CollectorModuleTalonIO implements CollectorModuleIO {
     // Constants for collector
     public static class Constants {
         public static final int turnMotorID = 0;
@@ -97,7 +97,7 @@ public class CollectorBackIO implements CollectorIO {
         new Debouncer(0.5, Debouncer.DebounceType.kFalling);
 
     /** Instanciates, configures, and sets up the IO inputs for motors */
-    public CollectorBackIO() {
+    public CollectorModuleTalonIO() {
         // Instantiates all motors and hardware objects
         turnMotor = new TalonFX(Constants.turnMotorID);
         intakeMotorLower = new TalonFX(Constants.intakeMotorLowerID);

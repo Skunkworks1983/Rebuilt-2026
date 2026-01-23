@@ -16,16 +16,16 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.collector.Collector;
+import frc.robot.subsystems.collector.CollectorModule;
 
 /**  */
 public class CollectorPositionCommand extends Command {
-  Collector collector;
+  CollectorModule collector;
   Angle setAngle;
   double tolerance = 0.2; //revolutions
 
   /** Creates a new CollectorPositionCommand. */
-  public CollectorPositionCommand(Collector collector, Angle setAngle) {
+  public CollectorPositionCommand(CollectorModule collector, Angle setAngle) {
     this.collector = collector;
     this.setAngle = setAngle;
 

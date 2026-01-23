@@ -16,7 +16,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
  * 
  * @author Liam B
  */
-public interface CollectorIO {
+public interface CollectorModuleIO {
     @AutoLog
     public static class CollectorIOInputs {
         // Turn Motor Inputs

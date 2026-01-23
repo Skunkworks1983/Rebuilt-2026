@@ -16,9 +16,14 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.TestPathCommands;
+import frc.robot.subsystems.collector.CollectorModule;
+import frc.robot.subsystems.collector.CollectorModuleTalonIO;
+import frc.robot.subsystems.collector.CollectorModule;
+import frc.robot.subsystems.collector.CollectorModuleIO;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -50,6 +55,7 @@ public class RobotContainer {
   // Controller
   private final Joystick leftJoystick;
   private final Joystick rightJoystick;
+  private final Joystick buttonPanel;
 
   /**
    * Xbox Controller for simulation.
@@ -70,11 +76,13 @@ public class RobotContainer {
     if (Constants.controlScheme == Constants.ControlScheme.OI) {
       leftJoystick = new Joystick(0);
       rightJoystick = new Joystick(1);
+      buttonPanel = new Joystick(2);
       xboxController = null;
     } else {
       xboxController = new XboxController(0);
       leftJoystick = null;
       rightJoystick = null;
+      buttonPanel = null;
     }
     switch (Constants.currentMode) {
       case REAL:
@@ -95,7 +103,7 @@ public class RobotContainer {
             new Vision(
                 drive, new VisionIOLimelight(VisionConstants.camera0Name, drive::getRotation));
 
-        // This is a solution to the vision-drive cross dependency issue that hurts my eys, but it
+        // This is a solution to the vision-drive cross dependency issue that hurts my eyes, but it
         // does work
         drive.setResetVisionIMUCallback((pose) -> vision.resetCameraIMU(pose));
 
