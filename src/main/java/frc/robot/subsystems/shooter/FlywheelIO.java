@@ -31,7 +31,7 @@ public interface FlywheelIO {
 
   public default void setVelocity(AngularVelocity velocity) {}
 
-  public default void setOpenLoopCurrent(Current current) {}
+  public default void setOpenLoopOutput(double output) {}
 
   public default void updateInputs(FlywheelIOInputs inputs) {}
 

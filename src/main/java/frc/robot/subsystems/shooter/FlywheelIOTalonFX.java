@@ -107,8 +107,8 @@ public class FlywheelIOTalonFX implements FlywheelIO {
   }
 
   @Override
-  public void setOpenLoopCurrent(Current current) {
-    flywheelMotor.setControl(torqueCurrentRequest.withOutput(current));
+  public void setOpenLoopOutput(double output) {
+    flywheelMotor.setControl(torqueCurrentRequest.withOutput(output));
   }
 
   @Override

@@ -6,6 +6,7 @@ import static edu.wpi.first.units.Units.KilogramSquareMeters;
 import static edu.wpi.first.units.Units.Meters;
 
 import com.ctre.phoenix6.CANBus;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -53,4 +54,7 @@ public class ShooterConstants {
           new Rotation3d(Degrees.of(0), Degrees.of(0), Degrees.of(0)));
 
   public static final Distance flywheelRadius = Inches.of(3);
+
+  public static final Slot0Configs simFlywheelConfigs =
+      new Slot0Configs().withKP(0.18692).withKV(0.12323).withKA(0.032938);
 }

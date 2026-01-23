@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -14,7 +16,9 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.TestPathCommands;
@@ -198,6 +202,17 @@ public class RobotContainer {
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
+    autoChooser.addOption(
+        "Shooter SysId (Quasistatic Forward)",
+        shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    autoChooser.addOption(
+        "Shooter SysId (Quasistatic Reverse)",
+        shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    autoChooser.addOption(
+        "Shooter SysId (Dynamic Forward)", shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    autoChooser.addOption(
+        "Shooter SysId (Dynamic Reverse)", shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -229,6 +244,11 @@ public class RobotContainer {
     Logger.recordOutput("Control Scheme", Constants.controlScheme);
 
     TestPathCommands.publishTestPaths(drive);
+
+    SmartDashboard.putData("Shooter/Sim Shoot", new InstantCommand(this::launchSimFuel));
+    SmartDashboard.putData(
+        "Shooter/Set Manual Velocity",
+        new InstantCommand(() -> shooter.setManualVelocity(RotationsPerSecond.of(20))));
 
     // Lock to 0° when A button is held
     // controller

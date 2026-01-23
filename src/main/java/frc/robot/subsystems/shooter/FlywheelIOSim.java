@@ -1,5 +1,6 @@
 package frc.robot.subsystems.shooter;
 
+import com.ctre.phoenix6.sim.ChassisReference;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.units.measure.Voltage;
@@ -25,12 +26,18 @@ public class FlywheelIOSim extends FlywheelIOTalonFX {
                 ShooterConstants.flywheelInertia.magnitude(),
                 ShooterConstants.flywheelGearRatio),
             DCMotor.getKrakenX60Foc(1));
+
+    super.flywheelMotor.getConfigurator().apply(ShooterConstants.simFlywheelConfigs);
+    super.flywheelFollower.getConfigurator().apply(ShooterConstants.simFlywheelConfigs);
   }
 
   @Override
   public void updateInputs(FlywheelIOInputs inputs) {
     var talonFXSim = super.flywheelMotor.getSimState();
     var talonFXSimSecondary = super.flywheelFollower.getSimState();
+
+    talonFXSim.Orientation = ChassisReference.Clockwise_Positive;
+    talonFXSimSecondary.Orientation = ChassisReference.Clockwise_Positive;
 
     talonFXSim.setSupplyVoltage(RobotController.getBatteryVoltage());
     talonFXSimSecondary.setSupplyVoltage(RobotController.getBatteryVoltage());
