@@ -42,6 +42,10 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
 
     // Constants 
     private final CollectorConstants constants;
+
+    // Helper variables
+    private boolean isDown;
+
     // Voltage control requests
     private final VoltageOut voltageRequest = new VoltageOut(0);
     private final PositionVoltage positionVoltageRequest = new PositionVoltage(0.0);
@@ -89,6 +93,9 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     public CollectorModuleTalonIO(CollectorConstants constants) {
         // Constants
         this.constants = constants;
+
+        // Helper variables
+        isDown = false;
 
         // Instantiates all motors and hardware objects
         turnMotor = new TalonFX(constants.getTurnMotorID());
@@ -281,10 +288,18 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     }   
 
     /**
+     * sets the collector isDown. This is to help ensure that we only have one collector
+     * down at a time
+     */
+    public void setIsCollectorDown(boolean downed) {
+        isDown = downed;
+    }
+
+    /**
      * Checks to see if the collector is down This is to help ensure that we only have one collector
      * down at a time
      */
     public boolean isCollectorDown() {
-         return false;
+         return isDown;
     }
 }

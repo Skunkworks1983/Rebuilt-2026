@@ -102,6 +102,14 @@ public class CollectorModule extends SubsystemBase {
   }
 
   /**
+   * sets the collector isDown. This is to help ensure that we only have one collector
+   * down at a time
+   */
+  public void setIsCollectorDown(boolean downed) {
+    collectorIO.setIsCollectorDown(downed);
+  }
+
+  /**
    * Checks to see if the collector is down This is to help ensure that we only have one collector
    * down at a time
    */

@@ -4,12 +4,56 @@
 
 package frc.robot.subsystems.collector;
 
-/** Add your docs here. */
-public class Collector {
-  private CollectorModule[] collectors;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-  public Collector(CollectorModuleIO leftIO, CollectorModuleIO rightIO) {
-    collectors[0] = new CollectorModule(leftIO);
-    collectors[2] = new CollectorModule(rightIO);
-  }
+/** Add your docs here. */
+public class Collector extends SubsystemBase{
+
+    private CollectorModule[] collectors;
+    private int downCollector;
+
+    public Collector(CollectorModuleIO leftIO, CollectorModuleIO rightIO) {
+        collectors[0] = new CollectorModule(leftIO);
+        collectors[1] = new CollectorModule(rightIO);
+
+        downCollector = -1; // 0 == left collector mod, 1 == right collector mod
+    }
+
+    public String getDownCollector() {
+        
+        switch (downCollector) {
+            case 0:
+                return "LEFT";
+
+            case 1:
+                return "RIGHT";
+
+            default:
+                return null;
+        }
+    }
+
+    public void setDownCollector(String downed) {
+        switch (downed) {
+            case "LEFT":
+                downCollector = 0;
+                break;
+        
+            case "RIGHT":
+                downCollector = 1;
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    public CollectorModule getLeftCollector() {
+        return collectors[0];
+    }
+
+    public CollectorModule getRightCollector() {
+        return collectors[1];
+    }
 }
