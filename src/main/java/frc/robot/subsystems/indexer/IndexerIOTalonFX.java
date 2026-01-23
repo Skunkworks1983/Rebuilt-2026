@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.indexer;
 
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -12,7 +14,6 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -61,13 +62,15 @@ public class IndexerIOTalonFX implements IndexerIO {
             indexerPosition, indexerAngularVelocity, indexerVoltage, indexerCurrent);
 
     inputs.connected = indexerDebouncer.calculate(IndexerStatus.isOK());
-    inputs.positionDeg = Units.rotationsToDegrees(indexerPosition.getValueAsDouble());
-    inputs.angularVelocityDeg = Units.rotationsToDegrees(indexerAngularVelocity.getValueAsDouble());
-    inputs.appliedVolts = indexerVoltage.getValueAsDouble();
-    inputs.currentAmps = indexerCurrent.getValueAsDouble();
+    inputs.position = indexerPosition.getValue();
+    inputs.angularVelocity = indexerAngularVelocity.getValue();
+    inputs.appliedVolts = indexerVoltage.getValue();
+    inputs.currentAmps = indexerCurrent.getValue();
   }
 
-  public void setIndexerVelocity(Double VelocityRotationsPerSec) {
-    indexerMotor.setControl(velocityVoltageRequest.withVelocity(VelocityRotationsPerSec));
+  // sets the control for the defined velocity
+  public void setIndexerVelocity(AngularVelocity VelocityRotationsPerSec) {
+    indexerMotor.setControl(
+        velocityVoltageRequest.withVelocity(VelocityRotationsPerSec.in(RotationsPerSecond)));
   }
 }

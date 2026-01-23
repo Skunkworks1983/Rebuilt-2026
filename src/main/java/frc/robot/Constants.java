@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.generated.TunerConstants;
 
@@ -30,7 +32,7 @@ public final class Constants {
     public static final int indexerMotorID = 0;
     public static final int runIdexerButtonID = 2;
 
-    public static final double indexerMotorVelocityRotPerSec = 2;
+    public static final AngularVelocity indexerAngularVelocity = Units.RotationsPerSecond.of(2);
 
     public static final class indexerConfigs {
       public static final double kP = 0.1;

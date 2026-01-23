@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.indexer.Indexer;
 
@@ -11,16 +13,16 @@ public class IndexerCommand extends Command {
 
   Indexer indexer;
 
-  double velocityRotationsPerSec;
+  AngularVelocity velocity;
 
-  public IndexerCommand(Indexer indexer, double velocityRoatationsPerSec) {
+  public IndexerCommand(Indexer indexer, AngularVelocity velocity) {
     this.indexer = indexer;
-    this.velocityRotationsPerSec = velocityRoatationsPerSec;
+    this.velocity = velocity;
   }
 
   @Override
   public void initialize() {
-    indexer.setIndexerVelocity(velocityRotationsPerSec);
+    indexer.setIndexerVelocity(velocity);
   }
 
   @Override
@@ -28,7 +30,7 @@ public class IndexerCommand extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    indexer.setIndexerVelocity(0);
+    indexer.setIndexerVelocity(Units.RotationsPerSecond.of(0));
   }
 
   @Override

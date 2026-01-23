@@ -4,20 +4,24 @@
 
 package frc.robot.subsystems.indexer;
 
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Voltage;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface IndexerIO {
   @AutoLog
   public static class IndexerIOInputs {
     public boolean connected = false;
-    public double positionDeg = 0.0;
-    public double angularVelocityDeg = 0.0;
-    public double appliedVolts = 0.0;
-    public double currentAmps = 0.0;
+    public Angle position;
+    public AngularVelocity angularVelocity;
+    public Voltage appliedVolts;
+    public Current currentAmps;
   }
 
   public default void updateInputs(IndexerIOInputs inputs) {}
 
   // specify a velocity at which to run the indexer (just a .set for now, will correct later)
-  public default void setIndexerVelocity(Double VelocityRoatationsPerSec) {}
+  public default void setIndexerVelocity(AngularVelocity Velocity) {}
 }

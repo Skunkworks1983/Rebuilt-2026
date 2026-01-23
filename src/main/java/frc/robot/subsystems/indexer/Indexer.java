@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.indexer;
 
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
@@ -25,7 +26,7 @@ public class Indexer extends SubsystemBase {
     indexerMotor.updateInputs(inputs);
   }
 
-  public void setIndexerVelocity(double VelocityRotationsPerSec) {
-    indexerMotor.setIndexerVelocity(VelocityRotationsPerSec);
+  public void setIndexerVelocity(AngularVelocity Velocity) {
+    indexerMotor.setIndexerVelocity(Velocity);
   }
 }

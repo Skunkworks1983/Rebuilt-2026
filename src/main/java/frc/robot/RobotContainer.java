@@ -235,8 +235,7 @@ public class RobotContainer {
       runIndexer = new JoystickButton(xboxController, IndexerConstants.runIdexerButtonID);
     }
 
-    runIndexer.whileTrue(
-        new IndexerCommand(indexer, IndexerConstants.indexerMotorVelocityRotPerSec));
+    runIndexer.whileTrue(new IndexerCommand(indexer, IndexerConstants.indexerAngularVelocity));
     Logger.recordOutput("Control Scheme", Constants.controlScheme);
 
     TestPathCommands.publishTestPaths(drive);
