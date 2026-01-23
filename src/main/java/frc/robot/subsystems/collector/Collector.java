@@ -8,8 +8,8 @@ package frc.robot.subsystems.collector;
 public class Collector {
   private CollectorModule[] collectors;
 
-  public Collector(CollectorModuleIO frontIO, CollectorModuleIO backIO) {
-    collectors[0] = new CollectorModule(frontIO);
-    collectors[2] = new CollectorModule(backIO);
+  public Collector(CollectorModuleIO leftIO, CollectorModuleIO rightIO) {
+    collectors[0] = new CollectorModule(leftIO);
+    collectors[2] = new CollectorModule(rightIO);
   }
 }

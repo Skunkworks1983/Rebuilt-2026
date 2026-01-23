@@ -19,6 +19,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.TestPathCommands;
+import frc.robot.subsystems.collector.Collector;
+import frc.robot.subsystems.collector.CollectorModuleTalonIO;
+import frc.robot.subsystems.collector.collectorConstants.CollectorTalonLeftConstants;
+import frc.robot.subsystems.collector.collectorConstants.CollectorTalonRightConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -46,6 +50,7 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final Vision vision;
+  private final Collector collector;
 
   // Controller
   private final Joystick leftJoystick;
@@ -102,6 +107,11 @@ public class RobotContainer {
         // does work
         drive.setResetVisionIMUCallback((pose) -> vision.resetCameraIMU(pose));
 
+        collector = 
+            new Collector(
+              new CollectorModuleTalonIO(new CollectorTalonLeftConstants()), 
+              new CollectorModuleTalonIO(new CollectorTalonRightConstants()));
+
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
         // implementations
@@ -152,6 +162,8 @@ public class RobotContainer {
                     VisionConstants.camera1Name,
                     VisionConstants.robotToCamera1,
                     simulation::getSimulatedDriveTrainPose));
+
+        collector = new Collector(null, null);
         break;
 
       default:
@@ -167,6 +179,8 @@ public class RobotContainer {
                 (pose) -> {});
 
         vision = new Vision(drive, new VisionIO() {}, new VisionIO() {});
+
+        collector = new Collector(null, null);
         break;
     }
 
