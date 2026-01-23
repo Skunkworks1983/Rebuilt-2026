@@ -141,7 +141,9 @@ public class FlywheelIOTalonFX implements FlywheelIO {
 
   @Override
   public void setMotionConstraints(AngularAcceleration maxAcceleration, double maxJerk) {
-    MotionMagicConfigs config = new TalonFXConfiguration().MotionMagic.withMotionMagicAcceleration(maxAcceleration).withMotionMagicJerk(maxJerk);
+    MotionMagicConfigs config =
+        new TalonFXConfiguration()
+            .MotionMagic.withMotionMagicAcceleration(maxAcceleration).withMotionMagicJerk(maxJerk);
 
     tryUntilOk(5, () -> flywheelMotor.getConfigurator().apply(config));
     tryUntilOk(5, () -> flywheelFollower.getConfigurator().apply(config));

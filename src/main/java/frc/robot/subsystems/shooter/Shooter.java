@@ -1,14 +1,13 @@
 package frc.robot.subsystems.shooter;
 
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
+
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.LoggedTunableNumber;
-
-import static edu.wpi.first.units.Units.RotationsPerSecond;
-import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
-
 import org.littletonrobotics.junction.Logger;
 
 public class Shooter extends SubsystemBase {
@@ -72,7 +71,8 @@ public class Shooter extends SubsystemBase {
             && Constants.currentMode != Constants.Mode.SIM);
 
     pivotDisconnectedAlert.set(
-        (!pivotInputs.primaryConnected || !pivotInputs.followerConnected) && Constants.currentMode != Constants.Mode.SIM);
+        (!pivotInputs.primaryConnected || !pivotInputs.followerConnected)
+            && Constants.currentMode != Constants.Mode.SIM);
 
     if (flywheelKP.hasChanged(hashCode())
         || flywheelKD.hasChanged(hashCode())
@@ -99,7 +99,8 @@ public class Shooter extends SubsystemBase {
     if (flywheelMaxAccelerationRotationsPerSec2.hasChanged(hashCode())
         || flywheelMaxJerkRotationsPerSec3.hasChanged(hashCode())) {
       flywheel.setMotionConstraints(
-          RotationsPerSecondPerSecond.of(flywheelMaxAccelerationRotationsPerSec2.get()), flywheelMaxJerkRotationsPerSec3.get());
+          RotationsPerSecondPerSecond.of(flywheelMaxAccelerationRotationsPerSec2.get()),
+          flywheelMaxJerkRotationsPerSec3.get());
     }
 
     if (pivotMaxVelocityRotationsPerSec.hasChanged(hashCode())

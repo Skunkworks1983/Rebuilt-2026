@@ -1,5 +1,7 @@
 package frc.robot.subsystems.shooter;
 
+import static frc.robot.util.PhoenixUtil.tryUntilOk;
+
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
@@ -7,21 +9,15 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
-import com.ctre.phoenix6.controls.MotionMagicVelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
-
 import edu.wpi.first.math.filter.Debouncer;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
-
-import static frc.robot.util.PhoenixUtil.tryUntilOk;
-import frc.robot.subsystems.shooter.FlywheelIO.FlywheelIOInputs;
 
 public class PivotIOTalonFX implements PivotIO {
 
@@ -39,11 +35,13 @@ public class PivotIOTalonFX implements PivotIO {
   private final StatusSignal<Current> pivotFollowerTorqueCurrent;
 
   private final TorqueCurrentFOC torqueCurrentRequest = new TorqueCurrentFOC(0);
-  private final MotionMagicTorqueCurrentFOC postionTorqueCurrentRequest = new MotionMagicTorqueCurrentFOC(
-      0.0);
+  private final MotionMagicTorqueCurrentFOC postionTorqueCurrentRequest =
+      new MotionMagicTorqueCurrentFOC(0.0);
 
-  private final Debouncer primaryConnectedDebounce = new Debouncer(0.5, Debouncer.DebounceType.kFalling);
-  private final Debouncer followerConnectedDebounce = new Debouncer(0.5, Debouncer.DebounceType.kFalling);
+  private final Debouncer primaryConnectedDebounce =
+      new Debouncer(0.5, Debouncer.DebounceType.kFalling);
+  private final Debouncer followerConnectedDebounce =
+      new Debouncer(0.5, Debouncer.DebounceType.kFalling);
 
   public PivotIOTalonFX() {
     pivotMotor = new TalonFX(ShooterConstants.flywheelMotorOneId, ShooterConstants.shooterCan);
@@ -117,13 +115,15 @@ public class PivotIOTalonFX implements PivotIO {
 
   @Override
   public void updateInputs(PivotIOInputs inputs) {
-    StatusCode flywheelStatus = BaseStatusSignal.refreshAll(
-        pivotPostion, pivotAppliedVolts, pivotCurrent, pivotTorqueCurrent);
-    StatusCode flywheelFollowerStatus = BaseStatusSignal.refreshAll(
-        pivotFollowerPosition,
-        pivotFollowerAppliedVolts,
-        pivotFollowerCurrent,
-        pivotFollowerTorqueCurrent);
+    StatusCode flywheelStatus =
+        BaseStatusSignal.refreshAll(
+            pivotPostion, pivotAppliedVolts, pivotCurrent, pivotTorqueCurrent);
+    StatusCode flywheelFollowerStatus =
+        BaseStatusSignal.refreshAll(
+            pivotFollowerPosition,
+            pivotFollowerAppliedVolts,
+            pivotFollowerCurrent,
+            pivotFollowerTorqueCurrent);
 
     inputs.primaryConnected = primaryConnectedDebounce.calculate(flywheelStatus.isOK());
     inputs.followerConnected = followerConnectedDebounce.calculate(flywheelFollowerStatus.isOK());
@@ -142,12 +142,13 @@ public class PivotIOTalonFX implements PivotIO {
   }
 
   @Override
-  public void setMotionConstraints(AngularVelocity maxVelocity, AngularAcceleration maxAcceleration, double maxJerk) {
-    MotionMagicConfigs config = new TalonFXConfiguration().MotionMagic
-    .withMotionMagicCruiseVelocity(maxVelocity)
-    .withMotionMagicAcceleration(maxAcceleration)
-    .withMotionMagicJerk(maxJerk);
-
+  public void setMotionConstraints(
+      AngularVelocity maxVelocity, AngularAcceleration maxAcceleration, double maxJerk) {
+    MotionMagicConfigs config =
+        new TalonFXConfiguration()
+            .MotionMagic.withMotionMagicCruiseVelocity(maxVelocity)
+                .withMotionMagicAcceleration(maxAcceleration)
+                .withMotionMagicJerk(maxJerk);
 
     tryUntilOk(5, () -> pivotMotor.getConfigurator().apply(config));
     tryUntilOk(5, () -> pivotFollower.getConfigurator().apply(config));

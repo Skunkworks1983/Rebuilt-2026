@@ -1,7 +1,6 @@
 package frc.robot.subsystems.shooter;
 
 import static edu.wpi.first.units.Units.Amps;
-import static edu.wpi.first.units.Units.Rotation;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.Volts;
 
@@ -33,19 +32,14 @@ public interface PivotIO {
     public Current pivotFollowerTorqueCurrentAmps = Amps.of(0);
   }
 
-  public default void setPosition(Angle angle) {
-  }
+  public default void setPosition(Angle angle) {}
 
-  public default void setOpenLoopCurrent(Current current) {
-  }
+  public default void setOpenLoopCurrent(Current current) {}
 
-  public default void updateInputs(PivotIOInputs inputs) {
-  }
+  public default void updateInputs(PivotIOInputs inputs) {}
 
-  public default void setPID(double kP, double kI, double kD, double kS, double kV, double kA) {
-  }
+  public default void setPID(double kP, double kI, double kD, double kS, double kV, double kA) {}
 
   public default void setMotionConstraints(
-      AngularVelocity maxVelocity, AngularAcceleration maxAcceleration, double maxJerk) {
-  }
+      AngularVelocity maxVelocity, AngularAcceleration maxAcceleration, double maxJerk) {}
 }

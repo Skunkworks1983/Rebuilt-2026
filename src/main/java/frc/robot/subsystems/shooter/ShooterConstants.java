@@ -31,7 +31,7 @@ public class ShooterConstants {
 
   public static int pivotMotorOneId;
 
-public static int pivotSecondaryMotorId;
+  public static int pivotSecondaryMotorId;
 
-public static MotorAlignmentValue pivotFollowerMotorAlignment;
+  public static MotorAlignmentValue pivotFollowerMotorAlignment;
 }
