@@ -51,10 +51,10 @@ public class ShooterConstants {
   public static final Pose3d shooterInitalPosition =
       new Pose3d(
           new Translation3d(Meters.of(0), Meters.of(0), Meters.of(0.5)),
-          new Rotation3d(Degrees.of(0), Degrees.of(0), Degrees.of(0)));
+          new Rotation3d(Degrees.of(0), Degrees.of(-40), Degrees.of(0)));
 
   public static final Distance flywheelRadius = Inches.of(3);
 
   public static final Slot0Configs simFlywheelConfigs =
-      new Slot0Configs().withKP(0.18692).withKV(0.12323).withKA(0.032938);
+      new Slot0Configs().withKP(10);
 }

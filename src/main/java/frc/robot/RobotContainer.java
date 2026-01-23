@@ -248,7 +248,7 @@ public class RobotContainer {
     SmartDashboard.putData("Shooter/Sim Shoot", new InstantCommand(this::launchSimFuel));
     SmartDashboard.putData(
         "Shooter/Set Manual Velocity",
-        new InstantCommand(() -> shooter.setManualVelocity(RotationsPerSecond.of(20))));
+        new InstantCommand(() -> shooter.setManualVelocity(RotationsPerSecond.of(40))));
 
     // Lock to 0° when A button is held
     // controller
@@ -311,9 +311,7 @@ public class RobotContainer {
     SimulatedArena.getInstance().simulationPeriodic();
     Logger.recordOutput("FieldSimulation/RobotPosition", simulation.getSimulatedDriveTrainPose());
     Logger.recordOutput(
-        "FieldSimulation/Coral", SimulatedArena.getInstance().getGamePiecesArrayByType("Coral"));
-    Logger.recordOutput(
-        "FieldSimulation/Algae", SimulatedArena.getInstance().getGamePiecesArrayByType("Algae"));
+        "FieldSimulation/Fuel", SimulatedArena.getInstance().getGamePiecesArrayByType("Fuel"));
   }
 
   /**

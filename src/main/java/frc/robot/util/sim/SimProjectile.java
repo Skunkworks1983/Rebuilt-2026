@@ -1,10 +1,16 @@
 package frc.robot.util.sim;
 
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.measure.LinearVelocity;
 import frc.robot.subsystems.shooter.ShooterConstants;
+
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+
 import org.ironmaple.simulation.gamepieces.GamePieceProjectile;
 import org.ironmaple.simulation.seasonspecific.rebuilt2026.RebuiltFuelOnFly;
 import org.littletonrobotics.junction.Logger;
@@ -12,16 +18,17 @@ import org.littletonrobotics.junction.Logger;
 public class SimProjectile {
   public static GamePieceProjectile getProjectile(
       Translation2d drivePose, ChassisSpeeds fieldRelativeSpeeds, LinearVelocity launchVelocity) {
-    return new RebuiltFuelOnFly(
+    Logger.recordOutput("Shooter/SimLinearLaunchVelocity", launchVelocity);
+        return new RebuiltFuelOnFly(
             drivePose,
-            ShooterConstants.shooterInitalPosition.getTranslation().toTranslation2d(),
+            new Translation2d(),
             fieldRelativeSpeeds,
             drivePose
-                .getAngle()
-                .plus(ShooterConstants.shooterInitalPosition.getRotation().toRotation2d()),
+                .getAngle(),
             ShooterConstants.shooterInitalPosition.getMeasureZ(),
             launchVelocity,
-            ShooterConstants.shooterInitalPosition.getRotation().getMeasureY())
+            Degrees.of(42)
+        )
         .withProjectileTrajectoryDisplayCallBack(
             // Callback for when the note will eventually hit the target (no target configured)
             (pose3ds) ->

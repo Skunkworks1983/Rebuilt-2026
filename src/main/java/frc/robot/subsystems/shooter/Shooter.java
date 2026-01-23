@@ -2,12 +2,15 @@ package frc.robot.subsystems.shooter;
 
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.SignalLogger;
+
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.Alert;
@@ -27,57 +30,52 @@ public class Shooter extends SubsystemBase {
 
   private final SysIdRoutine sysId;
 
-  private static final LoggedTunableNumber flywheelKP =
-      new LoggedTunableNumber("Shooter/Flywheel/kP", ShooterConstants.flywheelKP);
-  private static final LoggedTunableNumber flywheelKD =
-      new LoggedTunableNumber("Shooter/Flywheel/kD", ShooterConstants.flywheelKD);
-  private static final LoggedTunableNumber flywheelKS =
-      new LoggedTunableNumber("Shooter/Flywheel/kS", ShooterConstants.flywheelKS);
-  private static final LoggedTunableNumber flywheelKV =
-      new LoggedTunableNumber("Shooter/Flywheel/kV", ShooterConstants.flywheelKV);
-  private static final LoggedTunableNumber flywheelKA =
-      new LoggedTunableNumber("Shooter/Flywheel/kA", ShooterConstants.flywheelKA);
+  private static final LoggedTunableNumber flywheelKP = new LoggedTunableNumber("Shooter/Flywheel/kP",
+      ShooterConstants.flywheelKP);
+  private static final LoggedTunableNumber flywheelKD = new LoggedTunableNumber("Shooter/Flywheel/kD",
+      ShooterConstants.flywheelKD);
+  private static final LoggedTunableNumber flywheelKS = new LoggedTunableNumber("Shooter/Flywheel/kS",
+      ShooterConstants.flywheelKS);
+  private static final LoggedTunableNumber flywheelKV = new LoggedTunableNumber("Shooter/Flywheel/kV",
+      ShooterConstants.flywheelKV);
+  private static final LoggedTunableNumber flywheelKA = new LoggedTunableNumber("Shooter/Flywheel/kA",
+      ShooterConstants.flywheelKA);
 
-  private static final LoggedTunableNumber flywheelMaxAccelerationRotationsPerSec2 =
-      new LoggedTunableNumber(
-          "Shooter/Flywheel/MaxAccelerationRotationsPerSec2",
-          ShooterConstants.flywheelMaxAccelerationRotationsPerSec);
-  private static final LoggedTunableNumber flywheelMaxJerkRotationsPerSec3 =
-      new LoggedTunableNumber(
-          "Shooter/Flywheel/MaxJerkRotationsPerSec3",
-          ShooterConstants.flywheelMaxJerkRotationsPerSecCubed);
+  private static final LoggedTunableNumber flywheelMaxAccelerationRotationsPerSec2 = new LoggedTunableNumber(
+      "Shooter/Flywheel/MaxAccelerationRotationsPerSec2",
+      ShooterConstants.flywheelMaxAccelerationRotationsPerSec);
+  private static final LoggedTunableNumber flywheelMaxJerkRotationsPerSec3 = new LoggedTunableNumber(
+      "Shooter/Flywheel/MaxJerkRotationsPerSec3",
+      ShooterConstants.flywheelMaxJerkRotationsPerSecCubed);
 
-  private static final LoggedTunableNumber pivotKP =
-      new LoggedTunableNumber("Shooter/Pivot/kP", 2000);
+  private static final LoggedTunableNumber pivotKP = new LoggedTunableNumber("Shooter/Pivot/kP", 2000);
   private static final LoggedTunableNumber pivotKD = new LoggedTunableNumber("Shooter/Pivot/kD", 0);
   private static final LoggedTunableNumber pivotKS = new LoggedTunableNumber("Shooter/Pivot/kS", 0);
   private static final LoggedTunableNumber pivotKV = new LoggedTunableNumber("Shooter/Pivot/kV", 0);
   private static final LoggedTunableNumber pivotKA = new LoggedTunableNumber("Shooter/Pivot/kA", 0);
 
-  private static final LoggedTunableNumber pivotMaxVelocityRotationsPerSec =
-      new LoggedTunableNumber("Shooter/Pivot/MaxVelocityRotationsPerSecond", 2.0);
-  private static final LoggedTunableNumber pivotMaxAccelerationRotationsPerSec2 =
-      new LoggedTunableNumber("Shooter/Pivot/MaxAccelerationRotationsSec2", 4.0);
-  private static final LoggedTunableNumber pivotMaxJerkRotationsPerSec3 =
-      new LoggedTunableNumber("Shooter/Pivot/MaxJerkRotationsPerSec3", 4.0);
+  private static final LoggedTunableNumber pivotMaxVelocityRotationsPerSec = new LoggedTunableNumber(
+      "Shooter/Pivot/MaxVelocityRotationsPerSecond", 2.0);
+  private static final LoggedTunableNumber pivotMaxAccelerationRotationsPerSec2 = new LoggedTunableNumber(
+      "Shooter/Pivot/MaxAccelerationRotationsSec2", 4.0);
+  private static final LoggedTunableNumber pivotMaxJerkRotationsPerSec3 = new LoggedTunableNumber(
+      "Shooter/Pivot/MaxJerkRotationsPerSec3", 4.0);
 
-  private final Alert flywheelDisconnectedAlert =
-      new Alert("Flywheel disconnected", AlertType.kError);
+  private final Alert flywheelDisconnectedAlert = new Alert("Flywheel disconnected", AlertType.kError);
   private final Alert pivotDisconnectedAlert = new Alert("Pivot disconnected", AlertType.kError);
 
   public Shooter(FlywheelIO flywheel, PivotIO pivot) {
     this.flywheel = flywheel;
     this.pivot = pivot;
 
-    sysId =
-        new SysIdRoutine(
-            new SysIdRoutine.Config(
-                Volts.per(Second).of(2),
-                Volts.of(2),
-                null,
-                (state) -> SignalLogger.writeString("Shooter/SysIdState", state.toString())),
-            new SysIdRoutine.Mechanism(
-                (voltage) -> runCharacterization(voltage.in(Volts)), null, this));
+    sysId = new SysIdRoutine(
+        new SysIdRoutine.Config(
+            Volts.per(Second).of(2),
+            Volts.of(2),
+            null,
+            (state) -> SignalLogger.writeString("Shooter/SysIdState", state.toString())),
+        new SysIdRoutine.Mechanism(
+            (voltage) -> runCharacterization(voltage.in(Volts)), null, this));
   }
 
   @Override
@@ -137,7 +135,7 @@ public class Shooter extends SubsystemBase {
 
   public LinearVelocity getShooterLinearVelocity() {
     return MetersPerSecond.of(
-        flywheelInputs.primaryVelocity.in(RotationsPerSecond)
+        flywheelInputs.primaryVelocity.in(RadiansPerSecond)
             * ShooterConstants.flywheelRadius.in(Meters));
   }
 
