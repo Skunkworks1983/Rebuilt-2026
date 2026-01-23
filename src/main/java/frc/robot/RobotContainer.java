@@ -8,7 +8,6 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -26,11 +25,16 @@ import frc.robot.subsystems.drive.GyroIOSim;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.drive.ModuleIOTalonFXSim;
+import frc.robot.subsystems.shooter.FlywheelIO;
+import frc.robot.subsystems.shooter.FlywheelIOSim;
+import frc.robot.subsystems.shooter.PivotIO;
+import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
+import frc.robot.util.sim.SimProjectile;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
@@ -46,6 +50,7 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final Vision vision;
+  private final Shooter shooter;
 
   // Controller
   private final Joystick leftJoystick;
@@ -91,11 +96,14 @@ public class RobotContainer {
                 (pose) -> {},
                 (pose) -> {});
 
+        shooter = new Shooter(new FlywheelIO() {}, new PivotIO() {});
+
         vision =
             new Vision(
                 drive, new VisionIOLimelight(VisionConstants.camera0Name, drive::getRotation));
 
-        // This is a solution to the vision-drive cross dependency issue that hurts my eys, but it
+        // This is a solution to the vision-drive cross dependency issue that hurts my
+        // eys, but it
         // does work
         drive.setResetVisionIMUCallback((pose) -> vision.resetCameraIMU(pose));
 
@@ -138,6 +146,8 @@ public class RobotContainer {
                 simulation::setSimulationWorldPose,
                 (pose) -> {});
 
+        shooter = new Shooter(new FlywheelIOSim(), new PivotIO() {});
+
         vision =
             new Vision(
                 drive,
@@ -162,6 +172,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 (pose) -> {},
                 (pose) -> {});
+        shooter = new Shooter(new FlywheelIO() {}, new PivotIO() {});
 
         vision = new Vision(drive, new VisionIO() {}, new VisionIO() {});
         break;
@@ -175,6 +186,7 @@ public class RobotContainer {
         "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
     autoChooser.addOption(
         "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
+
     autoChooser.addOption(
         "Drive SysId (Quasistatic Forward)",
         drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
@@ -185,7 +197,6 @@ public class RobotContainer {
         "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-    autoChooser.addOption("Sim Physics Test", new PathPlannerAuto("SimPhysTest"));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -299,5 +310,14 @@ public class RobotContainer {
     } else {
       simulation.setSimulationWorldPose(new Pose2d(10, 1.5, new Rotation2d()));
     }
+  }
+
+  public void launchSimFuel() {
+    SimulatedArena.getInstance()
+        .addGamePieceProjectile(
+            SimProjectile.getProjectile(
+                simulation.getSimulatedDriveTrainPose().getTranslation(),
+                simulation.getDriveTrainSimulatedChassisSpeedsFieldRelative(),
+                shooter.getShooterLinearVelocity()));
   }
 }

@@ -19,8 +19,8 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 
 public class FlywheelIOTalonFX implements FlywheelIO {
-  private final TalonFX flywheelMotor;
-  private final TalonFX flywheelFollower;
+  protected final TalonFX flywheelMotor;
+  protected final TalonFX flywheelFollower;
 
   private final StatusSignal<AngularVelocity> flywheelVelocity;
   private final StatusSignal<Voltage> flywheelAppliedVolts;

@@ -1,8 +1,11 @@
 package frc.robot.subsystems.shooter;
 
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
 
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -111,5 +114,11 @@ public class Shooter extends SubsystemBase {
           RotationsPerSecondPerSecond.of(pivotMaxAccelerationRotationsPerSec2.get()),
           pivotMaxJerkRotationsPerSec3.get());
     }
+  }
+
+  public LinearVelocity getShooterLinearVelocity() {
+    return MetersPerSecond.of(
+        flywheelInputs.primaryVelocity.in(RotationsPerSecond)
+            * ShooterConstants.flywheelRadius.in(Meters));
   }
 }
