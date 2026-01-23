@@ -6,4 +6,10 @@ package frc.robot.subsystems.collector;
 
 /** Add your docs here. */
 public class Collector {
+  private CollectorModule[] collectors;
+
+  public Collector(CollectorModuleIO frontIO, CollectorModuleIO backIO) {
+    collectors[0] = new CollectorModule(frontIO);
+    collectors[2] = new CollectorModule(backIO);
+  }
 }
