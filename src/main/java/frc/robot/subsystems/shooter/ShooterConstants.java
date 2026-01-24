@@ -55,6 +55,5 @@ public class ShooterConstants {
 
   public static final Distance flywheelRadius = Inches.of(3);
 
-  public static final Slot0Configs simFlywheelConfigs =
-      new Slot0Configs().withKP(30);
+  public static final Slot0Configs simFlywheelConfigs = new Slot0Configs().withKP(30);
 }
