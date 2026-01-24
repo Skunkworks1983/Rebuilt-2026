@@ -5,9 +5,7 @@ import static edu.wpi.first.units.Units.Meters;
 import org.ironmaple.simulation.IntakeSimulation;
 import org.ironmaple.simulation.drivesims.AbstractDriveTrainSimulation;
 
-import edu.wpi.first.units.measure.AngularVelocity;
-
-public class CollectorModuleSimIO implements CollectorIO {
+public class CollectorModuleSimIO implements CollectorModuleIO {
   private IntakeSimulation collectorSimulation;
 
   public CollectorModuleSimIO(AbstractDriveTrainSimulation driveTrain) {
@@ -23,7 +21,7 @@ public class CollectorModuleSimIO implements CollectorIO {
   }
 
   @Override
-  public void setRunning(boolean runIntake) {
+  public void setIntake(boolean runIntake) {
     if (runIntake) collectorSimulation.startIntake();
     else collectorSimulation.stopIntake();
   }
@@ -37,7 +35,7 @@ public class CollectorModuleSimIO implements CollectorIO {
   public void updateInputs(CollectorIOInputs input) {
     // input.extended = collectorSimulation
     // input.speed = collectorSimulation
-    input.amountOfFuelInside = collectorSimulation.getGamePiecesAmount();
+    // input.amountOfFuelInside = collectorSimulation.getGamePiecesAmount();
   }
 
   // @Override
