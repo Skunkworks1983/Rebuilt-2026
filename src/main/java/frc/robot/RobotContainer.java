@@ -248,7 +248,7 @@ public class RobotContainer {
     SmartDashboard.putData("Shooter/Sim Shoot", new InstantCommand(this::launchSimFuel));
     SmartDashboard.putData(
         "Shooter/Set Manual Velocity",
-        new InstantCommand(() -> shooter.setManualVelocity(RotationsPerSecond.of(40))));
+        new InstantCommand(() -> shooter.setManualVelocity(RotationsPerSecond.of(25))));
 
     // Lock to 0° when A button is held
     // controller
