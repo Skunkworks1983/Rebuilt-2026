@@ -4,13 +4,23 @@
 
 package frc.robot.commands.collectorCommands;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.collector.Collector;
+import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class CollectorManual extends Command {
+  private Collector collector;
+  private Joystick buttons;
+  private CollectorConstants constants;
   /** Creates a new CollectorManual. */
-  public CollectorManual() {
+  public CollectorManual(Collector collector, Joystick buttons, CollectorConstants constants) {
     // Use addRequirements() here to declare subsystem dependencies.
+    this.collector = collector;
+    this.buttons = buttons;
+    this.constants = constants;
+    addRequirements(collector);
   }
 
   // Called when the command is initially scheduled.

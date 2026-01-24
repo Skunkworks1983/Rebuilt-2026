@@ -29,8 +29,7 @@ import frc.robot.subsystems.drive.PhoenixOdometryThread;
 import java.util.Queue;
 
 /**
- * This CollectorIO pretains to the back collector, it has the functions of raising lowering, and of
- * course collecting.
+ * This CollectorIO pretains to a talonFX collector, it has the functions of raising lowering, and of course collecting.
  *
  * @author Liam B
  */
@@ -220,7 +219,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     /**
      * Gets the position of the collector
      *
-     * @return
+     * @return -WPILib Angle
      */
     public Angle getPosition() {
         return turnMotor.getPosition().getValue();
@@ -229,7 +228,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     /**
      * Gets the velocity of the collectors intake upper motor
      *
-     * @return
+     * @return -Angular Velocity
      */
     public AngularVelocity getVelocityOfIntakeLower() {
         return intakeMotorLower.getVelocity().getValue();
@@ -238,7 +237,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     /**
      * Gets the velocity of the collectors intake lower motor
      *
-     * @return
+     * @return -Angular Velocity
      */
     public AngularVelocity getVelocityOfIntakeUpper() {
         return intakeMotorUpper.getVelocity().getValue();
@@ -247,7 +246,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     /**
      * Gets the velocity of the turn motor
      *
-     * @return
+     * @return -Angular Velocity
      */
     public AngularVelocity getVelocityOfTurn() {
         return turnMotor.getVelocity().getValue();
@@ -256,7 +255,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     /**
      * Gets the turn motors gear ratio
      *
-     * @return
+     * @return -Turn motors gear ratio
      */
     public double getTurnGearRatio() {
         return constants.getTurnMotorGearRatio();
@@ -265,14 +264,14 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     /**
      * Sets the velocity of our intake collector motors
      *
-     * @param
+     * @param velocity -Angular Velocity
      */
     public void setCollectorVelocity(AngularVelocity velocity) {}  
 
     /**
      * Sets the collectors position
      *
-     * @param
+     * @param angle -WPILib Angle
      */
     public void setCollectorPosition(Angle angle) {
         turnMotor.setPosition(angle);
@@ -281,23 +280,27 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     /**
      * Sets the collectors turn motor velocity
      *
-     * @param
+     * @param velocity -Angular Velocity
      */
     public void setCollectorTurnMotorVelocity(AngularVelocity velocity) {
         turnMotor.setControl(velocityVoltageRequest.withVelocity(velocity));
     }   
 
     /**
-     * sets the collector isDown. This is to help ensure that we only have one collector
-     * down at a time
+     * sets the collector isDown. 
+     * <ul>
+     * <li>This is to help ensure that we only have one collectordown at a time</li>
+     * <ul>
      */
     public void setIsCollectorDown(boolean downed) {
         isDown = downed;
     }
 
     /**
-     * Checks to see if the collector is down This is to help ensure that we only have one collector
-     * down at a time
+     * Checks to see if the collector is down 
+     * <ul>
+     * <li>This is to help ensure that we only have one collectordown at a time</li>
+     * </ul>
      */
     public boolean isCollectorDown() {
          return isDown;
