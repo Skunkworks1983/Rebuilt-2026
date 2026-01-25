@@ -25,11 +25,6 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Shooter extends SubsystemBase {
-  public enum shooterState {
-    shootAllianceZone,
-    shootGoal
-  }
-
   private final FlywheelIO flywheel;
   private final PivotIO pivot;
   private final FlywheelIOInputsAutoLogged flywheelInputs = new FlywheelIOInputsAutoLogged();
