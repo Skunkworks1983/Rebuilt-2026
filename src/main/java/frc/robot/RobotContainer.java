@@ -107,10 +107,10 @@ public class RobotContainer {
         // does work
         drive.setResetVisionIMUCallback((pose) -> vision.resetCameraIMU(pose));
 
-        collector = 
+        collector =
             new Collector(
-              new CollectorModuleTalonIO(new CollectorTalonLeftConstants()), 
-              new CollectorModuleTalonIO(new CollectorTalonRightConstants()));
+                new CollectorModuleTalonIO(new CollectorTalonLeftConstants()),
+                new CollectorModuleTalonIO(new CollectorTalonRightConstants()));
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The

@@ -14,6 +14,9 @@ public class CollectorManual extends Command {
   private Collector collector;
   private Joystick buttons;
   private CollectorConstants constants;
+  private String downCollector;
+  private String upCollector;
+
   /** Creates a new CollectorManual. */
   public CollectorManual(Collector collector, Joystick buttons, CollectorConstants constants) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -21,15 +24,28 @@ public class CollectorManual extends Command {
     this.buttons = buttons;
     this.constants = constants;
     addRequirements(collector);
+
+    downCollector = null;
+    upCollector = null;
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    downCollector = collector.getDownCollector();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    if (downCollector.equals("LEFT")) {
+      upCollector = "RIGHT";
+    } else {
+      upCollector = "LEFT";
+    }
+
+    
+  }
 
   // Called once the command ends or is interrupted.
   @Override

@@ -16,7 +16,9 @@ public class CollectorUpPos extends Command {
   private String downCollector;
   private Angle upAngle;
 
-  /** The collector state in which both collectors are up 🚀
+  /**
+   * The collector state in which both collectors are up 🚀
+   *
    * @param
    */
   public CollectorUpPos(Collector collector, Angle upAngle) {
@@ -38,27 +40,33 @@ public class CollectorUpPos extends Command {
   public void execute() {
     switch (downCollector) {
       case "NEITHER":
-        if(collector.getRightCollector().getPosition().in(Degrees) < 0.0 && collector.getRightCollector().getPosition().in(Degrees) < upAngle.in(Degrees)) {// TODO: replace 0.0 w/ collector up position
-          collector.setDownCollector("BOTH!!!"); // if this is returned and we didnt intend for it, it is an EMERGENCY!!
-        } else if(collector.getLeftCollector().getPosition().in(Degrees) < upAngle.in(Degrees)){
+        collector.stopSound();
+        if (collector.getRightCollector().getPosition().in(Degrees) < 0.0
+            && collector.getRightCollector().getPosition().in(Degrees)
+                < upAngle.in(Degrees)) { // TODO: replace 0.0 w/ collector up position
+          collector.setDownCollector(
+              "BOTH!!!"); // if this is returned and we didnt intend for it, it is an EMERGENCY!!
+        } else if (collector.getLeftCollector().getPosition().in(Degrees) < upAngle.in(Degrees)) {
           collector.setDownCollector("LEFT");
-        } else if(collector.getRightCollector().getPosition().in(Degrees) < upAngle.in(Degrees)){
+        } else if (collector.getRightCollector().getPosition().in(Degrees) < upAngle.in(Degrees)) {
           collector.setDownCollector("RIGHT");
         } else {
           collector.setDownCollector("NEITHER");
         }
         break;
-      
+
       case "LEFT":
+        collector.stopSound();
         collector.getLeftCollector().setCollectorPos(upAngle);
-        if(collector.getLeftCollector().getPosition().in(Degrees) >= upAngle.in(Degrees)) {
+        if (collector.getLeftCollector().getPosition().in(Degrees) >= upAngle.in(Degrees)) {
           collector.setDownCollector("NEITHER");
         }
         break;
 
       case "RIGHT":
+        collector.stopSound();
         collector.getRightCollector().setCollectorPos(upAngle);
-        if(collector.getRightCollector().getPosition().in(Degrees) >= upAngle.in(Degrees)) {
+        if (collector.getRightCollector().getPosition().in(Degrees) >= upAngle.in(Degrees)) {
           collector.setDownCollector("NEITHER");
         }
         break;
@@ -67,8 +75,11 @@ public class CollectorUpPos extends Command {
         collector.getRightCollector().setCollectorPos(upAngle);
         collector.getLeftCollector().setCollectorPos(upAngle);
         System.out.println("EMERGENCY!!! EMERGENCY!!! BOTH COLLECTORS DOWN🚨🚨🚨🚨");
-        if(collector.getRightCollector().getPosition().in(Degrees) >= upAngle.in(Degrees) && 
-            collector.getLeftCollector().getPosition().in(Degrees) >= upAngle.in(Degrees)) {
+        if (!collector.isSoundPlaying()) {
+          collector.playSound("src/main/deploy/chrp/output.chrp");
+        }
+        if (collector.getRightCollector().getPosition().in(Degrees) >= upAngle.in(Degrees)
+            && collector.getLeftCollector().getPosition().in(Degrees) >= upAngle.in(Degrees)) {
           collector.setDownCollector("NEITHER");
         }
 

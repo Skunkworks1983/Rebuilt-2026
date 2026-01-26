@@ -10,9 +10,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
  * This is the collector module subsystem
- * <ul> 
- *      <li>Uses IO's to switch between left and right<\li>
+ *
  * <ul>
+ *   <li>Uses IO's to switch between left and right<\li>
+ *       <ul>
  *
  * @author Liam B
  */
@@ -22,9 +23,11 @@ public class CollectorModule extends SubsystemBase {
 
   /**
    * This is the collector module subsystem
-   * <ul> 
-   *      <li>Uses IO's to switch between left and right</li>
+   *
+   * <ul>
+   *   <li>Uses IO's to switch between left and right
    * </ul>
+   *
    * @param collectorIO
    */
   public CollectorModule(CollectorModuleIO collectorIO) {
@@ -66,7 +69,7 @@ public class CollectorModule extends SubsystemBase {
   /**
    * Gets the velocity of the turn motor
    *
-   * @return -Angular Velocity 
+   * @return -Angular Velocity
    */
   public AngularVelocity getVelocityOfTurn() {
     return collectorIO.getVelocityOfTurn();
@@ -109,22 +112,39 @@ public class CollectorModule extends SubsystemBase {
   }
 
   /**
-   * sets the collector isDown. 
+   * sets the collector isDown.
+   *
    * <ul>
-   * <li>This is to help ensure that we only have one collectordown at a time</li>
-   * <ul>
+   *   <li>This is to help ensure that we only have one collectordown at a time
+   *       <ul>
    */
   public void setIsCollectorDown(boolean downed) {
     collectorIO.setIsCollectorDown(downed);
   }
 
   /**
-   * Checks to see if the collector is down 
+   * Checks to see if the collector is down
+   *
    * <ul>
-   * <li>This is to help ensure that we only have one collectordown at a time</li>
+   *   <li>This is to help ensure that we only have one collectordown at a time
    * </ul>
    */
   public boolean isCollectorDown() {
     return collectorIO.isCollectorDown();
+  }
+
+  // Sound feedback 😈
+  public void playSound(String file) {
+    collectorIO.stopSound();
+  }
+
+  // Stop sound feedback
+  public void stopSound() {
+    collectorIO.stopSound();
+  }
+
+  // is sound playing?
+  public boolean isSoundPlaying() {
+    return collectorIO.isSoundPlaying();
   }
 }
