@@ -286,7 +286,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
    * @param angle -WPILib Angle
    */
   public void setCollectorPosition(Angle angle) {
-    turnMotor.setPosition(angle);
+    turnMotor.setControl(positionVoltageRequest.withPosition(angle).withSlot(0));
   }
 
   /**
