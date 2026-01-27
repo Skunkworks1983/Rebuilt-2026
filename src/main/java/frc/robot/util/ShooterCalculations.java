@@ -31,8 +31,8 @@ public class ShooterCalculations {
 
                 Distance distance = Meters.of(targetVector.getNorm());
 
-                AngularVelocity shooterVelocity = shooterInterporlations.getShooterVelocity(distance);
-                Angle shooterPitch = shooterInterporlations.getPivotAngle(distance);
+                AngularVelocity shooterVelocity = shooterInterporlations.getShooterVelocityGoal(distance);
+                Angle shooterPitch = shooterInterporlations.getPivotAngleGoal(distance);
                 Rotation2d rawYaw = targetVector.getAngle();
 
                 // Get field relative chassis speeds
@@ -134,10 +134,44 @@ public class ShooterCalculations {
                                 Radians.of(shooterPitch), rawYaw.minus(new Rotation2d(compensationAngle)));
         }
 
-        public ShooterControls getShooterControlsAllianceZone(ChassisSpeeds speeds, Pose2d odometryPose,
+        public static ShooterControls getShooterControlsTransfer(ChassisSpeeds speeds, Pose2d odometryPose,
                         ShooterInterporlations shooterInterporlations) {
-                
-                return new ShooterControls(null, null, null);
+                Translation2d target = DriverStation.getAlliance().get() == Alliance.Red
+                                ? FieldConstants.redFuelTransferTarget
+                                : FieldConstants.blueFuelTransferTarget;
+                // TODO: ONLY ALLOW LEGAL ANGLES (DOESNT HIT TOWER)
+                Translation2d targetVector = target.minus(odometryPose.getTranslation());
+
+                Distance distance = Meters.of(targetVector.getNorm());
+
+                AngularVelocity shooterVelocity = shooterInterporlations.getShooterVelocityTransfer(distance);
+                Angle shooterPitch = shooterInterporlations.getPivotAngleTransfer(distance);
+                Rotation2d rawYaw = targetVector.getAngle();
+
+                // Get field relative chassis speeds
+                Translation2d robotVel = new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond)
+                                .rotateBy(odometryPose.getRotation());
+                double fieldVx = robotVel.getX();
+                double fieldVy = robotVel.getY();
+
+                // Unit vectors of the shot direction (field frame)
+                double ux = rawYaw.getCos();
+                double uy = rawYaw.getSin();
+
+                // Components of the robot velocity along the shot-forward and shot-lateral
+                // directions
+                double parallelComponent = fieldVx * ux + fieldVy * uy; // Velocity along direction of shot
+                double perpendicularComponent = fieldVx * -uy + fieldVy * ux; // Velocity perpendicular to shot
+
+                // Flywheel parallel velocity
+                double shooterLinear = shooterVelocity.in(RadiansPerSecond) * ShooterConstants.flywheelRadius.in(Meters)
+                                * Math.cos(shooterPitch.in(Radians));
+
+                Angle compensationAngle = Radians
+                                .of(Math.atan2(perpendicularComponent, shooterLinear + parallelComponent));
+
+                return new ShooterControls(shooterVelocity, shooterPitch,
+                                rawYaw.minus(new Rotation2d(compensationAngle)));
         }
 
 }

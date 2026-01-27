@@ -11,31 +11,68 @@ import edu.wpi.first.units.measure.Distance;
 
 public class ShooterInterporlations {
 
-  /** Key: Distance from target in meters Value: Shooter angle degrees */
-  private final InterpolatingDoubleTreeMap shooterAngleMap;
+  /**
+   * Interpolation for shooting at goal (meaning landing z != 0) 
+   * Key: Distance from target in meters Value: Shooter angle degrees 
+   * */
+  private final InterpolatingDoubleTreeMap shooterGoalAngleMap;
 
-  /** Key: Distance from target in meters Value: Shooter velocity rotations per second */
-  private final InterpolatingDoubleTreeMap shooterVelocityMap;
+  /**
+   * Interpolation for shooting at goal (meaning landing z != 0) 
+   * Key: Distance from target in meters Value: Shooter velocity rotations per second 
+   * */
+  private final InterpolatingDoubleTreeMap shooterGoalVelocityMap;
+
+  /**
+   * Interpolation for shooting at goal (meaning landing z == 0)  
+   * Key: Distance from target in meters Value: Shooter angle degrees */
+  private final InterpolatingDoubleTreeMap shooterGroundAngleMap;
+
+  /**
+   * Interpolation for shooting at goal (meaning landing z == 0)   
+   * Key: Distance from target in meters Value: Shooter velocity rotations per second 
+   * */
+  private final InterpolatingDoubleTreeMap shooterGroundVelocityMap;
 
   public ShooterInterporlations() {
-    shooterAngleMap = new InterpolatingDoubleTreeMap();
-    shooterAngleMap.put(0., 90.);
-    shooterAngleMap.put(1., 80.);
-    shooterAngleMap.put(2., 70.);
-    shooterAngleMap.put(3., 60.);
-    shooterAngleMap.put(4., 50.);
-    shooterAngleMap.put(5., 45.);
+    shooterGoalAngleMap = new InterpolatingDoubleTreeMap();
+    shooterGoalAngleMap.put(0., 90.);
+    shooterGoalAngleMap.put(1., 80.);
+    shooterGoalAngleMap.put(2., 70.);
+    shooterGoalAngleMap.put(3., 60.);
+    shooterGoalAngleMap.put(4., 50.);
+    shooterGoalAngleMap.put(5., 45.);
 
-    shooterVelocityMap = new InterpolatingDoubleTreeMap();
-    shooterVelocityMap.put(0., 500.);
-    shooterVelocityMap.put(10., 5000.);
+    shooterGoalVelocityMap = new InterpolatingDoubleTreeMap();
+    shooterGoalVelocityMap.put(0., 500.);
+    shooterGoalVelocityMap.put(10., 5000.);
+
+    shooterGroundAngleMap = new InterpolatingDoubleTreeMap();
+    shooterGroundAngleMap.put(0., 90.);
+    shooterGroundAngleMap.put(1., 80.);
+    shooterGroundAngleMap.put(2., 70.);
+    shooterGroundAngleMap.put(3., 60.);
+    shooterGroundAngleMap.put(4., 50.);
+    shooterGroundAngleMap.put(5., 45.);
+
+    shooterGroundVelocityMap = new InterpolatingDoubleTreeMap();
+    shooterGroundVelocityMap.put(0., 500.);
+    shooterGroundVelocityMap.put(10., 5000.);
   }
 
-  public Angle getPivotAngle(Distance distance) {
-    return Degrees.of(shooterAngleMap.get(distance.in(Meters)));
+  public Angle getPivotAngleGoal(Distance distance) {
+    return Degrees.of(shooterGoalAngleMap.get(distance.in(Meters)));
   }
 
-  public AngularVelocity getShooterVelocity(Distance distance) {
-    return RotationsPerSecond.of(shooterVelocityMap.get(distance.in(Meters)));
+  public AngularVelocity getShooterVelocityGoal(Distance distance) {
+    return RotationsPerSecond.of(shooterGoalVelocityMap.get(distance.in(Meters)));
+  }
+
+  public Angle getPivotAngleTransfer(Distance distance) {
+    return Degrees.of(shooterGroundAngleMap.get(distance.in(Meters)));
+  }
+
+  public AngularVelocity getShooterVelocityTransfer(Distance distance) {
+    return RotationsPerSecond.of(shooterGroundVelocityMap.get(distance.in(Meters)));
   }
 }
