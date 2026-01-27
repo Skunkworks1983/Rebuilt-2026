@@ -12,6 +12,7 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
@@ -100,7 +101,7 @@ public class RobotContainer {
                 (pose) -> {},
                 (pose) -> {});
 
-        shooter = new Shooter(new FlywheelIO() {}, new PivotIO() {});
+        shooter = new Shooter(new FlywheelIO() {}, new PivotIO() {}, drive::getChassisSpeeds, drive::getPose);
 
         vision =
             new Vision(
@@ -150,7 +151,7 @@ public class RobotContainer {
                 simulation::setSimulationWorldPose,
                 (pose) -> {});
 
-        shooter = new Shooter(new FlywheelIOSim(), new PivotIO() {});
+        shooter = new Shooter(new FlywheelIOSim(), new PivotIO() {}, drive::getChassisSpeeds, drive::getPose);
 
         vision =
             new Vision(
@@ -176,7 +177,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 (pose) -> {},
                 (pose) -> {});
-        shooter = new Shooter(new FlywheelIO() {}, new PivotIO() {});
+        shooter = new Shooter(new FlywheelIO() {}, new PivotIO() {}, ()->{return new ChassisSpeeds();}, ()->{return new Pose2d();});
 
         vision = new Vision(drive, new VisionIO() {}, new VisionIO() {});
         break;
