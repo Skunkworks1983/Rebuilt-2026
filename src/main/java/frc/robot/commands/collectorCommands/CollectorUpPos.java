@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.collector.Collector;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
+@Deprecated
 public class CollectorUpPos extends Command {
   private Collector collector;
   private String downCollector;
@@ -42,10 +43,8 @@ public class CollectorUpPos extends Command {
       case "NEITHER":
         collector.stopSound();
         if (collector.getRightCollector().getPosition().in(Degrees) < 0.0
-            && collector.getRightCollector().getPosition().in(Degrees)
-                < upAngle.in(Degrees)) { // TODO: replace 0.0 w/ collector up position
-          collector.setDownCollector(
-              "BOTH!!!"); // if this is returned and we didnt intend for it, it is an EMERGENCY!!
+            && collector.getRightCollector().getPosition().in(Degrees) < upAngle.in(Degrees)) { // TODO: replace 0.0 w/ collector up position
+            collector.setDownCollector("BOTH!!!"); // if this is returned and we didnt intend for it, it is an EMERGENCY!!
         } else if (collector.getLeftCollector().getPosition().in(Degrees) < upAngle.in(Degrees)) {
           collector.setDownCollector("LEFT");
         } else if (collector.getRightCollector().getPosition().in(Degrees) < upAngle.in(Degrees)) {

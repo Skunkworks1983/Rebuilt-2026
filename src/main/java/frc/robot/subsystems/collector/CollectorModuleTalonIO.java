@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.collector;
 
+import static edu.wpi.first.units.Units.Degree;
+import static edu.wpi.first.units.Units.Degrees;
 import static frc.robot.util.PhoenixUtil.tryUntilOk;
 
 import com.ctre.phoenix6.BaseStatusSignal;
@@ -315,7 +317,11 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
    * </ul>
    */
   public boolean isCollectorDown() {
-    return isDown;
+    if(getPosition().in(Degrees) < 0.0) { // TODO: replace 0.0 w/ up position
+        return true;
+    } else {
+        return false;
+    }
   }
 
   // Sound feedback 😈

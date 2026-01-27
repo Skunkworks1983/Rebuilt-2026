@@ -36,9 +36,7 @@ public class Collector extends SubsystemBase {
     collectors[0] = new CollectorModule(leftIO);
     collectors[1] = new CollectorModule(rightIO);
 
-    downCollector =
-        -2; // -1 == neither, 0 == left collector mod, 1 == right collector mod, // 2 = both are
-    // down!
+    downCollector = -2; // -1 == neither, 0 == left collector mod, 1 == right collector mod, // 2 = both are down!
   }
 
   /**
@@ -69,6 +67,38 @@ public class Collector extends SubsystemBase {
           return "RIGHT";
         } else {
           return "NEITHER";
+        }
+    }
+  }
+
+  /**
+   * @return -Which collector is up it will be THE OPPOSITE of what the "downCollector" variable says
+   */
+  public String getUpCollector() {
+    switch (downCollector) {
+      case -1:
+        return "BOTH"; // This method IS confusing, it confuses ME its AUTHOR!!! 
+                                    // Couldnt think of a better option though, good luck!😇
+      case 0:
+        return "RIGHT";
+
+      case 1:
+        return "LEFT";
+
+      case 2:
+        return "NEITHER";
+
+      default:
+        if (collectors[0].getPosition().in(Degrees) < 0.0
+            && collectors[1].getPosition().in(Degrees)
+                < 0.0) { // TODO: replace 0.0 w/ collector up position
+          return "NEITHER!!!"; // if this is returned and we didnt intend for it, it is an EMERGENCY!!
+        } else if (collectors[0].getPosition().in(Degrees) < 0.0) {
+          return "RIGHT";
+        } else if (collectors[1].getPosition().in(Degrees) < 0.0) {
+          return "LEFT";
+        } else {
+          return "BOTH";
         }
     }
   }
