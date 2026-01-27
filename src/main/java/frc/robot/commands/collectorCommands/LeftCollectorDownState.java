@@ -4,14 +4,23 @@
 
 package frc.robot.commands.collectorCommands;
 
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.collector.Collector;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-@Deprecated
-public class CollectorAutomatic extends Command {
-  /** Creates a new CollectorAutomatic. */
-  public CollectorAutomatic() {
+public class LeftCollectorDownState extends Command {
+  private Collector collector;
+  private Angle leftDownAngle;
+  private Angle rightUpAngle;
+  /** Creates a new LeftCollectorDownState. */
+  public LeftCollectorDownState(Collector collector, Angle leftDownAngle, Angle rightUpAngle) {
     // Use addRequirements() here to declare subsystem dependencies.
+    this.collector = collector;
+    addRequirements(collector);
+
+    this.leftDownAngle = leftDownAngle;
+    this.rightUpAngle = rightUpAngle;
   }
 
   // Called when the command is initially scheduled.
@@ -20,7 +29,15 @@ public class CollectorAutomatic extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    if(!collector.getLeftCollector().isCollectorDown()){
+      if(!collector.getRightCollector().isCollectorDown()) {
+        collector.getLeftCollector().setCollectorPos(leftDownAngle);
+      } else if(collector.getRightCollector().isCollectorDown()){
+        collector.getRightCollector().setCollectorPos(rightUpAngle);
+      }
+    }
+  }
 
   // Called once the command ends or is interrupted.
   @Override
