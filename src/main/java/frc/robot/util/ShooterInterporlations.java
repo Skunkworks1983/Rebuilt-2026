@@ -12,26 +12,27 @@ import edu.wpi.first.units.measure.Distance;
 public class ShooterInterporlations {
 
   /**
-   * Interpolation for shooting at goal (meaning landing z != 0) 
-   * Key: Distance from target in meters Value: Shooter angle degrees 
-   * */
+   * Interpolation for shooting at goal (meaning landing z != 0) Key: Distance from target in meters
+   * Value: Shooter angle degrees
+   */
   private final InterpolatingDoubleTreeMap shooterGoalAngleMap;
 
   /**
-   * Interpolation for shooting at goal (meaning landing z != 0) 
-   * Key: Distance from target in meters Value: Shooter velocity rotations per second 
-   * */
+   * Interpolation for shooting at goal (meaning landing z != 0) Key: Distance from target in meters
+   * Value: Shooter velocity rotations per second
+   */
   private final InterpolatingDoubleTreeMap shooterGoalVelocityMap;
 
   /**
-   * Interpolation for shooting at goal (meaning landing z == 0)  
-   * Key: Distance from target in meters Value: Shooter angle degrees */
+   * Interpolation for shooting at goal (meaning landing z == 0) Key: Distance from target in meters
+   * Value: Shooter angle degrees
+   */
   private final InterpolatingDoubleTreeMap shooterGroundAngleMap;
 
   /**
-   * Interpolation for shooting at goal (meaning landing z == 0)   
-   * Key: Distance from target in meters Value: Shooter velocity rotations per second 
-   * */
+   * Interpolation for shooting at goal (meaning landing z == 0) Key: Distance from target in meters
+   * Value: Shooter velocity rotations per second
+   */
   private final InterpolatingDoubleTreeMap shooterGroundVelocityMap;
 
   public ShooterInterporlations() {

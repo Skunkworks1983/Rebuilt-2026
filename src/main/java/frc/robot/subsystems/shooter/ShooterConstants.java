@@ -12,6 +12,7 @@ import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.MomentOfInertia;
 
@@ -45,6 +46,10 @@ public class ShooterConstants {
   public static int pivotSecondaryMotorId;
 
   public static MotorAlignmentValue pivotFollowerMotorAlignment;
+
+  public static final Angle minShooterPitch = Degrees.of(0);
+
+  public static final Angle maxShooterPitch = Degrees.of(80);
 
   public static final MomentOfInertia flywheelInertia = KilogramSquareMeters.of(0.01);
 
