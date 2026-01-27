@@ -101,7 +101,7 @@ public class RobotContainer {
                 (pose) -> {},
                 (pose) -> {});
 
-        shooter = new Shooter(new FlywheelIO() {}, new PivotIO() {}, drive::getChassisSpeeds, drive::getPose);
+        shooter = new Shooter(new FlywheelIO() {}, new PivotIO() {});
 
         vision =
             new Vision(
@@ -151,7 +151,7 @@ public class RobotContainer {
                 simulation::setSimulationWorldPose,
                 (pose) -> {});
 
-        shooter = new Shooter(new FlywheelIOSim(), new PivotIO() {}, drive::getChassisSpeeds, drive::getPose);
+        shooter = new Shooter(new FlywheelIOSim(), new PivotIO() {});
 
         vision =
             new Vision(
@@ -177,7 +177,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 (pose) -> {},
                 (pose) -> {});
-        shooter = new Shooter(new FlywheelIO() {}, new PivotIO() {}, ()->{return new ChassisSpeeds();}, ()->{return new Pose2d();});
+        shooter = new Shooter(new FlywheelIO() {}, new PivotIO() {});
 
         vision = new Vision(drive, new VisionIO() {}, new VisionIO() {});
         break;

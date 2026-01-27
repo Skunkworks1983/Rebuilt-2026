@@ -2,23 +2,17 @@ package frc.robot.subsystems.shooter;
 
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
 
-import java.security.Policy;
-import java.util.function.Supplier;
-
 import com.ctre.phoenix6.SignalLogger;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
@@ -27,7 +21,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.util.LoggedTunableNumber;
-import frc.robot.util.ShooterCalculations;
 import frc.robot.util.ShooterInterporlations;
 import frc.robot.util.ShooterCalculations.ShooterControls;
 
@@ -48,8 +41,8 @@ public class Shooter extends SubsystemBase {
   private final FlywheelIOInputsAutoLogged flywheelInputs = new FlywheelIOInputsAutoLogged();
   private final PivotIOInputsAutoLogged pivotInputs = new PivotIOInputsAutoLogged();
 
-  private final Supplier<Pose2d> robotPositionSuppler;
-  private final Supplier<ChassisSpeeds> chassisSpeedSupplier;
+  private AngularVelocity flywheelSetpoint = RadiansPerSecond.of(0);
+  private Angle pivotSetpoint = Radians.of(0);
 
   private final SysIdRoutine sysId;
 
@@ -89,13 +82,9 @@ public class Shooter extends SubsystemBase {
   private final Alert flywheelDisconnectedAlert = new Alert("Flywheel disconnected", AlertType.kError);
   private final Alert pivotDisconnectedAlert = new Alert("Pivot disconnected", AlertType.kError);
 
-  public Shooter(FlywheelIO flywheel, PivotIO pivot, Supplier<ChassisSpeeds> chassisSpeedSupplier,
-      Supplier<Pose2d> robotPositionSupplier) {
+  public Shooter(FlywheelIO flywheel, PivotIO pivot) {
     this.flywheel = flywheel;
     this.pivot = pivot;
-
-    this.chassisSpeedSupplier = chassisSpeedSupplier;
-    this.robotPositionSuppler = robotPositionSupplier;
 
     sysId = new SysIdRoutine(
         new SysIdRoutine.Config(
@@ -202,21 +191,15 @@ public class Shooter extends SubsystemBase {
     return flywheelInputs.primaryVelocity;
   }
 
-  // @AutoLogOutput(key = "Shooter/targetVelocity")
-  // public AngularVelocity getTargetVelocity(Distance distance) {
-  //   return shooterInterporlations.getShooterVelocity(distance);
-  // }
-
-  // @AutoLogOutput(key = "Shooter/targetAngle")
-  // public Angle getPivotAngle(Distance distance) {
-  //   return shooterInterporlations.getPivotAngle(distance);
-  // }
-
   public void setShooterControls(ShooterControls controls){
-    Logger.recordOutput("Shooter/Velocity Setpoint", controls.shooterVelocity());
-    Logger.recordOutput("Shooter/Pitch Setpoint", controls.shooterPitch());
+    flywheelSetpoint = controls.shooterVelocity();
+    pivotSetpoint = controls.shooterPitch();
 
-    pivot.setPosition(controls.shooterPitch());
-    flywheel.setVelocity(controls.shooterVelocity());
+    Logger.recordOutput("Shooter/Velocity Setpoint", flywheelSetpoint);
+    Logger.recordOutput("Shooter/Pitch Setpoint", pivotSetpoint);
+
+
+    pivot.setPosition(pivotSetpoint);
+    flywheel.setVelocity(flywheelSetpoint);
   }
 }
