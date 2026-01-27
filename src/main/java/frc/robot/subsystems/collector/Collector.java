@@ -7,6 +7,8 @@ package frc.robot.subsystems.collector;
 import static edu.wpi.first.units.Units.Degrees;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
+import frc.robot.subsystems.collector.collectorConstants.CollectorPositionConstants;
 
 /**
  * This is the collector Subsystem
@@ -57,13 +59,12 @@ public class Collector extends SubsystemBase {
         return "BOTH";
 
       default:
-        if (collectors[0].getPosition().in(Degrees) < 0.0
-            && collectors[1].getPosition().in(Degrees)
-                < 0.0) { // TODO: replace 0.0 w/ collector up position
+        if (collectors[0].getPosition().in(Degrees) <= CollectorPositionConstants.leftCollectorDownPos.in(Degrees)
+            && collectors[1].getPosition().in(Degrees) <= CollectorPositionConstants.rightCollectorDownPos.in(Degrees)) {
           return "BOTH!!!"; // if this is returned and we didnt intend for it, it is an EMERGENCY!!
-        } else if (collectors[0].getPosition().in(Degrees) < 0.0) {
+        } else if (collectors[0].getPosition().in(Degrees) <= CollectorPositionConstants.leftCollectorDownPos.in(Degrees)) {
           return "LEFT";
-        } else if (collectors[1].getPosition().in(Degrees) < 0.0) {
+        } else if (collectors[1].getPosition().in(Degrees) <= CollectorPositionConstants.rightCollectorDownPos.in(Degrees)) {
           return "RIGHT";
         } else {
           return "NEITHER";
@@ -77,8 +78,8 @@ public class Collector extends SubsystemBase {
   public String getUpCollector() {
     switch (downCollector) {
       case -1:
-        return "BOTH"; // This method IS confusing, it confuses ME its AUTHOR!!! 
-                                    // Couldnt think of a better option though, good luck!😇
+        return "BOTH"; 
+
       case 0:
         return "RIGHT";
 
@@ -89,16 +90,15 @@ public class Collector extends SubsystemBase {
         return "NEITHER";
 
       default:
-        if (collectors[0].getPosition().in(Degrees) < 0.0
-            && collectors[1].getPosition().in(Degrees)
-                < 0.0) { // TODO: replace 0.0 w/ collector up position
-          return "NEITHER!!!"; // if this is returned and we didnt intend for it, it is an EMERGENCY!!
-        } else if (collectors[0].getPosition().in(Degrees) < 0.0) {
+        if (collectors[0].getPosition().in(Degrees) >= CollectorPositionConstants.leftCollectorUpPos.in(Degrees)
+            && collectors[1].getPosition().in(Degrees) >= CollectorPositionConstants.rightCollectorUpPos.in(Degrees)) {
+          return "BOTH";
+        } else if (collectors[1].getPosition().in(Degrees) >= CollectorPositionConstants.rightCollectorUpPos.in(Degrees)) {
           return "RIGHT";
-        } else if (collectors[1].getPosition().in(Degrees) < 0.0) {
+        } else if (collectors[0].getPosition().in(Degrees) >= CollectorPositionConstants.leftCollectorUpPos.in(Degrees)) {
           return "LEFT";
         } else {
-          return "BOTH";
+          return "NEITHER!!!"; // If this is returned and we didnt mean it its an emergency!!!🚨🚨🚨
         }
     }
   }

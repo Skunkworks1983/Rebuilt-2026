@@ -28,6 +28,8 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
+import frc.robot.subsystems.collector.collectorConstants.CollectorConstants.side;
+import frc.robot.subsystems.collector.collectorConstants.CollectorPositionConstants;
 import frc.robot.subsystems.drive.PhoenixOdometryThread;
 import java.util.Queue;
 
@@ -51,6 +53,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
 
   // Helper variables
   private boolean isDown;
+  private side side;
 
   // Voltage control requests
   private final VoltageOut voltageRequest = new VoltageOut(0);
@@ -101,6 +104,10 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
 
     // Helper variables
     isDown = false;
+
+    // Collector side
+    side = constants.getSide();
+
 
     // Instantiates all motors and hardware objects
     turnMotor = new TalonFX(constants.getTurnMotorID());
@@ -317,10 +324,22 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
    * </ul>
    */
   public boolean isCollectorDown() {
-    if(getPosition().in(Degrees) < 0.0) { // TODO: replace 0.0 w/ up position
-        return true;
-    } else {
-        return false;
+    switch (side) {
+        case LEFT:
+            if(getPosition().in(Degrees) <= CollectorPositionConstants.leftCollectorDownPos.in(Degrees)) {
+                return true;
+            } else {
+                return false;
+            }
+    
+        case RIGHT:
+            if(getPosition().in(Degrees) <= CollectorPositionConstants.rightCollectorDownPos.in(Degrees)) {
+                return true;
+            } else {
+                return false;
+            }
+        default:
+            return false;
     }
   }
 
