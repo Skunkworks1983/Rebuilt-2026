@@ -19,6 +19,8 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.TestPathCommands;
@@ -59,6 +61,7 @@ public class RobotContainer {
   // Controller
   private final Joystick leftJoystick;
   private final Joystick rightJoystick;
+  private final Joystick buttonBoard;
 
   /**
    * Xbox Controller for simulation.
@@ -79,11 +82,13 @@ public class RobotContainer {
     if (Constants.controlScheme == Constants.ControlScheme.OI) {
       leftJoystick = new Joystick(0);
       rightJoystick = new Joystick(1);
+      buttonBoard = new Joystick(2);
       xboxController = null;
     } else {
       xboxController = new XboxController(0);
       leftJoystick = null;
       rightJoystick = null;
+      buttonBoard = null;
     }
     switch (Constants.currentMode) {
       case REAL:
@@ -224,6 +229,7 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    Trigger shootGoalButton;
     // Default command, normal field-relative drive
     if (Constants.controlScheme == Constants.ControlScheme.OI) {
       drive.setDefaultCommand(
@@ -232,6 +238,12 @@ public class RobotContainer {
               () -> -leftJoystick.getY(), // -X (used to be)
               () -> -leftJoystick.getX(), // -Y (used to be)
               () -> rightJoystick.getX())); // Confirm if negitive or not
+
+      shootGoalButton = new JoystickButton(buttonBoard, 15);
+
+      shootGoalButton.whileTrue(
+          DriveCommands.joystickDriveAimedGoal(
+              drive, shooter, () -> -leftJoystick.getY(), () -> -leftJoystick.getX()));
     } else {
 
       drive.setDefaultCommand(
@@ -240,6 +252,7 @@ public class RobotContainer {
               () -> -xboxController.getLeftY(),
               () -> -xboxController.getLeftX(),
               () -> -xboxController.getRightX()));
+      shootGoalButton = new JoystickButton(xboxController, XboxController.Button.kA.value);
     }
     Logger.recordOutput("Control Scheme", Constants.controlScheme);
 
@@ -324,7 +337,7 @@ public class RobotContainer {
   public void resetSimRobotPose() {
     if (DriverStation.getAlliance().isPresent()
         && DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
-      simulation.setSimulationWorldPose(new Pose2d(7.6, 6.6, new Rotation2d(Math.PI)));
+      simulation.setSimulationWorldPose(new Pose2d(3.529, 7.383, new Rotation2d(Math.PI)));
     } else {
       simulation.setSimulationWorldPose(new Pose2d(10, 1.5, new Rotation2d()));
     }

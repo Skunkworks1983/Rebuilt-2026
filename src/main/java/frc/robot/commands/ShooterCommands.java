@@ -26,7 +26,7 @@ public class ShooterCommands {
       this.xSupplier = xSupplier;
       this.ySupplier = ySupplier;
 
-      addRequirements(drive, shooter);
+      addRequirements(shooter);
     }
 
     @Override
@@ -91,6 +91,11 @@ public class ShooterCommands {
 
     private Rotation2d getDriveYaw() {
       return driveYawTarget;
+    }
+
+    @Override
+    public boolean isFinished() {
+      return false;
     }
   }
 }

@@ -166,14 +166,44 @@ public class ShooterCalculations {
         DriverStation.getAlliance().get() == Alliance.Red
             ? FieldConstants.redFuelTransferTarget
             : FieldConstants.blueFuelTransferTarget;
-    // TODO: ONLY ALLOW LEGAL ANGLES (DOESNT HIT TOWER)
+    Translation2d hubCenter =
+        DriverStation.getAlliance().get() == Alliance.Red
+            ? FieldConstants.redHubCenter
+            : FieldConstants.blueHubCenter;
+
     Translation2d targetVector = target.minus(odometryPose.getTranslation());
 
+    Rotation2d rawYaw = targetVector.getAngle();
     Distance distance = Meters.of(targetVector.getNorm());
+
+    Translation2d robotToHub = hubCenter.minus(odometryPose.getTranslation());
+    Translation2d hubInShotFrame = robotToHub.rotateBy(rawYaw.unaryMinus());
+
+    double xHub = hubInShotFrame.getX();
+    double yHub = hubInShotFrame.getY();
+
+    boolean hitsHub = xHub > 0 && Math.abs(yHub) < FieldConstants.halfHubWidth.in(Meters);
+
+    if (hitsHub) {
+      Rotation2d hubAngularWidth =
+          new Rotation2d(
+              Radians.of(Math.atan2(FieldConstants.halfHubWidth.in(Meters), robotToHub.getNorm())));
+
+      Rotation2d leftEdgeOption =
+          rawYaw.minus(hubAngularWidth.minus(ShooterSolverConstants.hubSafetyAngle));
+      Rotation2d rightEdgeOption =
+          rawYaw.plus(hubAngularWidth.plus(ShooterSolverConstants.hubSafetyAngle));
+
+      // Choose the one closer to the original aim
+      rawYaw =
+          Math.abs(rawYaw.minus(leftEdgeOption).getRadians())
+                  < Math.abs(rawYaw.minus(rightEdgeOption).getRadians())
+              ? leftEdgeOption
+              : rightEdgeOption;
+    }
 
     AngularVelocity shooterVelocity = shooterInterporlations.getShooterVelocityTransfer(distance);
     Angle shooterPitch = shooterInterporlations.getPivotAngleTransfer(distance);
-    Rotation2d rawYaw = targetVector.getAngle();
 
     // Get field relative chassis speeds
     Translation2d robotVel =
