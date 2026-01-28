@@ -113,15 +113,6 @@ public interface CollectorModuleIO {
   public default void setCollectorTurnMotorVelocity(AngularVelocity velocity) {}
 
   /**
-   * sets the collector isDown.
-   *
-   * <ul>
-   *   <li>This is to help ensure that we only have one collectordown at a time
-   *       <ul>
-   */
-  public default void setIsCollectorDown(boolean downed) {}
-
-  /**
    * Checks to see if the collector is down
    *
    * <ul>

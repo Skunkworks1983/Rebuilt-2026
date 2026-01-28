@@ -20,7 +20,11 @@ import frc.robot.subsystems.collector.collectorConstants.CollectorPositionConsta
 public class Collector extends SubsystemBase {
 
   private CollectorModule[] collectors;
-  private int downCollector;
+  public static enum State {
+    MANUAL, AUTOMATIC, ALWAYSUP;
+  }
+
+  State state = State.ALWAYSUP;
 
   /**
    * Collector subsystem.
@@ -37,103 +41,31 @@ public class Collector extends SubsystemBase {
   public Collector(CollectorModuleIO leftIO, CollectorModuleIO rightIO) {
     collectors[0] = new CollectorModule(leftIO);
     collectors[1] = new CollectorModule(rightIO);
-
-    downCollector = -2; // -1 == neither, 0 == left collector mod, 1 == right collector mod, // 2 = both are down!
   }
 
-  /**
-   * @return -Which collector is down
-   */
+  /** @return -The current down collector */
   public String getDownCollector() {
-    switch (downCollector) {
-      case -1:
-        return "NEITHER";
-
-      case 0:
-        return "LEFT";
-
-      case 1:
-        return "RIGHT";
-
-      case 2:
+    if(getLeftCollector().isCollectorDown() && getRightCollector().isCollectorDown()){
         return "BOTH";
-
-      default:
-        if (collectors[0].getPosition().in(Degrees) <= CollectorPositionConstants.leftCollectorDownPos.in(Degrees)
-            && collectors[1].getPosition().in(Degrees) <= CollectorPositionConstants.rightCollectorDownPos.in(Degrees)) {
-          return "BOTH!!!"; // if this is returned and we didnt intend for it, it is an EMERGENCY!!
-        } else if (collectors[0].getPosition().in(Degrees) <= CollectorPositionConstants.leftCollectorDownPos.in(Degrees)) {
-          return "LEFT";
-        } else if (collectors[1].getPosition().in(Degrees) <= CollectorPositionConstants.rightCollectorDownPos.in(Degrees)) {
-          return "RIGHT";
-        } else {
-          return "NEITHER";
-        }
-    }
-  }
-
-  /**
-   * @return -Which collector is up it will be THE OPPOSITE of what the "downCollector" variable says
-   */
-  public String getUpCollector() {
-    switch (downCollector) {
-      case -1:
-        return "BOTH"; 
-
-      case 0:
-        return "RIGHT";
-
-      case 1:
+    } else if(getLeftCollector().isCollectorDown()) {
         return "LEFT";
-
-      case 2:
+    } else if (getRightCollector().isCollectorDown()) {
+        return "RIGHT";
+    } else {
         return "NEITHER";
-
-      default:
-        if (collectors[0].getPosition().in(Degrees) >= CollectorPositionConstants.leftCollectorUpPos.in(Degrees)
-            && collectors[1].getPosition().in(Degrees) >= CollectorPositionConstants.rightCollectorUpPos.in(Degrees)) {
-          return "BOTH";
-        } else if (collectors[1].getPosition().in(Degrees) >= CollectorPositionConstants.rightCollectorUpPos.in(Degrees)) {
-          return "RIGHT";
-        } else if (collectors[0].getPosition().in(Degrees) >= CollectorPositionConstants.leftCollectorUpPos.in(Degrees)) {
-          return "LEFT";
-        } else {
-          return "NEITHER!!!"; // If this is returned and we didnt mean it its an emergency!!!🚨🚨🚨
-        }
     }
   }
 
-  /**
-   * Sets a variable to tell us which collector is down
-   *
-   * @param downed -collector is now down
-   */
-  public void setDownCollector(String downed) {
-    switch (downed) {
-      case "NEITHER":
-        downCollector = -1;
-        collectors[0].setIsCollectorDown(false);
-        collectors[1].setIsCollectorDown(false);
-        break;
-
-      case "LEFT":
-        downCollector = 0;
-        collectors[0].setIsCollectorDown(true);
-        break;
-
-      case "RIGHT":
-        downCollector = 1;
-        collectors[1].setIsCollectorDown(true);
-        break;
-
-      case "BOTH":
-        downCollector = 2;
-        collectors[0].setIsCollectorDown(true);
-        collectors[0].setIsCollectorDown(true);
-        break;
-
-      default:
-        break;
+  /** @return -The current up collector */
+  public String getUpCollector() {
+    if (!getLeftCollector().isCollectorDown() && !getLeftCollector().isCollectorDown()){
+        return "BOTH";
+    } else if(!getLeftCollector().isCollectorDown()) {
+        return "LEFT";
+    } else if (!getRightCollector().isCollectorDown()) {
+        return "RIGHT";
+    } else {
+        return "NEITHER";
     }
   }
 
@@ -170,5 +102,15 @@ public class Collector extends SubsystemBase {
     } else {
       return false;
     }
+  }
+
+  // Changes State
+  public void changeState(State desiredState) {
+    state = desiredState;
+  }
+
+  // Gets State
+  public State getState() {
+    return state;
   }
 }
