@@ -242,7 +242,7 @@ public class RobotContainer {
       shootGoalButton = new JoystickButton(buttonBoard, 15);
 
       shootGoalButton.whileTrue(
-          DriveCommands.joystickDriveAimedGoal(
+          DriveCommands.joystickDriveAimedHub(
               drive, shooter, () -> -leftJoystick.getY(), () -> -leftJoystick.getX()));
     } else {
 

@@ -4,6 +4,7 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.KilogramSquareMeters;
 import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -14,6 +15,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.MomentOfInertia;
 
 public class ShooterConstants {
@@ -31,6 +33,8 @@ public class ShooterConstants {
   public static final double flywheelMaxVelocityRotationsPerSec = 5000.0;
   public static final double flywheelMaxAccelerationRotationsPerSec = 200.0;
   public static final double flywheelMaxJerkRotationsPerSecCubed = 100;
+
+  public static final LinearVelocity flywheelMaxLinearVelocity = MetersPerSecond.of(100);
 
   public static final double flywheelGearRatio = 1.;
 

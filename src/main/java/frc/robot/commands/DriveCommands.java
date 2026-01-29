@@ -36,8 +36,8 @@ import org.littletonrobotics.junction.Logger;
 
 public class DriveCommands {
   private static final double DEADBAND = 0.1;
-  private static final double ANGLE_KP = 5.0;
-  private static final double ANGLE_KD = 0.4;
+  private static final double ANGLE_KP = 7.0;
+  private static final double ANGLE_KD = 0.5;
   private static final double ANGLE_MAX_VELOCITY = 8.0;
   private static final double ANGLE_MAX_ACCELERATION = 20.0;
   private static final double FF_START_DELAY = 2.0; // Secs
@@ -153,6 +153,19 @@ public class DriveCommands {
 
         // Reset PID controller when command starts
         .beforeStarting(() -> angleController.reset(drive.getRotation().getRadians()));
+  }
+
+  public static ChassisSpeeds getChassisSpeeds(
+      Drive drive, DoubleSupplier xSupplier, DoubleSupplier ySupplier, double omega) {
+    // Get linear velocity
+    Translation2d linearVelocity =
+        getLinearVelocityFromJoysticks(xSupplier.getAsDouble(), ySupplier.getAsDouble());
+
+    // Convert to field relative speeds & send command
+    return new ChassisSpeeds(
+        linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
+        linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
+        omega);
   }
 
   /**
@@ -293,10 +306,9 @@ public class DriveCommands {
     double gyroDelta = 0.0;
   }
 
-  public static Command joystickDriveAimedGoal(
+  public static Command joystickDriveAimedHub(
       Drive drive, Shooter shooter, DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
 
-    // Create PID controller
     ProfiledPIDController angleController =
         new ProfiledPIDController(
             ANGLE_KP,
@@ -319,24 +331,18 @@ public class DriveCommands {
 
               Logger.recordOutput("Shooter Auto Aim/Drive Angle Setpoint", controls.driveYaw());
 
-              // Get linear velocity
-              Translation2d linearVelocity =
-                  getLinearVelocityFromJoysticks(xSupplier.getAsDouble(), ySupplier.getAsDouble());
-
-              // Calculate angular speed
-              double omega =
-                  angleController.calculate(
-                      drive.getRotation().getRadians(), controls.driveYaw().getRadians());
-
-              // Convert to field relative speeds & send command
               ChassisSpeeds speeds =
-                  new ChassisSpeeds(
-                      linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
-                      linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
-                      omega);
+                  getChassisSpeeds(
+                      drive,
+                      xSupplier,
+                      ySupplier,
+                      angleController.calculate(
+                          drive.getRotation().getRadians(), controls.driveYaw().getRadians()));
+
               boolean isFlipped =
                   DriverStation.getAlliance().isPresent()
                       && DriverStation.getAlliance().get() == Alliance.Red;
+
               drive.runVelocity(
                   ChassisSpeeds.fromFieldRelativeSpeeds(
                       speeds,
