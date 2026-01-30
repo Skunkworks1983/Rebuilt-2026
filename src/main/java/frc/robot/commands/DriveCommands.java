@@ -7,10 +7,8 @@
 
 package frc.robot.commands;
 
-import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
-
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -20,8 +18,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
@@ -41,10 +37,10 @@ import org.littletonrobotics.junction.Logger;
 
 public class DriveCommands {
   private static final double DEADBAND = 0.1;
-  private static final double ANGLE_KP = 4.5;
+  private static final double ANGLE_KP = 10;
   private static final double ANGLE_KD = 0;
-  private static final double ANGLE_MAX_VELOCITY = 8.0;
-  private static final double ANGLE_MAX_ACCELERATION = 20.0;
+  private static final double ANGLE_MAX_VELOCITY = 9.4;
+  private static final double ANGLE_MAX_ACCELERATION = 45;
   private static final double FF_START_DELAY = 2.0; // Secs
   private static final double FF_RAMP_RATE = 0.1; // Volts/Sec
   private static final double WHEEL_RADIUS_MAX_VELOCITY = 0.25; // Rad/Sec
@@ -313,60 +309,46 @@ public class DriveCommands {
 
   public static Command joystickDriveAimedHub(
       Drive drive, Shooter shooter, DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
-
-    ProfiledPIDController angleController =
-        new ProfiledPIDController(
-            ANGLE_KP,
-            0.0,
-            ANGLE_KD,
-            new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
+    PIDController angleController = new PIDController(ANGLE_KP, 0.0, ANGLE_KD);
     angleController.enableContinuousInput(-Math.PI, Math.PI);
 
-    // Construct command
     return Commands.run(
             () -> {
-              Angle prevPivotAngle = shooter.getPivotAngle();
-              AngularVelocity prevShooterVelocity = shooter.getFlywheelVelocity();
-
-              if (prevPivotAngle.magnitude() == 0) {
-                prevPivotAngle = Degrees.of(45);
-              }
-
-              if (prevShooterVelocity.magnitude() == 0) {
-                prevShooterVelocity = RotationsPerSecond.of(19);
-              }
-
               ShooterControls controls =
                   ShooterCalculations.getShooterControlsLookupHybrid(
-                      drive.getPose(), drive.getChassisSpeeds());
-
+                      drive.getPose(), drive.getChassisSpeeds(), drive.getAngularVelocity());
               shooter.setShooterControls(controls);
 
-              Logger.recordOutput("Shooter Auto Aim/Drive Angle Setpoint", controls.driveYaw());
+              Logger.recordOutput(
+                  "Auto Shoot/Drive Yaw Setpoint", controls.driveYaw().getRadians());
+              Logger.recordOutput(
+                  "Auto Shoot/Drive Yaw Feedforward", controls.angularVelocityFeedForward());
 
-              ChassisSpeeds speeds =
+              double omegaRadiansPerSecond =
+                  angleController.calculate(
+                      drive.getRotation().getRadians(), controls.driveYaw().getRadians());
+
+              Logger.recordOutput("Auto Shoot/Drive Yaw PID Calculated", omegaRadiansPerSecond);
+
+              boolean isRed = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red;
+
+              ChassisSpeeds desiredSpeeds =
                   getChassisSpeeds(
                       drive,
                       xSupplier,
                       ySupplier,
-                      angleController.calculate(
-                          drive.getRotation().getRadians(), controls.driveYaw().getRadians()));
-
-              boolean isFlipped =
-                  DriverStation.getAlliance().isPresent()
-                      && DriverStation.getAlliance().get() == Alliance.Red;
+                      omegaRadiansPerSecond + controls.angularVelocityFeedForward());
 
               drive.runVelocity(
                   ChassisSpeeds.fromFieldRelativeSpeeds(
-                      speeds,
-                      isFlipped
-                          ? drive.getRotation().plus(new Rotation2d(Math.PI))
+                      desiredSpeeds,
+                      isRed
+                          ? drive.getRotation().plus(Rotation2d.fromRadians(Math.PI))
                           : drive.getRotation()));
             },
             drive,
             shooter)
-
-        // Reset PID controller when command starts
-        .beforeStarting(() -> angleController.reset(drive.getRotation().getRadians()));
+        // Reset PID when command initializes to prevent "kick"
+        .beforeStarting(() -> angleController.reset());
   }
 }

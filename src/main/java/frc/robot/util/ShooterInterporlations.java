@@ -75,8 +75,14 @@ public class ShooterInterporlations {
   }
 
   static {
-    shooterGoalVelocityMap.put(1.5, 10.0);
-    shooterGoalVelocityMap.put(3.0, 14.0);
-    shooterGoalVelocityMap.put(6.0, 22.0);
+    shooterGoalVelocityMap.put(1.5, 7.);
+
+    shooterGoalVelocityMap.put(2.5, 8.);
+    shooterGoalVelocityMap.put(3.5, 8.5);
+
+    shooterGoalVelocityMap.put(4.5, 12.5);
+    shooterGoalVelocityMap.put(5.5, 14.5);
+
+    shooterGoalVelocityMap.put(7.0, 17.0);
   }
 }
