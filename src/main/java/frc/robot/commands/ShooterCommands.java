@@ -32,7 +32,7 @@ public class ShooterCommands {
     @Override
     public void execute() {
       ShooterControls controls =
-          ShooterCalculations.getOptimizedShooterControls(
+          ShooterCalculations.getNumericalSolvedShooterControls(
               drive.getPose(),
               drive.getChassisSpeeds(),
               shooter.getPivotAngle(),

@@ -1,5 +1,6 @@
 package frc.robot.subsystems.shooter;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Radians;
@@ -39,8 +40,8 @@ public class Shooter extends SubsystemBase {
   private final FlywheelIOInputsAutoLogged flywheelInputs = new FlywheelIOInputsAutoLogged();
   private final PivotIOInputsAutoLogged pivotInputs = new PivotIOInputsAutoLogged();
 
-  private AngularVelocity flywheelSetpoint = RadiansPerSecond.of(0);
-  private Angle pivotSetpoint = Radians.of(0);
+  private AngularVelocity flywheelSetpoint = RadiansPerSecond.of(0 + .1e-6);
+  private Angle pivotSetpoint = Radians.of(0 + .1e-6);
 
   private final SysIdRoutine sysId;
 
@@ -155,9 +156,11 @@ public class Shooter extends SubsystemBase {
   }
 
   public LinearVelocity getShooterLinearVelocity() {
+    // return MetersPerSecond.of(
+    // flywheelInputs.primaryVelocity.in(RadiansPerSecond)
+    // * ShooterConstants.flywheelRadius.in(Meters));
     return MetersPerSecond.of(
-        flywheelInputs.primaryVelocity.in(RadiansPerSecond)
-            * ShooterConstants.flywheelRadius.in(Meters));
+        flywheelSetpoint.in(RadiansPerSecond) * ShooterConstants.flywheelRadius.in(Meters));
   }
 
   private void runCharacterization(double output) {
@@ -186,19 +189,23 @@ public class Shooter extends SubsystemBase {
   }
 
   public Angle getPivotAngle() {
-    return pivotInputs.pivotPrimaryPosition;
+    // return pivotInputs.pivotPrimaryPosition;
+    return pivotSetpoint;
   }
 
   public AngularVelocity getFlywheelVelocity() {
-    return flywheelInputs.primaryVelocity;
+    // return flywheelInputs.primaryVelocity;
+
+    return flywheelSetpoint;
   }
 
   public void setShooterControls(ShooterControls controls) {
     flywheelSetpoint = controls.shooterVelocity();
     pivotSetpoint = controls.shooterPitch();
 
-    Logger.recordOutput("Shooter/Velocity Setpoint", flywheelSetpoint);
-    Logger.recordOutput("Shooter/Pitch Setpoint", pivotSetpoint);
+    Logger.recordOutput(
+        "Shooter/Velocity Setpoint Rotations Per Sec", flywheelSetpoint.in(RotationsPerSecond));
+    Logger.recordOutput("Shooter/Pitch Setpoint Deg", pivotSetpoint.in(Degrees));
 
     pivot.setPosition(pivotSetpoint);
     flywheel.setVelocity(flywheelSetpoint);

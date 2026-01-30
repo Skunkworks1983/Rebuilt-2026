@@ -5,6 +5,8 @@ import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.KilogramSquareMeters;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -30,11 +32,9 @@ public class ShooterConstants {
   public static final double flywheelKV = 0.0;
   public static final double flywheelKA = 0.0;
 
-  public static final double flywheelMaxVelocityRotationsPerSec = 5000.0;
+  public static final double flywheelMaxVelocityRotationsPerSec = 85.6667;
   public static final double flywheelMaxAccelerationRotationsPerSec = 200.0;
   public static final double flywheelMaxJerkRotationsPerSecCubed = 100;
-
-  public static final LinearVelocity flywheelMaxLinearVelocity = MetersPerSecond.of(100);
 
   public static final double flywheelGearRatio = 1.;
 
@@ -62,7 +62,11 @@ public class ShooterConstants {
           new Translation3d(Meters.of(0), Meters.of(0), Meters.of(0.5)),
           new Rotation3d(Degrees.of(0), Degrees.of(-40), Degrees.of(0)));
 
-  public static final Distance flywheelRadius = Inches.of(3);
+  public static final Distance flywheelRadius = Inches.of(4);
 
   public static final Slot0Configs simFlywheelConfigs = new Slot0Configs().withKP(30);
+
+  public static final LinearVelocity flywheelMaxLinearVelocity =
+      MetersPerSecond.of(
+          RotationsPerSecond.of(85.66667).in(RadiansPerSecond) * flywheelRadius.in(Meters));
 }

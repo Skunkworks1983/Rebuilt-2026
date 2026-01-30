@@ -19,9 +19,10 @@ public class ShooterInterporlations {
 
   /**
    * Interpolation for shooting at goal (meaning landing z != 0) Key: Distance from target in meters
-   * Value: Shooter velocity rotations per second
+   * Value: Shooter velocity m/s
    */
-  private final InterpolatingDoubleTreeMap shooterGoalVelocityMap;
+  public static final InterpolatingDoubleTreeMap shooterGoalVelocityMap =
+      new InterpolatingDoubleTreeMap();
 
   /**
    * Interpolation for shooting at goal (meaning landing z == 0) Key: Distance from target in meters
@@ -43,10 +44,6 @@ public class ShooterInterporlations {
     shooterGoalAngleMap.put(3., 60.);
     shooterGoalAngleMap.put(4., 50.);
     shooterGoalAngleMap.put(5., 45.);
-
-    shooterGoalVelocityMap = new InterpolatingDoubleTreeMap();
-    shooterGoalVelocityMap.put(0., 500.);
-    shooterGoalVelocityMap.put(10., 5000.);
 
     shooterGroundAngleMap = new InterpolatingDoubleTreeMap();
     shooterGroundAngleMap.put(0., 90.);
@@ -75,5 +72,11 @@ public class ShooterInterporlations {
 
   public AngularVelocity getShooterVelocityTransfer(Distance distance) {
     return RotationsPerSecond.of(shooterGroundVelocityMap.get(distance.in(Meters)));
+  }
+
+  static {
+    shooterGoalVelocityMap.put(1.5, 10.0);
+    shooterGoalVelocityMap.put(3.0, 14.0);
+    shooterGoalVelocityMap.put(6.0, 22.0);
   }
 }

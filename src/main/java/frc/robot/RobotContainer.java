@@ -240,12 +240,13 @@ public class RobotContainer {
               () -> rightJoystick.getX())); // Confirm if negitive or not
 
       shootGoalButton = new JoystickButton(buttonBoard, 15);
+      Trigger shootButton = new JoystickButton(rightJoystick, 1);
 
       shootGoalButton.whileTrue(
           DriveCommands.joystickDriveAimedHub(
               drive, shooter, () -> -leftJoystick.getY(), () -> -leftJoystick.getX()));
+      shootButton.onTrue(new InstantCommand(this::launchSimFuel));
     } else {
-
       drive.setDefaultCommand(
           DriveCommands.joystickDrive(
               drive,
@@ -253,6 +254,13 @@ public class RobotContainer {
               () -> -xboxController.getLeftX(),
               () -> -xboxController.getRightX()));
       shootGoalButton = new JoystickButton(xboxController, XboxController.Button.kA.value);
+
+      Trigger shootButton = new JoystickButton(xboxController, XboxController.Button.kB.value);
+
+      shootGoalButton.whileTrue(
+          DriveCommands.joystickDriveAimedHub(
+              drive, shooter, () -> -xboxController.getLeftY(), () -> -xboxController.getLeftX()));
+      shootButton.onTrue(new InstantCommand(this::launchSimFuel));
     }
     Logger.recordOutput("Control Scheme", Constants.controlScheme);
 
@@ -347,8 +355,9 @@ public class RobotContainer {
     SimulatedArena.getInstance()
         .addGamePieceProjectile(
             SimProjectile.getProjectile(
-                simulation.getSimulatedDriveTrainPose().getTranslation(),
+                simulation.getSimulatedDriveTrainPose(),
                 simulation.getDriveTrainSimulatedChassisSpeedsFieldRelative(),
-                shooter.getShooterLinearVelocity()));
+                shooter.getShooterLinearVelocity(),
+                shooter.getPivotAngle()));
   }
 }

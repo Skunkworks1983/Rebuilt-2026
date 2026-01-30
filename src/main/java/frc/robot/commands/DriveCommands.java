@@ -7,6 +7,9 @@
 
 package frc.robot.commands;
 
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -17,6 +20,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
@@ -36,8 +41,8 @@ import org.littletonrobotics.junction.Logger;
 
 public class DriveCommands {
   private static final double DEADBAND = 0.1;
-  private static final double ANGLE_KP = 7.0;
-  private static final double ANGLE_KD = 0.5;
+  private static final double ANGLE_KP = 4.5;
+  private static final double ANGLE_KD = 0;
   private static final double ANGLE_MAX_VELOCITY = 8.0;
   private static final double ANGLE_MAX_ACCELERATION = 20.0;
   private static final double FF_START_DELAY = 2.0; // Secs
@@ -320,12 +325,20 @@ public class DriveCommands {
     // Construct command
     return Commands.run(
             () -> {
+              Angle prevPivotAngle = shooter.getPivotAngle();
+              AngularVelocity prevShooterVelocity = shooter.getFlywheelVelocity();
+
+              if (prevPivotAngle.magnitude() == 0) {
+                prevPivotAngle = Degrees.of(45);
+              }
+
+              if (prevShooterVelocity.magnitude() == 0) {
+                prevShooterVelocity = RotationsPerSecond.of(19);
+              }
+
               ShooterControls controls =
-                  ShooterCalculations.getOptimizedShooterControls(
-                      drive.getPose(),
-                      drive.getChassisSpeeds(),
-                      shooter.getPivotAngle(),
-                      shooter.getFlywheelVelocity());
+                  ShooterCalculations.getShooterControlsLookupHybrid(
+                      drive.getPose(), drive.getChassisSpeeds());
 
               shooter.setShooterControls(controls);
 

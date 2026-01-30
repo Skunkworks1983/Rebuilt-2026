@@ -1,10 +1,10 @@
 package frc.robot.util.sim;
 
-import static edu.wpi.first.units.Units.Degrees;
-
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.LinearVelocity;
 import frc.robot.subsystems.shooter.ShooterConstants;
 import org.ironmaple.simulation.gamepieces.GamePieceProjectile;
@@ -13,16 +13,21 @@ import org.littletonrobotics.junction.Logger;
 
 public class SimProjectile {
   public static GamePieceProjectile getProjectile(
-      Translation2d drivePose, ChassisSpeeds fieldRelativeSpeeds, LinearVelocity launchVelocity) {
+      Pose2d drivePoseFieldRelative,
+      ChassisSpeeds fieldRelativeSpeeds,
+      LinearVelocity launchVelocity,
+      Angle shooterAngle) {
     Logger.recordOutput("Shooter/SimLinearLaunchVelocity", launchVelocity);
+    Logger.recordOutput("Shooter/SimFieldRelativeRobot", drivePoseFieldRelative);
+
     return new RebuiltFuelOnFly(
-            drivePose,
+            drivePoseFieldRelative.getTranslation(),
             new Translation2d(),
             fieldRelativeSpeeds,
-            drivePose.getAngle(),
+            drivePoseFieldRelative.getRotation(),
             ShooterConstants.shooterInitalPosition.getMeasureZ(),
             launchVelocity,
-            Degrees.of(42))
+            shooterAngle)
         .withProjectileTrajectoryDisplayCallBack(
             // Callback for when the note will eventually hit the target (no target configured)
             (pose3ds) ->
