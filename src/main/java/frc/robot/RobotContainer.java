@@ -16,8 +16,11 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.SimpleShoot;
 import frc.robot.commands.TestPathCommands;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -26,11 +29,22 @@ import frc.robot.subsystems.drive.GyroIOSim;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.drive.ModuleIOTalonFXSim;
+import frc.robot.subsystems.simpleShooter.FlywheelIO;
+import frc.robot.subsystems.simpleShooter.FlywheelIOSim;
+import frc.robot.subsystems.simpleShooter.FlywheelIOTalonFX;
+import frc.robot.subsystems.simpleShooter.Shooter;
+import frc.robot.subsystems.simpleShooter.ShooterConstants;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
+import frc.robot.util.sim.SimProjectile;
+
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
@@ -46,6 +60,7 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final Vision vision;
+  private final Shooter shooter;
 
   // Controller
   private final Joystick leftJoystick;
@@ -95,7 +110,13 @@ public class RobotContainer {
             new Vision(
                 drive, new VisionIOLimelight(VisionConstants.camera0Name, drive::getRotation));
 
-        // This is a solution to the vision-drive cross dependency issue that hurts my eys, but it
+        shooter =
+            new Shooter(
+                new FlywheelIOTalonFX(ShooterConstants.forwardFlywheelId),
+                new FlywheelIOTalonFX(ShooterConstants.backFlywheelId));
+
+        // This is a solution to the vision-drive cross dependency issue that hurts my
+        // eys, but it
         // does work
         drive.setResetVisionIMUCallback((pose) -> vision.resetCameraIMU(pose));
 
@@ -149,6 +170,11 @@ public class RobotContainer {
                     VisionConstants.camera1Name,
                     VisionConstants.robotToCamera1,
                     simulation::getSimulatedDriveTrainPose));
+        shooter =
+            new Shooter(
+                new FlywheelIOSim(ShooterConstants.forwardFlywheelId),
+                new FlywheelIOSim(ShooterConstants.backFlywheelId));
+
         break;
 
       default:
@@ -164,6 +190,9 @@ public class RobotContainer {
                 (pose) -> {});
 
         vision = new Vision(drive, new VisionIO() {}, new VisionIO() {});
+
+        shooter = new Shooter(new FlywheelIO() {}, new FlywheelIO() {});
+
         break;
     }
 
@@ -206,6 +235,14 @@ public class RobotContainer {
               () -> -leftJoystick.getY(), // -X (used to be)
               () -> -leftJoystick.getX(), // -Y (used to be)
               () -> rightJoystick.getX())); // Confirm if negitive or not
+
+      Trigger shoot = new JoystickButton(leftJoystick, 1);
+      Trigger alignShot = new JoystickButton(rightJoystick, 1);
+
+      alignShot.whileTrue(
+          DriveCommands.joystickDriveAimedHub(
+              drive, shooter, () -> -leftJoystick.getY(), () -> -leftJoystick.getX()));
+      shoot.onTrue(SimpleShoot.simpleShoot(shooter));
     } else {
 
       drive.setDefaultCommand(
@@ -299,5 +336,9 @@ public class RobotContainer {
     } else {
       simulation.setSimulationWorldPose(new Pose2d(10, 1.5, new Rotation2d()));
     }
+  }
+
+  public void shootSimProjectile(){
+    SimProjectile.getProjectile(simulation.getSimulatedDriveTrainPose(), simulation.getDriveTrainSimulatedChassisSpeedsFieldRelative(), MetersPerSecond.of(shooter.getForwardFlywheelVelocity().in(RadiansPerSecond) * ShooterConstants.flywheelRadius.in(Meters)), ShooterConstants.shooterPitch);    
   }
 }
