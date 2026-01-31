@@ -39,6 +39,12 @@ import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
+import frc.robot.util.sim.SimProjectile;
+
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
@@ -330,5 +336,9 @@ public class RobotContainer {
     } else {
       simulation.setSimulationWorldPose(new Pose2d(10, 1.5, new Rotation2d()));
     }
+  }
+
+  public void shootSimProjectile(){
+    SimProjectile.getProjectile(simulation.getSimulatedDriveTrainPose(), simulation.getDriveTrainSimulatedChassisSpeedsFieldRelative(), MetersPerSecond.of(shooter.getForwardFlywheelVelocity().in(RadiansPerSecond) * ShooterConstants.flywheelRadius.in(Meters)), ShooterConstants.shooterPitch);    
   }
 }
