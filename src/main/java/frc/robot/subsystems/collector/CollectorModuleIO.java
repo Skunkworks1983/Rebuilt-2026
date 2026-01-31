@@ -127,13 +127,6 @@ public interface CollectorModuleIO {
   }
 
   /**
-   * sets the intake for sim
-   *
-   * @param
-   */
-  public default void setIntake(boolean runIntake) {}
-
-  /**
    * detects whether fuel is inside collector
    *
    * @return

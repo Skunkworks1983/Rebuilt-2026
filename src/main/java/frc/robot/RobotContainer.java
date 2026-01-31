@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.TestPathCommands;
 import frc.robot.subsystems.collector.Collector;
+import frc.robot.subsystems.collector.CollectorModuleSimIO;
 import frc.robot.subsystems.collector.CollectorModuleTalonIO;
 import frc.robot.subsystems.collector.collectorConstants.CollectorTalonLeftConstants;
 import frc.robot.subsystems.collector.collectorConstants.CollectorTalonRightConstants;
@@ -87,7 +88,7 @@ public class RobotContainer {
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
-        // ModuleIOTalonFX is intended for modules with TalonFX drive, TalonFX turn, and
+        // ModuleIOTalonFX is intended for modules  ith TalonFX drive, TalonFX turn, and
         // a CANcoder
         drive =
             new Drive(
@@ -163,7 +164,9 @@ public class RobotContainer {
                     VisionConstants.robotToCamera1,
                     simulation::getSimulatedDriveTrainPose));
 
-        collector = new Collector(null, null);
+        collector =
+            new Collector(
+                new CollectorModuleSimIO(simulation, 0), new CollectorModuleSimIO(simulation, 1));
         break;
 
       default:
@@ -180,7 +183,9 @@ public class RobotContainer {
 
         vision = new Vision(drive, new VisionIO() {}, new VisionIO() {});
 
-        collector = new Collector(null, null);
+        collector =
+            new Collector(
+                new CollectorModuleSimIO(simulation, 0), new CollectorModuleSimIO(simulation, 1));
         break;
     }
 

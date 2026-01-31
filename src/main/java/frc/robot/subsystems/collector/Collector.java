@@ -9,14 +9,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 /** Add your docs here. */
 public class Collector extends SubsystemBase {
 
-  private CollectorModule[] collectors;
+  private CollectorModule[] collectors = new CollectorModule[2];
   private int downCollector;
 
   public Collector(CollectorModuleIO leftIO, CollectorModuleIO rightIO) {
     collectors[0] = new CollectorModule(leftIO);
     collectors[1] = new CollectorModule(rightIO);
 
-    downCollector = -1; // 0 == left collector mod, 1 == right collector mod
+    downCollector = -1; // 0 == left collector, 1 == right collector
   }
 
   public String getDownCollector() {
