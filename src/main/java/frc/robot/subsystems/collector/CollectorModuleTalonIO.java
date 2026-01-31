@@ -4,9 +4,12 @@
 
 package frc.robot.subsystems.collector;
 
+import static edu.wpi.first.units.Units.Degree;
+import static edu.wpi.first.units.Units.Degrees;
 import static frc.robot.util.PhoenixUtil.tryUntilOk;
 
 import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.Orchestra;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
@@ -25,12 +28,14 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
+import frc.robot.subsystems.collector.collectorConstants.CollectorConstants.side;
+import frc.robot.subsystems.collector.collectorConstants.CollectorPositionConstants;
 import frc.robot.subsystems.drive.PhoenixOdometryThread;
 import java.util.Queue;
 
 /**
- * This CollectorIO pretains to the back collector, it has the functions of raising lowering, and of
- * course collecting.
+ * This CollectorIO pretains to a talonFX collector, it has the functions of raising lowering, and
+ * of course collecting.
  *
  * @author Liam B
  */
@@ -40,11 +45,15 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
   private final TalonFX intakeMotorLower;
   private final TalonFX intakeMotorUpper;
 
+  // 🤫
+  private Orchestra sound;
+
   // Constants
   private final CollectorConstants constants;
 
   // Helper variables
   private boolean isDown;
+  private side side;
 
   // Voltage control requests
   private final VoltageOut voltageRequest = new VoltageOut(0);
@@ -96,10 +105,20 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     // Helper variables
     isDown = false;
 
+    // Collector side
+    side = constants.getSide();
+
+
     // Instantiates all motors and hardware objects
     turnMotor = new TalonFX(constants.getTurnMotorID());
     intakeMotorLower = new TalonFX(constants.getIntakeMotorLowerID());
     intakeMotorUpper = new TalonFX(constants.getIntakeMotorUpperID());
+
+    // 👀👀
+    sound = new Orchestra();
+    sound.addInstrument(turnMotor);
+    sound.addInstrument(intakeMotorLower);
+    sound.addInstrument(intakeMotorUpper);
 
     // Config for turnMotor
     var turnConfig = new TalonFXConfiguration();
@@ -219,7 +238,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
   /**
    * Gets the position of the collector
    *
-   * @return
+   * @return -WPILib Angle
    */
   public Angle getPosition() {
     return turnMotor.getPosition().getValue();
@@ -228,7 +247,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
   /**
    * Gets the velocity of the collectors intake upper motor
    *
-   * @return
+   * @return -Angular Velocity
    */
   public AngularVelocity getVelocityOfIntakeLower() {
     return intakeMotorLower.getVelocity().getValue();
@@ -237,7 +256,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
   /**
    * Gets the velocity of the collectors intake lower motor
    *
-   * @return
+   * @return -Angular Velocity
    */
   public AngularVelocity getVelocityOfIntakeUpper() {
     return intakeMotorUpper.getVelocity().getValue();
@@ -246,7 +265,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
   /**
    * Gets the velocity of the turn motor
    *
-   * @return
+   * @return -Angular Velocity
    */
   public AngularVelocity getVelocityOfTurn() {
     return turnMotor.getVelocity().getValue();
@@ -255,7 +274,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
   /**
    * Gets the turn motors gear ratio
    *
-   * @return
+   * @return -Turn motors gear ratio
    */
   public double getTurnGearRatio() {
     return constants.getTurnMotorGearRatio();
@@ -264,41 +283,74 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
   /**
    * Sets the velocity of our intake collector motors
    *
-   * @param
+   * @param velocity -Angular Velocity
    */
   public void setCollectorVelocity(AngularVelocity velocity) {}
 
   /**
    * Sets the collectors position
    *
-   * @param
+   * @param angle -WPILib Angle
    */
   public void setCollectorPosition(Angle angle) {
-    turnMotor.setPosition(angle);
+    turnMotor.setControl(positionVoltageRequest.withPosition(angle).withSlot(0));
   }
 
   /**
    * Sets the collectors turn motor velocity
    *
-   * @param
+   * @param velocity -Angular Velocity
    */
   public void setCollectorTurnMotorVelocity(AngularVelocity velocity) {
     turnMotor.setControl(velocityVoltageRequest.withVelocity(velocity));
   }
 
   /**
-   * sets the collector isDown. This is to help ensure that we only have one collector down at a
-   * time
-   */
-  public void setIsCollectorDown(boolean downed) {
-    isDown = downed;
-  }
-
-  /**
-   * Checks to see if the collector is down This is to help ensure that we only have one collector
-   * down at a time
+   * Checks to see if the collector is down
+   *
+   * <ul>
+   *   <li>This is to help ensure that we only have one collectordown at a time
+   * </ul>
    */
   public boolean isCollectorDown() {
-    return isDown;
+    switch (side) {
+        case LEFT:
+            if(getPosition().in(Degrees) <= CollectorPositionConstants.leftCollectorDownPos.in(Degrees)) {
+                return true;
+            } else {
+                return false;
+            }
+    
+        case RIGHT:
+            if(getPosition().in(Degrees) <= CollectorPositionConstants.rightCollectorDownPos.in(Degrees)) {
+                return true;
+            } else {
+                return false;
+            }
+        default:
+            return false;
+    }
+  }
+
+  // Sound feedback 😈
+  public void playSound(String file) {
+    sound.loadMusic(file);
+    sound.play();
+  }
+
+  // Stop sound feedback
+  public void stopSound() {
+    if (sound.isPlaying()) {
+      sound.stop();
+    }
+  }
+
+  // is sound playing?
+  public boolean isSoundPlaying() {
+    if (sound.isPlaying()) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

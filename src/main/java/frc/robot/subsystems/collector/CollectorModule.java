@@ -9,7 +9,11 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
- * This is the collector subsystem, uses IO's to switch between front and back
+ * This is the collector module subsystem
+ *
+ * <ul>
+ *   <li>Uses IO's to switch between left and right<\li>
+ *       <ul>
  *
  * @author Liam B
  */
@@ -18,6 +22,12 @@ public class CollectorModule extends SubsystemBase {
   private final CollectorIOInputsAutoLogged inputs = new CollectorIOInputsAutoLogged();
 
   /**
+   * This is the collector module subsystem
+   *
+   * <ul>
+   *   <li>Uses IO's to switch between left and right
+   * </ul>
+   *
    * @param collectorIO
    */
   public CollectorModule(CollectorModuleIO collectorIO) {
@@ -32,7 +42,7 @@ public class CollectorModule extends SubsystemBase {
   /**
    * Gets the position of the collector
    *
-   * @return
+   * @return -WPILib Angle
    */
   public Angle getPosition() {
     return collectorIO.getPosition();
@@ -41,7 +51,7 @@ public class CollectorModule extends SubsystemBase {
   /**
    * Gets the velocity of the collectors intake upper motor
    *
-   * @return
+   * @return -Angular Velocity
    */
   public AngularVelocity getVelocityOfIntakeLower() {
     return collectorIO.getVelocityOfIntakeLower();
@@ -50,7 +60,7 @@ public class CollectorModule extends SubsystemBase {
   /**
    * Gets the velocity of the collectors intake lower motor
    *
-   * @return
+   * @return -Angular Velocity
    */
   public AngularVelocity getVelocityOfIntakeUpper() {
     return collectorIO.getVelocityOfIntakeUpper();
@@ -59,7 +69,7 @@ public class CollectorModule extends SubsystemBase {
   /**
    * Gets the velocity of the turn motor
    *
-   * @return
+   * @return -Angular Velocity
    */
   public AngularVelocity getVelocityOfTurn() {
     return collectorIO.getVelocityOfTurn();
@@ -68,7 +78,7 @@ public class CollectorModule extends SubsystemBase {
   /**
    * Gets the turn motors gear ratio
    *
-   * @return
+   * @return -Turn motors gear ratio
    */
   public double getTurnGearRatio() {
     return collectorIO.getTurnGearRatio();
@@ -77,7 +87,7 @@ public class CollectorModule extends SubsystemBase {
   /**
    * Sets the velocity of our collector motors
    *
-   * @param
+   * @param velocity -Angular Velocity
    */
   public void setCollectorVelocity(AngularVelocity velocity) {
     collectorIO.setCollectorVelocity(velocity);
@@ -86,7 +96,7 @@ public class CollectorModule extends SubsystemBase {
   /**
    * Puts the collector into a down position
    *
-   * @param
+   * @param angle WPILib angle
    */
   public void setCollectorPos(Angle angle) {
     collectorIO.setCollectorPos(angle);
@@ -95,25 +105,35 @@ public class CollectorModule extends SubsystemBase {
   /**
    * Sets the collectors turn motor velocity
    *
-   * @param
+   * @param velocity -Angular Velocity
    */
   public void setCollectorTurnMotorVelocity(AngularVelocity velocity) {
     collectorIO.setCollectorTurnMotorVelocity(velocity);
   }
 
   /**
-   * sets the collector isDown. This is to help ensure that we only have one collector down at a
-   * time
-   */
-  public void setIsCollectorDown(boolean downed) {
-    collectorIO.setIsCollectorDown(downed);
-  }
-
-  /**
-   * Checks to see if the collector is down This is to help ensure that we only have one collector
-   * down at a time
+   * Checks to see if the collector is down
+   *
+   * <ul>
+   *   <li>This is to help ensure that we only have one collectordown at a time
+   * </ul>
    */
   public boolean isCollectorDown() {
     return collectorIO.isCollectorDown();
+  }
+
+  // Sound feedback 😈
+  public void playSound(String file) {
+    collectorIO.stopSound();
+  }
+
+  // Stop sound feedback
+  public void stopSound() {
+    collectorIO.stopSound();
+  }
+
+  // is sound playing?
+  public boolean isSoundPlaying() {
+    return collectorIO.isSoundPlaying();
   }
 }

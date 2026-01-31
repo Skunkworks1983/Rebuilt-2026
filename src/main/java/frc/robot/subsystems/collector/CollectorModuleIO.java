@@ -10,7 +10,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import org.littletonrobotics.junction.AutoLog;
 
 /**
- * Main CollectorIO, Implemented by both back and front collectors.
+ * Main CollectorModuleIO, Implemented by both left and righht collectors.
  *
  * @author Liam B
  */
@@ -49,7 +49,7 @@ public interface CollectorModuleIO {
   /**
    * Gets the position of the collector
    *
-   * @return
+   * @return -WPILib Angle
    */
   public default Angle getPosition() {
     return Angle.ofBaseUnits(0, null);
@@ -58,7 +58,7 @@ public interface CollectorModuleIO {
   /**
    * Gets the velocity of the collectors intake upper motor
    *
-   * @return
+   * @return -Angular Velocity
    */
   public default AngularVelocity getVelocityOfIntakeLower() {
     return AngularVelocity.ofBaseUnits(0, null);
@@ -67,7 +67,7 @@ public interface CollectorModuleIO {
   /**
    * Gets the velocity of the collectors intake lower motor
    *
-   * @return
+   * @return -Angular Velocity
    */
   public default AngularVelocity getVelocityOfIntakeUpper() {
     return AngularVelocity.ofBaseUnits(0, null);
@@ -76,7 +76,7 @@ public interface CollectorModuleIO {
   /**
    * Gets the velocity of the turn motor
    *
-   * @return
+   * @return -Angular Velocity
    */
   public default AngularVelocity getVelocityOfTurn() {
     return AngularVelocity.ofBaseUnits(0, null);
@@ -85,7 +85,7 @@ public interface CollectorModuleIO {
   /**
    * Gets the turn motors gear ratio
    *
-   * @return
+   * @return -Turn motors gear ratio
    */
   public default double getTurnGearRatio() {
     return 0.0;
@@ -94,44 +94,43 @@ public interface CollectorModuleIO {
   /**
    * Sets the velocity of our intake collector motors
    *
-   * @param
+   * @param velocity -Angular Velocity
    */
   public default void setCollectorVelocity(AngularVelocity velocity) {}
 
   /**
    * Sets the collectors position
    *
-   * @param
+   * @param angle WPILib angle
    */
   public default void setCollectorPos(Angle angle) {}
 
   /**
    * Sets the collectors turn motor velocity
    *
-   * @param
+   * @param velocity -Angular Velocity
    */
   public default void setCollectorTurnMotorVelocity(AngularVelocity velocity) {}
 
   /**
-   * sets the collector isDown. This is to help ensure that we only have one collector down at a
-   * time
-   */
-  public default void setIsCollectorDown(boolean downed) {}
-
-  /**
-   * Checks to see if the collector is down This is to help ensure that we only have one collector
-   * down at a time
+   * Checks to see if the collector is down
+   *
+   * <ul>
+   *   <li>This is to help ensure that we only have one collectordown at a time
+   * </ul>
    */
   public default boolean isCollectorDown() {
     return false;
   }
 
-  /**
-   * detects whether fuel is inside collector
-   *
-   * @return
-   */
-  public default boolean isFuelInsideCollector() {
+  // Sound feedback 😈
+  public default void playSound(String file) {}
+
+  // Stop sound feedback
+  public default void stopSound() {}
+
+  // is sound playing?
+  public default boolean isSoundPlaying() {
     return false;
   }
 }

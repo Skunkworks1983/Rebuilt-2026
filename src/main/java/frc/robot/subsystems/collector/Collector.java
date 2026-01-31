@@ -4,55 +4,113 @@
 
 package frc.robot.subsystems.collector;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import static edu.wpi.first.units.Units.Degrees;
 
-/** Add your docs here. */
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
+import frc.robot.subsystems.collector.collectorConstants.CollectorPositionConstants;
+
+/**
+ * This is the collector Subsystem
+ *
+ * <ul>
+ *   <li>It takes in two collector module IO's to assign to two collector modules
+ * </ul>
+ */
 public class Collector extends SubsystemBase {
 
-  private CollectorModule[] collectors = new CollectorModule[2];
-  private int downCollector;
+  private CollectorModule[] collectors;
+  public static enum State {
+    MANUAL, AUTOMATIC, ALWAYSUP;
+  }
 
+  State state = State.ALWAYSUP;
+
+  /**
+   * Collector subsystem.
+   *
+   * <ul>
+   *   <li>Takes in two collector module IOs and assigns them to the collector modules.
+   * </ul>
+   *
+   * <p><img src="https://media.giphy.com/media/jVFgWDtkY5v2M/giphy.gif" alt="Our Collector 💕">
+   *
+   * @param leftIO left collector
+   * @param rightIO right collector
+   */
   public Collector(CollectorModuleIO leftIO, CollectorModuleIO rightIO) {
     collectors[0] = new CollectorModule(leftIO);
     collectors[1] = new CollectorModule(rightIO);
-
-    downCollector = -1; // 0 == left collector, 1 == right collector
   }
 
+  /** @return -The current down collector */
   public String getDownCollector() {
-
-    switch (downCollector) {
-      case 0:
+    if(getLeftCollector().isCollectorDown() && getRightCollector().isCollectorDown()){
+        return "BOTH";
+    } else if(getLeftCollector().isCollectorDown()) {
         return "LEFT";
-
-      case 1:
+    } else if (getRightCollector().isCollectorDown()) {
         return "RIGHT";
-
-      default:
-        return null;
+    } else {
+        return "NEITHER";
     }
   }
 
-  public void setDownCollector(String downed) {
-    switch (downed) {
-      case "LEFT":
-        downCollector = 0;
-        break;
-
-      case "RIGHT":
-        downCollector = 1;
-        break;
-
-      default:
-        break;
+  /** @return -The current up collector */
+  public String getUpCollector() {
+    if (!getLeftCollector().isCollectorDown() && !getLeftCollector().isCollectorDown()){
+        return "BOTH";
+    } else if(!getLeftCollector().isCollectorDown()) {
+        return "LEFT";
+    } else if (!getRightCollector().isCollectorDown()) {
+        return "RIGHT";
+    } else {
+        return "NEITHER";
     }
   }
 
+  /**
+   * @return -Left collector Module
+   */
   public CollectorModule getLeftCollector() {
     return collectors[0];
   }
 
+  /**
+   * @return -Right collector module
+   */
   public CollectorModule getRightCollector() {
     return collectors[1];
+  }
+
+  // Sound feedback 😈
+  public void playSound(String file) {
+    collectors[0].playSound(file);
+    collectors[1].playSound(file);
+  }
+
+  // Stop sound feedback
+  public void stopSound() {
+    collectors[0].stopSound();
+    collectors[1].stopSound();
+  }
+
+  // is sound playing?
+  public boolean isSoundPlaying() {
+    if (collectors[0].isSoundPlaying() || collectors[0].isSoundPlaying()) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  // Changes State
+  public void changeState(State desiredState) {
+    state = desiredState;
+  }
+
+  // Gets State
+  public State getState() {
+    return state;
   }
 }

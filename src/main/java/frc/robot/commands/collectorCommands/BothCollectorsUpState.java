@@ -4,41 +4,38 @@
 
 package frc.robot.commands.collectorCommands;
 
-import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.collector.Collector;
-import frc.robot.subsystems.collector.CollectorModule;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class CollectorManual extends Command {
-  /** Creates a new CollectorManual. */
-  public CollectorManual(Joystick j, Collector c) {
+public class BothCollectorsUpState extends Command {
+  private Collector collector;
+  private Angle leftUpAngle;
+  private Angle rightUpAngle;
+  /** Creates a new BothCollectorsUpState. */
+  public BothCollectorsUpState(Collector collector, Angle leftUpAngle, Angle rightUpAngle) {
     // Use addRequirements() here to declare subsystem dependencies.
-    joystick = j;
-    collector = c;
-  }
+    this.collector = collector;
+    addRequirements(collector);
 
-  Collector collector;
-  Joystick joystick;
-  CollectorModule lCollector;
-  CollectorModule rCollector;
+    this.leftUpAngle = leftUpAngle;
+    this.rightUpAngle = rightUpAngle;
+  }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    lCollector = collector.getLeftCollector();
-    rCollector = collector.getRightCollector();
-
-    rCollector.setCollectorVelocity(AngularVelocity.ofBaseUnits(0, null));
-    lCollector.setCollectorVelocity(AngularVelocity.ofBaseUnits(0, null));
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    rCollector.setCollectorVelocity(AngularVelocity.ofBaseUnits(joystick.getY(), null));
-    lCollector.setCollectorVelocity(AngularVelocity.ofBaseUnits(joystick.getX(), null));
+    if(collector.getLeftCollector().isCollectorDown()) {
+      collector.getLeftCollector().setCollectorPos(leftUpAngle);
+    }
+    if(collector.getRightCollector().isCollectorDown()) {
+      collector.getRightCollector().setCollectorPos(rightUpAngle);
+    }
   }
 
   // Called once the command ends or is interrupted.
@@ -48,6 +45,10 @@ public class CollectorManual extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    if(!collector.getLeftCollector().isCollectorDown() && !collector.getRightCollector().isCollectorDown()){
+      return true;
+    } else {
+      return false;
+    }
   }
 }
