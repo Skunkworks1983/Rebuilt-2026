@@ -26,8 +26,8 @@ import frc.robot.commands.collectorCommands.HoldPositionCommand;
 import frc.robot.commands.collectorCommands.LeftCollectorDownState;
 import frc.robot.commands.collectorCommands.RightCollectorDownState;
 import frc.robot.subsystems.collector.Collector;
-import frc.robot.subsystems.collector.CollectorModuleTalonIO;
 import frc.robot.subsystems.collector.Collector.State;
+import frc.robot.subsystems.collector.CollectorModuleTalonIO;
 import frc.robot.subsystems.collector.collectorConstants.CollectorTalonLeftConstants;
 import frc.robot.subsystems.collector.collectorConstants.CollectorTalonRightConstants;
 import frc.robot.subsystems.drive.Drive;
@@ -42,9 +42,6 @@ import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
-
-import java.lang.invoke.SwitchPoint;
-
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
@@ -248,7 +245,6 @@ public class RobotContainer {
 
     collector.setDefaultCommand(new HoldPositionCommand(collector));
 
-
     // State Butoons
     JoystickButton manualMode = new JoystickButton(buttonPanel, 0);
     JoystickButton autoMode = new JoystickButton(buttonPanel, 0);
@@ -256,9 +252,10 @@ public class RobotContainer {
     // Switch States
     manualMode.onTrue(Commands.runOnce(() -> collector.changeState(State.MANUAL), collector));
     autoMode.onTrue(Commands.runOnce(() -> collector.changeState(State.AUTOMATIC), collector));
-    manualMode.negate().and(autoMode.negate())
-      .onTrue(Commands.runOnce(() -> collector.changeState(State.ALWAYSUP), collector));
-
+    manualMode
+        .negate()
+        .and(autoMode.negate())
+        .onTrue(Commands.runOnce(() -> collector.changeState(State.ALWAYSUP), collector));
 
     // Collector State Controll
     switch (collector.getState()) {
@@ -270,21 +267,20 @@ public class RobotContainer {
       case MANUAL:
         // Right Collector Down
         new JoystickButton(buttonPanel, 0)
-          .onTrue(new RightCollectorDownState(collector, null, null));
+            .onTrue(new RightCollectorDownState(collector, null, null));
 
         // Left Collector Down
         new JoystickButton(buttonPanel, 0)
-          .onTrue(new LeftCollectorDownState(collector, null, null));
+            .onTrue(new LeftCollectorDownState(collector, null, null));
 
         // Both Collectors Up
         new JoystickButton(leftJoystick, 0)
-          .onTrue(new BothCollectorsUpState(collector, null, null));
+            .onTrue(new BothCollectorsUpState(collector, null, null));
         break;
 
       case AUTOMATIC:
-
         break;
-    
+
       default:
         break;
     }

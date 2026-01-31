@@ -7,6 +7,8 @@ package frc.robot.subsystems.collector;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import frc.robot.subsystems.collector.collectorConstants.CollectorConstants.side;
+
 import org.littletonrobotics.junction.AutoLog;
 
 /**
@@ -132,5 +134,10 @@ public interface CollectorModuleIO {
   // is sound playing?
   public default boolean isSoundPlaying() {
     return false;
+  }
+
+  // gets side i.e: left
+  public default side getSide() {
+    return null;
   }
 }

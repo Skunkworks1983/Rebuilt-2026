@@ -4,11 +4,7 @@
 
 package frc.robot.subsystems.collector;
 
-import static edu.wpi.first.units.Units.Degrees;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
-import frc.robot.subsystems.collector.collectorConstants.CollectorPositionConstants;
 
 /**
  * This is the collector Subsystem
@@ -20,8 +16,11 @@ import frc.robot.subsystems.collector.collectorConstants.CollectorPositionConsta
 public class Collector extends SubsystemBase {
 
   private CollectorModule[] collectors;
+
   public static enum State {
-    MANUAL, AUTOMATIC, ALWAYSUP;
+    MANUAL,
+    AUTOMATIC,
+    ALWAYSUP;
   }
 
   State state = State.ALWAYSUP;
@@ -43,29 +42,33 @@ public class Collector extends SubsystemBase {
     collectors[1] = new CollectorModule(rightIO);
   }
 
-  /** @return -The current down collector */
+  /**
+   * @return -The current down collector
+   */
   public String getDownCollector() {
-    if(getLeftCollector().isCollectorDown() && getRightCollector().isCollectorDown()){
-        return "BOTH";
-    } else if(getLeftCollector().isCollectorDown()) {
-        return "LEFT";
+    if (getLeftCollector().isCollectorDown() && getRightCollector().isCollectorDown()) {
+      return "BOTH";
+    } else if (getLeftCollector().isCollectorDown()) {
+      return "LEFT";
     } else if (getRightCollector().isCollectorDown()) {
-        return "RIGHT";
+      return "RIGHT";
     } else {
-        return "NEITHER";
+      return "NEITHER";
     }
   }
 
-  /** @return -The current up collector */
+  /**
+   * @return -The current up collector
+   */
   public String getUpCollector() {
-    if (!getLeftCollector().isCollectorDown() && !getLeftCollector().isCollectorDown()){
-        return "BOTH";
-    } else if(!getLeftCollector().isCollectorDown()) {
-        return "LEFT";
+    if (!getLeftCollector().isCollectorDown() && !getLeftCollector().isCollectorDown()) {
+      return "BOTH";
+    } else if (!getLeftCollector().isCollectorDown()) {
+      return "LEFT";
     } else if (!getRightCollector().isCollectorDown()) {
-        return "RIGHT";
+      return "RIGHT";
     } else {
-        return "NEITHER";
+      return "NEITHER";
     }
   }
 
