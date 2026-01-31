@@ -315,15 +315,12 @@ public class DriveCommands {
     return Commands.run(
             () -> {
               ShooterControls controls =
-                  ShooterCalculations.getShooterControlsLookupHybrid(
+                  ShooterCalculations.getApexConstrainedShooterControls(
                       drive.getPose(), drive.getChassisSpeeds(), drive.getAngularVelocity());
               shooter.setShooterControls(controls);
 
               Logger.recordOutput(
                   "Auto Shoot/Drive Yaw Setpoint", controls.driveYaw().getRadians());
-              Logger.recordOutput(
-                  "Auto Shoot/Drive Yaw Feedforward", controls.angularVelocityFeedForward());
-
               double omegaRadiansPerSecond =
                   angleController.calculate(
                       drive.getRotation().getRadians(), controls.driveYaw().getRadians());
@@ -333,11 +330,7 @@ public class DriveCommands {
               boolean isRed = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red;
 
               ChassisSpeeds desiredSpeeds =
-                  getChassisSpeeds(
-                      drive,
-                      xSupplier,
-                      ySupplier,
-                      omegaRadiansPerSecond + controls.angularVelocityFeedForward());
+                  getChassisSpeeds(drive, xSupplier, ySupplier, omegaRadiansPerSecond);
 
               drive.runVelocity(
                   ChassisSpeeds.fromFieldRelativeSpeeds(

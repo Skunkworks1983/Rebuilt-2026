@@ -239,13 +239,14 @@ public class RobotContainer {
               () -> -leftJoystick.getX(), // -Y (used to be)
               () -> rightJoystick.getX())); // Confirm if negitive or not
 
-      shootGoalButton = new JoystickButton(buttonBoard, 15);
+      shootGoalButton = new JoystickButton(leftJoystick, 1);
       Trigger shootButton = new JoystickButton(rightJoystick, 1);
 
       shootGoalButton.whileTrue(
           DriveCommands.joystickDriveAimedHub(
               drive, shooter, () -> -leftJoystick.getY(), () -> -leftJoystick.getX()));
       shootButton.onTrue(new InstantCommand(this::launchSimFuel));
+
     } else {
       drive.setDefaultCommand(
           DriveCommands.joystickDrive(
@@ -254,7 +255,6 @@ public class RobotContainer {
               () -> -xboxController.getLeftX(),
               () -> -xboxController.getRightX()));
       shootGoalButton = new JoystickButton(xboxController, XboxController.Button.kA.value);
-
       Trigger shootButton = new JoystickButton(xboxController, XboxController.Button.kB.value);
 
       shootGoalButton.whileTrue(
