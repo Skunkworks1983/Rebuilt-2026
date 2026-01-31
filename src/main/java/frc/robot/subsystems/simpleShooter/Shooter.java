@@ -24,7 +24,6 @@ import frc.robot.subsystems.shooter.FlywheelIOInputsAutoLogged;
 import frc.robot.subsystems.shooter.PivotIOInputsAutoLogged;
 import frc.robot.util.LoggedTunableNumber;
 import frc.robot.util.ShooterCalculations.ShooterControls;
-import frc.robot.util.ShooterInterporlations;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -106,7 +105,7 @@ public class Shooter extends SubsystemBase {
     Logger.processInputs("Shooter/Pivot", pivotInputs);
 
     flywheelDisconnectedAlert.set(
-        (!flywheelInputs.primaryConnected || !flywheelInputs.followerConnected)
+        (!flywheelInputs.primaryConnected)
             && Constants.currentMode != Constants.Mode.SIM);
 
     if (flywheelKP.hasChanged(hashCode())
