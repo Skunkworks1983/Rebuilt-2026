@@ -19,12 +19,12 @@ import frc.robot.subsystems.collector.collectorConstants.CollectorPositionConsta
  */
 public class Collector extends SubsystemBase {
 
-  private CollectorModule[] collectors;
+  private CollectorModule[] collectors = new CollectorModule[2];
   public static enum State {
     MANUAL, AUTOMATIC, ALWAYSUP;
   }
 
-  State state = State.ALWAYSUP;
+  State state = State.MANUAL; // TODO: switch back to always up
 
   /**
    * Collector subsystem.

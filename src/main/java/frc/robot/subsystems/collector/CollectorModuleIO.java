@@ -133,4 +133,8 @@ public interface CollectorModuleIO {
   public default boolean isSoundPlaying() {
     return false;
   }
+
+  public default int getSide() {
+    return 0;
+  }
 }

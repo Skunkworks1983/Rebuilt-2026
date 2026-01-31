@@ -11,6 +11,8 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import frc.robot.subsystems.collector.collectorConstants.CollectorConstants.side;
+
 import org.ironmaple.simulation.IntakeSimulation;
 import org.ironmaple.simulation.drivesims.AbstractDriveTrainSimulation;
 
@@ -26,8 +28,10 @@ public class CollectorModuleSimIO implements CollectorModuleIO {
   final double minimumCollectorRotationToCollect = 1.4;
   final double minimumCollectorSpeedToCollect = 1;
 
-  public CollectorModuleSimIO(AbstractDriveTrainSimulation driveTrain, int collectorSide) {
+  int c = 0;
 
+  public CollectorModuleSimIO(AbstractDriveTrainSimulation driveTrain, int collectorSide) {
+    c = collectorSide;
     // collectorSide, 0 = left, 1 = right
     if (collectorSide == 0) {
 
@@ -65,7 +69,6 @@ public class CollectorModuleSimIO implements CollectorModuleIO {
    *
    * @return
    */
-  @Override
   public boolean isFuelInsideCollector() {
     return collectorSimulation.getGamePiecesAmount() != 0;
   }
@@ -191,17 +194,9 @@ public class CollectorModuleSimIO implements CollectorModuleIO {
   }
 
   /**
-   * sets the collector isDown. This is to help ensure that we only have one collector down at a
-   * time
-   */
-  @Override
-  public void setIsCollectorDown(boolean downed) {
-    isCollectorSimDown = downed;
-  }
-
-  /**
    * Checks to see if the collector is down This is to help ensure that we only have one collector
    * down at a time
+   *                                                                                                                                                                                                                                                        <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdDFzenczMGJqdHFkcm96dnF0Z2V4OXlwazNocHJlMWJlaW96MWRkMCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/DLXpRiR7xSXT2/giphy.gif" alt="is the collector down 🤷‍♂️🤷‍♂️🥶😰😱">
    */
   @Override
   public boolean isCollectorDown() {
@@ -211,5 +206,10 @@ public class CollectorModuleSimIO implements CollectorModuleIO {
       isCollectorSimDown = false;
     }
     return isCollectorSimDown;
+  }
+
+  @Override
+  public int getSide() {
+    return c;
   }
 }
