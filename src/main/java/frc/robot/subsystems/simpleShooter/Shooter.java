@@ -18,8 +18,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.util.LoggedTunableNumber;
-import frc.robot.util.ShooterCalculations.NoPitchShooterControls;
-import frc.robot.util.ShooterCalculations.ShooterControls;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -63,7 +61,7 @@ public class Shooter extends SubsystemBase {
 
   private final SysIdRoutine sysId;
 
-   private final FlywheelIO backFlywheel;
+  private final FlywheelIO backFlywheel;
   private final FlywheelIOInputsAutoLogged backFlywheelInputs = new FlywheelIOInputsAutoLogged();
 
   private AngularVelocity backFlywheelSetpoint = RadiansPerSecond.of(0 + .1e-6);
@@ -90,7 +88,6 @@ public class Shooter extends SubsystemBase {
 
   private final Alert backFlywheelDisconnectedAlert =
       new Alert("Back Flywheel disconnected", AlertType.kError);
-
 
   public Shooter(FlywheelIO forwardFlywheel, FlywheelIO backFlywheel) {
     this.forwardFlywheel = forwardFlywheel;
@@ -166,8 +163,8 @@ public class Shooter extends SubsystemBase {
 
   public LinearVelocity getForwardFlywheelLinearVelocity() {
     return MetersPerSecond.of(
-    forwardFlywheelInputs.velocity.in(RadiansPerSecond)
-    * ShooterConstants.flywheelRadius.in(Meters));
+        forwardFlywheelInputs.velocity.in(RadiansPerSecond)
+            * ShooterConstants.flywheelRadius.in(Meters));
   }
 
   private void runCharacterization(double output) {
@@ -195,11 +192,14 @@ public class Shooter extends SubsystemBase {
     return forwardFlywheelInputs.velocity;
   }
 
-  public void setShooterControls(AngularVelocity forwardFlywheelVelocity, AngularVelocity backFlywheelVelocity) {
+  public void setShooterControls(
+      AngularVelocity forwardFlywheelVelocity, AngularVelocity backFlywheelVelocity) {
     Logger.recordOutput(
-        "Shooter/ForwardFlywheel/Velocity Setpoint Rotations Per Sec", forwardFlywheelVelocity.in(RotationsPerSecond));
-        Logger.recordOutput(
-        "Shooter/BackFlywheel/Velocity Setpoint Rotations Per Sec", backFlywheelVelocity.in(RotationsPerSecond));
+        "Shooter/ForwardFlywheel/Velocity Setpoint Rotations Per Sec",
+        forwardFlywheelVelocity.in(RotationsPerSecond));
+    Logger.recordOutput(
+        "Shooter/BackFlywheel/Velocity Setpoint Rotations Per Sec",
+        backFlywheelVelocity.in(RotationsPerSecond));
 
     forwardFlywheel.setVelocity(forwardFlywheelVelocity);
     backFlywheel.setVelocity(backFlywheelVelocity);

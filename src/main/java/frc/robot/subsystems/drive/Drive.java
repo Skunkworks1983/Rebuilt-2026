@@ -428,7 +428,7 @@ public class Drive extends SubsystemBase implements VisionConsumer {
     resetLimelightIMUCallback = resetIMUCallback;
   }
 
-  public AngularVelocity getAngularVelocity(){
+  public AngularVelocity getAngularVelocity() {
     return RadiansPerSecond.of(gyroInputs.yawVelocityRadPerSec);
   }
 }

@@ -7,6 +7,8 @@
 
 package frc.robot.commands;
 
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -18,7 +20,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
@@ -29,11 +30,6 @@ import frc.robot.subsystems.simpleShooter.Shooter;
 import frc.robot.subsystems.simpleShooter.ShooterConstants;
 import frc.robot.util.LoggedTunableNumber;
 import frc.robot.util.ShooterCalculations;
-import frc.robot.util.ShooterCalculations.ShooterControls;
-
-import static edu.wpi.first.units.Units.Rotations;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
-
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.LinkedList;
@@ -318,22 +314,31 @@ public class DriveCommands {
       Drive drive, Shooter shooter, DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
     PIDController angleController = new PIDController(ANGLE_KP, 0.0, ANGLE_KD);
     angleController.enableContinuousInput(-Math.PI, Math.PI);
-    LoggedTunableNumber forwardFlywheelVelocity = new LoggedTunableNumber("Shooter/ForwardFlywheelVelocitySetpointRotPerSec", ShooterConstants.defaultForwardFlywheelVelocity.in(RotationsPerSecond));
-    LoggedTunableNumber backFlywheelVelocity = new LoggedTunableNumber("Shooter/BackFlywheelVelocitySetpointRotPerSec", ShooterConstants.defaultBackFlywheelVelocity.in(RotationsPerSecond));
+    LoggedTunableNumber forwardFlywheelVelocity =
+        new LoggedTunableNumber(
+            "Shooter/ForwardFlywheelVelocitySetpointRotPerSec",
+            ShooterConstants.defaultForwardFlywheelVelocity.in(RotationsPerSecond));
+    LoggedTunableNumber backFlywheelVelocity =
+        new LoggedTunableNumber(
+            "Shooter/BackFlywheelVelocitySetpointRotPerSec",
+            ShooterConstants.defaultBackFlywheelVelocity.in(RotationsPerSecond));
 
     return Commands.run(
             () -> {
               Rotation2d yaw =
                   ShooterCalculations.getShootYaw(
-                      drive.getPose(), drive.getChassisSpeeds(), drive.getAngularVelocity(), RotationsPerSecond.of(forwardFlywheelVelocity.get()));
-              
-              shooter.setShooterControls(RotationsPerSecond.of(forwardFlywheelVelocity.get()), RotationsPerSecond.of(backFlywheelVelocity.get()));
-                
-              Logger.recordOutput(
-                  "Auto Shoot/Drive Yaw Setpoint", yaw.getRadians());
+                      drive.getPose(),
+                      drive.getChassisSpeeds(),
+                      drive.getAngularVelocity(),
+                      RotationsPerSecond.of(forwardFlywheelVelocity.get()));
+
+              shooter.setShooterControls(
+                  RotationsPerSecond.of(forwardFlywheelVelocity.get()),
+                  RotationsPerSecond.of(backFlywheelVelocity.get()));
+
+              Logger.recordOutput("Auto Shoot/Drive Yaw Setpoint", yaw.getRadians());
               double omegaRadiansPerSecond =
-                  angleController.calculate(
-                      drive.getRotation().getRadians(), yaw.getRadians());
+                  angleController.calculate(drive.getRotation().getRadians(), yaw.getRadians());
 
               Logger.recordOutput("Auto Shoot/Drive Yaw PID Calculated", omegaRadiansPerSecond);
 

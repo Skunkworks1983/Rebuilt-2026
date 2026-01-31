@@ -28,10 +28,8 @@ public class ShooterCalculations {
       boolean possibleShot) {}
   ;
 
-   public record NoPitchShooterControls(
-      AngularVelocity shooterVelocity,
-      Rotation2d driveYaw,
-      boolean possibleShot) {}
+  public record NoPitchShooterControls(
+      AngularVelocity shooterVelocity, Rotation2d driveYaw, boolean possibleShot) {}
   ;
 
   public static ShooterControls getInterpolatedShooterControls(
@@ -432,7 +430,11 @@ public class ShooterCalculations {
         shooterVelocity, shooterPitch, rawYaw.minus(new Rotation2d(compensationAngle)), true);
   }
 
-  public static Rotation2d getShootYaw(Pose2d odometryPose, ChassisSpeeds chassisSpeeds, AngularVelocity gyroRate, AngularVelocity shooterSpeed){
+  public static Rotation2d getShootYaw(
+      Pose2d odometryPose,
+      ChassisSpeeds chassisSpeeds,
+      AngularVelocity gyroRate,
+      AngularVelocity shooterSpeed) {
     Translation3d goal =
         DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red
             ? FieldConstants.redGoal
@@ -445,7 +447,8 @@ public class ShooterCalculations {
     double distanceForAngle = Math.max(trueDistance, 1e-6);
     Rotation2d rawYaw = targetVector.times(1.0 / distanceForAngle).getAngle();
 
-    double requiredSpeedField = shooterSpeed.in(RadiansPerSecond) * ShooterConstants.flywheelRadius.in(Meters);
+    double requiredSpeedField =
+        shooterSpeed.in(RadiansPerSecond) * ShooterConstants.flywheelRadius.in(Meters);
 
     Translation2d requiredFieldVelocity =
         new Translation2d(
