@@ -8,6 +8,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -17,12 +18,22 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.simpleShooter.Shooter;
+import frc.robot.subsystems.simpleShooter.ShooterConstants;
+import frc.robot.util.LoggedTunableNumber;
+import frc.robot.util.ShooterCalculations;
+import frc.robot.util.ShooterCalculations.ShooterControls;
+
+import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.LinkedList;
@@ -33,10 +44,10 @@ import org.littletonrobotics.junction.Logger;
 
 public class DriveCommands {
   private static final double DEADBAND = 0.1;
-  private static final double ANGLE_KP = 5.0;
-  private static final double ANGLE_KD = 0.4;
-  private static final double ANGLE_MAX_VELOCITY = 8.0;
-  private static final double ANGLE_MAX_ACCELERATION = 20.0;
+  private static final double ANGLE_KP = 10;
+  private static final double ANGLE_KD = 0;
+  private static final double ANGLE_MAX_VELOCITY = 9.4;
+  private static final double ANGLE_MAX_ACCELERATION = 45;
   private static final double FF_START_DELAY = 2.0; // Secs
   private static final double FF_RAMP_RATE = 0.1; // Volts/Sec
   private static final double WHEEL_RADIUS_MAX_VELOCITY = 0.25; // Rad/Sec
@@ -150,6 +161,19 @@ public class DriveCommands {
 
         // Reset PID controller when command starts
         .beforeStarting(() -> angleController.reset(drive.getRotation().getRadians()));
+  }
+
+  public static ChassisSpeeds getChassisSpeeds(
+      Drive drive, DoubleSupplier xSupplier, DoubleSupplier ySupplier, double omega) {
+    // Get linear velocity
+    Translation2d linearVelocity =
+        getLinearVelocityFromJoysticks(xSupplier.getAsDouble(), ySupplier.getAsDouble());
+
+    // Convert to field relative speeds & send command
+    return new ChassisSpeeds(
+        linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
+        linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
+        omega);
   }
 
   /**
@@ -288,5 +312,46 @@ public class DriveCommands {
     double[] positions = new double[4];
     Rotation2d lastAngle = Rotation2d.kZero;
     double gyroDelta = 0.0;
+  }
+
+  public static Command joystickDriveAimedHub(
+      Drive drive, Shooter shooter, DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
+    PIDController angleController = new PIDController(ANGLE_KP, 0.0, ANGLE_KD);
+    angleController.enableContinuousInput(-Math.PI, Math.PI);
+    LoggedTunableNumber forwardFlywheelVelocity = new LoggedTunableNumber("Shooter/ForwardFlywheelVelocitySetpointRotPerSec", ShooterConstants.defaultForwardFlywheelVelocity.in(RotationsPerSecond));
+    LoggedTunableNumber backFlywheelVelocity = new LoggedTunableNumber("Shooter/BackFlywheelVelocitySetpointRotPerSec", ShooterConstants.defaultBackFlywheelVelocity.in(RotationsPerSecond));
+
+    return Commands.run(
+            () -> {
+              Rotation2d yaw =
+                  ShooterCalculations.getShootYaw(
+                      drive.getPose(), drive.getChassisSpeeds(), drive.getAngularVelocity(), RotationsPerSecond.of(forwardFlywheelVelocity.get()));
+              
+              shooter.setShooterControls(RotationsPerSecond.of(forwardFlywheelVelocity.get()), RotationsPerSecond.of(backFlywheelVelocity.get()));
+                
+              Logger.recordOutput(
+                  "Auto Shoot/Drive Yaw Setpoint", yaw.getRadians());
+              double omegaRadiansPerSecond =
+                  angleController.calculate(
+                      drive.getRotation().getRadians(), yaw.getRadians());
+
+              Logger.recordOutput("Auto Shoot/Drive Yaw PID Calculated", omegaRadiansPerSecond);
+
+              boolean isRed = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red;
+
+              ChassisSpeeds desiredSpeeds =
+                  getChassisSpeeds(drive, xSupplier, ySupplier, omegaRadiansPerSecond);
+
+              drive.runVelocity(
+                  ChassisSpeeds.fromFieldRelativeSpeeds(
+                      desiredSpeeds,
+                      isRed
+                          ? drive.getRotation().plus(Rotation2d.fromRadians(Math.PI))
+                          : drive.getRotation()));
+            },
+            drive,
+            shooter)
+        // Reset PID when command initializes to prevent "kick"
+        .beforeStarting(() -> angleController.reset());
   }
 }

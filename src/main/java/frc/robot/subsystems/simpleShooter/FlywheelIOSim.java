@@ -10,7 +10,9 @@ import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 public class FlywheelIOSim extends FlywheelIOTalonFX {
   private final FlywheelSim flywheelSim;
 
-  public FlywheelIOSim() {
+  public FlywheelIOSim(int flywheelMotorId) {
+    super(flywheelMotorId);
+
     flywheelSim =
         new FlywheelSim(
             LinearSystemId.createFlywheelSystem(
@@ -40,7 +42,7 @@ public class FlywheelIOSim extends FlywheelIOTalonFX {
         flywheelSim.getAngularVelocity().times(ShooterConstants.flywheelGearRatio));
     inputs.primaryConnected = true;
 
-    inputs.primaryVelocity = flywheelSim.getAngularVelocity();
+    inputs.velocity = flywheelSim.getAngularVelocity();
 
     inputs.primaryAppliedVolts = primaryAppliedVolts;
 

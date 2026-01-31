@@ -1,9 +1,7 @@
 package frc.robot.subsystems.simpleShooter;
 
-import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
@@ -11,7 +9,6 @@ import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.SignalLogger;
-import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.Alert;
@@ -20,9 +17,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
-import frc.robot.subsystems.shooter.FlywheelIOInputsAutoLogged;
-import frc.robot.subsystems.shooter.PivotIOInputsAutoLogged;
 import frc.robot.util.LoggedTunableNumber;
+import frc.robot.util.ShooterCalculations.NoPitchShooterControls;
 import frc.robot.util.ShooterCalculations.ShooterControls;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -36,55 +32,69 @@ public class Shooter extends SubsystemBase {
 
   private ShooterState shooterState = ShooterState.OFF;
 
-  private final FlywheelIO flywheel;
-  private final FlywheelIOInputsAutoLogged flywheelInputs = new FlywheelIOInputsAutoLogged();
-  private final PivotIOInputsAutoLogged pivotInputs = new PivotIOInputsAutoLogged();
+  // FORWARD FLYWHEEL
+  private final FlywheelIO forwardFlywheel;
+  private final FlywheelIOInputsAutoLogged forwardFlywheelInputs = new FlywheelIOInputsAutoLogged();
 
-  private AngularVelocity flywheelSetpoint = RadiansPerSecond.of(0 + .1e-6);
-  private Angle pivotSetpoint = Radians.of(0 + .1e-6);
+  private AngularVelocity forwardFlywheelSetpoint = RadiansPerSecond.of(0 + .1e-6);
+
+  private static final LoggedTunableNumber forwardFlywheelKP =
+      new LoggedTunableNumber("Shooter/ForwardFlywheel/kP", ShooterConstants.forwardFlywheelKP);
+  private static final LoggedTunableNumber forwardFlywheelKD =
+      new LoggedTunableNumber("Shooter/ForwardFlywheel/kD", ShooterConstants.forwardFlywheelKD);
+  private static final LoggedTunableNumber forwardFlywheelKS =
+      new LoggedTunableNumber("Shooter/ForwardFlywheel/kS", ShooterConstants.forwardFlywheelKS);
+  private static final LoggedTunableNumber forwardFlywheelKV =
+      new LoggedTunableNumber("Shooter/ForwardFlywheel/kV", ShooterConstants.forwardFlywheelKV);
+  private static final LoggedTunableNumber forwardFlywheelKA =
+      new LoggedTunableNumber("Shooter/ForwardFlywheel/kA", ShooterConstants.forwardFlywheelKA);
+
+  private static final LoggedTunableNumber forwardFlywheelMaxAccelerationRotationsPerSec2 =
+      new LoggedTunableNumber(
+          "Shooter/ForwardFlywheel/MaxAccelerationRotationsPerSec2",
+          ShooterConstants.forwardFlywheelMaxAccelerationRotationsPerSec);
+  private static final LoggedTunableNumber forwardFlywheelMaxJerkRotationsPerSec3 =
+      new LoggedTunableNumber(
+          "Shooter/ForwardFlywheel/MaxJerkRotationsPerSec3",
+          ShooterConstants.forwardFlywheelMaxJerkRotationsPerSecCubed);
+
+  private final Alert forwardFlywheelDisconnectedAlert =
+      new Alert("Forward Flywheel disconnected", AlertType.kError);
 
   private final SysIdRoutine sysId;
 
-  private static final LoggedTunableNumber flywheelKP =
-      new LoggedTunableNumber("Shooter/Flywheel/kP", ShooterConstants.flywheelKP);
-  private static final LoggedTunableNumber flywheelKD =
-      new LoggedTunableNumber("Shooter/Flywheel/kD", ShooterConstants.flywheelKD);
-  private static final LoggedTunableNumber flywheelKS =
-      new LoggedTunableNumber("Shooter/Flywheel/kS", ShooterConstants.flywheelKS);
-  private static final LoggedTunableNumber flywheelKV =
-      new LoggedTunableNumber("Shooter/Flywheel/kV", ShooterConstants.flywheelKV);
-  private static final LoggedTunableNumber flywheelKA =
-      new LoggedTunableNumber("Shooter/Flywheel/kA", ShooterConstants.flywheelKA);
+   private final FlywheelIO backFlywheel;
+  private final FlywheelIOInputsAutoLogged backFlywheelInputs = new FlywheelIOInputsAutoLogged();
 
-  private static final LoggedTunableNumber flywheelMaxAccelerationRotationsPerSec2 =
+  private AngularVelocity backFlywheelSetpoint = RadiansPerSecond.of(0 + .1e-6);
+
+  private static final LoggedTunableNumber backFlywheelKP =
+      new LoggedTunableNumber("Shooter/BackFlywheel/kP", ShooterConstants.backFlywheelKP);
+  private static final LoggedTunableNumber backFlywheelKD =
+      new LoggedTunableNumber("Shooter/BackFlywheel/kD", ShooterConstants.backFlywheelKD);
+  private static final LoggedTunableNumber backFlywheelKS =
+      new LoggedTunableNumber("Shooter/BackFlywheel/kS", ShooterConstants.backFlywheelKS);
+  private static final LoggedTunableNumber backFlywheelKV =
+      new LoggedTunableNumber("Shooter/BackFlywheel/kV", ShooterConstants.backFlywheelKV);
+  private static final LoggedTunableNumber backFlywheelKA =
+      new LoggedTunableNumber("Shooter/BackFlywheel/kA", ShooterConstants.backFlywheelKA);
+
+  private static final LoggedTunableNumber backFlywheelMaxAccelerationRotationsPerSec2 =
       new LoggedTunableNumber(
-          "Shooter/Flywheel/MaxAccelerationRotationsPerSec2",
-          ShooterConstants.flywheelMaxAccelerationRotationsPerSec);
-  private static final LoggedTunableNumber flywheelMaxJerkRotationsPerSec3 =
+          "Shooter/BackFlywheel/MaxAccelerationRotationsPerSec2",
+          ShooterConstants.backFlywheelMaxAccelerationRotationsPerSec);
+  private static final LoggedTunableNumber backFlywheelMaxJerkRotationsPerSec3 =
       new LoggedTunableNumber(
-          "Shooter/Flywheel/MaxJerkRotationsPerSec3",
-          ShooterConstants.flywheelMaxJerkRotationsPerSecCubed);
+          "Shooter/BackFlywheel/MaxJerkRotationsPerSec3",
+          ShooterConstants.backFlywheelMaxJerkRotationsPerSecCubed);
 
-  private static final LoggedTunableNumber pivotKP =
-      new LoggedTunableNumber("Shooter/Pivot/kP", 2000);
-  private static final LoggedTunableNumber pivotKD = new LoggedTunableNumber("Shooter/Pivot/kD", 0);
-  private static final LoggedTunableNumber pivotKS = new LoggedTunableNumber("Shooter/Pivot/kS", 0);
-  private static final LoggedTunableNumber pivotKV = new LoggedTunableNumber("Shooter/Pivot/kV", 0);
-  private static final LoggedTunableNumber pivotKA = new LoggedTunableNumber("Shooter/Pivot/kA", 0);
+  private final Alert backFlywheelDisconnectedAlert =
+      new Alert("Back Flywheel disconnected", AlertType.kError);
 
-  private static final LoggedTunableNumber pivotMaxVelocityRotationsPerSec =
-      new LoggedTunableNumber("Shooter/Pivot/MaxVelocityRotationsPerSecond", 2.0);
-  private static final LoggedTunableNumber pivotMaxAccelerationRotationsPerSec2 =
-      new LoggedTunableNumber("Shooter/Pivot/MaxAccelerationRotationsSec2", 4.0);
-  private static final LoggedTunableNumber pivotMaxJerkRotationsPerSec3 =
-      new LoggedTunableNumber("Shooter/Pivot/MaxJerkRotationsPerSec3", 4.0);
 
-  private final Alert flywheelDisconnectedAlert =
-      new Alert("Flywheel disconnected", AlertType.kError);
-  private final Alert pivotDisconnectedAlert = new Alert("Pivot disconnected", AlertType.kError);
-
-  public Shooter(FlywheelIO flywheel) {
-    this.flywheel = flywheel;
+  public Shooter(FlywheelIO forwardFlywheel, FlywheelIO backFlywheel) {
+    this.forwardFlywheel = forwardFlywheel;
+    this.backFlywheel = backFlywheel;
 
     sysId =
         new SysIdRoutine(
@@ -99,47 +109,69 @@ public class Shooter extends SubsystemBase {
 
   @Override
   public void periodic() {
-    flywheel.updateInputs(flywheelInputs);
+    forwardFlywheel.updateInputs(forwardFlywheelInputs);
+    Logger.processInputs("Shooter/ForwardFlywheel", forwardFlywheelInputs);
 
-    Logger.processInputs("Shooter/Flywheel", flywheelInputs);
-    Logger.processInputs("Shooter/Pivot", pivotInputs);
+    forwardFlywheelDisconnectedAlert.set(
+        (!forwardFlywheelInputs.primaryConnected) && Constants.currentMode != Constants.Mode.SIM);
 
-    flywheelDisconnectedAlert.set(
-        (!flywheelInputs.primaryConnected)
-            && Constants.currentMode != Constants.Mode.SIM);
-
-    if (flywheelKP.hasChanged(hashCode())
-        || flywheelKD.hasChanged(hashCode())
-        || flywheelKS.hasChanged(hashCode())
-        || flywheelKV.hasChanged(hashCode())
-        || flywheelKA.hasChanged(hashCode())) {
-      flywheel.setPID(
-          flywheelKP.get(),
+    if (forwardFlywheelKP.hasChanged(hashCode())
+        || forwardFlywheelKD.hasChanged(hashCode())
+        || forwardFlywheelKS.hasChanged(hashCode())
+        || forwardFlywheelKV.hasChanged(hashCode())
+        || forwardFlywheelKA.hasChanged(hashCode())) {
+      forwardFlywheel.setPID(
+          forwardFlywheelKP.get(),
           0.0,
-          flywheelKD.get(),
-          flywheelKS.get(),
-          flywheelKV.get(),
-          flywheelKA.get());
+          forwardFlywheelKD.get(),
+          forwardFlywheelKS.get(),
+          forwardFlywheelKV.get(),
+          forwardFlywheelKA.get());
     }
 
-    if (flywheelMaxAccelerationRotationsPerSec2.hasChanged(hashCode())
-        || flywheelMaxJerkRotationsPerSec3.hasChanged(hashCode())) {
-      flywheel.setMotionConstraints(
-          RotationsPerSecondPerSecond.of(flywheelMaxAccelerationRotationsPerSec2.get()),
-          flywheelMaxJerkRotationsPerSec3.get());
+    if (forwardFlywheelMaxAccelerationRotationsPerSec2.hasChanged(hashCode())
+        || forwardFlywheelMaxJerkRotationsPerSec3.hasChanged(hashCode())) {
+      forwardFlywheel.setMotionConstraints(
+          RotationsPerSecondPerSecond.of(forwardFlywheelMaxAccelerationRotationsPerSec2.get()),
+          forwardFlywheelMaxAccelerationRotationsPerSec2.get());
+    }
+
+    backFlywheel.updateInputs(backFlywheelInputs);
+    Logger.processInputs("Shooter/BackFlywheel", backFlywheelInputs);
+
+    forwardFlywheelDisconnectedAlert.set(
+        (!forwardFlywheelInputs.primaryConnected) && Constants.currentMode != Constants.Mode.SIM);
+
+    if (backFlywheelKP.hasChanged(hashCode())
+        || backFlywheelKD.hasChanged(hashCode())
+        || backFlywheelKS.hasChanged(hashCode())
+        || backFlywheelKV.hasChanged(hashCode())
+        || backFlywheelKA.hasChanged(hashCode())) {
+      backFlywheel.setPID(
+          backFlywheelKP.get(),
+          0.0,
+          backFlywheelKD.get(),
+          backFlywheelKS.get(),
+          backFlywheelKV.get(),
+          backFlywheelKA.get());
+    }
+
+    if (backFlywheelMaxAccelerationRotationsPerSec2.hasChanged(hashCode())
+        || backFlywheelMaxJerkRotationsPerSec3.hasChanged(hashCode())) {
+      backFlywheel.setMotionConstraints(
+          RotationsPerSecondPerSecond.of(backFlywheelMaxAccelerationRotationsPerSec2.get()),
+          backFlywheelMaxAccelerationRotationsPerSec2.get());
     }
   }
 
-  public LinearVelocity getShooterLinearVelocity() {
-    // return MetersPerSecond.of(
-    // flywheelInputs.primaryVelocity.in(RadiansPerSecond)
-    // * ShooterConstants.flywheelRadius.in(Meters));
+  public LinearVelocity getForwardFlywheelLinearVelocity() {
     return MetersPerSecond.of(
-        flywheelSetpoint.in(RadiansPerSecond) * ShooterConstants.flywheelRadius.in(Meters));
+    forwardFlywheelInputs.velocity.in(RadiansPerSecond)
+    * ShooterConstants.flywheelRadius.in(Meters));
   }
 
   private void runCharacterization(double output) {
-    flywheel.setOpenLoopOutput(output);
+    forwardFlywheel.setOpenLoopOutput(output);
   }
 
   /** Returns a command to run a quasistatic test in the specified direction. */
@@ -154,33 +186,22 @@ public class Shooter extends SubsystemBase {
     return run(() -> runCharacterization(0.0)).withTimeout(1.0).andThen(sysId.dynamic(direction));
   }
 
-  public void setManualVelocity(AngularVelocity velocity) {
-    flywheel.setVelocity(velocity);
-  }
-
   @AutoLogOutput(key = "Shooter/canShoot")
   public boolean canShoot() {
     return true;
   }
 
-  public Angle getPivotAngle() {
-    // return pivotInputs.pivotPrimaryPosition;
-    return pivotSetpoint;
+  public AngularVelocity getForwardFlywheelVelocity() {
+    return forwardFlywheelInputs.velocity;
   }
 
-  public AngularVelocity getFlywheelVelocity() {
-    // return flywheelInputs.primaryVelocity;
-
-    return flywheelSetpoint;
-  }
-
-  public void setShooterControls(ShooterControls controls) {
-    flywheelSetpoint = controls.shooterVelocity();
-    pivotSetpoint = controls.shooterPitch();
-
+  public void setShooterControls(AngularVelocity forwardFlywheelVelocity, AngularVelocity backFlywheelVelocity) {
     Logger.recordOutput(
-        "Shooter/Velocity Setpoint Rotations Per Sec", flywheelSetpoint.in(RotationsPerSecond));
+        "Shooter/ForwardFlywheel/Velocity Setpoint Rotations Per Sec", forwardFlywheelVelocity.in(RotationsPerSecond));
+        Logger.recordOutput(
+        "Shooter/BackFlywheel/Velocity Setpoint Rotations Per Sec", backFlywheelVelocity.in(RotationsPerSecond));
 
-    flywheel.setVelocity(flywheelSetpoint);
+    forwardFlywheel.setVelocity(forwardFlywheelVelocity);
+    backFlywheel.setVelocity(backFlywheelVelocity);
   }
 }

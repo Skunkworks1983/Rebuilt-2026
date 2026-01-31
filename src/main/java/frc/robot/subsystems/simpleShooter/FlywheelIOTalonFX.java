@@ -7,7 +7,6 @@ import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.ParentDevice;
@@ -32,12 +31,9 @@ public class FlywheelIOTalonFX implements FlywheelIO {
 
   private final Debouncer primaryConnectedDebounce =
       new Debouncer(0.5, Debouncer.DebounceType.kFalling);
-  private final Debouncer followerConnectedDebounce =
-      new Debouncer(0.5, Debouncer.DebounceType.kFalling);
 
-  public FlywheelIOTalonFX() {
-    flywheelMotor = new TalonFX(ShooterConstants.flywheelMotorOneId, ShooterConstants.shooterCan);
-
+  public FlywheelIOTalonFX(int flywheelMotorId) {
+    flywheelMotor = new TalonFX(flywheelMotorId, ShooterConstants.shooterCan);
 
     TalonFXConfiguration flywheelConfig = new TalonFXConfiguration();
     flywheelConfig.Feedback.SensorToMechanismRatio = ShooterConstants.flywheelGearRatio;
@@ -46,18 +42,18 @@ public class FlywheelIOTalonFX implements FlywheelIO {
 
     flywheelConfig.ClosedLoopGeneral.ContinuousWrap = true;
 
-    flywheelConfig.Slot0.kP = ShooterConstants.flywheelKP;
+    flywheelConfig.Slot0.kP = ShooterConstants.forwardFlywheelKP;
     flywheelConfig.Slot0.kI = 0.0;
-    flywheelConfig.Slot0.kD = ShooterConstants.flywheelKD;
+    flywheelConfig.Slot0.kD = ShooterConstants.forwardFlywheelKD;
 
-    flywheelConfig.Slot0.kS = ShooterConstants.flywheelKS;
-    flywheelConfig.Slot0.kV = ShooterConstants.flywheelKV;
-    flywheelConfig.Slot0.kA = ShooterConstants.flywheelKA;
+    flywheelConfig.Slot0.kS = ShooterConstants.forwardFlywheelKS;
+    flywheelConfig.Slot0.kV = ShooterConstants.forwardFlywheelKV;
+    flywheelConfig.Slot0.kA = ShooterConstants.forwardFlywheelKA;
 
     flywheelConfig.MotionMagic.MotionMagicAcceleration =
-        ShooterConstants.flywheelMaxAccelerationRotationsPerSec;
+        ShooterConstants.forwardFlywheelMaxAccelerationRotationsPerSec;
     flywheelConfig.MotionMagic.MotionMagicJerk =
-        ShooterConstants.flywheelMaxJerkRotationsPerSecCubed;
+        ShooterConstants.forwardFlywheelMaxJerkRotationsPerSecCubed;
 
     flywheelConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     flywheelConfig.CurrentLimits.StatorCurrentLimit =
@@ -70,10 +66,7 @@ public class FlywheelIOTalonFX implements FlywheelIO {
     flywheelCurrent = flywheelMotor.getStatorCurrent();
     flywheelTorqueCurrent = flywheelMotor.getTorqueCurrent();
     BaseStatusSignal.setUpdateFrequencyForAll(
-        50.0,
-        flywheelVelocity,
-        flywheelAppliedVolts,
-        flywheelCurrent);
+        50.0, flywheelVelocity, flywheelAppliedVolts, flywheelCurrent);
 
     flywheelTorqueCurrent.setUpdateFrequency(
         250); // This is what follower uses to follow, so faser updates
@@ -98,7 +91,7 @@ public class FlywheelIOTalonFX implements FlywheelIO {
 
     inputs.primaryConnected = primaryConnectedDebounce.calculate(flywheelStatus.isOK());
 
-    inputs.primaryVelocity = flywheelVelocity.getValue();
+    inputs.velocity = flywheelVelocity.getValue();
 
     inputs.primaryAppliedVolts = flywheelAppliedVolts.getValue();
 

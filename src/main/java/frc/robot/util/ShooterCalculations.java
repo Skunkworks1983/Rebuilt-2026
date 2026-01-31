@@ -28,7 +28,13 @@ public class ShooterCalculations {
       boolean possibleShot) {}
   ;
 
-  public static ShooterControls getShooterControlsGoal(
+   public record NoPitchShooterControls(
+      AngularVelocity shooterVelocity,
+      Rotation2d driveYaw,
+      boolean possibleShot) {}
+  ;
+
+  public static ShooterControls getInterpolatedShooterControls(
       ChassisSpeeds speeds, Pose2d odometryPose, ShooterInterporlations shooterInterporlations) {
     Translation3d target =
         DriverStation.getAlliance().get() == Alliance.Red
@@ -424,5 +430,44 @@ public class ShooterCalculations {
 
     return new ShooterControls(
         shooterVelocity, shooterPitch, rawYaw.minus(new Rotation2d(compensationAngle)), true);
+  }
+
+  public static Rotation2d getShootYaw(Pose2d odometryPose, ChassisSpeeds chassisSpeeds, AngularVelocity gyroRate, AngularVelocity shooterSpeed){
+    Translation3d goal =
+        DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red
+            ? FieldConstants.redGoal
+            : FieldConstants.blueGoal;
+
+    Translation2d targetVector = goal.toTranslation2d().minus(odometryPose.getTranslation());
+
+    double trueDistance = targetVector.getNorm();
+
+    double distanceForAngle = Math.max(trueDistance, 1e-6);
+    Rotation2d rawYaw = targetVector.times(1.0 / distanceForAngle).getAngle();
+
+    double requiredSpeedField = shooterSpeed.in(RadiansPerSecond) * ShooterConstants.flywheelRadius.in(Meters);
+
+    Translation2d requiredFieldVelocity =
+        new Translation2d(
+            requiredSpeedField * rawYaw.getCos(), requiredSpeedField * rawYaw.getSin());
+
+    Rotation2d robotRotation = odometryPose.getRotation();
+
+    Translation2d robotLinearVelocityField =
+        new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond)
+            .rotateBy(robotRotation);
+
+    Translation2d rShooterRobot =
+        ShooterConstants.shooterInitalPosition.getTranslation().toTranslation2d();
+
+    double omega = gyroRate.in(RadiansPerSecond);
+    Translation2d tangentialRobot =
+        new Translation2d(-omega * rShooterRobot.getY(), omega * rShooterRobot.getX());
+
+    Translation2d tangentialField = tangentialRobot.rotateBy(robotRotation);
+    Translation2d totalRobotVelocityField = robotLinearVelocityField.plus(tangentialField);
+    Translation2d launchVelocityField = requiredFieldVelocity.minus(totalRobotVelocityField);
+
+    return launchVelocityField.getAngle();
   }
 }

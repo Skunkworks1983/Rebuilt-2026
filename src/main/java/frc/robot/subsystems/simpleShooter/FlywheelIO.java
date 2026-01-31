@@ -15,7 +15,7 @@ public interface FlywheelIO {
   public static class FlywheelIOInputs {
     public boolean primaryConnected = false;
 
-    public AngularVelocity primaryVelocity = RotationsPerSecond.of(0);
+    public AngularVelocity velocity = RotationsPerSecond.of(0);
 
     public Voltage primaryAppliedVolts = Volts.of(0);
 
