@@ -7,6 +7,10 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -40,11 +44,6 @@ import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import frc.robot.util.sim.SimProjectile;
-
-import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
-
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
@@ -338,7 +337,13 @@ public class RobotContainer {
     }
   }
 
-  public void shootSimProjectile(){
-    SimProjectile.getProjectile(simulation.getSimulatedDriveTrainPose(), simulation.getDriveTrainSimulatedChassisSpeedsFieldRelative(), MetersPerSecond.of(shooter.getForwardFlywheelVelocity().in(RadiansPerSecond) * ShooterConstants.flywheelRadius.in(Meters)), ShooterConstants.shooterPitch);    
+  public void shootSimProjectile() {
+    SimProjectile.getProjectile(
+        simulation.getSimulatedDriveTrainPose(),
+        simulation.getDriveTrainSimulatedChassisSpeedsFieldRelative(),
+        MetersPerSecond.of(
+            shooter.getForwardFlywheelVelocity().in(RadiansPerSecond)
+                * ShooterConstants.flywheelRadius.in(Meters)),
+        ShooterConstants.shooterPitch);
   }
 }

@@ -4,62 +4,51 @@
 
 package frc.robot.subsystems.kitIndexer;
 
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.VelocityVoltage;
-import com.ctre.phoenix6.hardware.TalonFX;
-
 import static edu.wpi.first.units.Units.DegreesPerSecond;
 
-import com.ctre.phoenix6.BaseStatusSignal;
-import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
-import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.controls.TorqueCurrentFOC;
-import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
-import com.ctre.phoenix6.controls.VoltageOut;
-import com.ctre.phoenix6.hardware.ParentDevice;
-
+import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.units.measure.AngularVelocity;
 
 /** Add your docs here. */
 public class IndexerTalonIO implements IndexerIO {
-    private final TalonFX intakeMotor;
+  private final TalonFX intakeMotor;
 
-    // public static class collectorConstants {
-    //     public static final int intakeID = 0;
-    // } 
+  // public static class collectorConstants {
+  //     public static final int intakeID = 0;
+  // }
 
-    public IndexerTalonIO() {
-        intakeMotor = new TalonFX(0);
+  public IndexerTalonIO() {
+    intakeMotor = new TalonFX(0);
 
-        var intakeConfig = new TalonFXConfiguration();
+    var intakeConfig = new TalonFXConfiguration();
 
-        var slot0Configs = intakeConfig.Slot0;
-        slot0Configs.kP = 0.0;
-        slot0Configs.kI = 0.0;
-        slot0Configs.kD = 0.0;
-        slot0Configs.kS = 0.0;
-        slot0Configs.kV = 0.0;
-        slot0Configs.kA = 0.0;
+    var slot0Configs = intakeConfig.Slot0;
+    slot0Configs.kP = 0.0;
+    slot0Configs.kI = 0.0;
+    slot0Configs.kD = 0.0;
+    slot0Configs.kS = 0.0;
+    slot0Configs.kV = 0.0;
+    slot0Configs.kA = 0.0;
 
-        var intakeMotionMagicConfig = intakeConfig.MotionMagic;
-        intakeMotionMagicConfig.MotionMagicCruiseVelocity = 80;
-        intakeMotionMagicConfig.MotionMagicAcceleration = 160;
+    var intakeMotionMagicConfig = intakeConfig.MotionMagic;
+    intakeMotionMagicConfig.MotionMagicCruiseVelocity = 80;
+    intakeMotionMagicConfig.MotionMagicAcceleration = 160;
 
-        intakeMotor.getConfigurator().apply(slot0Configs);
-    }
+    intakeMotor.getConfigurator().apply(slot0Configs);
+  }
 
-    @Override
-    public void updateInputs(IndexerIOInputs inputs) {
-        inputs.indexerVelocity = intakeMotor.getVelocity().getValueAsDouble();
-        inputs.indexerCurrent = intakeMotor.getSupplyCurrent().getValueAsDouble();
-        inputs.indexerVoltage = intakeMotor.getMotorVoltage().getValueAsDouble();
-        inputs.indexerTorqueCurrent = intakeMotor.getTorqueCurrent().getValueAsDouble();
-    }
+  @Override
+  public void updateInputs(IndexerIOInputs inputs) {
+    inputs.indexerVelocity = intakeMotor.getVelocity().getValueAsDouble();
+    inputs.indexerCurrent = intakeMotor.getSupplyCurrent().getValueAsDouble();
+    inputs.indexerVoltage = intakeMotor.getMotorVoltage().getValueAsDouble();
+    inputs.indexerTorqueCurrent = intakeMotor.getTorqueCurrent().getValueAsDouble();
+  }
 
-    @Override
-    public void intake(AngularVelocity velocity) {
-        intakeMotor.setControl(new DutyCycleOut(velocity.in(DegreesPerSecond)));
-    }
+  @Override
+  public void intake(AngularVelocity velocity) {
+    intakeMotor.setControl(new DutyCycleOut(velocity.in(DegreesPerSecond)));
+  }
 }

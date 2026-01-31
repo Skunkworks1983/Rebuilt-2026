@@ -13,6 +13,7 @@ import frc.robot.subsystems.kitIndexer.Indexer;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class IndexerIntake extends Command {
   private Indexer indexer;
+
   /** Creates a new IndexerIntake. */
   public IndexerIntake(Indexer indexer) {
     // Use addRequirements() here to declare subsystem dependencies.

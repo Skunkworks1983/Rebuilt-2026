@@ -4,21 +4,20 @@
 
 package frc.robot.subsystems.kitIndexer;
 
-import org.littletonrobotics.junction.AutoLog;
-
 import edu.wpi.first.units.measure.AngularVelocity;
+import org.littletonrobotics.junction.AutoLog;
 
 /** Add your docs here. */
 public interface IndexerIO {
-    @AutoLog
-    public static class IndexerIOInputs {
-        public static double indexerVelocity = 0.0;
-        public static double indexerCurrent = 0.0;
-        public static double indexerVoltage = 0.0;
-        public static double indexerTorqueCurrent = 0.0;
-    }
+  @AutoLog
+  public static class IndexerIOInputs {
+    public static double indexerVelocity = 0.0;
+    public static double indexerCurrent = 0.0;
+    public static double indexerVoltage = 0.0;
+    public static double indexerTorqueCurrent = 0.0;
+  }
 
-    public default void updateInputs(IndexerIOInputs inputs) {}
+  public default void updateInputs(IndexerIOInputs inputs) {}
 
-    public default void intake(AngularVelocity velocity) {}
+  public default void intake(AngularVelocity velocity) {}
 }

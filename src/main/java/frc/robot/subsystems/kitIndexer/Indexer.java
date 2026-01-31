@@ -4,27 +4,27 @@
 
 package frc.robot.subsystems.kitIndexer;
 
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.littletonrobotics.junction.Logger;
 
 /** Add your docs here. */
-public class Indexer extends SubsystemBase{
+public class Indexer extends SubsystemBase {
 
-    private final IndexerIO io;
-    private final IndexerIOInputsAutoLogged inputs = new IndexerIOInputsAutoLogged();
-    public Indexer(IndexerIO io) {
-        this.io = io;
-    }
+  private final IndexerIO io;
+  private final IndexerIOInputsAutoLogged inputs = new IndexerIOInputsAutoLogged();
 
-    @Override
-    public void periodic () {
-        io.updateInputs(inputs);
-        Logger.processInputs(getName(), inputs);
-    }
+  public Indexer(IndexerIO io) {
+    this.io = io;
+  }
 
-    public void intake(AngularVelocity velocity) {
-        io.intake(velocity);
-    }
+  @Override
+  public void periodic() {
+    io.updateInputs(inputs);
+    Logger.processInputs(getName(), inputs);
+  }
+
+  public void intake(AngularVelocity velocity) {
+    io.intake(velocity);
+  }
 }

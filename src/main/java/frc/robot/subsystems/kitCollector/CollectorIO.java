@@ -4,21 +4,20 @@
 
 package frc.robot.subsystems.kitCollector;
 
-import org.littletonrobotics.junction.AutoLog;
-
 import edu.wpi.first.units.measure.AngularVelocity;
+import org.littletonrobotics.junction.AutoLog;
 
 /** Add your docs here. */
 public interface CollectorIO {
-    @AutoLog
-    public static class CollectorIOInputs {
-        public static double collectorVelocity = 0.0;
-        public static double collectorCurrent = 0.0;
-        public static double collectorVoltage = 0.0;
-        public static double collectorTorqueCurrent = 0.0;
-    }
+  @AutoLog
+  public static class CollectorIOInputs {
+    public static double collectorVelocity = 0.0;
+    public static double collectorCurrent = 0.0;
+    public static double collectorVoltage = 0.0;
+    public static double collectorTorqueCurrent = 0.0;
+  }
 
-    public default void updateInputs(CollectorIOInputs inputs) {}
+  public default void updateInputs(CollectorIOInputs inputs) {}
 
-    public default void intake(AngularVelocity velocity) {}
+  public default void intake(AngularVelocity velocity) {}
 }

@@ -4,27 +4,27 @@
 
 package frc.robot.subsystems.kitCollector;
 
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.littletonrobotics.junction.Logger;
 
 /** Add your docs here. */
-public class Collector extends SubsystemBase{
+public class Collector extends SubsystemBase {
 
-    private final CollectorIO io;
-    private final CollectorIOInputsAutoLogged inputs = new CollectorIOInputsAutoLogged();
-    public Collector(CollectorIO io) {
-        this.io = io;
-    }
+  private final CollectorIO io;
+  private final CollectorIOInputsAutoLogged inputs = new CollectorIOInputsAutoLogged();
 
-    @Override
-    public void periodic () {
-        io.updateInputs(inputs);
-        Logger.processInputs(getName(), inputs);
-    }
+  public Collector(CollectorIO io) {
+    this.io = io;
+  }
 
-    public void intake(AngularVelocity velocity) {
-        io.intake(velocity);
-    }
+  @Override
+  public void periodic() {
+    io.updateInputs(inputs);
+    Logger.processInputs(getName(), inputs);
+  }
+
+  public void intake(AngularVelocity velocity) {
+    io.intake(velocity);
+  }
 }
