@@ -13,6 +13,7 @@ public class HoldPositionCommand extends Command {
   private Collector collector;
   private Angle leftCollectorAngle;
   private Angle rightCollectorAngle;
+
   /** Creates a new HoldPositionCommand. */
   public HoldPositionCommand(Collector collector) {
     // Use addRequirements() here to declare subsystem dependencies.

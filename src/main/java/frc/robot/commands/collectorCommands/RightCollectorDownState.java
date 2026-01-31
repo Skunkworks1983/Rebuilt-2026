@@ -13,6 +13,7 @@ public class RightCollectorDownState extends Command {
   private Collector collector;
   private Angle rightDownAngle;
   private Angle leftUpAngle;
+
   /** Creates a new RightCollectorDownState. */
   public RightCollectorDownState(Collector collector, Angle rightDownAngle, Angle leftUpAngle) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -30,10 +31,10 @@ public class RightCollectorDownState extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(!collector.getRightCollector().isCollectorDown()){
-      if(!collector.getLeftCollector().isCollectorDown()) {
+    if (!collector.getRightCollector().isCollectorDown()) {
+      if (!collector.getLeftCollector().isCollectorDown()) {
         collector.getRightCollector().setCollectorPos(rightDownAngle);
-      } else if(collector.getLeftCollector().isCollectorDown()){
+      } else if (collector.getLeftCollector().isCollectorDown()) {
         collector.getLeftCollector().setCollectorPos(leftUpAngle);
       }
     }
@@ -46,7 +47,8 @@ public class RightCollectorDownState extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(collector.getRightCollector().isCollectorDown() && !collector.getLeftCollector().isCollectorDown()){
+    if (collector.getRightCollector().isCollectorDown()
+        && !collector.getLeftCollector().isCollectorDown()) {
       return true;
     } else {
       return false;

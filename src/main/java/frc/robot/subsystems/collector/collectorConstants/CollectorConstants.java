@@ -4,13 +4,16 @@
 
 package frc.robot.subsystems.collector.collectorConstants;
 
-/** An Interface for collector constants*/
+/** An Interface for collector constants */
 public interface CollectorConstants {
   // Collector side
   public static enum side {
-    LEFT, RIGHT;
+    LEFT,
+    RIGHT;
   }
-  public static side collectorSide = frc.robot.subsystems.collector.collectorConstants.CollectorConstants.side.LEFT;
+
+  public static side collectorSide =
+      frc.robot.subsystems.collector.collectorConstants.CollectorConstants.side.LEFT;
 
   // Hardware ID's
   public static final int turnMotorID = 0;
@@ -105,7 +108,7 @@ public interface CollectorConstants {
     return turnkA;
   }
 
-  public default side getSide(){
+  public default side getSide() {
     return collectorSide;
   }
 }

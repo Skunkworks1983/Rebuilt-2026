@@ -3,7 +3,6 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems.collector;
-
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.units.measure.Angle;
@@ -39,7 +38,7 @@ public class CollectorModule extends SubsystemBase {
   @Override
   public void periodic() {
     collectorIO.updateInputs(inputs);
-    Logger.processInputs(getName() + getSide(), inputs);
+    Logger.processInputs(getName() + collectorIO.getSide(), inputs);
   }
 
   /**

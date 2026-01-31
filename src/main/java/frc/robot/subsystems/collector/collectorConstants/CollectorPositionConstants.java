@@ -10,11 +10,11 @@ import edu.wpi.first.units.measure.Angle;
 
 /** These are the collector positions, ONLY POSITIONS */
 public class CollectorPositionConstants {
-    // Collector Up positions
-    public final static Angle leftCollectorUpPos = Angle.ofBaseUnits(0.0, Degrees);
-    public final static Angle rightCollectorUpPos = Angle.ofBaseUnits(0.0, Degrees);
-    
-    // Collector Down Positions
-    public final static Angle leftCollectorDownPos = Angle.ofBaseUnits(0.0, Degrees);
-    public final static Angle rightCollectorDownPos = Angle.ofBaseUnits(0.0, Degrees);
+  // Collector Up positions
+  public static final Angle leftCollectorUpPos = Angle.ofBaseUnits(0.0, Degrees);
+  public static final Angle rightCollectorUpPos = Angle.ofBaseUnits(0.0, Degrees);
+
+  // Collector Down Positions
+  public static final Angle leftCollectorDownPos = Angle.ofBaseUnits(0.0, Degrees);
+  public static final Angle rightCollectorDownPos = Angle.ofBaseUnits(0.0, Degrees);
 }

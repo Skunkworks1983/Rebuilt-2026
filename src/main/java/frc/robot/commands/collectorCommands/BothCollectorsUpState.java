@@ -13,6 +13,7 @@ public class BothCollectorsUpState extends Command {
   private Collector collector;
   private Angle leftUpAngle;
   private Angle rightUpAngle;
+
   /** Creates a new BothCollectorsUpState. */
   public BothCollectorsUpState(Collector collector, Angle leftUpAngle, Angle rightUpAngle) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -30,10 +31,10 @@ public class BothCollectorsUpState extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(collector.getLeftCollector().isCollectorDown()) {
+    if (collector.getLeftCollector().isCollectorDown()) {
       collector.getLeftCollector().setCollectorPos(leftUpAngle);
     }
-    if(collector.getRightCollector().isCollectorDown()) {
+    if (collector.getRightCollector().isCollectorDown()) {
       collector.getRightCollector().setCollectorPos(rightUpAngle);
     }
   }
@@ -45,7 +46,8 @@ public class BothCollectorsUpState extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(!collector.getLeftCollector().isCollectorDown() && !collector.getRightCollector().isCollectorDown()){
+    if (!collector.getLeftCollector().isCollectorDown()
+        && !collector.getRightCollector().isCollectorDown()) {
       return true;
     } else {
       return false;

@@ -4,13 +4,16 @@
 
 package frc.robot.subsystems.collector.collectorConstants;
 
-/** This class is a grouping of constants with get methods
+/**
+ * This class is a grouping of constants with get methods
+ *
  * <ul>
- * Only to be used with The talonFX collector IO for the left collector
+ *   Only to be used with The talonFX collector IO for the left collector
  */
 public class CollectorTalonLeftConstants implements CollectorConstants {
   // Collector side
-  public static side collectorSide = frc.robot.subsystems.collector.collectorConstants.CollectorTalonLeftConstants.side.LEFT;
+  public static side collectorSide =
+      frc.robot.subsystems.collector.collectorConstants.CollectorTalonLeftConstants.side.LEFT;
 
   // Hardware ID's
   public static final int turnMotorID = 0;
@@ -106,7 +109,7 @@ public class CollectorTalonLeftConstants implements CollectorConstants {
     return turnkA;
   }
 
-  public frc.robot.subsystems.collector.collectorConstants.CollectorConstants.side getSide(){
+  public frc.robot.subsystems.collector.collectorConstants.CollectorConstants.side getSide() {
     return collectorSide;
   }
 }
