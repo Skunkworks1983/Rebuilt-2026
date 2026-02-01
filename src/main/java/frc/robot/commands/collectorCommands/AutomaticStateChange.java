@@ -34,7 +34,19 @@ public class AutomaticStateChange extends Command {
   @Override
   public void execute() {
     if(currDirection != lastDirection) {
-
+      if(currDirection > 0.0) { // if going right
+        if(!collector.getLeftCollector().isCollectorDown()){
+          collector.getRightCollector().goDown();
+        } else {
+          collector.getLeftCollector().goUp();;
+        }
+      } else if(currDirection < 0.0) { // if going left
+        if(!collector.getRightCollector().isCollectorDown()){
+          collector.getLeftCollector().goDown();
+        } else {
+          collector.getRightCollector().goUp();;
+        }
+      }
     } else if (currDirection == lastDirection) {
 
     }
