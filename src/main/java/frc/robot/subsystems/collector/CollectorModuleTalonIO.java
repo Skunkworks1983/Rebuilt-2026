@@ -105,12 +105,12 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     isDown = false;
 
     // Collector side
-    side = constants.getSide();
+    side = constants.collectorSide;
 
     // Instantiates all motors and hardware objects
-    turnMotor = new TalonFX(constants.getTurnMotorID());
-    intakeMotorLower = new TalonFX(constants.getIntakeMotorLowerID());
-    intakeMotorUpper = new TalonFX(constants.getIntakeMotorUpperID());
+    turnMotor = new TalonFX(constants.turnMotorID);
+    intakeMotorLower = new TalonFX(constants.intakeMotorLowerID);
+    intakeMotorUpper = new TalonFX(constants.intakeMotorUpperID);
 
     // 👀👀
     sound = new Orchestra();
@@ -123,12 +123,12 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
 
     // Pid Configs for Turn Motor
     var turnSlot0Configs = turnConfig.Slot0;
-    turnSlot0Configs.kP = constants.getTurnKp();
-    turnSlot0Configs.kD = constants.getTurnKd();
-    turnSlot0Configs.kI = constants.getTurnKi();
-    turnSlot0Configs.kS = constants.getTurnKs();
-    turnSlot0Configs.kV = constants.getTurnKv();
-    turnSlot0Configs.kA = constants.getTurnKa();
+    turnSlot0Configs.kP = constants.turnkP;
+    turnSlot0Configs.kD = constants.turnkD;
+    turnSlot0Configs.kI = constants.turnkI;
+    turnSlot0Configs.kS = constants.turnkS;
+    turnSlot0Configs.kV = constants.turnkV;
+    turnSlot0Configs.kA = constants.turnkA;
 
     // Motion Magic Configs for Turn Motor
     var turnMotionMagicConfig = turnConfig.MotionMagic;
@@ -140,18 +140,18 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
 
     // PID config for intakeMotorLower
     var lowerConfig = new TalonFXConfiguration();
-    lowerConfig.Slot0.kP = constants.getLowerKp();
-    lowerConfig.Slot0.kD = constants.getLowerKd();
-    lowerConfig.Slot0.kI = constants.getLowerKi();
+    lowerConfig.Slot0.kP = constants.lowerkP;
+    lowerConfig.Slot0.kD = constants.lowerkD;
+    lowerConfig.Slot0.kI = constants.lowerkI;
 
     // Applying Lower Intake Configs
     tryUntilOk(5, () -> intakeMotorLower.getConfigurator().apply(lowerConfig, 0.25));
 
     // PID config for intakeMotorUpper
     var upperConfig = new TalonFXConfiguration();
-    upperConfig.Slot0.kP = constants.getUpperKp();
-    upperConfig.Slot0.kD = constants.getUpperKd();
-    upperConfig.Slot0.kI = constants.getUpperKi();
+    upperConfig.Slot0.kP = constants.upperkP;
+    upperConfig.Slot0.kD = constants.upperkP;
+    upperConfig.Slot0.kI = constants.upperkI;
 
     // Applying Upper Intake Configs
     tryUntilOk(5, () -> intakeMotorUpper.getConfigurator().apply(upperConfig, 0.25));
@@ -234,8 +234,13 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
   }
 
   /**
-   * Gets the position of the collector <ul>
-   *                                                                                                                                                                                                                                                                          <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExYzBwYmd1MHEwMWZhejhubWY2emZ6Nmd3ZTkxN294eXFtcDBvaTM5byZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/rUxSaLgjcQbLO/giphy.gif" alt="Intake Lower🤔">
+   * Gets the position of the collector
+   *
+   * <ul>
+   *   <img
+   *   src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExYzBwYmd1MHEwMWZhejhubWY2emZ6Nmd3ZTkxN294eXFtcDBvaTM5byZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/rUxSaLgjcQbLO/giphy.gif"
+   *   alt="Intake Lower🤔">
+   *
    * @return -WPILib Angle
    */
   public Angle getPosition() {
@@ -244,7 +249,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
 
   /**
    * Gets the velocity of the collectors intake upper motor
-   *                                                      
+   *
    * @return -Angular Velocity
    */
   public AngularVelocity getVelocityOfIntakeLower() {
@@ -275,7 +280,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
    * @return -Turn motors gear ratio
    */
   public double getTurnGearRatio() {
-    return constants.getTurnMotorGearRatio();
+    return constants.turnMotorGearRatio;
   }
 
   /**
@@ -357,5 +362,15 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
   // Gets side i.e: left
   public side getSide() {
     return side;
+  }
+
+  // Sets collector up
+  public void goUp() {
+    setCollectorPosition(constants.CollectorUpPos);
+  }
+
+  // Sets collector down
+  public void goDown() {
+    setCollectorPosition(constants.CollectorDownPos);
   }
 }

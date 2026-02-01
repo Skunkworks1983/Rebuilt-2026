@@ -32,10 +32,10 @@ public class BothCollectorsUpState extends Command {
   @Override
   public void execute() {
     if (collector.getLeftCollector().isCollectorDown()) {
-      collector.getLeftCollector().setCollectorPos(leftUpAngle);
+      collector.getLeftCollector().goUp();;
     }
     if (collector.getRightCollector().isCollectorDown()) {
-      collector.getRightCollector().setCollectorPos(rightUpAngle);
+      collector.getRightCollector().goUp();;
     }
   }
 

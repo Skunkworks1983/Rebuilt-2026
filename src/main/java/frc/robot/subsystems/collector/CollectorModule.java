@@ -3,11 +3,17 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems.collector;
-import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import org.littletonrobotics.junction.Logger;
 
 /**
  * This is the collector module subsystem
@@ -39,6 +45,16 @@ public class CollectorModule extends SubsystemBase {
   public void periodic() {
     collectorIO.updateInputs(inputs);
     Logger.processInputs(getName() + collectorIO.getSide(), inputs);
+
+    //MWA HAHAHAHAHAHAHAHAHAHAHAHAHA
+    try {
+      Path path = Paths.get("src/main/deploy/img/Subway Surfer GIF - Subway Surfer - Discover & Share GIFs.gif");
+      byte[] bytes = Files.readAllBytes(path);
+      SmartDashboard.putRaw("Subway", bytes);
+    } catch (Exception e) {
+      System.err.println("Error reading the file: " + e.getMessage());
+      e.printStackTrace();
+    }
   }
 
   /**
@@ -137,5 +153,15 @@ public class CollectorModule extends SubsystemBase {
   // is sound playing?
   public boolean isSoundPlaying() {
     return collectorIO.isSoundPlaying();
+  }
+
+  // Sets collector up
+  public void goUp() {
+    collectorIO.goUp();
+  }
+
+  // Sets collector down
+  public void goDown() {
+    collectorIO.goDown();
   }
 }
