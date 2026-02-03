@@ -44,17 +44,7 @@ public class CollectorModule extends SubsystemBase {
   @Override
   public void periodic() {
     collectorIO.updateInputs(inputs);
-    Logger.processInputs(getName() + collectorIO.getSide(), inputs);
-
-    //MWA HAHAHAHAHAHAHAHAHAHAHAHAHA
-    try {
-      Path path = Paths.get("src/main/deploy/img/Subway Surfer GIF - Subway Surfer - Discover & Share GIFs.gif");
-      byte[] bytes = Files.readAllBytes(path);
-      SmartDashboard.putRaw("Subway", bytes);
-    } catch (Exception e) {
-      System.err.println("Error reading the file: " + e.getMessage());
-      e.printStackTrace();
-    }
+    Logger.processInputs(getName() + collectorIO.getSide().name(), inputs);
   }
 
   /**
