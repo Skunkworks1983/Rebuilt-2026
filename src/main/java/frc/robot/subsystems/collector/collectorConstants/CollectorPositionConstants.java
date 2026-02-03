@@ -5,8 +5,10 @@
 package frc.robot.subsystems.collector.collectorConstants;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.DegreesPerSecond;
 
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
 
 /** These are the collector positions, ONLY POSITIONS */
 public class CollectorPositionConstants {
@@ -17,4 +19,10 @@ public class CollectorPositionConstants {
   // Collector Down Positions
   public static final Angle leftCollectorDownPos = Angle.ofBaseUnits(0.0, Degrees);
   public static final Angle rightCollectorDownPos = Angle.ofBaseUnits(0.0, Degrees);
+
+  // Collector Intake Speeds
+  public static final AngularVelocity leftCollecterIntakeSpeed =
+    AngularVelocity.ofBaseUnits(3600, DegreesPerSecond);
+  public static final AngularVelocity rightCollectorIntakeSpeed =
+    AngularVelocity.ofBaseUnits(3600, DegreesPerSecond);
 }

@@ -68,4 +68,9 @@ public class GyroIOPigeon2 implements GyroIO {
     yawTimestampQueue.clear();
     yawPositionQueue.clear();
   }
+
+  public double getDirection() {
+    double grav = pigeon.getGravityVectorX().getValueAsDouble();
+    return grav;
+  }
 }

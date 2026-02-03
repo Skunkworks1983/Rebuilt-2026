@@ -4,6 +4,10 @@
 
 package frc.robot.subsystems.collector.collectorConstants;
 
+import static edu.wpi.first.units.Units.Degrees;
+
+import edu.wpi.first.units.measure.Angle;
+
 /**
  * This class is a grouping of constants with get methods
  *
@@ -43,73 +47,7 @@ public class CollectorTalonLeftConstants implements CollectorConstants {
   public static final double turnkV = 0.12;
   public static final double turnkA = 0.01;
 
-  @Override
-  // Get methods for all constants
-  public int getTurnMotorID() {
-    return turnMotorID;
-  }
-
-  public int intakeMotorLowerID() {
-    return intakeMotorLowerID;
-  }
-
-  public int intakeMotorUpperID() {
-    return intakeMotorUpperID;
-  }
-
-  public double getTurnMotorGearRatio() {
-    return turnMotorGearRatio;
-  }
-
-  public double getTurnKp() {
-    return turnkP;
-  }
-
-  public double getTurnKd() {
-    return turnkD;
-  }
-
-  public double getTurnKi() {
-    return turnkI;
-  }
-
-  public double getLowerKp() {
-    return lowerkP;
-  }
-
-  public double getLowerKd() {
-    return lowerkD;
-  }
-
-  public double getLowerKi() {
-    return lowerkI;
-  }
-
-  public double getUpperKp() {
-    return upperkP;
-  }
-
-  public double getUpperKd() {
-    return turnkD;
-  }
-
-  public double getUpperKi() {
-    return turnkI;
-  }
-
-  public double getTurnKs() {
-    return turnkS;
-  }
-
-  public double getTurnKv() {
-    return turnkV;
-  }
-
-  public double getTurnKa() {
-    return turnkA;
-  }
-
-  public frc.robot.subsystems.collector.collectorConstants.CollectorConstants.side getSide() {
-    return collectorSide;
-  }
+  //Position
+  public static final Angle CollectorUpPos = Angle.ofBaseUnits(0.0, Degrees);
+  public static final Angle CollectorDownPos = Angle.ofBaseUnits(0.0, Degrees);
 }

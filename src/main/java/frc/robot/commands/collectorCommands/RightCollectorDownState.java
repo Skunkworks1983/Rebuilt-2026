@@ -4,31 +4,19 @@
 
 package frc.robot.commands.collectorCommands;
 
-import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
-
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.collector.Collector;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class RightCollectorDownState extends Command {
   private Collector collector;
-  private Angle rightDownAngle;
-  private Angle leftUpAngle;
 
   /** Creates a new RightCollectorDownState. */
-  public RightCollectorDownState(Collector collector, Angle rightDownAngle, Angle leftUpAngle) {
+  public RightCollectorDownState(Collector collector) {
     // Use addRequirements() here to declare subsystem dependencies.
-    SmartDashboard.putNumber("rightDownAngle", rightDownAngle.in(Degrees));
     this.collector = collector;
     addRequirements(collector);
-
-    this.rightDownAngle = rightDownAngle;
-    this.leftUpAngle = leftUpAngle;
   }
 
   // Called when the command is initially scheduled.
@@ -36,17 +24,16 @@ public class RightCollectorDownState extends Command {
   public void initialize() {
     if (!collector.getRightCollector().isCollectorDown()) {
       if (!collector.getLeftCollector().isCollectorDown()) {
-        collector.getRightCollector().setCollectorPos(rightDownAngle);
+        collector.getRightCollector().goDown();;
       } else if (collector.getLeftCollector().isCollectorDown()) {
-        collector.getLeftCollector().setCollectorPos(leftUpAngle);
+        collector.getLeftCollector().goUp();;
       }
     }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override

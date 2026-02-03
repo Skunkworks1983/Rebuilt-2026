@@ -6,7 +6,14 @@ package frc.robot.subsystems.collector;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import org.littletonrobotics.junction.Logger;
 import frc.robot.subsystems.collector.collectorConstants.CollectorConstants.side;
 import org.littletonrobotics.junction.Logger;
 
@@ -39,7 +46,7 @@ public class CollectorModule extends SubsystemBase {
   @Override
   public void periodic() {
     collectorIO.updateInputs(inputs);
-    Logger.processInputs(getName() + collectorIO.getSide(), inputs);
+    Logger.processInputs(getName() + collectorIO.getSide().name(), inputs);
   }
 
   /**
@@ -138,6 +145,16 @@ public class CollectorModule extends SubsystemBase {
   // is sound playing?
   public boolean isSoundPlaying() {
     return collectorIO.isSoundPlaying();
+  }
+
+  // Sets collector up
+  public void goUp() {
+    collectorIO.goUp();
+  }
+
+  // Sets collector down
+  public void goDown() {
+    collectorIO.goDown();
   }
 
   public side getSide() {

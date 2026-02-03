@@ -11,33 +11,28 @@ import frc.robot.subsystems.collector.Collector;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class BothCollectorsUpState extends Command {
   private Collector collector;
-  private Angle leftUpAngle;
-  private Angle rightUpAngle;
 
   /** Creates a new BothCollectorsUpState. */
-  public BothCollectorsUpState(Collector collector, Angle leftUpAngle, Angle rightUpAngle) {
+  public BothCollectorsUpState(Collector collector) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.collector = collector;
     addRequirements(collector);
-
-    this.leftUpAngle = leftUpAngle;
-    this.rightUpAngle = rightUpAngle;
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    if (collector.getLeftCollector().isCollectorDown()) {
+      collector.getLeftCollector().goUp();
+    }
+    if (collector.getRightCollector().isCollectorDown()) {
+      collector.getRightCollector().goUp();
+    }
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    if (collector.getLeftCollector().isCollectorDown()) {
-      collector.getLeftCollector().setCollectorPos(leftUpAngle);
-    }
-    if (collector.getRightCollector().isCollectorDown()) {
-      collector.getRightCollector().setCollectorPos(rightUpAngle);
-    }
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override

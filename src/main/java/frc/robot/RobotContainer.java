@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.TestPathCommands;
 import frc.robot.commands.collectorCommands.BothCollectorsUpState;
+import frc.robot.commands.collectorCommands.CollectorIntake;
 import frc.robot.commands.collectorCommands.HoldPositionCommand;
 import frc.robot.commands.collectorCommands.LeftCollectorDownState;
 import frc.robot.commands.collectorCommands.RightCollectorDownState;
@@ -265,29 +266,29 @@ public class RobotContainer {
         .and(autoMode.negate())
         .onTrue(Commands.runOnce(() -> collector.changeState(State.ALWAYSUP), collector));
 
+    // Collector Intake Button
+    new JoystickButton(buttonPanel, 0)
+      .whileTrue(new CollectorIntake(collector));
+
     // Collector State Controll
     switch (collector.getState()) {
       case ALWAYSUP:
         // Both Collectors will always be up
-        new BothCollectorsUpState(collector, null, null);
+        new BothCollectorsUpState(collector);
         break;
 
       case MANUAL:
         // Right Collector Down
-        new JoystickButton(buttonPanel, 1)
-            .onTrue(
-                new RightCollectorDownState(
-                    collector, Degrees.of(90), Degrees.of(0)));
+        new JoystickButton(buttonPanel, 0)
+            .onTrue(new RightCollectorDownState(collector));
 
         // Left Collector Down
-        new JoystickButton(buttonPanel, 2)
-            .onTrue(
-                new LeftCollectorDownState(
-                    collector, Degrees.of(90), Degrees.of(0)));
+        new JoystickButton(buttonPanel, 0)
+            .onTrue(new LeftCollectorDownState(collector));
 
         // Both Collectors Up
         new JoystickButton(leftJoystick, 0)
-            .onTrue(new BothCollectorsUpState(collector, null, null));
+            .onTrue(new BothCollectorsUpState(collector));
         break;
 
       case AUTOMATIC:

@@ -4,7 +4,16 @@
 
 package frc.robot.subsystems.collector.collectorConstants;
 
-/** An Interface for collector constants */
+import static edu.wpi.first.units.Units.Degrees;
+
+import edu.wpi.first.units.measure.Angle;
+
+/**
+ * An Interface for collector constants
+ *
+ * <ul>
+ *   <img src="https://i.imgur.com/jjVNwSS.gif" alt="Constants🚀">
+ */
 public interface CollectorConstants {
   // Collector side
   public static enum side {
@@ -43,72 +52,7 @@ public interface CollectorConstants {
   public static final double turnkV = 0.12;
   public static final double turnkA = 0.01;
 
-  // Get methods for all constants
-  public default int getTurnMotorID() {
-    return turnMotorID;
-  }
-
-  public default int getIntakeMotorLowerID() {
-    return intakeMotorLowerID;
-  }
-
-  public default int getIntakeMotorUpperID() {
-    return intakeMotorUpperID;
-  }
-
-  public default double getTurnMotorGearRatio() {
-    return turnMotorGearRatio;
-  }
-
-  public default double getTurnKp() {
-    return turnkP;
-  }
-
-  public default double getTurnKd() {
-    return turnkD;
-  }
-
-  public default double getTurnKi() {
-    return turnkI;
-  }
-
-  public default double getLowerKp() {
-    return lowerkP;
-  }
-
-  public default double getLowerKd() {
-    return lowerkD;
-  }
-
-  public default double getLowerKi() {
-    return lowerkI;
-  }
-
-  public default double getUpperKp() {
-    return upperkP;
-  }
-
-  public default double getUpperKd() {
-    return turnkD;
-  }
-
-  public default double getUpperKi() {
-    return turnkI;
-  }
-
-  public default double getTurnKs() {
-    return turnkS;
-  }
-
-  public default double getTurnKv() {
-    return turnkV;
-  }
-
-  public default double getTurnKa() {
-    return turnkA;
-  }
-
-  public default side getSide() {
-    return collectorSide;
-  }
+  //Position
+  public static final Angle CollectorUpPos = Angle.ofBaseUnits(0.0, Degrees);
+  public static final Angle CollectorDownPos = Angle.ofBaseUnits(0.0, Degrees);
 }

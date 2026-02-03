@@ -139,4 +139,10 @@ public interface CollectorModuleIO {
   public default side getSide() {
     return null;
   }
+
+  // Sets collector up
+  public default void goUp() {}
+
+  // Sets collector down
+  public default void goDown() {}
 }
