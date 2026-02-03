@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.commands.DriveAimedGoal;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.TestPathCommands;
 import frc.robot.subsystems.drive.Drive;
@@ -243,7 +244,7 @@ public class RobotContainer {
       Trigger shootButton = new JoystickButton(rightJoystick, 1);
 
       shootGoalButton.whileTrue(
-          DriveCommands.joystickDriveAimedHub(
+          DriveAimedGoal.joystickDriveAimedHub(
               drive, shooter, () -> -leftJoystick.getY(), () -> -leftJoystick.getX()));
       shootButton.onTrue(new InstantCommand(this::launchSimFuel));
 
@@ -258,7 +259,7 @@ public class RobotContainer {
       Trigger shootButton = new JoystickButton(xboxController, XboxController.Button.kB.value);
 
       shootGoalButton.whileTrue(
-          DriveCommands.joystickDriveAimedHub(
+          DriveAimedGoal.joystickDriveAimedHub(
               drive, shooter, () -> -xboxController.getLeftY(), () -> -xboxController.getLeftX()));
       shootButton.onTrue(new InstantCommand(this::launchSimFuel));
     }
