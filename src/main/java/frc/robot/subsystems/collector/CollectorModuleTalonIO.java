@@ -295,7 +295,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
    *
    * @param angle -WPILib Angle
    */
-  public void setCollectorPosition(Angle angle) {
+  public void setCollectorPos(Angle angle) {
     turnMotor.setControl(new PositionVoltage(angle).withSlot(0));
   }
 
@@ -366,11 +366,11 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
 
   // Sets collector up
   public void goUp() {
-    setCollectorPosition(constants.CollectorUpPos);
+    setCollectorPos(constants.CollectorUpPos);
   }
 
   // Sets collector down
   public void goDown() {
-    setCollectorPosition(constants.CollectorDownPos);
+    setCollectorPos(constants.CollectorDownPos);
   }
 }

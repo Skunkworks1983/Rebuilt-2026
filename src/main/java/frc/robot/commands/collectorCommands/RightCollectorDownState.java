@@ -24,9 +24,9 @@ public class RightCollectorDownState extends Command {
   public void initialize() {
     if (!collector.getRightCollector().isCollectorDown()) {
       if (!collector.getLeftCollector().isCollectorDown()) {
-        collector.getRightCollector().goDown();;
+        collector.getRightCollector().goDown();
       } else if (collector.getLeftCollector().isCollectorDown()) {
-        collector.getLeftCollector().goUp();;
+        collector.getLeftCollector().goUp();
       }
     }
   }

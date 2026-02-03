@@ -1,5 +1,6 @@
 package frc.robot.subsystems.collector;
 
+import static edu.wpi.first.units.Units.Degree;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Radians;
@@ -240,5 +241,17 @@ public class CollectorModuleSimIO implements CollectorModuleIO {
     }
 
     return null;
+  }
+
+  // Sets collector up
+  @Override
+  public void goUp() {
+    setCollectorPos(Angle.ofBaseUnits(90, Degrees));
+  }
+
+  // Sets collector down
+  @Override
+  public void goDown() {
+    setCollectorPos(Angle.ofBaseUnits(0, Degrees));
   }
 }

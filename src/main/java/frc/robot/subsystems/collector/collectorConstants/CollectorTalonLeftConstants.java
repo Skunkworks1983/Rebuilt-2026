@@ -48,6 +48,6 @@ public class CollectorTalonLeftConstants implements CollectorConstants {
   public static final double turnkA = 0.01;
 
   //Position
-  public static final Angle CollectorUpPos = Angle.ofBaseUnits(0.0, Degrees);
-  public static final Angle CollectorDownPos = Angle.ofBaseUnits(0.0, Degrees);
+  public static final Angle CollectorUpPos = Angle.ofBaseUnits(90, Degrees);
+  public static final Angle CollectorDownPos = Angle.ofBaseUnits(0, Degrees);
 }

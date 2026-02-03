@@ -267,7 +267,7 @@ public class RobotContainer {
         .onTrue(Commands.runOnce(() -> collector.changeState(State.ALWAYSUP), collector));
 
     // Collector Intake Button
-    new JoystickButton(buttonPanel, 0)
+    new JoystickButton(buttonPanel, 4)
       .whileTrue(new CollectorIntake(collector));
 
     // Collector State Controll
@@ -279,15 +279,15 @@ public class RobotContainer {
 
       case MANUAL:
         // Right Collector Down
-        new JoystickButton(buttonPanel, 0)
+        new JoystickButton(buttonPanel, 1)
             .onTrue(new RightCollectorDownState(collector));
 
         // Left Collector Down
-        new JoystickButton(buttonPanel, 0)
+        new JoystickButton(buttonPanel, 2)
             .onTrue(new LeftCollectorDownState(collector));
 
         // Both Collectors Up
-        new JoystickButton(leftJoystick, 0)
+        new JoystickButton(leftJoystick, 3)
             .onTrue(new BothCollectorsUpState(collector));
         break;
 
