@@ -142,6 +142,8 @@ public class Robot extends LoggedRobot {
     if (autonomousCommand != null) {
       autonomousCommand.cancel();
     }
+
+    MatchHelpers.teleopInit();
   }
 
   /** This function is called periodically during operator control. */
