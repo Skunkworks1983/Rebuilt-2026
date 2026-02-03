@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Collector extends SubsystemBase {
 
   private CollectorModule[] collectors = new CollectorModule[2];
+
   public static enum State {
     MANUAL,
     AUTOMATIC,

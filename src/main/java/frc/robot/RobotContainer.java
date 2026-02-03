@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Degrees;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -27,6 +29,7 @@ import frc.robot.commands.collectorCommands.HoldPositionCommand;
 import frc.robot.commands.collectorCommands.LeftCollectorDownState;
 import frc.robot.commands.collectorCommands.RightCollectorDownState;
 import frc.robot.subsystems.collector.Collector;
+import frc.robot.subsystems.collector.Collector.State;
 import frc.robot.subsystems.collector.CollectorModuleSimIO;
 import frc.robot.subsystems.collector.CollectorModuleTalonIO;
 import frc.robot.subsystems.collector.collectorConstants.CollectorTalonLeftConstants;
@@ -43,11 +46,6 @@ import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
-
-import static edu.wpi.first.units.Units.Degrees;
-
-import java.lang.invoke.SwitchPoint;
-
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
@@ -253,7 +251,7 @@ public class RobotContainer {
 
     TestPathCommands.publishTestPaths(drive);
 
-    collector.setDefaultCommand(new HoldPositionCommand(collector));
+    //collector.setDefaultCommand(new HoldPositionCommand(collector));
 
     // State Butoons
     JoystickButton manualMode = new JoystickButton(buttonPanel, 0);
@@ -277,11 +275,15 @@ public class RobotContainer {
       case MANUAL:
         // Right Collector Down
         new JoystickButton(buttonPanel, 1)
-          .onTrue(new RightCollectorDownState(collector, Angle.ofBaseUnits(90, Degrees), Angle.ofBaseUnits(0, Degrees)));
+            .onTrue(
+                new RightCollectorDownState(
+                    collector, Degrees.of(90), Degrees.of(0)));
 
         // Left Collector Down
-        new JoystickButton(buttonPanel, 0)
-            .onTrue(new LeftCollectorDownState(collector, null, null));
+        new JoystickButton(buttonPanel, 2)
+            .onTrue(
+                new LeftCollectorDownState(
+                    collector, Degrees.of(90), Degrees.of(0)));
 
         // Both Collectors Up
         new JoystickButton(leftJoystick, 0)

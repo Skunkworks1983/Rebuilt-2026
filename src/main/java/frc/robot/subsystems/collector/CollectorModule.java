@@ -3,11 +3,12 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems.collector;
-import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.collector.collectorConstants.CollectorConstants.side;
+import org.littletonrobotics.junction.Logger;
 
 /**
  * This is the collector module subsystem
@@ -139,7 +140,7 @@ public class CollectorModule extends SubsystemBase {
     return collectorIO.isSoundPlaying();
   }
 
-  public int getSide() {
+  public side getSide() {
     return collectorIO.getSide();
   }
 }

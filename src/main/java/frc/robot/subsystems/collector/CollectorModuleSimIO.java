@@ -1,18 +1,22 @@
 package frc.robot.subsystems.collector;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.collector.collectorConstants.CollectorConstants.side;
-
 import org.ironmaple.simulation.IntakeSimulation;
 import org.ironmaple.simulation.drivesims.AbstractDriveTrainSimulation;
 
@@ -26,9 +30,20 @@ public class CollectorModuleSimIO implements CollectorModuleIO {
   private boolean isCollectorSimDown;
 
   final double minimumCollectorRotationToCollect = 1.4;
-  final double minimumCollectorSpeedToCollect = 1;
+  final double minimumCollectorSpeedToCollect = 5;
 
   int c = 0;
+
+  double turnKp = 0.5;
+  double turnKd = 0.4;
+  double turnKi = 0.02;
+
+  double intakeKp = 0.5;
+  double intakeKd = 0;
+  double intakeKi = 0;
+
+  PIDController turnMotorPid = new PIDController(turnKp, turnKi, turnKd);
+  PIDController intakeMotorsPid = new PIDController(intakeKp, intakeKi, intakeKd);
 
   public CollectorModuleSimIO(AbstractDriveTrainSimulation driveTrain, int collectorSide) {
     c = collectorSide;
@@ -56,12 +71,13 @@ public class CollectorModuleSimIO implements CollectorModuleIO {
               1);
     }
 
-    LinearSystem linearSystem = LinearSystemId.createDCMotorSystem(1, 1);
+    LinearSystem linearSystemIntakeMotors = LinearSystemId.createDCMotorSystem(0.002, 0.02);
+    LinearSystem linearSystemTurnMotor = LinearSystemId.createDCMotorSystem(1, 1);
     double[] stdevs = {0.001, 0.001};
 
-    intakeMotorLowerSim = new DCMotorSim(linearSystem, DCMotor.getKrakenX44(1), stdevs);
-    intakeMotorUpperSim = new DCMotorSim(linearSystem, DCMotor.getKrakenX44(1), stdevs);
-    turnMotorSim = new DCMotorSim(linearSystem, DCMotor.getKrakenX44(1), stdevs);
+    intakeMotorLowerSim = new DCMotorSim(linearSystemIntakeMotors, DCMotor.getKrakenX60(1), stdevs);
+    intakeMotorUpperSim = new DCMotorSim(linearSystemIntakeMotors, DCMotor.getKrakenX60(1), stdevs);
+    turnMotorSim = new DCMotorSim(linearSystemTurnMotor, DCMotor.getKrakenX60(1), stdevs);
   }
 
   /**
@@ -72,7 +88,7 @@ public class CollectorModuleSimIO implements CollectorModuleIO {
   public boolean isFuelInsideCollector() {
     return collectorSimulation.getGamePiecesAmount() != 0;
   }
-
+  double j;
   /**
    * Updates our inputs for all motors
    *
@@ -80,6 +96,14 @@ public class CollectorModuleSimIO implements CollectorModuleIO {
    */
   @Override
   public void updateInputs(CollectorIOInputs input) {
+    // Update simulations and input voltage for motors
+    turnMotorSim.update(0.02);
+    turnMotorSim.setInputVoltage(turnMotorPid.calculate(turnMotorSim.getAngularPosition().in(Degrees)));
+    intakeMotorLowerSim.update(0.02);
+    intakeMotorLowerSim.setInputVoltage(intakeMotorsPid.calculate(intakeMotorLowerSim.getAngularVelocityRadPerSec()));
+    intakeMotorUpperSim.update(0.02);
+    intakeMotorUpperSim.setInputVoltage(intakeMotorsPid.calculate(intakeMotorUpperSim.getAngularVelocityRadPerSec()));
+
     // Turn Motor Inputs
     input.turnConnected = true;
     input.turnPosition = Rotation2d.fromRadians(turnMotorSim.getAngularPositionRad());
@@ -159,8 +183,8 @@ public class CollectorModuleSimIO implements CollectorModuleIO {
    */
   @Override
   public void setCollectorVelocity(AngularVelocity velocity) {
-    intakeMotorLowerSim.setAngularVelocity(velocity.in(RadiansPerSecond));
-    intakeMotorUpperSim.setAngularVelocity(velocity.in(RadiansPerSecond));
+
+    intakeMotorsPid.setSetpoint(velocity.in(RadiansPerSecond));
 
     /* checks if the collector is in the right position and if the motors are spinning fast
      * enough, if both are true starts the intake of balls and if not stops it. */
@@ -180,7 +204,8 @@ public class CollectorModuleSimIO implements CollectorModuleIO {
    */
   @Override
   public void setCollectorPos(Angle angle) {
-    turnMotorSim.setAngle(angle.in(Radians));
+    double angleInDegrees = angle.in(Degrees);
+    turnMotorPid.setSetpoint(angleInDegrees);
   }
 
   /**
@@ -195,21 +220,25 @@ public class CollectorModuleSimIO implements CollectorModuleIO {
 
   /**
    * Checks to see if the collector is down This is to help ensure that we only have one collector
-   * down at a time
-   *                                                                                                                                                                                                                                                        <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdDFzenczMGJqdHFkcm96dnF0Z2V4OXlwazNocHJlMWJlaW96MWRkMCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/DLXpRiR7xSXT2/giphy.gif" alt="is the collector down 🤷‍♂️🤷‍♂️🥶😰😱">
+   * down at a time <img
+   * src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdDFzenczMGJqdHFkcm96dnF0Z2V4OXlwazNocHJlMWJlaW96MWRkMCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/DLXpRiR7xSXT2/giphy.gif"
+   * alt=":()">
    */
   @Override
   public boolean isCollectorDown() {
-    if (turnMotorSim.getAngularPositionRad() > minimumCollectorRotationToCollect) {
-      isCollectorSimDown = true;
-    } else {
-      isCollectorSimDown = false;
-    }
-    return isCollectorSimDown;
+    return turnMotorSim.getAngularPositionRad() > minimumCollectorRotationToCollect;
   }
 
+  /** */
   @Override
-  public int getSide() {
-    return c;
+  public side getSide() {
+    if (c == 0) {
+      return side.LEFT;
+    }
+    if (c == 1) {
+      return side.RIGHT;
+    }
+
+    return null;
   }
 }

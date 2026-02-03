@@ -4,7 +4,13 @@
 
 package frc.robot.commands.collectorCommands;
 
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.collector.Collector;
 
@@ -17,6 +23,7 @@ public class RightCollectorDownState extends Command {
   /** Creates a new RightCollectorDownState. */
   public RightCollectorDownState(Collector collector, Angle rightDownAngle, Angle leftUpAngle) {
     // Use addRequirements() here to declare subsystem dependencies.
+    SmartDashboard.putNumber("rightDownAngle", rightDownAngle.in(Degrees));
     this.collector = collector;
     addRequirements(collector);
 
@@ -26,11 +33,7 @@ public class RightCollectorDownState extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
+  public void initialize() {
     if (!collector.getRightCollector().isCollectorDown()) {
       if (!collector.getLeftCollector().isCollectorDown()) {
         collector.getRightCollector().setCollectorPos(rightDownAngle);
@@ -38,6 +41,11 @@ public class RightCollectorDownState extends Command {
         collector.getLeftCollector().setCollectorPos(leftUpAngle);
       }
     }
+  }
+
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
   }
 
   // Called once the command ends or is interrupted.
