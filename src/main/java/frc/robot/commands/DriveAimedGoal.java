@@ -31,16 +31,14 @@ public class DriveAimedGoal {
 
               Logger.recordOutput(
                   "Auto Shoot/Drive Yaw Setpoint", controls.driveYaw().getRadians());
-              double omegaRadiansPerSecond =
+              double omegaSetpoint =
                   angleController.calculate(
                       drive.getRotation().getRadians(), controls.driveYaw().getRadians());
-
-              Logger.recordOutput("Auto Shoot/Drive Yaw PID Calculated", omegaRadiansPerSecond);
 
               boolean isRed = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red;
 
               ChassisSpeeds desiredSpeeds =
-                  DriveUtils.getChassisSpeeds(drive, xSupplier, ySupplier, omegaRadiansPerSecond);
+                  DriveUtils.getChassisSpeeds(drive, xSupplier, ySupplier, omegaSetpoint);
 
               drive.runVelocity(
                   ChassisSpeeds.fromFieldRelativeSpeeds(
@@ -48,6 +46,9 @@ public class DriveAimedGoal {
                       isRed
                           ? drive.getRotation().plus(Rotation2d.fromRadians(Math.PI))
                           : drive.getRotation()));
+
+              boolean canShoot =
+                  shooter.canShoot() && omegaSetpoint < DriveControlConstants.yawSetpointTolerance;
             },
             drive,
             shooter)
