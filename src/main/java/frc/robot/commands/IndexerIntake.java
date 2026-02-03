@@ -18,6 +18,7 @@ public class IndexerIntake extends Command {
   public IndexerIntake(Indexer indexer) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.indexer = indexer;
+    addRequirements(indexer);
   }
 
   // Called when the command is initially scheduled.

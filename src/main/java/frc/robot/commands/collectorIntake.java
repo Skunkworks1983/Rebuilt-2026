@@ -11,13 +11,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.kitCollector.Collector;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class collectorIntake extends Command {
+public class CollectorIntake extends Command {
   private Collector collector;
 
   /** Creates a new collectorIntake. */
-  public collectorIntake(Collector collector) {
+  public CollectorIntake(Collector collector) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.collector = collector;
+    addRequirements(collector);
   }
 
   // Called when the command is initially scheduled.

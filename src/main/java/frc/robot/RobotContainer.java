@@ -23,7 +23,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.commands.CollectorIntake;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.IndexerIntake;
 import frc.robot.commands.SimpleShoot;
 import frc.robot.commands.TestPathCommands;
 import frc.robot.subsystems.drive.Drive;
@@ -33,6 +35,10 @@ import frc.robot.subsystems.drive.GyroIOSim;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.drive.ModuleIOTalonFXSim;
+import frc.robot.subsystems.kitCollector.Collector;
+import frc.robot.subsystems.kitCollector.CollectorTalonIO;
+import frc.robot.subsystems.kitIndexer.Indexer;
+import frc.robot.subsystems.kitIndexer.IndexerTalonIO;
 import frc.robot.subsystems.simpleShooter.FlywheelIO;
 import frc.robot.subsystems.simpleShooter.FlywheelIOSim;
 import frc.robot.subsystems.simpleShooter.FlywheelIOTalonFX;
@@ -60,10 +66,13 @@ public class RobotContainer {
   private final Drive drive;
   private final Vision vision;
   private final Shooter shooter;
+  private final Indexer indexer;
+  private final Collector collector;
 
   // Controller
   private final Joystick leftJoystick;
   private final Joystick rightJoystick;
+  private final Joystick buttonJoystick;
 
   /**
    * Xbox Controller for simulation.
@@ -84,11 +93,13 @@ public class RobotContainer {
     if (Constants.controlScheme == Constants.ControlScheme.OI) {
       leftJoystick = new Joystick(0);
       rightJoystick = new Joystick(1);
+      buttonJoystick = new Joystick(2);
       xboxController = null;
     } else {
       xboxController = new XboxController(0);
       leftJoystick = null;
       rightJoystick = null;
+      buttonJoystick = null;
     }
     switch (Constants.currentMode) {
       case REAL:
@@ -136,6 +147,9 @@ public class RobotContainer {
         // new ModuleIOTalonFXS(TunerConstants.FrontRight),
         // new ModuleIOTalonFXS(TunerConstants.BackLeft),
         // new ModuleIOTalonFXS(TunerConstants.BackRight));
+
+        indexer = new Indexer(new IndexerTalonIO());
+        collector = new Collector(new CollectorTalonIO());
         break;
 
       case SIM:
@@ -174,6 +188,9 @@ public class RobotContainer {
                 new FlywheelIOSim(ShooterConstants.forwardFlywheelId),
                 new FlywheelIOSim(ShooterConstants.backFlywheelId));
 
+        indexer = null;
+        collector = null;
+
         break;
 
       default:
@@ -191,6 +208,9 @@ public class RobotContainer {
         vision = new Vision(drive, new VisionIO() {}, new VisionIO() {});
 
         shooter = new Shooter(new FlywheelIO() {}, new FlywheelIO() {});
+
+        collector = null;
+        indexer = null;
 
         break;
     }
@@ -227,6 +247,9 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Default command, normal field-relative drive
+    JoystickButton collectorIntake;
+    JoystickButton indexerIntake;
+
     if (Constants.controlScheme == Constants.ControlScheme.OI) {
       drive.setDefaultCommand(
           DriveCommands.joystickDrive(
@@ -234,6 +257,9 @@ public class RobotContainer {
               () -> -leftJoystick.getY(), // -X (used to be)
               () -> -leftJoystick.getX(), // -Y (used to be)
               () -> rightJoystick.getX())); // Confirm if negitive or not
+
+      collectorIntake = new JoystickButton(buttonJoystick, Constants.collectorIntakeButtonID);
+      indexerIntake = new JoystickButton(buttonJoystick, Constants.IndexerIntakeButtonID);
 
       Trigger shoot = new JoystickButton(leftJoystick, 1);
       Trigger alignShot = new JoystickButton(rightJoystick, 1);
@@ -250,7 +276,14 @@ public class RobotContainer {
               () -> -xboxController.getLeftY(),
               () -> -xboxController.getLeftX(),
               () -> -xboxController.getRightX()));
+
+      collectorIntake = new JoystickButton(xboxController, 1);
+      indexerIntake = new JoystickButton(xboxController, 2);
     }
+
+    collectorIntake.whileTrue(new CollectorIntake(collector));
+    indexerIntake.whileTrue(new IndexerIntake(indexer));
+
     Logger.recordOutput("Control Scheme", Constants.controlScheme);
 
     TestPathCommands.publishTestPaths(drive);
