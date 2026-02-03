@@ -52,6 +52,6 @@ public class DriveAimedGoal {
             drive,
             shooter)
         // Reset PID when command initializes to prevent "kick"
-        .beforeStarting(() -> angleController.reset());
+        .beforeStarting(() -> angleController.reset()).finallyDo(()->{angleController.close();});
   }
 }
