@@ -7,7 +7,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.generated.TunerConstants;
 
 /**
@@ -17,7 +16,7 @@ import frc.robot.generated.TunerConstants;
  */
 public final class Constants {
   public static final Mode simMode = Mode.SIM;
-  public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
+  public static final Mode currentMode = Mode.MUSIC;
   public static final ControlScheme controlScheme = ControlScheme.OI;
   public static final RobotHardware robotHardware = RobotHardware.Swerveles;
   public static final TunerConstants tunerConstants = TunerConstants.getTunerConstants();
@@ -28,6 +27,7 @@ public final class Constants {
   public static enum Mode {
     /** Running on a real robot. */
     REAL,
+    MUSIC,
 
     /** Running a physics simulator. */
     SIM,

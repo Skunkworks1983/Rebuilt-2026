@@ -7,8 +7,10 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.Orchestra;
+import com.ctre.phoenix6.configs.AudioConfigs;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -16,7 +18,6 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.TestPathCommands;
 import frc.robot.subsystems.drive.Drive;
@@ -44,8 +45,8 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
  */
 public class RobotContainer {
   // Subsystems
-  private final Drive drive;
-  private final Vision vision;
+  private Drive drive;
+  private Vision vision;
 
   // Controller
   private final Joystick leftJoystick;
@@ -95,7 +96,8 @@ public class RobotContainer {
             new Vision(
                 drive, new VisionIOLimelight(VisionConstants.camera0Name, drive::getRotation));
 
-        // This is a solution to the vision-drive cross dependency issue that hurts my eys, but it
+        // This is a solution to the vision-drive cross dependency issue that hurts my
+        // eys, but it
         // does work
         drive.setResetVisionIMUCallback((pose) -> vision.resetCameraIMU(pose));
 
@@ -150,7 +152,8 @@ public class RobotContainer {
                     VisionConstants.robotToCamera1,
                     simulation::getSimulatedDriveTrainPose));
         break;
-
+      case MUSIC:
+        break;
       default:
         // Replayed robot, disable IO implementations
         drive =
@@ -171,24 +174,79 @@ public class RobotContainer {
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
     // Set up SysId routines
-    autoChooser.addOption(
-        "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
-    autoChooser.addOption(
-        "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
-    autoChooser.addOption(
-        "Drive SysId (Quasistatic Forward)",
-        drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption(
-        "Drive SysId (Quasistatic Reverse)",
-        drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    autoChooser.addOption(
-        "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption(
-        "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-    autoChooser.addOption("Sim Physics Test", new PathPlannerAuto("SimPhysTest"));
+    // autoChooser.addOption(
+    // "Drive Wheel Radius Characterization",
+    // DriveCommands.wheelRadiusCharacterization(drive));
+    // autoChooser.addOption(
+    // "Drive Simple FF Characterization",
+    // DriveCommands.feedforwardCharacterization(drive));
+    // autoChooser.addOption(
+    // "Drive SysId (Quasistatic Forward)",
+    // drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // autoChooser.addOption(
+    // "Drive SysId (Quasistatic Reverse)",
+    // drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    // autoChooser.addOption(
+    // "Drive SysId (Dynamic Forward)",
+    // drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    // autoChooser.addOption(
+    // "Drive SysId (Dynamic Reverse)",
+    // drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    // autoChooser.addOption("Sim Physics Test", new
+    // PathPlannerAuto("SimPhysTest"));
 
     // Configure the button bindings
     configureButtonBindings();
+  }
+
+  public void playMusic() {
+    int kFrontLeftDriveMotorId = 17;
+    int kFrontLeftSteerMotorId = 16;
+    int kFrontRightDriveMotorId = 20;
+    int kFrontRightSteerMotorId = 19;
+    int kBackLeftDriveMotorId = 11;
+    int kBackLeftSteerMotorId = 10;
+    int kBackRightDriveMotorId = 14;
+    int kBackRightSteerMotorId = 13;
+    AudioConfigs config = new AudioConfigs().withAllowMusicDurDisable(false);
+    Orchestra m_orchestra = new Orchestra();
+
+    TalonFX flDrive = new TalonFX(kFrontLeftDriveMotorId, "Drivebase 2025");
+    flDrive.getConfigurator().apply(config);
+
+    TalonFX flSteer = new TalonFX(kFrontLeftSteerMotorId, "Drivebase 2025");
+    flSteer.getConfigurator().apply(config);
+
+    TalonFX frDrive = new TalonFX(kFrontRightDriveMotorId, "Drivebase 2025");
+    frDrive.getConfigurator().apply(config);
+
+    TalonFX frSteer = new TalonFX(kFrontRightSteerMotorId, "Drivebase 2025");
+    frSteer.getConfigurator().apply(config);
+
+    TalonFX blDrive = new TalonFX(kBackLeftDriveMotorId, "Drivebase 2025");
+    blDrive.getConfigurator().apply(config);
+
+    TalonFX blSteer = new TalonFX(kBackLeftSteerMotorId, "Drivebase 2025");
+    blSteer.getConfigurator().apply(config);
+
+    TalonFX brDrive = new TalonFX(kBackRightDriveMotorId, "Drivebase 2025");
+    brDrive.getConfigurator().apply(config);
+
+    TalonFX brSteer = new TalonFX(kBackRightSteerMotorId, "Drivebase 2025");
+    brSteer.getConfigurator().apply(config);
+
+    m_orchestra.addInstrument(flDrive);
+    m_orchestra.addInstrument(flSteer);
+    m_orchestra.addInstrument(frDrive);
+    m_orchestra.addInstrument(frSteer);
+    m_orchestra.addInstrument(blDrive);
+    m_orchestra.addInstrument(blSteer);
+    m_orchestra.addInstrument(brDrive);
+    m_orchestra.addInstrument(brSteer);
+
+    var status = m_orchestra.loadMusic("notification.chrp");
+
+    m_orchestra.play();
   }
 
   /**
