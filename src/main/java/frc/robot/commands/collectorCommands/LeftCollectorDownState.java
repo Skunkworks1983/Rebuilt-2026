@@ -11,17 +11,12 @@ import frc.robot.subsystems.collector.Collector;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class LeftCollectorDownState extends Command {
   private Collector collector;
-  private Angle leftDownAngle;
-  private Angle rightUpAngle;
 
   /** Creates a new LeftCollectorDownState. */
-  public LeftCollectorDownState(Collector collector, Angle leftDownAngle, Angle rightUpAngle) {
+  public LeftCollectorDownState(Collector collector) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.collector = collector;
     addRequirements(collector);
-
-    this.leftDownAngle = leftDownAngle;
-    this.rightUpAngle = rightUpAngle;
   }
 
   // Called when the command is initially scheduled.
