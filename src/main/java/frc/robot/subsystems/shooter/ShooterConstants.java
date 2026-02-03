@@ -16,6 +16,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.MomentOfInertia;
@@ -51,6 +52,8 @@ public class ShooterConstants {
 
   public static MotorAlignmentValue pivotFollowerMotorAlignment;
 
+  public static final Angle pivotPositionTolerence = Degrees.of(3);
+
   public static final Angle minShooterPitch = Degrees.of(0);
 
   public static final Angle maxShooterPitch = Degrees.of(80);
@@ -69,4 +72,6 @@ public class ShooterConstants {
   public static final LinearVelocity flywheelMaxLinearVelocity =
       MetersPerSecond.of(
           RotationsPerSecond.of(85.66667).in(RadiansPerSecond) * flywheelRadius.in(Meters));
+
+  public static final AngularVelocity flywheelVelocityTolerance = RotationsPerSecond.of(0.5);
 }

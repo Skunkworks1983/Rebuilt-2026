@@ -11,6 +11,7 @@ import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.SignalLogger;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
@@ -185,7 +186,14 @@ public class Shooter extends SubsystemBase {
 
   @AutoLogOutput(key = "Shooter/canShoot")
   public boolean canShoot() {
-    return true;
+    return MathUtil.isNear(
+            flywheelSetpoint.in(RotationsPerSecond),
+            flywheelInputs.primaryVelocity.in(RotationsPerSecond),
+            ShooterConstants.flywheelVelocityTolerance.in(RotationsPerSecond))
+        && MathUtil.isNear(
+            pivotSetpoint.in(Degrees),
+            pivotInputs.pivotPrimaryPosition.in(Degrees),
+            ShooterConstants.pivotPositionTolerence.in(Degrees));
   }
 
   public Angle getPivotAngle() {
