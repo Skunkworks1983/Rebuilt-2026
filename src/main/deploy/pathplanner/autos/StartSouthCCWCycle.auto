@@ -27,6 +27,54 @@
           "data": {
             "pathName": "CCW Shoot"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "StartSouthThroughTunnelCCW"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CollectCCW"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ThroughNorthTunnelCCW"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CCW Shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "StartSouthThroughTunnelCCW"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CollectCCW"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ThroughNorthTunnelCCW"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CCW Shoot"
+          }
         }
       ]
     }

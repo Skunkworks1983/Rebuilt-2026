@@ -33,6 +33,54 @@
           "data": {
             "pathName": "ShootCW"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "StartNorthThroughTunnelCW"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CollectCW"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SouthOutToInCW"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ShootCW"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "StartNorthThroughTunnelCW"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CollectCW"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SouthOutToInCW"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ShootCW"
+          }
         }
       ]
     }
