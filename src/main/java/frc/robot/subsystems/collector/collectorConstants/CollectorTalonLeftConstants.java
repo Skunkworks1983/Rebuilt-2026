@@ -47,7 +47,7 @@ public class CollectorTalonLeftConstants implements CollectorConstants {
   public static final double turnkV = 0.12;
   public static final double turnkA = 0.01;
 
-  //Position
+  // Position
   public static final Angle CollectorUpPos = Angle.ofBaseUnits(90, Degrees);
   public static final Angle CollectorDownPos = Angle.ofBaseUnits(0, Degrees);
 }

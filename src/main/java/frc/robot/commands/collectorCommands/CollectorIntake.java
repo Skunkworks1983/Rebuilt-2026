@@ -4,6 +4,9 @@
 
 package frc.robot.commands.collectorCommands;
 
+import static edu.wpi.first.units.Units.DegreesPerSecond;
+
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.collector.Collector;
 import frc.robot.subsystems.collector.collectorConstants.CollectorPositionConstants;
@@ -11,6 +14,7 @@ import frc.robot.subsystems.collector.collectorConstants.CollectorPositionConsta
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class CollectorIntake extends Command {
   Collector collector;
+
   /** Creates a new CollectorIntake. */
   public CollectorIntake(Collector collector) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -24,16 +28,27 @@ public class CollectorIntake extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(collector.getLeftCollector().isCollectorDown()) {
-      collector.getLeftCollector().setCollectorVelocity(CollectorPositionConstants.leftCollecterIntakeSpeed);
-    } else if(collector.getRightCollector().isCollectorDown()) {
-      collector.getRightCollector().setCollectorVelocity(CollectorPositionConstants.rightCollectorIntakeSpeed);
+    if (collector.getLeftCollector().isCollectorDown()) {
+      collector
+          .getLeftCollector()
+          .setCollectorVelocity(CollectorPositionConstants.leftCollecterIntakeSpeed);
+    } else if (collector.getRightCollector().isCollectorDown()) {
+      collector
+          .getRightCollector()
+          .setCollectorVelocity(CollectorPositionConstants.rightCollectorIntakeSpeed);
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    collector
+        .getLeftCollector()
+        .setCollectorVelocity(AngularVelocity.ofBaseUnits(0, DegreesPerSecond));
+    collector
+        .getRightCollector()
+        .setCollectorVelocity(AngularVelocity.ofBaseUnits(0, DegreesPerSecond));
+  }
 
   // Returns true when the command should end.
   @Override

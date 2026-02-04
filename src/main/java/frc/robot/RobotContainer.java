@@ -7,13 +7,10 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Degrees;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
@@ -26,7 +23,6 @@ import frc.robot.commands.DriveCommands;
 import frc.robot.commands.TestPathCommands;
 import frc.robot.commands.collectorCommands.BothCollectorsUpState;
 import frc.robot.commands.collectorCommands.CollectorIntake;
-import frc.robot.commands.collectorCommands.HoldPositionCommand;
 import frc.robot.commands.collectorCommands.LeftCollectorDownState;
 import frc.robot.commands.collectorCommands.RightCollectorDownState;
 import frc.robot.subsystems.collector.Collector;
@@ -252,7 +248,7 @@ public class RobotContainer {
 
     TestPathCommands.publishTestPaths(drive);
 
-    //collector.setDefaultCommand(new HoldPositionCommand(collector));
+    // collector.setDefaultCommand(new HoldPositionCommand(collector));
 
     // State Butoons
     JoystickButton manualMode = new JoystickButton(buttonPanel, 0);
@@ -267,8 +263,7 @@ public class RobotContainer {
         .onTrue(Commands.runOnce(() -> collector.changeState(State.ALWAYSUP), collector));
 
     // Collector Intake Button
-    new JoystickButton(buttonPanel, 4)
-      .whileTrue(new CollectorIntake(collector));
+    new JoystickButton(buttonPanel, 4).whileTrue(new CollectorIntake(collector));
 
     // Collector State Controll
     switch (collector.getState()) {
@@ -279,16 +274,13 @@ public class RobotContainer {
 
       case MANUAL:
         // Right Collector Down
-        new JoystickButton(buttonPanel, 1)
-            .onTrue(new RightCollectorDownState(collector));
+        new JoystickButton(buttonPanel, 1).onTrue(new RightCollectorDownState(collector));
 
         // Left Collector Down
-        new JoystickButton(buttonPanel, 2)
-            .onTrue(new LeftCollectorDownState(collector));
+        new JoystickButton(buttonPanel, 2).onTrue(new LeftCollectorDownState(collector));
 
         // Both Collectors Up
-        new JoystickButton(leftJoystick, 3)
-            .onTrue(new BothCollectorsUpState(collector));
+        new JoystickButton(leftJoystick, 3).onTrue(new BothCollectorsUpState(collector));
         break;
 
       case AUTOMATIC:

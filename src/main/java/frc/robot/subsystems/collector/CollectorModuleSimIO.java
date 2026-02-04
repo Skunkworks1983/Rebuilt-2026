@@ -1,22 +1,17 @@
 package frc.robot.subsystems.collector;
 
-import static edu.wpi.first.units.Units.Degree;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
-import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.collector.collectorConstants.CollectorConstants.side;
 import org.ironmaple.simulation.IntakeSimulation;
 import org.ironmaple.simulation.drivesims.AbstractDriveTrainSimulation;
@@ -30,14 +25,15 @@ public class CollectorModuleSimIO implements CollectorModuleIO {
 
   private boolean isCollectorSimDown;
 
-  final double minimumCollectorRotationToCollect = 1.4;
+  final double minimumCollectorRadiansToCollect = 0.1;
+  final double minimumCollectorRadiansToBeDown = 1.55;
   final double minimumCollectorSpeedToCollect = 5;
 
   int c = 0;
 
   double turnKp = 0.5;
   double turnKd = 0.4;
-  double turnKi = 0.02;
+  double turnKi = 0.1;
 
   double intakeKp = 0.5;
   double intakeKd = 0;
@@ -79,6 +75,8 @@ public class CollectorModuleSimIO implements CollectorModuleIO {
     intakeMotorLowerSim = new DCMotorSim(linearSystemIntakeMotors, DCMotor.getKrakenX60(1), stdevs);
     intakeMotorUpperSim = new DCMotorSim(linearSystemIntakeMotors, DCMotor.getKrakenX60(1), stdevs);
     turnMotorSim = new DCMotorSim(linearSystemTurnMotor, DCMotor.getKrakenX60(1), stdevs);
+    turnMotorSim.setAngle(1.5708);
+    turnMotorPid.setSetpoint(90);
   }
 
   /**
@@ -89,7 +87,9 @@ public class CollectorModuleSimIO implements CollectorModuleIO {
   public boolean isFuelInsideCollector() {
     return collectorSimulation.getGamePiecesAmount() != 0;
   }
+
   double j;
+
   /**
    * Updates our inputs for all motors
    *
@@ -99,11 +99,14 @@ public class CollectorModuleSimIO implements CollectorModuleIO {
   public void updateInputs(CollectorIOInputs input) {
     // Update simulations and input voltage for motors
     turnMotorSim.update(0.02);
-    turnMotorSim.setInputVoltage(turnMotorPid.calculate(turnMotorSim.getAngularPosition().in(Degrees)));
+    turnMotorSim.setInputVoltage(
+        turnMotorPid.calculate(turnMotorSim.getAngularPosition().in(Degrees)));
     intakeMotorLowerSim.update(0.02);
-    intakeMotorLowerSim.setInputVoltage(intakeMotorsPid.calculate(intakeMotorLowerSim.getAngularVelocityRadPerSec()));
+    intakeMotorLowerSim.setInputVoltage(
+        intakeMotorsPid.calculate(intakeMotorLowerSim.getAngularVelocityRadPerSec()));
     intakeMotorUpperSim.update(0.02);
-    intakeMotorUpperSim.setInputVoltage(intakeMotorsPid.calculate(intakeMotorUpperSim.getAngularVelocityRadPerSec()));
+    intakeMotorUpperSim.setInputVoltage(
+        intakeMotorsPid.calculate(intakeMotorUpperSim.getAngularVelocityRadPerSec()));
 
     // Turn Motor Inputs
     input.turnConnected = true;
@@ -189,7 +192,7 @@ public class CollectorModuleSimIO implements CollectorModuleIO {
 
     /* checks if the collector is in the right position and if the motors are spinning fast
      * enough, if both are true starts the intake of balls and if not stops it. */
-    if (turnMotorSim.getAngularPositionRad() > minimumCollectorRotationToCollect
+    if (turnMotorSim.getAngularPositionRad() < minimumCollectorRadiansToCollect
         && intakeMotorLowerSim.getAngularVelocityRadPerSec() > minimumCollectorSpeedToCollect) {
 
       collectorSimulation.startIntake();
@@ -227,7 +230,7 @@ public class CollectorModuleSimIO implements CollectorModuleIO {
    */
   @Override
   public boolean isCollectorDown() {
-    return turnMotorSim.getAngularPositionRad() > minimumCollectorRotationToCollect;
+    return turnMotorSim.getAngularPositionRad() < minimumCollectorRadiansToBeDown;
   }
 
   /** */
@@ -246,12 +249,12 @@ public class CollectorModuleSimIO implements CollectorModuleIO {
   // Sets collector up
   @Override
   public void goUp() {
-    setCollectorPos(Angle.ofBaseUnits(90, Degrees));
+    setCollectorPos(Degrees.of(90));
   }
 
   // Sets collector down
   @Override
   public void goDown() {
-    setCollectorPos(Angle.ofBaseUnits(0, Degrees));
+    setCollectorPos(Degrees.of(0));
   }
 }

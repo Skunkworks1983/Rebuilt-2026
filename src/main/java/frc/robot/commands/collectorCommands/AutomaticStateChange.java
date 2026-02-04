@@ -33,18 +33,20 @@ public class AutomaticStateChange extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(currDirection != lastDirection) {
-      if(currDirection > 0.0) { // if going right
-        if(!collector.getLeftCollector().isCollectorDown()){
+    if (currDirection != lastDirection) {
+      if (currDirection > 0.0) { // if going right
+        if (!collector.getLeftCollector().isCollectorDown()) {
           collector.getRightCollector().goDown();
         } else {
-          collector.getLeftCollector().goUp();;
+          collector.getLeftCollector().goUp();
+          ;
         }
-      } else if(currDirection < 0.0) { // if going left
-        if(!collector.getRightCollector().isCollectorDown()){
+      } else if (currDirection < 0.0) { // if going left
+        if (!collector.getRightCollector().isCollectorDown()) {
           collector.getLeftCollector().goDown();
         } else {
-          collector.getRightCollector().goUp();;
+          collector.getRightCollector().goUp();
+          ;
         }
       }
     } else if (currDirection == lastDirection) {
