@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.785040983606557,
-        "y": 6.836116803278688
+        "x": 6.0,
+        "y": 7.3
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.0049797394438444,
-        "y": 6.092083593002542
+        "x": 4.9318259629101275,
+        "y": 7.7289871611982885
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "PostCollectCCW"
     },
     {
       "anchor": {
-        "x": 5.394467213114754,
-        "y": 5.481506147540983
+        "x": 3.0,
+        "y": 7.0
       },
       "prevControl": {
-        "x": 5.788059445806323,
-        "y": 5.871831713052148
+        "x": 2.9651497860199716,
+        "y": 7.392582025677603
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "ShootArchBeginCCW"
     }
   ],
   "rotationTargets": [],
@@ -34,7 +34,7 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 60.08635400846507
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 53.130102354155945
+    "rotation": 180.0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

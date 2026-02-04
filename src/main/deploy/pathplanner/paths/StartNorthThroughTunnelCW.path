@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.3235,
-        "y": 2.972
+        "x": 3.0,
+        "y": 7.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.45575,
-        "y": 0.5442500000000003
+        "x": 3.0169044222539223,
+        "y": 7.431398002853067
       },
       "isLocked": false,
-      "linkedName": "Reef1"
+      "linkedName": "StartCycleCW"
     },
     {
       "anchor": {
-        "x": 1.1992500000000001,
-        "y": 1.012249999999999
+        "x": 6.0,
+        "y": 7.3
       },
       "prevControl": {
-        "x": 1.8622500000000002,
-        "y": 1.1974999999999998
+        "x": 4.414279600570612,
+        "y": 7.6125392296718974
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "CoralStation"
+      "linkedName": "NorthTrenchOut"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 51.469819985173224
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -60.10109816138549
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }
