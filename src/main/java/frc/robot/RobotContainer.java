@@ -352,6 +352,7 @@ public class RobotContainer {
     }
   }
 
+  /** Creates a new simulated fuel and launces it from the current robot position and speeds */
   public void launchSimFuel() {
     SimulatedArena.getInstance()
         .addGamePieceProjectile(

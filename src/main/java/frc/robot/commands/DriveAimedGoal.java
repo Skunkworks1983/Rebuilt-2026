@@ -15,6 +15,15 @@ import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
 public class DriveAimedGoal {
+  /**
+   * Uses odometry to continuously aim at the hub and keep flywheel/pivot in correct state to make a
+   * shot into the hub Uses the apex constrained solver
+   *
+   * @param drive The drivetrain subsystem
+   * @param shooter The shooter subsystem
+   * @param xSupplier Joystick supplier for robot X translation
+   * @param ySupplier Joystick supplier for robot Y translation
+   */
   public static Command joystickDriveAimedHub(
       Drive drive, Shooter shooter, DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
     PIDController angleController =

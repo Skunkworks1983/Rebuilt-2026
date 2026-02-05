@@ -16,6 +16,15 @@ import org.ironmaple.simulation.seasonspecific.rebuilt2026.RebuiltFuelOnFly;
 import org.littletonrobotics.junction.Logger;
 
 public class SimProjectile {
+  /**
+   * Gets a new MapleSim Rebuilt Fuel object. This does not launch the fuel.
+   *
+   * @param drivePoseFieldRelative The current actual pose of the robot
+   * @param fieldRelativeSpeeds Chassis speeds relative to the field (used for determining actual
+   *     velocity of fuel)
+   * @param launchVelocity Flywheel effective linear velocity
+   * @param shooterAngle Angle that the fuel is launched at
+   */
   public static GamePieceProjectile getProjectile(
       Pose2d drivePoseFieldRelative,
       ChassisSpeeds fieldRelativeSpeeds,

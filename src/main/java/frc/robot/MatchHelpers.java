@@ -7,6 +7,16 @@ public class MatchHelpers {
   private static Alliance alliance;
   private static Alliance firstInactive;
 
+  /**
+   * Uses FMS data to get if the hub is currently active for scoring. This is based on the current
+   * match time
+   *
+   * <p>Warning: The FMS does not send an official match time. When connected to the real field,
+   * this number only changes in full integer second increments. This differs from when in practice,
+   * which is a floating point number. This means that this function is not testable.
+   *
+   * @return is the hub active for the robot's current alliance?
+   */
   public static boolean getIsHubActive() {
     double matchTime = DriverStation.getMatchTime();
 
