@@ -1,11 +1,14 @@
 package frc.robot.subsystems.shooter;
 
+import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.KilogramSquareMeters;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -15,7 +18,9 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.MomentOfInertia;
@@ -45,13 +50,12 @@ public class ShooterConstants {
   public static final double flywheelKA = 0.0;
 
   /** Maximum velocity of the flywheel in rotations per second. */
-  public static final double flywheelMaxVelocityRotationsPerSec = 85.6667;
+  public static final AngularVelocity flywheelMaxVelocityRotationsPerSec =
+      RotationsPerSecond.of(85.6667);
 
   /** Maximum acceleration of the flywheel in rotations per second squared. */
-  public static final double flywheelMaxAccelerationRotationsPerSec = 200.0;
-
-  /** Maximum jerk of the flywheel in rotations per second cubed. */
-  public static final double flywheelMaxJerkRotationsPerSecCubed = 100;
+  public static final AngularAcceleration flywheelMaxAcceleration =
+      RotationsPerSecondPerSecond.of(200.0);
 
   /** Gear ratio of the flywheel mechanism. */
   public static final double flywheelGearRatio = 1.;
@@ -61,13 +65,13 @@ public class ShooterConstants {
       MotorAlignmentValue.Opposed;
 
   /** Stator current limit in Amps for the flywheel motors. */
-  public static final double flywheelStatorCurrentLimitAmps = 120.0;
+  public static final Current flywheelStatorCurrentLimitAmps = Amps.of(120);
 
   /** Invert configuration for the primary flywheel motor. */
   public static final InvertedValue flywheelMotorInverted = InvertedValue.Clockwise_Positive;
 
   /** CAN ID for the primary pivot motor. */
-  public static int pivotMotorOneId;
+  public static int pivotMotorId;
 
   /** CAN ID for the secondary pivot motor. */
   public static int pivotSecondaryMotorId;
@@ -102,8 +106,18 @@ public class ShooterConstants {
   /** Maximum linear velocity of the flywheel surface. */
   public static final LinearVelocity flywheelMaxLinearVelocity =
       MetersPerSecond.of(
-          flywheelMaxVelocityRotationsPerSec * 2 * Math.PI * flywheelRadius.in(Meters));
+          flywheelMaxVelocityRotationsPerSec.in(RadiansPerSecond) * flywheelRadius.in(Meters));
 
   /** Allowable error tolerance for the flywheel velocity. */
   public static final AngularVelocity flywheelVelocityTolerance = RotationsPerSecond.of(0.5);
+
+  public static final double pivotkP = 0;
+
+  public static final double pivotkD = 0;
+
+  public static final double pivotkS = 0;
+
+  public static final double pivotkV = 0;
+
+  public static final double pivotkA = 0;
 }

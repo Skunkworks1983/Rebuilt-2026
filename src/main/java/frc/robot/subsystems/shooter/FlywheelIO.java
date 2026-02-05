@@ -29,5 +29,5 @@ public interface FlywheelIO {
 
   public default void setPID(Slot0Configs configs) {}
 
-  public default void setMotionConstraints(AngularAcceleration maxAcceleration, double maxJerk) {}
+  public default void setMotionConstraints(AngularAcceleration maxAcceleration) {}
 }

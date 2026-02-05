@@ -61,11 +61,7 @@ public class Shooter extends SubsystemBase {
   private static final LoggedTunableNumber flywheelMaxAccelerationRotationsPerSec2 =
       new LoggedTunableNumber(
           "Shooter/Flywheel/MaxAccelerationRotationsPerSec2",
-          ShooterConstants.flywheelMaxAccelerationRotationsPerSec);
-  private static final LoggedTunableNumber flywheelMaxJerkRotationsPerSec3 =
-      new LoggedTunableNumber(
-          "Shooter/Flywheel/MaxJerkRotationsPerSec3",
-          ShooterConstants.flywheelMaxJerkRotationsPerSecCubed);
+          ShooterConstants.flywheelMaxAcceleration.in(RotationsPerSecondPerSecond));
 
   private static final LoggedTunableNumber pivotKP =
       new LoggedTunableNumber("Shooter/Pivot/kP", 2000);
@@ -125,7 +121,7 @@ public class Shooter extends SubsystemBase {
     backFlywheelDisconnectedAlert.set(!backFlywheelInputs.connected);
 
     pivotDisconnectedAlert.set(
-        (!pivotInputs.primaryConnected || !pivotInputs.followerConnected)
+        (!pivotInputs.connected || !pivotInputs.followerConnected)
             && Constants.currentMode != Constants.Mode.SIM);
 
     if (flywheelKP.hasChanged(hashCode())
@@ -148,17 +144,21 @@ public class Shooter extends SubsystemBase {
         || pivotKS.hasChanged(hashCode())
         || pivotKV.hasChanged(hashCode())
         || pivotKA.hasChanged(hashCode())) {
-      pivot.setPID(pivotKP.get(), 0.0, pivotKD.get(), pivotKS.get(), pivotKV.get(), pivotKA.get());
+      Slot0Configs gains = new Slot0Configs();
+      gains.kP = pivotKP.get();
+      gains.kD = pivotKD.get();
+      gains.kS = pivotKS.get();
+      gains.kV = pivotKV.get();
+      gains.kA = pivotKA.get();
+      forwardFlywheel.setPID(gains);
+      pivot.setPID(gains);
     }
 
-    if (flywheelMaxAccelerationRotationsPerSec2.hasChanged(hashCode())
-        || flywheelMaxJerkRotationsPerSec3.hasChanged(hashCode())) {
+    if (flywheelMaxAccelerationRotationsPerSec2.hasChanged(hashCode())) {
       forwardFlywheel.setMotionConstraints(
-          RotationsPerSecondPerSecond.of(flywheelMaxAccelerationRotationsPerSec2.get()),
-          flywheelMaxJerkRotationsPerSec3.get());
+          RotationsPerSecondPerSecond.of(flywheelMaxAccelerationRotationsPerSec2.get()));
       backFlywheel.setMotionConstraints(
-          RotationsPerSecondPerSecond.of(flywheelMaxAccelerationRotationsPerSec2.get()),
-          flywheelMaxJerkRotationsPerSec3.get());
+          RotationsPerSecondPerSecond.of(flywheelMaxAccelerationRotationsPerSec2.get()));
     }
 
     if (pivotMaxVelocityRotationsPerSec.hasChanged(hashCode())
@@ -166,8 +166,7 @@ public class Shooter extends SubsystemBase {
         || pivotMaxJerkRotationsPerSec3.hasChanged(hashCode())) {
       pivot.setMotionConstraints(
           RotationsPerSecond.of(pivotMaxVelocityRotationsPerSec.get()),
-          RotationsPerSecondPerSecond.of(pivotMaxAccelerationRotationsPerSec2.get()),
-          pivotMaxJerkRotationsPerSec3.get());
+          RotationsPerSecondPerSecond.of(pivotMaxAccelerationRotationsPerSec2.get()));
     }
   }
 
@@ -226,7 +225,7 @@ public class Shooter extends SubsystemBase {
             ShooterConstants.flywheelVelocityTolerance.in(RotationsPerSecond))
         && MathUtil.isNear(
             pivotSetpoint.in(Degrees),
-            pivotInputs.pivotPrimaryPosition.in(Degrees),
+            pivotInputs.pivotPosition.in(Degrees),
             ShooterConstants.pivotPositionTolerence.in(Degrees));
   }
 

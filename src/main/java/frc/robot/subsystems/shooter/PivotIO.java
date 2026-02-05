@@ -4,6 +4,7 @@ import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.Volts;
 
+import com.ctre.phoenix6.configs.Slot0Configs;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -14,12 +15,12 @@ import org.littletonrobotics.junction.AutoLog;
 public interface PivotIO {
   @AutoLog
   public static class PivotIOInputs {
-    public boolean primaryConnected = false;
+    public boolean connected = false;
     public boolean followerConnected = false;
 
     public Angle pivotAbsolutePosition = Angle.ofBaseUnits(0, Rotations);
 
-    public Angle pivotPrimaryPosition = Angle.ofBaseUnits(0, Rotations);
+    public Angle pivotPosition = Angle.ofBaseUnits(0, Rotations);
     public Angle pivotFollowerPosition = Angle.ofBaseUnits(0, Rotations);
 
     public Voltage pivotAppliedVolts = Volts.of(0);
@@ -38,8 +39,8 @@ public interface PivotIO {
 
   public default void updateInputs(PivotIOInputs inputs) {}
 
-  public default void setPID(double kP, double kI, double kD, double kS, double kV, double kA) {}
+  public default void setPID(Slot0Configs gains) {}
 
   public default void setMotionConstraints(
-      AngularVelocity maxVelocity, AngularAcceleration maxAcceleration, double maxJerk) {}
+      AngularVelocity maxVelocity, AngularAcceleration maxAcceleration) {}
 }
