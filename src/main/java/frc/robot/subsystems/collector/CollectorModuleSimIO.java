@@ -224,9 +224,7 @@ public class CollectorModuleSimIO implements CollectorModuleIO {
 
   /**
    * Checks to see if the collector is down This is to help ensure that we only have one collector
-   * down at a time <img
-   * src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdDFzenczMGJqdHFkcm96dnF0Z2V4OXlwazNocHJlMWJlaW96MWRkMCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/DLXpRiR7xSXT2/giphy.gif"
-   * alt=":()">
+   * down at a time
    */
   @Override
   public boolean isCollectorDown() {
