@@ -26,6 +26,9 @@ public class Indexer extends SubsystemBase {
     indexerMotor.updateInputs(inputs);
   }
 
+  /**
+   * sets the velocity of the indexer to the defined velocity
+   */
   public void setIndexerVelocity(AngularVelocity Velocity) {
     indexerMotor.setIndexerVelocity(Velocity);
   }
