@@ -32,7 +32,7 @@ public class Collector extends SubsystemBase {
    *   <li>Takes in two collector module IOs and assigns them to the collector modules.
    * </ul>
    *
-   * <p><img src="https://media.giphy.com/media/jVFgWDtkY5v2M/giphy.gif" alt="Our Collector 💕">
+   * <p><img src="https://media.giphy.com/media/jVFgWDtkY5v2M/giphy.gif" alt="Our Collector">
    *
    * @param leftIO left collector
    * @param rightIO right collector
@@ -84,27 +84,6 @@ public class Collector extends SubsystemBase {
    */
   public CollectorModule getRightCollector() {
     return collectors[1];
-  }
-
-  // Sound feedback 😈
-  public void playSound(String file) {
-    collectors[0].playSound(file);
-    collectors[1].playSound(file);
-  }
-
-  // Stop sound feedback
-  public void stopSound() {
-    collectors[0].stopSound();
-    collectors[1].stopSound();
-  }
-
-  // is sound playing?
-  public boolean isSoundPlaying() {
-    if (collectors[0].isSoundPlaying() || collectors[0].isSoundPlaying()) {
-      return true;
-    } else {
-      return false;
-    }
   }
 
   // Changes State

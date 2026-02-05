@@ -124,17 +124,6 @@ public interface CollectorModuleIO {
     return false;
   }
 
-  // Sound feedback 😈
-  public default void playSound(String file) {}
-
-  // Stop sound feedback
-  public default void stopSound() {}
-
-  // is sound playing?
-  public default boolean isSoundPlaying() {
-    return false;
-  }
-
   // gets side i.e: left
   public default side getSide() {
     return null;

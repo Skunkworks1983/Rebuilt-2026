@@ -125,21 +125,6 @@ public class CollectorModule extends SubsystemBase {
     return collectorIO.isCollectorDown();
   }
 
-  // Sound feedback 😈
-  public void playSound(String file) {
-    collectorIO.stopSound();
-  }
-
-  // Stop sound feedback
-  public void stopSound() {
-    collectorIO.stopSound();
-  }
-
-  // is sound playing?
-  public boolean isSoundPlaying() {
-    return collectorIO.isSoundPlaying();
-  }
-
   // Sets collector up
   public void goUp() {
     collectorIO.goUp();

@@ -44,9 +44,6 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
   private final TalonFX intakeMotorLower;
   private final TalonFX intakeMotorUpper;
 
-  // 🤫
-  private Orchestra sound;
-
   // Constants
   private final CollectorConstants constants;
 
@@ -111,12 +108,6 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     turnMotor = new TalonFX(constants.turnMotorID);
     intakeMotorLower = new TalonFX(constants.intakeMotorLowerID);
     intakeMotorUpper = new TalonFX(constants.intakeMotorUpperID);
-
-    // 👀👀
-    sound = new Orchestra();
-    sound.addInstrument(turnMotor);
-    sound.addInstrument(intakeMotorLower);
-    sound.addInstrument(intakeMotorUpper);
 
     // Config for turnMotor
     var turnConfig = new TalonFXConfiguration();
@@ -331,28 +322,6 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
         }
       default:
         return false;
-    }
-  }
-
-  // Sound feedback 😈
-  public void playSound(String file) {
-    sound.loadMusic(file);
-    sound.play();
-  }
-
-  // Stop sound feedback
-  public void stopSound() {
-    if (sound.isPlaying()) {
-      sound.stop();
-    }
-  }
-
-  // is sound playing?
-  public boolean isSoundPlaying() {
-    if (sound.isPlaying()) {
-      return true;
-    } else {
-      return false;
     }
   }
 

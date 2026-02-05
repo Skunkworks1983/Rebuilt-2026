@@ -11,8 +11,6 @@ import edu.wpi.first.units.measure.Angle;
 /**
  * An Interface for collector constants
  *
- * <ul>
- *   <img src="https://i.imgur.com/jjVNwSS.gif" alt="Constants🚀">
  */
 public interface CollectorConstants {
   // Collector side
