@@ -43,8 +43,8 @@ public class ShooterCalculations {
   ;
 
   /**
-   * Calculates shooter controls for aiming at the goal using linear interpolation. Compensates for robot velocity to
-   * enable shooting while moving.
+   * Calculates shooter controls for aiming at the goal using linear interpolation. Compensates for
+   * robot velocity to enable shooting while moving.
    *
    * @param speeds Current robot chassis speeds (field-relative or robot-relative depending on
    *     usage, usually robot-relative converted internally).
@@ -404,8 +404,8 @@ public class ShooterCalculations {
   }
 
   /**
-   * Calculates shooter controls for the "transfer" shot (shooting into the alliance zone from the transfer zone). Includes
-   * logic to avoid hitting the hub structure.
+   * Calculates shooter controls for the "transfer" shot (shooting into the alliance zone from the
+   * transfer zone). Includes logic to avoid hitting the hub structure.
    *
    * @param speeds Current robot chassis speeds.
    * @param odometryPose Current robot pose.

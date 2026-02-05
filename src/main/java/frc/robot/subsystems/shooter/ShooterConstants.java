@@ -5,7 +5,6 @@ import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.KilogramSquareMeters;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import com.ctre.phoenix6.CANBus;
@@ -36,7 +35,7 @@ public class ShooterConstants {
   /** CAN ID for the secondary flywheel motor. */
   public static final int flywheelSecondaryMotorId = 1;
 
-    // PID for flywheel
+  // PID for flywheel
   public static final double flywheelKP = 0.1;
   public static final double flywheelKD = 0.0;
 

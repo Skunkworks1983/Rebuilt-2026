@@ -12,8 +12,8 @@ import edu.wpi.first.units.measure.Distance;
 /**
  * Helper class for handling interpolating lookups for shooter pitch and velocity based on distance.
  * Manages separate maps for "Goal" shots and "Ground/Transfer" shots.
- * 
- * These are not actually used
+ *
+ * <p>These are not actually used
  *
  * @author Eddy Walsh
  */
