@@ -9,33 +9,30 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 
+/**
+ * Helper class for handling interpolating lookups for shooter pitch and velocity based on distance.
+ * Manages separate maps for "Goal" shots and "Ground/Transfer" shots.
+ * 
+ * These are not actually used
+ *
+ * @author Eddy Walsh
+ */
 public class ShooterInterporlations {
 
-  /**
-   * Interpolation for shooting at goal (meaning landing z != 0) Key: Distance from target in meters
-   * Value: Shooter angle degrees
-   */
   private final InterpolatingDoubleTreeMap shooterGoalAngleMap;
 
   /**
-   * Interpolation for shooting at goal (meaning landing z != 0) Key: Distance from target in meters
-   * Value: Shooter velocity m/s
+   * Interpolation map for shooting at the high goal. Key: Distance from target in meters. Value:
+   * Shooter flywheel velocity in rotations per second (stored as double).
    */
   public static final InterpolatingDoubleTreeMap shooterGoalVelocityMap =
       new InterpolatingDoubleTreeMap();
 
-  /**
-   * Interpolation for shooting at goal (meaning landing z == 0) Key: Distance from target in meters
-   * Value: Shooter angle degrees
-   */
   private final InterpolatingDoubleTreeMap shooterGroundAngleMap;
 
-  /**
-   * Interpolation for shooting at goal (meaning landing z == 0) Key: Distance from target in meters
-   * Value: Shooter velocity rotations per second
-   */
   private final InterpolatingDoubleTreeMap shooterGroundVelocityMap;
 
+  /** Initializes the interpolation maps with predefined data points. */
   public ShooterInterporlations() {
     shooterGoalAngleMap = new InterpolatingDoubleTreeMap();
     shooterGoalAngleMap.put(0., 90.);
@@ -58,18 +55,42 @@ public class ShooterInterporlations {
     shooterGroundVelocityMap.put(10., 5000.);
   }
 
+  /**
+   * Gets the pivot angle for a goal shot at the given distance.
+   *
+   * @param distance Distance to the goal.
+   * @return The interpolated Angle.
+   */
   public Angle getPivotAngleGoal(Distance distance) {
     return Degrees.of(shooterGoalAngleMap.get(distance.in(Meters)));
   }
 
+  /**
+   * Gets the flywheel velocity for a goal shot at the given distance.
+   *
+   * @param distance Distance to the goal.
+   * @return The interpolated AngularVelocity.
+   */
   public AngularVelocity getShooterVelocityGoal(Distance distance) {
     return RotationsPerSecond.of(shooterGoalVelocityMap.get(distance.in(Meters)));
   }
 
+  /**
+   * Gets the pivot angle for a transfer/ground shot at the given distance.
+   *
+   * @param distance Distance to the target.
+   * @return The interpolated Angle.
+   */
   public Angle getPivotAngleTransfer(Distance distance) {
     return Degrees.of(shooterGroundAngleMap.get(distance.in(Meters)));
   }
 
+  /**
+   * Gets the flywheel velocity for a transfer/ground shot at the given distance.
+   *
+   * @param distance Distance to the target.
+   * @return The interpolated AngularVelocity.
+   */
   public AngularVelocity getShooterVelocityTransfer(Distance distance) {
     return RotationsPerSecond.of(shooterGroundVelocityMap.get(distance.in(Meters)));
   }

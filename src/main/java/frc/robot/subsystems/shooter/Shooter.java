@@ -23,19 +23,16 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.util.LoggedTunableNumber;
 import frc.robot.util.ShooterCalculations.ShooterControls;
-import frc.robot.util.ShooterInterporlations;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
+/**
+ * Subsystem responsible for the shooter mechanism, including the flywheel and pivot. Handles
+ * pivoting, spinning up the flywheel, and sysid characterization the mechanism.
+ *
+ * @author Eddy Walsh
+ */
 public class Shooter extends SubsystemBase {
-  public enum ShooterState {
-    OFF,
-    SHOOT_GOAL,
-    SHOOT_ALLIANCE_ZONE
-  }
-
-  private ShooterState shooterState = ShooterState.OFF;
-
   private final FlywheelIO flywheel;
   private final PivotIO pivot;
   private final FlywheelIOInputsAutoLogged flywheelInputs = new FlywheelIOInputsAutoLogged();
@@ -45,8 +42,6 @@ public class Shooter extends SubsystemBase {
   private Angle pivotSetpoint = Radians.of(0 + .1e-6);
 
   private final SysIdRoutine sysId;
-
-  private final ShooterInterporlations shooterInterporlations = new ShooterInterporlations();
 
   private static final LoggedTunableNumber flywheelKP =
       new LoggedTunableNumber("Shooter/Flywheel/kP", ShooterConstants.flywheelKP);
@@ -86,6 +81,12 @@ public class Shooter extends SubsystemBase {
       new Alert("Flywheel disconnected", AlertType.kError);
   private final Alert pivotDisconnectedAlert = new Alert("Pivot disconnected", AlertType.kError);
 
+  /**
+   * Constructs a new Shooter instance.
+   *
+   * @param flywheel The IO implementation for the flywheel.
+   * @param pivot The IO implementation for the pivot.
+   */
   public Shooter(FlywheelIO flywheel, PivotIO pivot) {
     this.flywheel = flywheel;
     this.pivot = pivot;
@@ -156,6 +157,11 @@ public class Shooter extends SubsystemBase {
     }
   }
 
+  /**
+   * Gets the linear velocity of the flywheel at its effective radius.
+   *
+   * @return The linear velocity in meters per second.
+   */
   public LinearVelocity getShooterLinearVelocity() {
     // return MetersPerSecond.of(
     // flywheelInputs.primaryVelocity.in(RadiansPerSecond)
@@ -164,6 +170,11 @@ public class Shooter extends SubsystemBase {
         flywheelSetpoint.in(RadiansPerSecond) * ShooterConstants.flywheelRadius.in(Meters));
   }
 
+  /**
+   * runs the characterization routine.
+   *
+   * @param output The output voltage to apply.
+   */
   private void runCharacterization(double output) {
     flywheel.setOpenLoopOutput(output);
   }
@@ -180,10 +191,20 @@ public class Shooter extends SubsystemBase {
     return run(() -> runCharacterization(0.0)).withTimeout(1.0).andThen(sysId.dynamic(direction));
   }
 
+  /**
+   * Sets the flywheel angular velocity manually.
+   *
+   * @param velocity The angular velocity to set.
+   */
   public void setManualVelocity(AngularVelocity velocity) {
     flywheel.setVelocity(velocity);
   }
 
+  /**
+   * Checks if the shooter is ready to shoot (flywheel and pivot at setpoint).
+   *
+   * @return True if the shooter is ready.
+   */
   @AutoLogOutput(key = "Shooter/canShoot")
   public boolean canShoot() {
     return MathUtil.isNear(
@@ -196,17 +217,32 @@ public class Shooter extends SubsystemBase {
             ShooterConstants.pivotPositionTolerence.in(Degrees));
   }
 
+  /**
+   * Gets the current pivot angle.
+   *
+   * @return The pivot Angle.
+   */
   public Angle getPivotAngle() {
     // return pivotInputs.pivotPrimaryPosition;
     return pivotSetpoint;
   }
 
+  /**
+   * Gets the current flywheel velocity.
+   *
+   * @return The flywheel AngularVelocity.
+   */
   public AngularVelocity getFlywheelVelocity() {
     // return flywheelInputs.primaryVelocity;
 
     return flywheelSetpoint;
   }
 
+  /**
+   * Sets the shooter setpoints based on the calculated controls.
+   *
+   * @param controls The calculated shooter controls containing pitch and velocity.
+   */
   public void setShooterControls(ShooterControls controls) {
     flywheelSetpoint = controls.shooterVelocity();
     pivotSetpoint = controls.shooterPitch();

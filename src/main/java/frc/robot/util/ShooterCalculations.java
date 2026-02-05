@@ -20,7 +20,21 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.subsystems.shooter.ShooterConstants;
 
+/**
+ * Utility class for calculating shooter setpoints based on field geometry and robot state. Includes
+ * both analytical and iterative solver methods.
+ *
+ * @author Eddy Walsh
+ */
 public class ShooterCalculations {
+  /**
+   * Data record representing the calculated control outputs for the shooter subsystem.
+   *
+   * @param shooterVelocity Target flywheel angular velocity.
+   * @param shooterPitch Target pivot angle.
+   * @param driveYaw Target robot chassis heading.
+   * @param possibleShot Whether the shot is physically possible given the constraints.
+   */
   public record ShooterControls(
       AngularVelocity shooterVelocity,
       Angle shooterPitch,
@@ -28,6 +42,16 @@ public class ShooterCalculations {
       boolean possibleShot) {}
   ;
 
+  /**
+   * Calculates shooter controls for aiming at the goal using linear interpolation. Compensates for robot velocity to
+   * enable shooting while moving.
+   *
+   * @param speeds Current robot chassis speeds (field-relative or robot-relative depending on
+   *     usage, usually robot-relative converted internally).
+   * @param odometryPose Current robot pose on the field.
+   * @param shooterInterporlations Lookup table helper for goal shots.
+   * @return Calculated {@link ShooterControls}.
+   */
   public static ShooterControls getShooterControlsGoal(
       ChassisSpeeds speeds, Pose2d odometryPose, ShooterInterporlations shooterInterporlations) {
     Translation3d target =
@@ -72,6 +96,14 @@ public class ShooterCalculations {
         shooterVelocity, shooterPitch, rawYaw.minus(new Rotation2d(compensationAngle)), true);
   }
 
+  /**
+   * Runs a convergence test for the numerical solver across the field to verify stability. Prints
+   * results to stdout.
+   *
+   * @param stepMeters Grid step size for the test in meters.
+   * @param prevPitchDegrees Array of initial pitch guesses to test.
+   * @param prevFlywheelRotPerSec Array of initial flywheel velocity guesses to test.
+   */
   public static void runOptimizedSolverConvergenceTest(
       double stepMeters, double[] prevPitchDegrees, double[] prevFlywheelRotPerSec) {
 
@@ -150,6 +182,15 @@ public class ShooterCalculations {
     System.out.println("Max error threshold used: " + ShooterSolverConstants.maxError);
   }
 
+  /**
+   * Calculates shooter controls using an apex-constrained ballistic model. Assumes the shot peaks
+   * at a specific height clearance above the goal.
+   *
+   * @param odometryPose Current robot pose.
+   * @param chassisSpeeds Current robot chassis speeds.
+   * @param gyroRate Current robot gyro rotation rate.
+   * @return Calculated {@link ShooterControls}.
+   */
   public static ShooterControls getApexConstrainedShooterControls(
       Pose2d odometryPose, ChassisSpeeds chassisSpeeds, AngularVelocity gyroRate) {
 
@@ -224,6 +265,16 @@ public class ShooterCalculations {
         true);
   }
 
+  /**
+   * Calculates shooter controls using an iterative numerical solver (Gradient Descent). Solves for
+   * pitch and velocity simultaneously to minimize error.
+   *
+   * @param odometryPose Current robot pose.
+   * @param chassisSpeeds Current robot chassis speeds.
+   * @param prevShooterPitch Previous pitch setpoint for seeding the solver.
+   * @param prevFlywheelVelocity Previous flywheel velocity setpoint for seeding the solver.
+   * @return Calculated {@link ShooterControls}.
+   */
   public static ShooterControls getNumericalSolvedShooterControls(
       Pose2d odometryPose,
       ChassisSpeeds chassisSpeeds,
@@ -352,6 +403,15 @@ public class ShooterCalculations {
         true);
   }
 
+  /**
+   * Calculates shooter controls for the "transfer" shot (shooting into the alliance zone from the transfer zone). Includes
+   * logic to avoid hitting the hub structure.
+   *
+   * @param speeds Current robot chassis speeds.
+   * @param odometryPose Current robot pose.
+   * @param shooterInterporlations Lookup table helper for transfer shots.
+   * @return Calculated {@link ShooterControls}.
+   */
   public static ShooterControls getShooterControlsTransfer(
       ChassisSpeeds speeds, Pose2d odometryPose, ShooterInterporlations shooterInterporlations) {
     Translation2d target =

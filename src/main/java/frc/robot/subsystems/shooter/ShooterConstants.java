@@ -21,57 +21,90 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.MomentOfInertia;
 
+/**
+ * Constants used by the Shooter subsystem (flywheel and pivot)
+ *
+ * @author Eddy Walsh
+ */
 public class ShooterConstants {
+  /** CAN Bus name for the shooter motors. */
   public static final CANBus shooterCan = new CANBus("*");
 
+  /** CAN ID for the primary flywheel motor. */
   public static final int flywheelMotorOneId = 0;
+
+  /** CAN ID for the secondary flywheel motor. */
   public static final int flywheelSecondaryMotorId = 1;
 
+    // PID for flywheel
   public static final double flywheelKP = 0.1;
   public static final double flywheelKD = 0.0;
+
+  // Feed forwards for the flywheel
   public static final double flywheelKS = 0.0;
   public static final double flywheelKV = 0.0;
   public static final double flywheelKA = 0.0;
 
+  /** Maximum velocity of the flywheel in rotations per second. */
   public static final double flywheelMaxVelocityRotationsPerSec = 85.6667;
+
+  /** Maximum acceleration of the flywheel in rotations per second squared. */
   public static final double flywheelMaxAccelerationRotationsPerSec = 200.0;
+
+  /** Maximum jerk of the flywheel in rotations per second cubed. */
   public static final double flywheelMaxJerkRotationsPerSecCubed = 100;
 
+  /** Gear ratio of the flywheel mechanism. */
   public static final double flywheelGearRatio = 1.;
 
+  /** Alignment configuration for the follower flywheel motor against the primary motor. */
   public static final MotorAlignmentValue flywheelFollowerMotorAlignment =
       MotorAlignmentValue.Opposed;
 
+  /** Stator current limit in Amps for the flywheel motors. */
   public static final double flywheelStatorCurrentLimitAmps = 120.0;
 
+  /** Invert configuration for the primary flywheel motor. */
   public static final InvertedValue flywheelMotorInverted = InvertedValue.Clockwise_Positive;
 
+  /** CAN ID for the primary pivot motor. */
   public static int pivotMotorOneId;
 
+  /** CAN ID for the secondary pivot motor. */
   public static int pivotSecondaryMotorId;
 
+  /** Alignment configuration for the follower pivot motor. */
   public static MotorAlignmentValue pivotFollowerMotorAlignment;
 
+  /** Allowable error tolerance for the pivot position. */
   public static final Angle pivotPositionTolerence = Degrees.of(3);
 
+  /** Minimum physical pitch angle of the shooter. */
   public static final Angle minShooterPitch = Degrees.of(0);
 
+  /** Maximum physical pitch angle of the shooter. */
   public static final Angle maxShooterPitch = Degrees.of(80);
 
+  /** Moment of inertia of the flywheel mechanism. */
   public static final MomentOfInertia flywheelInertia = KilogramSquareMeters.of(0.01);
 
+  /** Initial pose of the shooter on the robot. */
   public static final Pose3d shooterInitalPosition =
       new Pose3d(
           new Translation3d(Meters.of(0), Meters.of(0), Meters.of(0.5)),
           new Rotation3d(Degrees.of(0), Degrees.of(-40), Degrees.of(0)));
 
+  /** Radius of the flywheel. */
   public static final Distance flywheelRadius = Inches.of(4);
 
+  /** Simulation PID for the flywheel. */
   public static final Slot0Configs simFlywheelConfigs = new Slot0Configs().withKP(30);
 
+  /** Maximum linear velocity of the flywheel surface. */
   public static final LinearVelocity flywheelMaxLinearVelocity =
       MetersPerSecond.of(
-          RotationsPerSecond.of(85.66667).in(RadiansPerSecond) * flywheelRadius.in(Meters));
+          flywheelMaxVelocityRotationsPerSec * 2 * Math.PI * flywheelRadius.in(Meters));
 
+  /** Allowable error tolerance for the flywheel velocity. */
   public static final AngularVelocity flywheelVelocityTolerance = RotationsPerSecond.of(0.5);
 }
