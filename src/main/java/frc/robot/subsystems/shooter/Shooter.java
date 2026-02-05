@@ -74,8 +74,6 @@ public class Shooter extends SubsystemBase {
       new LoggedTunableNumber("Shooter/Pivot/MaxVelocityRotationsPerSecond", 2.0);
   private static final LoggedTunableNumber pivotMaxAccelerationRotationsPerSec2 =
       new LoggedTunableNumber("Shooter/Pivot/MaxAccelerationRotationsSec2", 4.0);
-  private static final LoggedTunableNumber pivotMaxJerkRotationsPerSec3 =
-      new LoggedTunableNumber("Shooter/Pivot/MaxJerkRotationsPerSec3", 4.0);
 
   private final Alert forwardFlywheelDisconnectedAlert =
       new Alert("Forward Flywheel disconnected", AlertType.kError);
@@ -162,8 +160,7 @@ public class Shooter extends SubsystemBase {
     }
 
     if (pivotMaxVelocityRotationsPerSec.hasChanged(hashCode())
-        || pivotMaxAccelerationRotationsPerSec2.hasChanged(hashCode())
-        || pivotMaxJerkRotationsPerSec3.hasChanged(hashCode())) {
+        || pivotMaxAccelerationRotationsPerSec2.hasChanged(hashCode())) {
       pivot.setMotionConstraints(
           RotationsPerSecond.of(pivotMaxVelocityRotationsPerSec.get()),
           RotationsPerSecondPerSecond.of(pivotMaxAccelerationRotationsPerSec2.get()));
