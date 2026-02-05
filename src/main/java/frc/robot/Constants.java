@@ -26,7 +26,7 @@ public final class Constants {
   public static final boolean disableHAL = false;
 
   public static final int collectorIntakeButtonID = 4;
-  public static final int IndexerIntakeButtonID = 2;
+  public static final int IndexerIntakeButtonID = 1;
 
   public static enum Mode {
     /** Running on a real robot. */

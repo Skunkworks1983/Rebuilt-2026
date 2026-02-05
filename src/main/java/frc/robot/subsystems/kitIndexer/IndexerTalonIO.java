@@ -20,7 +20,7 @@ public class IndexerTalonIO implements IndexerIO {
   // }
 
   public IndexerTalonIO() {
-    intakeMotor = new TalonFX(0);
+    intakeMotor = new TalonFX(43);
 
     var intakeConfig = new TalonFXConfiguration();
 
