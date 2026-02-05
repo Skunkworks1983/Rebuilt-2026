@@ -64,17 +64,24 @@ public class Shooter extends SubsystemBase {
           ShooterConstants.flywheelMaxAcceleration.in(RotationsPerSecondPerSecond));
 
   private static final LoggedTunableNumber pivotKP =
-      new LoggedTunableNumber("Shooter/Pivot/kP", 2000);
-  private static final LoggedTunableNumber pivotKD = new LoggedTunableNumber("Shooter/Pivot/kD", 0);
-  private static final LoggedTunableNumber pivotKS = new LoggedTunableNumber("Shooter/Pivot/kS", 0);
-  private static final LoggedTunableNumber pivotKV = new LoggedTunableNumber("Shooter/Pivot/kV", 0);
-  private static final LoggedTunableNumber pivotKA = new LoggedTunableNumber("Shooter/Pivot/kA", 0);
+      new LoggedTunableNumber("Shooter/Pivot/kP", ShooterConstants.pivotkP);
+  private static final LoggedTunableNumber pivotKD =
+      new LoggedTunableNumber("Shooter/Pivot/kD", ShooterConstants.pivotkD);
+  private static final LoggedTunableNumber pivotKS =
+      new LoggedTunableNumber("Shooter/Pivot/kS", ShooterConstants.pivotkS);
+  private static final LoggedTunableNumber pivotKV =
+      new LoggedTunableNumber("Shooter/Pivot/kV", ShooterConstants.pivotkV);
+  private static final LoggedTunableNumber pivotKA =
+      new LoggedTunableNumber("Shooter/Pivot/kA", ShooterConstants.pivotkA);
 
   private static final LoggedTunableNumber pivotMaxVelocityRotationsPerSec =
-      new LoggedTunableNumber("Shooter/Pivot/MaxVelocityRotationsPerSecond", 2.0);
+      new LoggedTunableNumber(
+          "Shooter/Pivot/MaxVelocityRotationsPerSecond",
+          ShooterConstants.pivotMaxVelocity.in(RotationsPerSecond));
   private static final LoggedTunableNumber pivotMaxAccelerationRotationsPerSec2 =
-      new LoggedTunableNumber("Shooter/Pivot/MaxAccelerationRotationsSec2", 4.0);
-
+      new LoggedTunableNumber(
+          "Shooter/Pivot/MaxAccelerationRotationsSec2",
+          ShooterConstants.pivotMaxAcceleration.in(RotationsPerSecondPerSecond));
   private final Alert forwardFlywheelDisconnectedAlert =
       new Alert("Forward Flywheel disconnected", AlertType.kError);
   private final Alert backFlywheelDisconnectedAlert =
@@ -119,8 +126,7 @@ public class Shooter extends SubsystemBase {
     backFlywheelDisconnectedAlert.set(!backFlywheelInputs.connected);
 
     pivotDisconnectedAlert.set(
-        (!pivotInputs.connected)
-            && Constants.currentMode != Constants.Mode.SIM);
+        (!pivotInputs.connected) && Constants.currentMode != Constants.Mode.SIM);
 
     if (flywheelKP.hasChanged(hashCode())
         || flywheelKD.hasChanged(hashCode())

@@ -120,4 +120,8 @@ public class ShooterConstants {
   public static final double pivotkV = 0;
 
   public static final double pivotkA = 0;
+
+  public static final AngularVelocity pivotMaxVelocity = RotationsPerSecond.of(5);
+
+  public static final AngularAcceleration pivotMaxAcceleration = RotationsPerSecondPerSecond.of(10);
 }
