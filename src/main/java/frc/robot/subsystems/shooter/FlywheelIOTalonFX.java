@@ -6,8 +6,8 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.ParentDevice;
@@ -20,17 +20,11 @@ import edu.wpi.first.units.measure.Voltage;
 
 public class FlywheelIOTalonFX implements FlywheelIO {
   protected final TalonFX flywheelMotor;
-  protected final TalonFX flywheelFollower;
 
   private final StatusSignal<AngularVelocity> flywheelVelocity;
   private final StatusSignal<Voltage> flywheelAppliedVolts;
   private final StatusSignal<Current> flywheelCurrent;
   private final StatusSignal<Current> flywheelTorqueCurrent;
-
-  private final StatusSignal<AngularVelocity> flywheelFollowerVelocity;
-  private final StatusSignal<Voltage> flywheelFollowerAppliedVolts;
-  private final StatusSignal<Current> flywheelFollowerCurrent;
-  private final StatusSignal<Current> flywheelFollowerTorqueCurrent;
 
   private final TorqueCurrentFOC torqueCurrentRequest = new TorqueCurrentFOC(0);
   private final MotionMagicVelocityTorqueCurrentFOC velocityTorqueCurrentRequest =
@@ -38,16 +32,9 @@ public class FlywheelIOTalonFX implements FlywheelIO {
 
   private final Debouncer primaryConnectedDebounce =
       new Debouncer(0.5, Debouncer.DebounceType.kFalling);
-  private final Debouncer followerConnectedDebounce =
-      new Debouncer(0.5, Debouncer.DebounceType.kFalling);
 
-  public FlywheelIOTalonFX() {
-    flywheelMotor = new TalonFX(ShooterConstants.flywheelMotorOneId, ShooterConstants.shooterCan);
-    flywheelFollower =
-        new TalonFX(ShooterConstants.flywheelSecondaryMotorId, ShooterConstants.shooterCan);
-
-    flywheelFollower.setControl(
-        new Follower(flywheelMotor.getDeviceID(), ShooterConstants.flywheelFollowerMotorAlignment));
+  public FlywheelIOTalonFX(int flywheelCanID) {
+    flywheelMotor = new TalonFX(flywheelCanID, ShooterConstants.shooterCan);
 
     TalonFXConfiguration flywheelConfig = new TalonFXConfiguration();
     flywheelConfig.Feedback.SensorToMechanismRatio = ShooterConstants.flywheelGearRatio;
@@ -74,31 +61,16 @@ public class FlywheelIOTalonFX implements FlywheelIO {
         ShooterConstants.flywheelStatorCurrentLimitAmps;
 
     tryUntilOk(5, () -> flywheelMotor.getConfigurator().apply(flywheelConfig, 0.25));
-    tryUntilOk(5, () -> flywheelFollower.getConfigurator().apply(new TalonFXConfiguration(), 0.25));
 
     flywheelVelocity = flywheelMotor.getVelocity();
     flywheelAppliedVolts = flywheelMotor.getMotorVoltage();
     flywheelCurrent = flywheelMotor.getStatorCurrent();
     flywheelTorqueCurrent = flywheelMotor.getTorqueCurrent();
 
-    flywheelFollowerVelocity = flywheelFollower.getVelocity();
-    flywheelFollowerAppliedVolts = flywheelFollower.getMotorVoltage();
-    flywheelFollowerCurrent = flywheelFollower.getStatorCurrent();
-    flywheelFollowerTorqueCurrent = flywheelFollower.getTorqueCurrent();
-
     BaseStatusSignal.setUpdateFrequencyForAll(
-        50.0,
-        flywheelVelocity,
-        flywheelAppliedVolts,
-        flywheelCurrent,
-        flywheelFollowerVelocity,
-        flywheelFollowerAppliedVolts,
-        flywheelFollowerCurrent,
-        flywheelFollowerTorqueCurrent);
+        50.0, flywheelVelocity, flywheelAppliedVolts, flywheelCurrent, flywheelTorqueCurrent);
 
-    flywheelTorqueCurrent.setUpdateFrequency(
-        250); // This is what follower uses to follow, so faser updates
-    ParentDevice.optimizeBusUtilizationForAll(flywheelMotor, flywheelFollower);
+    ParentDevice.optimizeBusUtilizationForAll(flywheelMotor);
   }
 
   @Override
@@ -116,27 +88,16 @@ public class FlywheelIOTalonFX implements FlywheelIO {
     StatusCode flywheelStatus =
         BaseStatusSignal.refreshAll(
             flywheelVelocity, flywheelAppliedVolts, flywheelCurrent, flywheelTorqueCurrent);
-    StatusCode flywheelFollowerStatus =
-        BaseStatusSignal.refreshAll(
-            flywheelFollowerVelocity,
-            flywheelFollowerAppliedVolts,
-            flywheelFollowerCurrent,
-            flywheelFollowerTorqueCurrent);
 
-    inputs.primaryConnected = primaryConnectedDebounce.calculate(flywheelStatus.isOK());
-    inputs.followerConnected = followerConnectedDebounce.calculate(flywheelFollowerStatus.isOK());
+    inputs.connected = primaryConnectedDebounce.calculate(flywheelStatus.isOK());
 
-    inputs.primaryVelocity = flywheelVelocity.getValue();
-    inputs.followerVelocity = flywheelFollowerVelocity.getValue();
+    inputs.angularVelocity = flywheelVelocity.getValue();
 
-    inputs.primaryAppliedVolts = flywheelAppliedVolts.getValue();
-    inputs.followerAppliedVolts = flywheelFollowerAppliedVolts.getValue();
+    inputs.appliedVolts = flywheelAppliedVolts.getValue();
 
-    inputs.primaryStatorCurrentAmps = flywheelCurrent.getValue();
-    inputs.followerStatorCurrentAmps = flywheelFollowerCurrent.getValue();
+    inputs.statorCurrentAmps = flywheelCurrent.getValue();
 
-    inputs.primaryTorqueCurrentAmps = flywheelTorqueCurrent.getValue();
-    inputs.followerTorqueCurrentAmps = flywheelFollowerTorqueCurrent.getValue();
+    inputs.torqueCurrentAmps = flywheelTorqueCurrent.getValue();
   }
 
   @Override
@@ -146,20 +107,11 @@ public class FlywheelIOTalonFX implements FlywheelIO {
             .MotionMagic.withMotionMagicAcceleration(maxAcceleration).withMotionMagicJerk(maxJerk);
 
     tryUntilOk(5, () -> flywheelMotor.getConfigurator().apply(config));
-    tryUntilOk(5, () -> flywheelFollower.getConfigurator().apply(config));
   }
 
   @Override
-  public void setPID(double kP, double kI, double kD, double kS, double kV, double kA) {
-    TalonFXConfiguration config = new TalonFXConfiguration();
-    config.Slot0.kP = kP;
-    config.Slot0.kI = kI;
-    config.Slot0.kD = kD;
-    config.Slot0.kS = kS;
-    config.Slot0.kV = kV;
-    config.Slot0.kA = kA;
+  public void setPID(Slot0Configs gains) {
 
-    tryUntilOk(5, () -> flywheelMotor.getConfigurator().apply(config.Slot0));
-    tryUntilOk(5, () -> flywheelFollower.getConfigurator().apply(config.Slot0));
+    tryUntilOk(5, () -> flywheelMotor.getConfigurator().apply(gains));
   }
 }

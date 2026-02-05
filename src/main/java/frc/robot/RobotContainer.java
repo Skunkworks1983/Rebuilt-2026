@@ -36,6 +36,7 @@ import frc.robot.subsystems.shooter.FlywheelIO;
 import frc.robot.subsystems.shooter.FlywheelIOSim;
 import frc.robot.subsystems.shooter.PivotIO;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.ShooterConstants;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
@@ -156,7 +157,8 @@ public class RobotContainer {
                 simulation::setSimulationWorldPose,
                 (pose) -> {});
 
-        shooter = new Shooter(new FlywheelIOSim(), new PivotIO() {});
+        shooter =
+            new Shooter(new FlywheelIOSim(ShooterConstants.flywheelMotorOneId), new PivotIO() {});
 
         vision =
             new Vision(
@@ -359,7 +361,7 @@ public class RobotContainer {
             SimProjectile.getProjectile(
                 simulation.getSimulatedDriveTrainPose(),
                 simulation.getDriveTrainSimulatedChassisSpeedsFieldRelative(),
-                shooter.getShooterLinearVelocity(),
+                shooter.getShooterForwardLinearVelocity(),
                 shooter.getPivotAngle()));
   }
 }

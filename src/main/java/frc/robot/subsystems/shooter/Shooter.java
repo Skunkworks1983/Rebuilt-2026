@@ -11,6 +11,7 @@ import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.SignalLogger;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -33,9 +34,12 @@ import org.littletonrobotics.junction.Logger;
  * @author Eddy Walsh
  */
 public class Shooter extends SubsystemBase {
-  private final FlywheelIO flywheel;
+  private final FlywheelIO forwardFlywheel;
+  private final FlywheelIO backFlywheel;
+
   private final PivotIO pivot;
-  private final FlywheelIOInputsAutoLogged flywheelInputs = new FlywheelIOInputsAutoLogged();
+  private final FlywheelIOInputsAutoLogged forwardFlywheelInputs = new FlywheelIOInputsAutoLogged();
+  private final FlywheelIOInputsAutoLogged backFlywheelInputs = new FlywheelIOInputsAutoLogged();
   private final PivotIOInputsAutoLogged pivotInputs = new PivotIOInputsAutoLogged();
 
   private AngularVelocity flywheelSetpoint = RadiansPerSecond.of(0 + .1e-6);
@@ -77,18 +81,22 @@ public class Shooter extends SubsystemBase {
   private static final LoggedTunableNumber pivotMaxJerkRotationsPerSec3 =
       new LoggedTunableNumber("Shooter/Pivot/MaxJerkRotationsPerSec3", 4.0);
 
-  private final Alert flywheelDisconnectedAlert =
-      new Alert("Flywheel disconnected", AlertType.kError);
+  private final Alert forwardFlywheelDisconnectedAlert =
+      new Alert("Forward Flywheel disconnected", AlertType.kError);
+  private final Alert backFlywheelDisconnectedAlert =
+      new Alert("Back Flywheel disconnected", AlertType.kError);
   private final Alert pivotDisconnectedAlert = new Alert("Pivot disconnected", AlertType.kError);
 
   /**
    * Constructs a new Shooter instance.
    *
-   * @param flywheel The IO implementation for the flywheel.
+   * @param forwardFlywheel The IO implementation for the forward (launch) flywheel.
+   * @param forwardFlywheel The IO implementation for the back flywheel.
    * @param pivot The IO implementation for the pivot.
    */
-  public Shooter(FlywheelIO flywheel, PivotIO pivot) {
-    this.flywheel = flywheel;
+  public Shooter(FlywheelIO forwardFlywheel, FlywheelIO backFlywheel, PivotIO pivot) {
+    this.forwardFlywheel = forwardFlywheel;
+    this.backFlywheel = backFlywheel;
     this.pivot = pivot;
 
     sysId =
@@ -104,15 +112,17 @@ public class Shooter extends SubsystemBase {
 
   @Override
   public void periodic() {
-    flywheel.updateInputs(flywheelInputs);
+    forwardFlywheel.updateInputs(forwardFlywheelInputs);
+    backFlywheel.updateInputs(backFlywheelInputs);
     pivot.updateInputs(pivotInputs);
 
-    Logger.processInputs("Shooter/Flywheel", flywheelInputs);
+    Logger.processInputs("Shooter/Flywheel/Forward Flywheel", forwardFlywheelInputs);
+    Logger.processInputs("Shooter/Flywheel/Back Flywheel", backFlywheelInputs);
     Logger.processInputs("Shooter/Pivot", pivotInputs);
 
-    flywheelDisconnectedAlert.set(
-        (!flywheelInputs.primaryConnected || !flywheelInputs.followerConnected)
-            && Constants.currentMode != Constants.Mode.SIM);
+    forwardFlywheelDisconnectedAlert.set(!forwardFlywheelInputs.connected);
+
+    backFlywheelDisconnectedAlert.set(!backFlywheelInputs.connected);
 
     pivotDisconnectedAlert.set(
         (!pivotInputs.primaryConnected || !pivotInputs.followerConnected)
@@ -123,13 +133,14 @@ public class Shooter extends SubsystemBase {
         || flywheelKS.hasChanged(hashCode())
         || flywheelKV.hasChanged(hashCode())
         || flywheelKA.hasChanged(hashCode())) {
-      flywheel.setPID(
-          flywheelKP.get(),
-          0.0,
-          flywheelKD.get(),
-          flywheelKS.get(),
-          flywheelKV.get(),
-          flywheelKA.get());
+      Slot0Configs gains = new Slot0Configs();
+      gains.kP = flywheelKP.get();
+      gains.kD = flywheelKD.get();
+      gains.kS = flywheelKS.get();
+      gains.kV = flywheelKV.get();
+      gains.kA = flywheelKA.get();
+      forwardFlywheel.setPID(gains);
+      backFlywheel.setPID(gains);
     }
 
     if (pivotKP.hasChanged(hashCode())
@@ -142,7 +153,10 @@ public class Shooter extends SubsystemBase {
 
     if (flywheelMaxAccelerationRotationsPerSec2.hasChanged(hashCode())
         || flywheelMaxJerkRotationsPerSec3.hasChanged(hashCode())) {
-      flywheel.setMotionConstraints(
+      forwardFlywheel.setMotionConstraints(
+          RotationsPerSecondPerSecond.of(flywheelMaxAccelerationRotationsPerSec2.get()),
+          flywheelMaxJerkRotationsPerSec3.get());
+      backFlywheel.setMotionConstraints(
           RotationsPerSecondPerSecond.of(flywheelMaxAccelerationRotationsPerSec2.get()),
           flywheelMaxJerkRotationsPerSec3.get());
     }
@@ -162,12 +176,10 @@ public class Shooter extends SubsystemBase {
    *
    * @return The linear velocity in meters per second.
    */
-  public LinearVelocity getShooterLinearVelocity() {
-    // return MetersPerSecond.of(
-    // flywheelInputs.primaryVelocity.in(RadiansPerSecond)
-    // * ShooterConstants.flywheelRadius.in(Meters));
+  public LinearVelocity getShooterForwardLinearVelocity() {
     return MetersPerSecond.of(
-        flywheelSetpoint.in(RadiansPerSecond) * ShooterConstants.flywheelRadius.in(Meters));
+        forwardFlywheelInputs.angularVelocity.in(RadiansPerSecond)
+            * ShooterConstants.flywheelRadius.in(Meters));
   }
 
   /**
@@ -176,7 +188,7 @@ public class Shooter extends SubsystemBase {
    * @param output The output voltage to apply.
    */
   private void runCharacterization(double output) {
-    flywheel.setOpenLoopOutput(output);
+    forwardFlywheel.setOpenLoopOutput(output);
   }
 
   /** Returns a command to run a quasistatic test in the specified direction. */
@@ -197,7 +209,8 @@ public class Shooter extends SubsystemBase {
    * @param velocity The angular velocity to set.
    */
   public void setManualVelocity(AngularVelocity velocity) {
-    flywheel.setVelocity(velocity);
+    forwardFlywheel.setVelocity(velocity);
+    backFlywheel.setVelocity(velocity);
   }
 
   /**
@@ -209,7 +222,7 @@ public class Shooter extends SubsystemBase {
   public boolean canShoot() {
     return MathUtil.isNear(
             flywheelSetpoint.in(RotationsPerSecond),
-            flywheelInputs.primaryVelocity.in(RotationsPerSecond),
+            forwardFlywheelInputs.angularVelocity.in(RotationsPerSecond),
             ShooterConstants.flywheelVelocityTolerance.in(RotationsPerSecond))
         && MathUtil.isNear(
             pivotSetpoint.in(Degrees),
@@ -252,6 +265,7 @@ public class Shooter extends SubsystemBase {
     Logger.recordOutput("Shooter/Pitch Setpoint Deg", pivotSetpoint.in(Degrees));
 
     pivot.setPosition(pivotSetpoint);
-    flywheel.setVelocity(flywheelSetpoint);
+    forwardFlywheel.setVelocity(flywheelSetpoint);
+    backFlywheel.setVelocity(flywheelSetpoint);
   }
 }
