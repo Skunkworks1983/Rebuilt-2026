@@ -14,7 +14,9 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
-/** Add your docs here. */
+/** 
+ * This is the Indexer IO sim
+*/
 public class IndexerIOSim implements IndexerIO {
   DCMotorSim indexerMotorSim;
   Voltage voltage;

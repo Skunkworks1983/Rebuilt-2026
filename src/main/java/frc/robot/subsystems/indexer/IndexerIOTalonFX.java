@@ -20,7 +20,9 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants.IndexerConstants.indexerConfigs;
 
-/** Add your docs here. */
+/**
+ * This is the motor for the Indexer. it takes in a ID
+*/
 public class IndexerIOTalonFX implements IndexerIO {
 
   VelocityVoltage velocityVoltageRequest = new VelocityVoltage(0);
@@ -68,7 +70,9 @@ public class IndexerIOTalonFX implements IndexerIO {
     inputs.currentAmps = indexerCurrent.getValue();
   }
 
-  // sets the control for the defined velocity
+  /** 
+  * sets the control for the indexer motor to the defined velocity
+  */
   public void setIndexerVelocity(AngularVelocity VelocityRotationsPerSec) {
     indexerMotor.setControl(
         velocityVoltageRequest.withVelocity(VelocityRotationsPerSec.in(RotationsPerSecond)));

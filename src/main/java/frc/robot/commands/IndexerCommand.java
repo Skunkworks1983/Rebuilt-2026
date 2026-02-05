@@ -7,22 +7,24 @@ package frc.robot.commands;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.indexer.Indexer;
+
+/**
+ * Command that runs the indexer
+ */
 
 public class IndexerCommand extends Command {
 
   Indexer indexer;
 
-  AngularVelocity velocity;
-
-  public IndexerCommand(Indexer indexer, AngularVelocity velocity) {
+  public IndexerCommand(Indexer indexer) {
     this.indexer = indexer;
-    this.velocity = velocity;
   }
 
   @Override
   public void initialize() {
-    indexer.setIndexerVelocity(velocity);
+    indexer.setIndexerVelocity(Constants.IndexerConstants.indexerAngularVelocity);
   }
 
   @Override
