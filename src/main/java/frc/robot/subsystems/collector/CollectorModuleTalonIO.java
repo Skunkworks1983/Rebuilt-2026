@@ -237,9 +237,6 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
    * Gets the position of the collector
    *
    * <ul>
-   *   <img
-   *   src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExYzBwYmd1MHEwMWZhejhubWY2emZ6Nmd3ZTkxN294eXFtcDBvaTM5byZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/rUxSaLgjcQbLO/giphy.gif"
-   *   alt="Intake Lower🤔">
    *
    * @return -WPILib Angle
    */
