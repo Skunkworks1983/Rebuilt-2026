@@ -107,7 +107,7 @@ public class RobotContainer {
                 (pose) -> {},
                 (pose) -> {});
 
-        shooter = new Shooter(new FlywheelIO() {}, new PivotIO() {});
+        shooter = new Shooter(new FlywheelIO() {}, new FlywheelIO() {}, new PivotIO() {});
 
         vision =
             new Vision(
@@ -158,7 +158,10 @@ public class RobotContainer {
                 (pose) -> {});
 
         shooter =
-            new Shooter(new FlywheelIOSim(ShooterConstants.flywheelMotorOneId), new PivotIO() {});
+            new Shooter(
+                new FlywheelIOSim(ShooterConstants.flywheelMotorOneId),
+                new FlywheelIOSim(ShooterConstants.flywheelSecondaryMotorId),
+                new PivotIO() {});
 
         vision =
             new Vision(
@@ -184,7 +187,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 (pose) -> {},
                 (pose) -> {});
-        shooter = new Shooter(new FlywheelIO() {}, new PivotIO() {});
+        shooter = new Shooter(new FlywheelIO() {}, new FlywheelIO() {}, new PivotIO() {});
 
         vision = new Vision(drive, new VisionIO() {}, new VisionIO() {});
         break;
