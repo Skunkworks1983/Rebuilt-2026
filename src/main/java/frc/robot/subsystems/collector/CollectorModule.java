@@ -7,6 +7,7 @@ package frc.robot.subsystems.collector;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
 import frc.robot.subsystems.collector.collectorConstants.CollectorConstants.side;
 import org.littletonrobotics.junction.Logger;
 
@@ -40,6 +41,13 @@ public class CollectorModule extends SubsystemBase {
   public void periodic() {
     collectorIO.updateInputs(inputs);
     Logger.processInputs(getName() + collectorIO.getSide().name(), inputs);
+  }
+
+  /** 
+   * Gets Constants
+   */
+  public CollectorConstants getConstants(){
+    return collectorIO.getConstants();
   }
 
   /**

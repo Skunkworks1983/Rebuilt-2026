@@ -7,6 +7,7 @@ package frc.robot.subsystems.collector;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
 import frc.robot.subsystems.collector.collectorConstants.CollectorConstants.side;
 import org.littletonrobotics.junction.AutoLog;
 
@@ -46,6 +47,13 @@ public interface CollectorModuleIO {
    * @param
    */
   public default void updateInputs(CollectorIOInputs inputs) {}
+
+  /** 
+   * Gets Constants
+   */
+  public default CollectorConstants getConstants(){
+    return null;
+  }
 
   /**
    * Gets the position of the collector

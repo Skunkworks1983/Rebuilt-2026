@@ -28,7 +28,6 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
 import frc.robot.subsystems.collector.collectorConstants.CollectorConstants.side;
-import frc.robot.subsystems.collector.collectorConstants.CollectorPositionConstants;
 import frc.robot.subsystems.drive.PhoenixOdometryThread;
 import java.util.Queue;
 
@@ -224,6 +223,13 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     inputs.upperCurrentAmps = upperCurrent.getValueAsDouble();
   }
 
+  /** 
+   * Gets Constants
+   */
+  public CollectorConstants getConstants(){
+    return constants;
+  }
+
   /**
    * Gets the position of the collector
    *
@@ -304,10 +310,11 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
    * </ul>
    */
   public boolean isCollectorDown() {
+    // I know this methods a bit silly rn but its gonna be replaced by magnet sensors anyway
     switch (side) {
       case LEFT:
         if (getPosition().in(Degrees)
-            <= CollectorPositionConstants.leftCollectorDownPos.in(Degrees)) {
+            <= constants.CollectorDownPos.in(Degrees)) {
           return true;
         } else {
           return false;
@@ -315,7 +322,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
 
       case RIGHT:
         if (getPosition().in(Degrees)
-            <= CollectorPositionConstants.rightCollectorDownPos.in(Degrees)) {
+            <= constants.CollectorDownPos.in(Degrees)) {
           return true;
         } else {
           return false;
