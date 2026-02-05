@@ -14,6 +14,7 @@ public class AutomaticStateChange extends Command {
   private Drive drive;
   private double lastDirection;
   private double currDirection;
+  private int count;
 
   /** Creates a new AutomaticStateChange. */
   public AutomaticStateChange(Collector collector, Drive drive) {
@@ -26,34 +27,34 @@ public class AutomaticStateChange extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    lastDirection = drive.getDirection();
-    currDirection = drive.getDirection();
+    count = 0;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    lastDirection = currDirection;
+    currDirection = drive.getDirection();
     if (currDirection != lastDirection) {
-      if (currDirection > 0.0) { // if going right
-        if (!collector.getLeftCollector().isCollectorDown()) {
-          collector.getRightCollector().goDown();
-        } else {
-          collector.getLeftCollector().goUp();
-          ;
-        }
-      } else if (currDirection < 0.0) { // if going left
-        if (!collector.getRightCollector().isCollectorDown()) {
-          collector.getLeftCollector().goDown();
-        } else {
-          collector.getRightCollector().goUp();
-          ;
+      count++;
+      if(count >= 3){
+        if (currDirection > 0.0) { // if going right
+          if (!collector.getLeftCollector().isCollectorDown()) {
+            collector.getRightCollector().goDown();
+          } else {
+            collector.getLeftCollector().goUp();
+          }
+        } else if (currDirection < 0.0) { // if going left
+          if (!collector.getRightCollector().isCollectorDown()) {
+            collector.getLeftCollector().goDown();
+          } else {
+            collector.getRightCollector().goUp();
+          }
         }
       }
     } else if (currDirection == lastDirection) {
-
+      count = 0;
     }
-    lastDirection = currDirection;
-    currDirection = drive.getDirection();
   }
 
   // Called once the command ends or is interrupted.
