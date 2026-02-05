@@ -119,7 +119,7 @@ public class Shooter extends SubsystemBase {
     backFlywheelDisconnectedAlert.set(!backFlywheelInputs.connected);
 
     pivotDisconnectedAlert.set(
-        (!pivotInputs.connected || !pivotInputs.followerConnected)
+        (!pivotInputs.connected)
             && Constants.currentMode != Constants.Mode.SIM);
 
     if (flywheelKP.hasChanged(hashCode())

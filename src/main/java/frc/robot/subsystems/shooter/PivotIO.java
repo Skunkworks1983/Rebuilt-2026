@@ -16,21 +16,16 @@ public interface PivotIO {
   @AutoLog
   public static class PivotIOInputs {
     public boolean connected = false;
-    public boolean followerConnected = false;
 
     public Angle pivotAbsolutePosition = Angle.ofBaseUnits(0, Rotations);
 
     public Angle pivotPosition = Angle.ofBaseUnits(0, Rotations);
-    public Angle pivotFollowerPosition = Angle.ofBaseUnits(0, Rotations);
 
     public Voltage pivotAppliedVolts = Volts.of(0);
-    public Voltage pivotFollowerAppliedVolts = Volts.of(0);
 
     public Current pivotStatorCurrentAmps = Amps.of(0);
-    public Current pivotFollowerStatorCurrentAmps = Amps.of(0);
 
     public Current pivotTorqueCurrentAmps = Amps.of(0);
-    public Current pivotFollowerTorqueCurrentAmps = Amps.of(0);
   }
 
   public default void setPosition(Angle angle) {}
