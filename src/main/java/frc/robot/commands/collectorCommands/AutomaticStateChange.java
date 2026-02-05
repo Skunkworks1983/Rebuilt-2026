@@ -27,6 +27,7 @@ public class AutomaticStateChange extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    currDirection = drive.getDirection();
     count = 0;
   }
 
