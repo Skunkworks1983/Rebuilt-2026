@@ -136,7 +136,7 @@ public class Shooter extends SubsystemBase {
     backFlywheel.updateInputs(backFlywheelInputs);
     Logger.processInputs("Shooter/BackFlywheel", backFlywheelInputs);
 
-    forwardFlywheelDisconnectedAlert.set(
+    backFlywheelDisconnectedAlert.set(
         (!forwardFlywheelInputs.primaryConnected) && Constants.currentMode != Constants.Mode.SIM);
 
     if (backFlywheelKP.hasChanged(hashCode())
@@ -169,6 +169,7 @@ public class Shooter extends SubsystemBase {
 
   private void runCharacterization(double output) {
     forwardFlywheel.setOpenLoopOutput(output);
+    backFlywheel.setOpenLoopOutput(output);
   }
 
   /** Returns a command to run a quasistatic test in the specified direction. */

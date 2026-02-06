@@ -90,7 +90,6 @@ public class FlywheelIOTalonFX implements FlywheelIO {
             flywheelVelocity, flywheelAppliedVolts, flywheelCurrent, flywheelTorqueCurrent);
 
     inputs.primaryConnected = primaryConnectedDebounce.calculate(flywheelStatus.isOK());
-
     inputs.velocity = flywheelVelocity.getValue();
 
     inputs.primaryAppliedVolts = flywheelAppliedVolts.getValue();
@@ -120,5 +119,10 @@ public class FlywheelIOTalonFX implements FlywheelIO {
     config.Slot0.kA = kA;
 
     tryUntilOk(5, () -> flywheelMotor.getConfigurator().apply(config.Slot0));
+  }
+
+  enum CollectorSide {
+    Left,
+    Right
   }
 }

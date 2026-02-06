@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.net.WebServer;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -62,6 +63,7 @@ public class Robot extends LoggedRobot {
         // Running a physics simulator, log to NT
         Logger.addDataReceiver(new NT4Publisher());
         Logger.addDataReceiver(new WPILOGWriter());
+        SignalLogger.start();
         break;
 
       case REPLAY:

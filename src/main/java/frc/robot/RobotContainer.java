@@ -36,8 +36,10 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.drive.ModuleIOTalonFXSim;
 import frc.robot.subsystems.kitCollector.Collector;
+import frc.robot.subsystems.kitCollector.CollectorIO;
 import frc.robot.subsystems.kitCollector.CollectorTalonIO;
 import frc.robot.subsystems.kitIndexer.Indexer;
+import frc.robot.subsystems.kitIndexer.IndexerIO;
 import frc.robot.subsystems.kitIndexer.IndexerTalonIO;
 import frc.robot.subsystems.simpleShooter.FlywheelIO;
 import frc.robot.subsystems.simpleShooter.FlywheelIOSim;
@@ -188,8 +190,8 @@ public class RobotContainer {
                 new FlywheelIOSim(ShooterConstants.forwardFlywheelId),
                 new FlywheelIOSim(ShooterConstants.backFlywheelId));
 
-        indexer = null;
-        collector = null;
+        indexer = new Indexer(new IndexerIO() {});
+        collector = new Collector(new CollectorIO() {});
 
         break;
 
@@ -234,6 +236,17 @@ public class RobotContainer {
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
     autoChooser.addOption("Sim Physics Test", new PathPlannerAuto("SimPhysTest"));
+
+    autoChooser.addOption(
+        "Shooter SysId (Quasistatic Forward)",
+        shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    autoChooser.addOption(
+        "Shooter SysId (Quasistatic Reverse)",
+        shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    autoChooser.addOption(
+        "Shooter SysId (Dynamic Reverse)", shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    autoChooser.addOption(
+        "Shooter SysId (Dynamic Forward)", shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -349,9 +362,7 @@ public class RobotContainer {
     SimulatedArena.getInstance().simulationPeriodic();
     Logger.recordOutput("FieldSimulation/RobotPosition", simulation.getSimulatedDriveTrainPose());
     Logger.recordOutput(
-        "FieldSimulation/Coral", SimulatedArena.getInstance().getGamePiecesArrayByType("Coral"));
-    Logger.recordOutput(
-        "FieldSimulation/Algae", SimulatedArena.getInstance().getGamePiecesArrayByType("Algae"));
+        "FieldSimulation/Fuel", SimulatedArena.getInstance().getGamePiecesArrayByType("Fuel"));
   }
 
   /**

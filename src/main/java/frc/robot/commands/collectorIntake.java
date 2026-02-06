@@ -34,7 +34,7 @@ public class CollectorIntake extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    collector.intake(AngularVelocity.ofBaseUnits(0,DegreesPerSecond));
+    collector.intake(AngularVelocity.ofBaseUnits(0, DegreesPerSecond));
   }
 
   // Returns true when the command should end.
