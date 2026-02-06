@@ -105,7 +105,6 @@ public class FlywheelIOTalonFX implements FlywheelIO {
 
   @Override
   public void setPID(Slot0Configs gains) {
-
     tryUntilOk(5, () -> flywheelMotor.getConfigurator().apply(gains));
   }
 }
