@@ -89,13 +89,9 @@ public class FlywheelIOTalonFX implements FlywheelIO {
             flywheelVelocity, flywheelAppliedVolts, flywheelCurrent, flywheelTorqueCurrent);
 
     inputs.connected = primaryConnectedDebounce.calculate(flywheelStatus.isOK());
-
     inputs.angularVelocity = flywheelVelocity.getValue();
-
     inputs.appliedVolts = flywheelAppliedVolts.getValue();
-
     inputs.statorCurrentAmps = flywheelCurrent.getValue();
-
     inputs.torqueCurrentAmps = flywheelTorqueCurrent.getValue();
   }
 
