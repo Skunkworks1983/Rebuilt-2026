@@ -267,7 +267,7 @@ public class RobotContainer {
       alignShot.whileTrue(
           DriveCommands.joystickDriveAimedHub(
               drive, shooter, () -> -leftJoystick.getY(), () -> -leftJoystick.getX()));
-      shoot.onTrue(SimpleShoot.simpleShoot(shooter));
+      shoot.whileTrue(SimpleShoot.simpleShoot(shooter));
     } else {
 
       drive.setDefaultCommand(

@@ -17,6 +17,8 @@ public interface FlywheelIO {
 
     public AngularVelocity velocity = RotationsPerSecond.of(0);
 
+    public AngularVelocity desiredVelocity = RotationsPerSecond.of(0);
+
     public Voltage primaryAppliedVolts = Volts.of(0);
 
     public Current primaryStatorCurrentAmps = Amps.of(0);

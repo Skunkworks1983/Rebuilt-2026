@@ -28,7 +28,7 @@ public class IndexerIntake extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    indexer.intake(AngularVelocity.ofBaseUnits(1000, DegreesPerSecond));
+    indexer.intake(AngularVelocity.ofBaseUnits(-125, DegreesPerSecond));
   }
 
   // Called once the command ends or is interrupted.
