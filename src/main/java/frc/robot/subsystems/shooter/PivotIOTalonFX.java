@@ -40,10 +40,9 @@ public class PivotIOTalonFX implements PivotIO {
     pivotMotor = new TalonFX(ShooterConstants.pivotMotorId, ShooterConstants.shooterCan);
 
     TalonFXConfiguration pivotConfig = new TalonFXConfiguration();
+
     pivotConfig.Feedback.SensorToMechanismRatio = ShooterConstants.flywheelGearRatio;
-
     pivotConfig.MotorOutput.Inverted = ShooterConstants.flywheelMotorInverted;
-
     pivotConfig.ClosedLoopGeneral.ContinuousWrap = true;
 
     pivotConfig.Slot0.kP = ShooterConstants.pivotkP;

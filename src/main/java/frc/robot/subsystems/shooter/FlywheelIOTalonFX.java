@@ -39,10 +39,9 @@ public class FlywheelIOTalonFX implements FlywheelIO {
     flywheelMotor = new TalonFX(flywheelCanID, ShooterConstants.shooterCan);
 
     TalonFXConfiguration flywheelConfig = new TalonFXConfiguration();
+
     flywheelConfig.Feedback.SensorToMechanismRatio = ShooterConstants.flywheelGearRatio;
-
     flywheelConfig.MotorOutput.Inverted = ShooterConstants.flywheelMotorInverted;
-
     flywheelConfig.ClosedLoopGeneral.ContinuousWrap = true;
 
     flywheelConfig.Slot0.kP = ShooterConstants.flywheelKP;
@@ -106,7 +105,6 @@ public class FlywheelIOTalonFX implements FlywheelIO {
 
   @Override
   public void setPID(Slot0Configs gains) {
-
     tryUntilOk(5, () -> flywheelMotor.getConfigurator().apply(gains));
   }
 }
