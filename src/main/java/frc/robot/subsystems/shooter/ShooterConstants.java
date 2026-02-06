@@ -38,7 +38,7 @@ import edu.wpi.first.units.measure.Voltage;
 public class ShooterConstants {
 
   /** CAN Bus name for the shooter motors. */
-  public static final CANBus shooterCan = new CANBus("*"); //TODO: Enter canbus
+  public static final CANBus shooterCan = new CANBus("*"); // TODO: Enter canbus
 
   public static final double disconnectedDebounceTimeSec = 0.5;
 
@@ -48,7 +48,7 @@ public class ShooterConstants {
   // FLYWHEEL CONSTANTS
 
   /** CAN ID for the primary flywheel motor. */
-  public static final int flywheelMotorOneId = 0; //TODO: Motor IDS
+  public static final int flywheelMotorOneId = 0; // TODO: Motor IDS
 
   /** CAN ID for the secondary flywheel motor. */
   public static final int flywheelSecondaryMotorId = 1;
@@ -111,7 +111,7 @@ public class ShooterConstants {
 
   /** Allowable error tolerance for the flywheel velocity. */
   public static final AngularVelocity flywheelVelocityTolerance = RotationsPerSecond.of(0.5);
-    
+
   // PIVOT CONSTANTS
 
   /** CAN ID for the primary pivot motor. */
@@ -122,7 +122,7 @@ public class ShooterConstants {
 
   /** Allowable error tolerance for the pivot position. */
   public static final Angle pivotPositionTolerence = Degrees.of(3);
-    
+
   // PID for pivot
   public static final double pivotkP = 0; // TODO: SET VALUES
   public static final double pivotkD = 0;

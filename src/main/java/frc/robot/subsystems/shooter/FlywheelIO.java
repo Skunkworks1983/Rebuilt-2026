@@ -41,13 +41,12 @@ public interface FlywheelIO {
    * Apply an open-loop torque/current command to the flywheel motor.
    *
    * <p>This is primarily for SysID
-   * 
    */
   public default void setOpenLoopTorqueCurrent(Current output) {}
 
   /**
-   * Update the {@link FlywheelIOInputs} instance with the latest sensor and status
-   * readings from the hardware.
+   * Update the {@link FlywheelIOInputs} instance with the latest sensor and status readings from
+   * the hardware.
    *
    * <p>Implementations should fill all fields of the supplied inputs object.
    *

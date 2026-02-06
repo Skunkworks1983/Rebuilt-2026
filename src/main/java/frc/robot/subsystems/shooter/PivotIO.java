@@ -58,8 +58,8 @@ public interface PivotIO {
   public default void setOpenLoopTorqueCurrent(Current current) {}
 
   /**
-   * Update the provided {@link PivotIOInputs} instance with the latest sensor and status
-   * readings from the hardware.
+   * Update the provided {@link PivotIOInputs} instance with the latest sensor and status readings
+   * from the hardware.
    *
    * @param inputs mutable inputs object to populate with the latest hardware values
    */

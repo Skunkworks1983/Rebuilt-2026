@@ -7,7 +7,6 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
-import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.SignalLogger;
@@ -168,12 +167,16 @@ public class Shooter extends SubsystemBase {
 
   /** Returns a command to run a quasistatic test in the specified direction. */
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-    return run(() -> runFlywheelTorqueCurrent(0.0)).withTimeout(1.0).andThen(sysId.quasistatic(direction));
+    return run(() -> runFlywheelTorqueCurrent(0.0))
+        .withTimeout(1.0)
+        .andThen(sysId.quasistatic(direction));
   }
 
   /** Returns a command to run a dynamic test in the specified direction. */
   public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-    return run(() -> runFlywheelTorqueCurrent(0.0)).withTimeout(1.0).andThen(sysId.dynamic(direction));
+    return run(() -> runFlywheelTorqueCurrent(0.0))
+        .withTimeout(1.0)
+        .andThen(sysId.dynamic(direction));
   }
 
   /**
