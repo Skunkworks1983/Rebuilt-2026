@@ -17,7 +17,7 @@ import edu.wpi.first.units.measure.Distance;
  *
  * @author Eddy Walsh
  */
-public class ShooterInterporlations {
+public class ShooterInterpolation {
 
   private final InterpolatingDoubleTreeMap shooterGoalAngleMap;
 
@@ -33,7 +33,7 @@ public class ShooterInterporlations {
   private final InterpolatingDoubleTreeMap shooterGroundVelocityMap;
 
   /** Initializes the interpolation maps with predefined data points. */
-  public ShooterInterporlations() {
+  public ShooterInterpolation() {
     shooterGoalAngleMap = new InterpolatingDoubleTreeMap();
     shooterGoalAngleMap.put(0., 90.);
     shooterGoalAngleMap.put(1., 80.);

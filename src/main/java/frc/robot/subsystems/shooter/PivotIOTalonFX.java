@@ -34,7 +34,7 @@ public class PivotIOTalonFX implements PivotIO {
       new MotionMagicTorqueCurrentFOC(0.0);
 
   private final Debouncer primaryConnectedDebounce =
-      new Debouncer(0.5, Debouncer.DebounceType.kFalling);
+      new Debouncer(ShooterConstants.disconnectedDebounceTimeSec, Debouncer.DebounceType.kFalling);
 
   public PivotIOTalonFX() {
     pivotMotor = new TalonFX(ShooterConstants.pivotMotorId, ShooterConstants.shooterCan);
@@ -80,7 +80,7 @@ public class PivotIOTalonFX implements PivotIO {
   }
 
   @Override
-  public void setOpenLoopCurrent(Current current) {
+  public void setOpenLoopTorqueCurrent(Current current) {
     pivotMotor.setControl(torqueCurrentRequest.withOutput(current));
   }
 
@@ -91,13 +91,9 @@ public class PivotIOTalonFX implements PivotIO {
             pivotPostion, pivotAppliedVolts, pivotCurrent, pivotTorqueCurrent);
 
     inputs.connected = primaryConnectedDebounce.calculate(pivotStatus.isOK());
-
     inputs.pivotPosition = pivotPostion.getValue();
-
     inputs.pivotAppliedVolts = pivotAppliedVolts.getValue();
-
     inputs.pivotStatorCurrentAmps = pivotCurrent.getValue();
-
     inputs.pivotTorqueCurrentAmps = pivotTorqueCurrent.getValue();
   }
 

@@ -249,7 +249,7 @@ public class RobotContainer {
       Trigger shootButton = new JoystickButton(rightJoystick, 1);
 
       shootGoalButton.whileTrue(
-          DriveAimedGoal.joystickDriveAimedHub(
+          new DriveAimedGoal(
               drive, shooter, () -> -leftJoystick.getY(), () -> -leftJoystick.getX()));
       shootButton.onTrue(new InstantCommand(this::launchSimFuel));
 
@@ -264,7 +264,7 @@ public class RobotContainer {
       Trigger shootButton = new JoystickButton(xboxController, XboxController.Button.kB.value);
 
       shootGoalButton.whileTrue(
-          DriveAimedGoal.joystickDriveAimedHub(
+          new DriveAimedGoal(
               drive, shooter, () -> -xboxController.getLeftY(), () -> -xboxController.getLeftX()));
       shootButton.onTrue(new InstantCommand(this::launchSimFuel));
     }
@@ -357,7 +357,7 @@ public class RobotContainer {
     }
   }
 
-  /** Creates a new simulated fuel and launces it from the current robot position and speeds */
+  /** Creates a new simulated fuel and launches it from the current robot position and speeds */
   public void launchSimFuel() {
     SimulatedArena.getInstance()
         .addGamePieceProjectile(

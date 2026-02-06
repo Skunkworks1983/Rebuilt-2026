@@ -33,7 +33,7 @@ public class FlywheelIOTalonFX implements FlywheelIO {
       new MotionMagicVelocityTorqueCurrentFOC(0.0);
 
   private final Debouncer primaryConnectedDebounce =
-      new Debouncer(0.5, Debouncer.DebounceType.kFalling);
+      new Debouncer(ShooterConstants.disconnectedDebounceTimeSec, Debouncer.DebounceType.kFalling);
 
   public FlywheelIOTalonFX(int flywheelCanID) {
     flywheelMotor = new TalonFX(flywheelCanID, ShooterConstants.shooterCan);
@@ -79,7 +79,7 @@ public class FlywheelIOTalonFX implements FlywheelIO {
   }
 
   @Override
-  public void setOpenLoopOutput(double output) {
+  public void setOpenLoopTorqueCurrent(Current output) {
     flywheelMotor.setControl(torqueCurrentRequest.withOutput(output));
   }
 
@@ -90,13 +90,9 @@ public class FlywheelIOTalonFX implements FlywheelIO {
             flywheelVelocity, flywheelAppliedVolts, flywheelCurrent, flywheelTorqueCurrent);
 
     inputs.connected = primaryConnectedDebounce.calculate(flywheelStatus.isOK());
-
     inputs.angularVelocity = flywheelVelocity.getValue();
-
     inputs.appliedVolts = flywheelAppliedVolts.getValue();
-
     inputs.statorCurrentAmps = flywheelCurrent.getValue();
-
     inputs.torqueCurrentAmps = flywheelTorqueCurrent.getValue();
   }
 

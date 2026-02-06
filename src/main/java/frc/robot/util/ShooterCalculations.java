@@ -40,20 +40,18 @@ public class ShooterCalculations {
       Angle shooterPitch,
       Rotation2d driveYaw,
       boolean possibleShot) {}
-  ;
 
   /**
    * Calculates shooter controls for aiming at the goal using linear interpolation. Compensates for
    * robot velocity to enable shooting while moving.
    *
-   * @param speeds Current robot chassis speeds (field-relative or robot-relative depending on
-   *     usage, usually robot-relative converted internally).
+   * @param speeds Current robot chassis speeds
    * @param odometryPose Current robot pose on the field.
    * @param shooterInterporlations Lookup table helper for goal shots.
    * @return Calculated {@link ShooterControls}.
    */
   public static ShooterControls getShooterControlsGoal(
-      ChassisSpeeds speeds, Pose2d odometryPose, ShooterInterporlations shooterInterporlations) {
+      ChassisSpeeds speeds, Pose2d odometryPose, ShooterInterpolation shooterInterporlations) {
     Translation3d target =
         DriverStation.getAlliance().get() == Alliance.Red
             ? FieldConstants.redGoal
@@ -413,7 +411,7 @@ public class ShooterCalculations {
    * @return Calculated {@link ShooterControls}.
    */
   public static ShooterControls getShooterControlsTransfer(
-      ChassisSpeeds speeds, Pose2d odometryPose, ShooterInterporlations shooterInterporlations) {
+      ChassisSpeeds speeds, Pose2d odometryPose, ShooterInterpolation shooterInterporlations) {
     Translation2d target =
         DriverStation.getAlliance().get() == Alliance.Red
             ? FieldConstants.redFuelTransferTarget

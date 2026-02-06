@@ -28,11 +28,9 @@ public class FlywheelIOSim extends FlywheelIOTalonFX {
     var talonFXSim = super.flywheelMotor.getSimState();
 
     talonFXSim.Orientation = ChassisReference.Clockwise_Positive;
-
     talonFXSim.setSupplyVoltage(RobotController.getBatteryVoltage());
 
     Voltage primaryAppliedVolts = talonFXSim.getMotorVoltageMeasure();
-
     flywheelSim.setInputVoltage(primaryAppliedVolts.magnitude());
 
     flywheelSim.update(0.020);
@@ -41,13 +39,9 @@ public class FlywheelIOSim extends FlywheelIOTalonFX {
         flywheelSim.getAngularVelocity().times(ShooterConstants.flywheelGearRatio));
 
     inputs.connected = true;
-
     inputs.angularVelocity = flywheelSim.getAngularVelocity();
-
     inputs.appliedVolts = primaryAppliedVolts;
-
     inputs.statorCurrentAmps = talonFXSim.getSupplyCurrentMeasure();
-
     inputs.torqueCurrentAmps = talonFXSim.getTorqueCurrentMeasure();
   }
 }
