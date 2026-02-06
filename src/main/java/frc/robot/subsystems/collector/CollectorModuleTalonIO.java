@@ -228,7 +228,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
    */
   public CollectorConstants getConstants(){
     return constants;
-  }
+  }  
 
   /**
    * Gets the position of the collector
