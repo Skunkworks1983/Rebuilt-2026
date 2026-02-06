@@ -10,10 +10,7 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import org.littletonrobotics.junction.AutoLog;
 
-/**
- * this is the Indexers' IO
- */
-
+/** this is the Indexers' IO */
 public interface IndexerIO {
   @AutoLog
   public static class IndexerIOInputs {
@@ -26,8 +23,6 @@ public interface IndexerIO {
 
   public default void updateInputs(IndexerIOInputs inputs) {}
 
-  /** 
-   * specify a velocity at which to run the indexer
-   */
+  /** specify a velocity at which to run the indexer */
   public default void setIndexerVelocity(AngularVelocity Velocity) {}
 }

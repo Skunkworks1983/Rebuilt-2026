@@ -10,7 +10,7 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
@@ -20,12 +20,10 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants.IndexerConstants.indexerConfigs;
 
-/**
- * This is the motor for the Indexer. it takes in a ID
-*/
+/** This is the motor for the Indexer. it takes in a ID */
 public class IndexerIOTalonFX implements IndexerIO {
 
-  VelocityVoltage velocityVoltageRequest = new VelocityVoltage(0);
+  VelocityTorqueCurrentFOC velocityTorqueCurrentRequest = new VelocityTorqueCurrentFOC(0);
 
   private final TalonFX indexerMotor;
 
@@ -54,6 +52,9 @@ public class IndexerIOTalonFX implements IndexerIO {
     slot0Configs.kI = indexerConfigs.kI;
     slot0Configs.kD = indexerConfigs.kD;
     indexerMotor.getConfigurator().apply(configs);
+
+    BaseStatusSignal.setUpdateFrequencyForAll(
+        50, indexerAngularVelocity, indexerCurrent, indexerPosition, indexerVoltage);
   }
 
   @Override
@@ -70,11 +71,9 @@ public class IndexerIOTalonFX implements IndexerIO {
     inputs.currentAmps = indexerCurrent.getValue();
   }
 
-  /** 
-  * sets the control for the indexer motor to the defined velocity
-  */
+  /** sets the control for the indexer motor to the defined velocity */
   public void setIndexerVelocity(AngularVelocity VelocityRotationsPerSec) {
     indexerMotor.setControl(
-        velocityVoltageRequest.withVelocity(VelocityRotationsPerSec.in(RotationsPerSecond)));
+        velocityTorqueCurrentRequest.withVelocity(VelocityRotationsPerSec.in(RotationsPerSecond)));
   }
 }
