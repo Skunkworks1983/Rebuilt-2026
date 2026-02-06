@@ -43,10 +43,8 @@ public class CollectorModule extends SubsystemBase {
     Logger.processInputs(getName() + collectorIO.getSide().name(), inputs);
   }
 
-  /** 
-   * Gets Constants
-   */
-  public CollectorConstants getConstants(){
+  /** Gets Constants */
+  public CollectorConstants getConstants() {
     return collectorIO.getConstants();
   }
 

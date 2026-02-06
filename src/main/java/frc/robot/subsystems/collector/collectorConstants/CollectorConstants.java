@@ -10,10 +10,7 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 
-/**
- * An Interface for collector constants
- *
- */
+/** An Interface for collector constants */
 public interface CollectorConstants {
   // Collector side
   public static enum side {
@@ -56,6 +53,6 @@ public interface CollectorConstants {
   public static final Angle CollectorUpPos = Angle.ofBaseUnits(0, Degrees);
   public static final Angle CollectorDownPos = Angle.ofBaseUnits(0, Degrees);
 
-    // Collector Intake Speeds
+  // Collector Intake Speeds
   public static final AngularVelocity CollectorIntakeSpeed = RotationsPerSecond.of(0);
 }

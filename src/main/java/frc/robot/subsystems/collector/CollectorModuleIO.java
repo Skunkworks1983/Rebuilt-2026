@@ -48,10 +48,8 @@ public interface CollectorModuleIO {
    */
   public default void updateInputs(CollectorIOInputs inputs) {}
 
-  /** 
-   * Gets Constants
-   */
-  public default CollectorConstants getConstants(){
+  /** Gets Constants */
+  public default CollectorConstants getConstants() {
     return null;
   }
 

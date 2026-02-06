@@ -38,7 +38,7 @@ public class AutomaticStateChange extends Command {
     currDirection = drive.getDirection();
     if (currDirection != lastDirection) {
       count++;
-      if(count >= 3){
+      if (count >= 3) {
         if (currDirection > 0.0) { // if going right
           if (!collector.getLeftCollector().isCollectorDown()) {
             collector.getRightCollector().goDown();

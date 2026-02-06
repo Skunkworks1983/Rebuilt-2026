@@ -8,7 +8,6 @@ import static edu.wpi.first.units.Units.Degrees;
 import static frc.robot.util.PhoenixUtil.tryUntilOk;
 
 import com.ctre.phoenix6.BaseStatusSignal;
-import com.ctre.phoenix6.Orchestra;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
@@ -223,12 +222,10 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     inputs.upperCurrentAmps = upperCurrent.getValueAsDouble();
   }
 
-  /** 
-   * Gets Constants
-   */
-  public CollectorConstants getConstants(){
+  /** Gets Constants */
+  public CollectorConstants getConstants() {
     return constants;
-  }  
+  }
 
   /**
    * Gets the position of the collector
@@ -313,16 +310,14 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     // I know this methods a bit silly rn but its gonna be replaced by magnet sensors anyway
     switch (side) {
       case LEFT:
-        if (getPosition().in(Degrees)
-            <= constants.CollectorDownPos.in(Degrees)) {
+        if (getPosition().in(Degrees) <= constants.CollectorDownPos.in(Degrees)) {
           return true;
         } else {
           return false;
         }
 
       case RIGHT:
-        if (getPosition().in(Degrees)
-            <= constants.CollectorDownPos.in(Degrees)) {
+        if (getPosition().in(Degrees) <= constants.CollectorDownPos.in(Degrees)) {
           return true;
         } else {
           return false;
