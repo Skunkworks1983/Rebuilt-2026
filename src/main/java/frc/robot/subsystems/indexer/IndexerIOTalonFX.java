@@ -18,7 +18,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
-import frc.robot.Constants.IndexerConstants.indexerConfigs;
+import frc.robot.subsystems.indexer.IndexerConstants.indexerConfigs;
 
 /** This is the motor for the Indexer. it takes in a ID */
 public class IndexerIOTalonFX implements IndexerIO {

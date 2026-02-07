@@ -21,12 +21,19 @@ public class IndexerIOSim implements IndexerIO {
 
   public IndexerIOSim() {
     LinearSystem linearSystem = LinearSystemId.createDCMotorSystem(12.45, 0.07);
+    
     double[] stdevs = {0.001, 0.001};
-    indexerMotorSim = new DCMotorSim(linearSystem, DCMotor.getKrakenX44(1), stdevs);
+
+    indexerMotorSim = 
+      new DCMotorSim(
+        linearSystem,
+        DCMotor.getKrakenX44(1), 
+        stdevs);
   }
 
   @Override
   public void updateInputs(IndexerIOInputs input) {
+
     indexerMotorSim.update(0.020);
 
     input.connected = true;

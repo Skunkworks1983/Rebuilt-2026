@@ -6,7 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
+import frc.robot.subsystems.indexer.IndexerConstants;
 import frc.robot.subsystems.indexer.Indexer;
 
 /** Command that runs the indexer */
@@ -21,7 +21,7 @@ public class IndexerCommand extends Command {
 
   @Override
   public void initialize() {
-    indexer.setIndexerVelocity(Constants.IndexerConstants.indexerAngularVelocity);
+    indexer.setIndexerVelocity(IndexerConstants.indexerAngularVelocity);
   }
 
   @Override
