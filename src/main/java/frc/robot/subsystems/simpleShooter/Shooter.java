@@ -97,7 +97,7 @@ public class Shooter extends SubsystemBase {
         new SysIdRoutine(
             new SysIdRoutine.Config(
                 Volts.per(Second).of(2),
-                Volts.of(2),
+                Volts.of(5),
                 null,
                 (state) -> SignalLogger.writeString("Shooter/SysIdState", state.toString())),
             new SysIdRoutine.Mechanism(

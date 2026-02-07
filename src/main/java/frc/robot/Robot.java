@@ -60,6 +60,7 @@ public class Robot extends LoggedRobot {
         Logger.addDataReceiver(new WPILOGWriter());
         Logger.addDataReceiver(new NT4Publisher());
         LoggedPowerDistribution.getInstance(62, ModuleType.kCTRE);
+        SignalLogger.start();
         break;
 
       case SIM:

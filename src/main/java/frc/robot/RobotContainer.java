@@ -247,6 +247,7 @@ public class RobotContainer {
         "Shooter SysId (Dynamic Reverse)", shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
     autoChooser.addOption(
         "Shooter SysId (Dynamic Forward)", shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    
 
     // Configure the button bindings
     configureButtonBindings();
