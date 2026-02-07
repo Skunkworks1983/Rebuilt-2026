@@ -30,7 +30,6 @@ public class LeftCollectorDownState extends Command {
     } else if (collector.getRightCollector().isCollectorDown()) {
       collector.getRightCollector().goUp();
     }
-
   }
 
   // Called once the command ends or is interrupted.

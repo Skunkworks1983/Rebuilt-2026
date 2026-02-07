@@ -11,7 +11,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 
-/** An Interface for collector constants */ 
+/** An Interface for collector constants */
 public interface CollectorConstants {
   // Collector side
   public static enum Side {
@@ -20,6 +20,10 @@ public interface CollectorConstants {
   }
 
   public static Side collectorSide = Side.LEFT;
+
+  public static Translation2d collectorLeftOriginTranslation = null;
+
+  public static Translation2d collectorRightOriginTranslation = null;
 
   // Hardware ID's
   public static final int turnMotorID = 0;

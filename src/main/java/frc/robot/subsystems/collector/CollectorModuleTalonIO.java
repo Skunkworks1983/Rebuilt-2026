@@ -4,18 +4,13 @@
 
 package frc.robot.subsystems.collector;
 
-import static edu.wpi.first.units.Units.Degrees;
 import static frc.robot.util.PhoenixUtil.tryUntilOk;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.controls.TorqueCurrentFOC;
-import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
-import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.filter.Debouncer;
@@ -38,9 +33,9 @@ import java.util.Queue;
  */
 public class CollectorModuleTalonIO implements CollectorModuleIO {
   // Motors and Hardware objects
-  private final TalonFX turnMotor;
-  private final TalonFX intakeMotorLower;
-  private final TalonFX intakeMotorUpper;
+  protected final TalonFX turnMotor;
+  protected final TalonFX intakeMotorLower;
+  protected final TalonFX intakeMotorUpper;
 
   // Constants
   private final CollectorConstants constants;
@@ -260,7 +255,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     // I know this methods a bit silly rn but its gonna be replaced by magnet sensors anyway
     switch (side) {
       case LEFT:
-        if (turnPosition.getValue().lte( constants.CollectorDownPos)) {
+        if (turnPosition.getValue().lte(constants.CollectorDownPos)) {
           return true;
         } else {
           return false;

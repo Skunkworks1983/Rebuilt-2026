@@ -1,5 +1,3 @@
 package frc.robot.subsystems.collector.collectorConstants;
 
-public interface CollectorSimLeftConstants {
-
-}
+public interface CollectorSimLeftConstants {}

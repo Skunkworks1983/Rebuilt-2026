@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems.collector;
 
-import java.util.function.DoubleSupplier;
-
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
 
@@ -13,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.collectorCommands.AutomaticStateChange;
 import frc.robot.commands.collectorCommands.BothCollectorsUpState;
 import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
+import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
 import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
@@ -47,7 +46,9 @@ public class Collector extends SubsystemBase {
           CollectorConstants.collectorRightOriginTranslation.getY());
   LoggedMechanismLigament2d collectorLigamentRight;
 
-  private CollectorModule[] collectors = new CollectorModule[2];
+  private CollectorModule leftCollector;
+  private CollectorModule rightCollector;
+  private DoubleSupplier direction;
 
   public static enum Mode {
     MANUAL,
@@ -55,7 +56,7 @@ public class Collector extends SubsystemBase {
     ALWAYSUP;
   }
 
-  State state = State.MANUAL; // TODO: switch back to always up
+  Mode mode = Mode.ALWAYSUP;
 
   /**
    * Collector subsystem.
@@ -76,12 +77,21 @@ public class Collector extends SubsystemBase {
 
     // Drivebase direction
     this.direction = direction;
+
+    collectorLigamentLeft =
+        rootLeft.append(
+            new LoggedMechanismLigament2d("collector body left", Meters.of(0.25), Degrees.of(90)));
+    collectorLigamentRight =
+        rootRight.append(
+            new LoggedMechanismLigament2d("collector body right", Meters.of(0.25), Degrees.of(90)));
   }
 
   @Override
   public void periodic() {
     leftCollector.periodic();
     rightCollector.periodic();
+    collectorLigamentLeft.setAngle(getLeftCollector().getPosition());
+    collectorLigamentRight.setAngle(getRightCollector().getPosition());
   }
 
   /**
@@ -108,7 +118,6 @@ public class Collector extends SubsystemBase {
         break;
 
       case MANUAL:
-
         break;
 
       case AUTOMATIC:
@@ -123,17 +132,5 @@ public class Collector extends SubsystemBase {
   // Gets State
   public Mode getMode() {
     return mode;
-  }
-
-  @Override
-  public void periodic() {
-    collectorLigamentLeft.setAngle(getLeftCollector().getPosition());
-    collectorLigamentRight.setAngle(getRightCollector().getPosition());
-  }
-
-  @Override
-  public void periodic() {
-    collectorLigamentLeft.setAngle(getLeftCollector().getPosition());
-    collectorLigamentRight.setAngle(getRightCollector().getPosition());
   }
 }
