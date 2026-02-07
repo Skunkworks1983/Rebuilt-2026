@@ -39,13 +39,13 @@ public class CollectorModule extends SubsystemBase {
   @Override
   public void periodic() {
     collectorIO.updateInputs(inputs);
-    Logger.processInputs(getName() + collectorIO.getSide().name(), inputs);
+    Logger.processInputs(toString(), inputs);
   }
 
   /**
    * Gets the position of the collector
    *
-   * @return -WPILib Angle
+   * @return -WPILib Angle 
    */
   public Angle getPosition() {
     return collectorIO.getPosition();

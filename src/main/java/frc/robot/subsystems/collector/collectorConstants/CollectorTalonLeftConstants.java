@@ -28,17 +28,17 @@ public class CollectorTalonLeftConstants implements CollectorConstants {
   public static final double turnMotorGearRatio = 0.0;
 
   // Turn PID
-  public static final double turnkP = 0.0;
+  public static final double turnkP = 1;
   public static final double turnkD = 0.0;
   public static final double turnkI = 0.0;
 
   // Lower intake PID
-  public static final double lowerkP = 0.0;
+  public static final double lowerkP = 1;
   public static final double lowerkD = 0.0;
   public static final double lowerkI = 0.0;
 
   // Upper intake PID
-  public static final double upperkP = 0.0;
+  public static final double upperkP = 1;
   public static final double upperkD = 0.0;
   public static final double upperkI = 0.0;
 

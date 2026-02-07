@@ -4,7 +4,15 @@
 
 package frc.robot.subsystems.collector;
 
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Meters;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
+import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
+import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
+import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
 
 /**
  * This is the collector Subsystem
@@ -15,6 +23,26 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  */
 public class Collector extends SubsystemBase {
 
+  @AutoLogOutput(key = "collectorRight/mechanism")
+  private LoggedMechanism2d loggedMechanism2dLeft = new LoggedMechanism2d(0, 0);
+
+  LoggedMechanismRoot2d rootLeft =
+      loggedMechanism2dLeft.getRoot(
+          "collector",
+          CollectorConstants.collectorLeftOriginTranslation.getX(),
+          CollectorConstants.collectorLeftOriginTranslation.getY());
+  LoggedMechanismLigament2d collectorLigamentLeft;
+
+  @AutoLogOutput(key = "collectorLeft/mechanism")
+  private LoggedMechanism2d loggedMechanism2dRight = new LoggedMechanism2d(0, 0);
+
+  LoggedMechanismRoot2d rootRight =
+      loggedMechanism2dRight.getRoot(
+          "collector",
+          CollectorConstants.collectorRightOriginTranslation.getX(),
+          CollectorConstants.collectorRightOriginTranslation.getY());
+  LoggedMechanismLigament2d collectorLigamentRight;
+
   private CollectorModule[] collectors = new CollectorModule[2];
 
   public static enum State {
@@ -23,7 +51,7 @@ public class Collector extends SubsystemBase {
     ALWAYSUP;
   }
 
-  State state = State.MANUAL; // TODO: switch back to always up
+  State state = State.MANUAL;
 
   /**
    * Collector subsystem.
@@ -40,6 +68,13 @@ public class Collector extends SubsystemBase {
   public Collector(CollectorModuleIO leftIO, CollectorModuleIO rightIO) {
     collectors[0] = new CollectorModule(leftIO);
     collectors[1] = new CollectorModule(rightIO);
+
+    collectorLigamentLeft =
+        rootLeft.append(
+            new LoggedMechanismLigament2d("collector body left", Meters.of(0.25), Degrees.of(90)));
+    collectorLigamentRight =
+        rootRight.append(
+            new LoggedMechanismLigament2d("collector body right", Meters.of(0.25), Degrees.of(90)));
   }
 
   /**
@@ -115,5 +150,11 @@ public class Collector extends SubsystemBase {
   // Gets State
   public State getState() {
     return state;
+  }
+
+  @Override
+  public void periodic() {
+    collectorLigamentLeft.setAngle(getLeftCollector().getPosition());
+    collectorLigamentRight.setAngle(getRightCollector().getPosition());
   }
 }

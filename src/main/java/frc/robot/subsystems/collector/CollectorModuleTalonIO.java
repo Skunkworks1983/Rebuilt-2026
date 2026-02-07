@@ -40,9 +40,9 @@ import java.util.Queue;
  */
 public class CollectorModuleTalonIO implements CollectorModuleIO {
   // Motors and Hardware objects
-  private final TalonFX turnMotor;
-  private final TalonFX intakeMotorLower;
-  private final TalonFX intakeMotorUpper;
+  protected final TalonFX turnMotor;
+  protected final TalonFX intakeMotorLower;
+  protected final TalonFX intakeMotorUpper;
 
   // 🤫
   private Orchestra sound;
