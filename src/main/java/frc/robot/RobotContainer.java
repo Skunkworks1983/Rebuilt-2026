@@ -233,6 +233,15 @@ public class RobotContainer {
     TalonFX brSteer = new TalonFX(kBackRightSteerMotorId, "Drivebase 2025");
     brSteer.getConfigurator().apply(config);
 
+     TalonFX forwardShoot = new TalonFX(43, "rio");
+    forwardShoot.getConfigurator().apply(config);
+     TalonFX backShoot = new TalonFX(44, "rio");
+    backShoot.getConfigurator().apply(config);
+     TalonFX indexer = new TalonFX(45, "rio");
+    indexer.getConfigurator().apply(config);
+     TalonFX collector = new TalonFX(46, "rio");
+    collector.getConfigurator().apply(config);
+
     m_orchestra.addInstrument(flDrive);
     m_orchestra.addInstrument(flSteer);
     m_orchestra.addInstrument(frDrive);
@@ -241,6 +250,12 @@ public class RobotContainer {
     m_orchestra.addInstrument(blSteer);
     m_orchestra.addInstrument(brDrive);
     m_orchestra.addInstrument(brSteer);
+    
+    m_orchestra.addInstrument(forwardShoot);
+    m_orchestra.addInstrument(backShoot);
+    m_orchestra.addInstrument(indexer);
+    m_orchestra.addInstrument(collector);
+
 
     var status = m_orchestra.loadMusic("notification.chrp");
 
