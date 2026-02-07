@@ -22,6 +22,8 @@ public interface FlywheelIO {
     public Current primaryStatorCurrentAmps = Amps.of(0);
 
     public Current primaryTorqueCurrentAmps = Amps.of(0);
+
+    public Current primaryCurrent = Amps.of(0);
   }
 
   public default void setVelocity(AngularVelocity velocity) {}

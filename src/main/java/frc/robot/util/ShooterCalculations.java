@@ -473,4 +473,91 @@ public class ShooterCalculations {
 
     return launchVelocityField.getAngle();
   }
+
+  /**
+   * Compute shooter controls for a constrained (fixed) shooter pitch angle.
+   *
+   * @param odometryPose current robot pose
+   * @param chassisSpeeds current chassis speeds
+   * @param gyroRate current angular velocity of the robot
+   * @param constrainedPitch fixed shooter pitch to use for the shot
+   * @return NoPitchShooterControls containing required shooter angular velocity and drive yaw; the
+   *     boolean indicates whether a shot is possible with the provided constraints
+   */
+  public static NoPitchShooterControls getNoPitchShooterControls(
+      Pose2d odometryPose,
+      ChassisSpeeds chassisSpeeds,
+      AngularVelocity gyroRate,
+      Angle constrainedPitch) {
+
+    Translation3d goal =
+        DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red
+            ? FieldConstants.redGoal
+            : FieldConstants.blueGoal;
+
+    Translation2d targetVector = goal.toTranslation2d().minus(odometryPose.getTranslation());
+
+    double trueDistance = targetVector.getNorm();
+
+    double distanceForAngle = Math.max(trueDistance, 1e-6);
+    Rotation2d rawYaw = targetVector.times(1.0 / distanceForAngle).getAngle();
+
+    double dragMultiplier = 1.0 + (ShooterSolverConstants.drag * trueDistance);
+    dragMultiplier = MathUtil.clamp(dragMultiplier, 1.0, ShooterSolverConstants.maxDragMultiplier);
+    double x = trueDistance * dragMultiplier;
+
+    double z = goal.getZ() - ShooterConstants.shooterInitalPosition.getZ();
+
+    // Use the provided constrained pitch
+    double theta = constrainedPitch.in(Radians);
+    double cosTheta = Math.cos(theta);
+    double tanTheta = Math.tan(theta);
+
+    // Denominator of the closed form v^2 solution: x*tan(theta) - z
+    double denom = x * tanTheta - z;
+    if (denom <= 1e-9) {
+      // Cannot satisfy projectile equation with this pitch and geometry
+      return new NoPitchShooterControls(RotationsPerSecond.of(0), rawYaw, false);
+    }
+
+    double v2 = (ShooterSolverConstants.gravity * x * x) / (2.0 * cosTheta * cosTheta * denom);
+    if (Double.isNaN(v2) || v2 <= 0.0) {
+      return new NoPitchShooterControls(RotationsPerSecond.of(0), rawYaw, false);
+    }
+
+    double ballExitSpeed = Math.sqrt(v2);
+
+    double requiredFieldHorizontal = ballExitSpeed * cosTheta;
+
+    Translation2d requiredFieldVelocity =
+        new Translation2d(
+            requiredFieldHorizontal * rawYaw.getCos(), requiredFieldHorizontal * rawYaw.getSin());
+
+    Rotation2d robotRotation = odometryPose.getRotation();
+
+    Translation2d robotLinearVelocityField =
+        new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond)
+            .rotateBy(robotRotation);
+
+    Translation2d rShooterRobot =
+        ShooterConstants.shooterInitalPosition.getTranslation().toTranslation2d();
+
+    double omega = gyroRate.in(RadiansPerSecond);
+    Translation2d tangentialRobot =
+        new Translation2d(-omega * rShooterRobot.getY(), omega * rShooterRobot.getX());
+
+    Translation2d tangentialField = tangentialRobot.rotateBy(robotRotation);
+    Translation2d totalRobotVelocityField = robotLinearVelocityField.plus(tangentialField);
+    Translation2d launchVelocityField = requiredFieldVelocity.minus(totalRobotVelocityField);
+
+    Rotation2d finalYaw = launchVelocityField.getAngle();
+
+    double requiredFlywheelSurfaceSpeed = ballExitSpeed / ShooterSolverConstants.flywheelEfficiency;
+
+    return new NoPitchShooterControls(
+        RotationsPerSecond.of(
+            requiredFlywheelSurfaceSpeed / ShooterConstants.flywheelRadius.in(Meters)),
+        finalYaw,
+        true);
+  }
 }

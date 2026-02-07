@@ -21,10 +21,10 @@ import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.MomentOfInertia;
 
 public class ShooterConstants {
-  public static final CANBus shooterCan = new CANBus("*");
+  public static final CANBus shooterCan = new CANBus("rio");
 
-  public static final int forwardFlywheelId = 0;
-  public static final int backFlywheelId = 1;
+  public static final int forwardFlywheelId = 45;
+  public static final int backFlywheelId = 46;
 
   public static final double forwardFlywheelKP = 0.21471;
   public static final double forwardFlywheelKD = 0.0;
