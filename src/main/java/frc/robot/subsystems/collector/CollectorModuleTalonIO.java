@@ -8,7 +8,6 @@ import static edu.wpi.first.units.Units.Degrees;
 import static frc.robot.util.PhoenixUtil.tryUntilOk;
 
 import com.ctre.phoenix6.BaseStatusSignal;
-import com.ctre.phoenix6.Orchestra;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
@@ -27,8 +26,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
-import frc.robot.subsystems.collector.collectorConstants.CollectorConstants.side;
-import frc.robot.subsystems.collector.collectorConstants.CollectorPositionConstants;
+import frc.robot.subsystems.collector.collectorConstants.CollectorConstants.Side;
 import frc.robot.subsystems.drive.PhoenixOdometryThread;
 import java.util.Queue;
 
@@ -40,31 +38,16 @@ import java.util.Queue;
  */
 public class CollectorModuleTalonIO implements CollectorModuleIO {
   // Motors and Hardware objects
-  protected final TalonFX turnMotor;
-  protected final TalonFX intakeMotorLower;
-  protected final TalonFX intakeMotorUpper;
-
-  // 🤫
-  private Orchestra sound;
+  private final TalonFX turnMotor;
+  private final TalonFX intakeMotorLower;
+  private final TalonFX intakeMotorUpper;
 
   // Constants
   private final CollectorConstants constants;
 
   // Helper variables
   private boolean isDown;
-  private side side;
-
-  // Voltage control requests
-  private final VoltageOut voltageRequest = new VoltageOut(0);
-  private final PositionVoltage positionVoltageRequest = new PositionVoltage(0.0);
-  private final VelocityVoltage velocityVoltageRequest = new VelocityVoltage(0.0);
-
-  // Torque-current control requests
-  private final TorqueCurrentFOC torqueCurrentRequest = new TorqueCurrentFOC(0);
-  private final PositionTorqueCurrentFOC positionTorqueCurrentRequest =
-      new PositionTorqueCurrentFOC(0.0);
-  private final VelocityTorqueCurrentFOC velocityTorqueCurrentRequest =
-      new VelocityTorqueCurrentFOC(0.0);
+  private Side side;
 
   // Timestamp inputs from Phoenix thread
   private final Queue<Double> timestampQueue;
@@ -111,12 +94,6 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     turnMotor = new TalonFX(constants.turnMotorID);
     intakeMotorLower = new TalonFX(constants.intakeMotorLowerID);
     intakeMotorUpper = new TalonFX(constants.intakeMotorUpperID);
-
-    // 👀👀
-    sound = new Orchestra();
-    sound.addInstrument(turnMotor);
-    sound.addInstrument(intakeMotorLower);
-    sound.addInstrument(intakeMotorUpper);
 
     // Config for turnMotor
     var turnConfig = new TalonFXConfiguration();
@@ -233,45 +210,9 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     inputs.upperCurrentAmps = upperCurrent.getValueAsDouble();
   }
 
-  /**
-   * Gets the position of the collector
-   *
-   * <ul>
-   *   <img
-   *   src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExYzBwYmd1MHEwMWZhejhubWY2emZ6Nmd3ZTkxN294eXFtcDBvaTM5byZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/rUxSaLgjcQbLO/giphy.gif"
-   *   alt="Intake Lower🤔">
-   *
-   * @return -WPILib Angle
-   */
-  public Angle getPosition() {
-    return turnMotor.getPosition().getValue();
-  }
-
-  /**
-   * Gets the velocity of the collectors intake upper motor
-   *
-   * @return -Angular Velocity
-   */
-  public AngularVelocity getVelocityOfIntakeLower() {
-    return intakeMotorLower.getVelocity().getValue();
-  }
-
-  /**
-   * Gets the velocity of the collectors intake lower motor
-   *
-   * @return -Angular Velocity
-   */
-  public AngularVelocity getVelocityOfIntakeUpper() {
-    return intakeMotorUpper.getVelocity().getValue();
-  }
-
-  /**
-   * Gets the velocity of the turn motor
-   *
-   * @return -Angular Velocity
-   */
-  public AngularVelocity getVelocityOfTurn() {
-    return turnMotor.getVelocity().getValue();
+  /** Gets Constants */
+  public CollectorConstants getConstants() {
+    return constants;
   }
 
   /**
@@ -316,18 +257,17 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
    * </ul>
    */
   public boolean isCollectorDown() {
+    // I know this methods a bit silly rn but its gonna be replaced by magnet sensors anyway
     switch (side) {
       case LEFT:
-        if (getPosition().in(Degrees)
-            <= CollectorPositionConstants.leftCollectorDownPos.in(Degrees)) {
+        if (turnPosition.getValue().lte( constants.CollectorDownPos)) {
           return true;
         } else {
           return false;
         }
 
       case RIGHT:
-        if (getPosition().in(Degrees)
-            <= CollectorPositionConstants.rightCollectorDownPos.in(Degrees)) {
+        if (turnPosition.getValue().lte(constants.CollectorDownPos)) {
           return true;
         } else {
           return false;
@@ -337,30 +277,8 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     }
   }
 
-  // Sound feedback 😈
-  public void playSound(String file) {
-    sound.loadMusic(file);
-    sound.play();
-  }
-
-  // Stop sound feedback
-  public void stopSound() {
-    if (sound.isPlaying()) {
-      sound.stop();
-    }
-  }
-
-  // is sound playing?
-  public boolean isSoundPlaying() {
-    if (sound.isPlaying()) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
   // Gets side i.e: left
-  public side getSide() {
+  public Side getSide() {
     return side;
   }
 

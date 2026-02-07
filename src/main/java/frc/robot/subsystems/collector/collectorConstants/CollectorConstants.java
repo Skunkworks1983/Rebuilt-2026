@@ -5,26 +5,21 @@
 package frc.robot.subsystems.collector.collectorConstants;
 
 import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
 
-/**
- * An Interface for collector constants
- *
- * <ul>
- *   <img src="https://i.imgur.com/jjVNwSS.gif" alt="Constants🚀">
- */
+/** An Interface for collector constants */ 
 public interface CollectorConstants {
   // Collector side
-  public static enum side {
+  public static enum Side {
     LEFT,
     RIGHT;
   }
 
-  public static side collectorSide =
-      frc.robot.subsystems.collector.collectorConstants.CollectorConstants.side.LEFT;
+  public static Side collectorSide = Side.LEFT;
 
   // Hardware ID's
   public static final int turnMotorID = 0;
@@ -55,12 +50,9 @@ public interface CollectorConstants {
   public static final double turnkA = 0.01;
 
   // Position
-  public static final Angle CollectorUpPos = Angle.ofBaseUnits(0, Degrees);
-  public static final Angle CollectorDownPos = Angle.ofBaseUnits(0, Degrees);
+  public static final Angle CollectorUpPos = Degrees.of(0);
+  public static final Angle CollectorDownPos = Degrees.of(0);
 
-  // x is forward from center y is off the ground
-  public static final Translation2d collectorLeftOriginTranslation =
-      new Translation2d(Inches.of(13), Inches.of(6));
-  public static final Translation2d collectorRightOriginTranslation =
-      new Translation2d(Inches.of(-13), Inches.of(6));
+  // Collector Intake Speeds
+  public static final AngularVelocity CollectorIntakeSpeed = RotationsPerSecond.of(0);
 }

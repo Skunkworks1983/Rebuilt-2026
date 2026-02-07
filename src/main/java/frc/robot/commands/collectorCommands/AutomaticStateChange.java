@@ -4,6 +4,8 @@
 
 package frc.robot.commands.collectorCommands;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.collector.Collector;
 import frc.robot.subsystems.drive.Drive;
@@ -11,49 +13,51 @@ import frc.robot.subsystems.drive.Drive;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AutomaticStateChange extends Command {
   private Collector collector;
-  private Drive drive;
   private double lastDirection;
   private double currDirection;
+  private int count;
+  private DoubleSupplier direction;
 
   /** Creates a new AutomaticStateChange. */
-  public AutomaticStateChange(Collector collector, Drive drive) {
+  public AutomaticStateChange(Collector collector, DoubleSupplier direction) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.collector = collector;
-    this.drive = drive;
     addRequirements(collector);
+    this.direction = direction;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    lastDirection = drive.getDirection();
-    currDirection = drive.getDirection();
+    currDirection = direction.getAsDouble();
+    count = 0;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (currDirection != lastDirection) {
-      if (currDirection > 0.0) { // if going right
-        if (!collector.getLeftCollector().isCollectorDown()) {
-          collector.getRightCollector().goDown();
-        } else {
-          collector.getLeftCollector().goUp();
-          ;
-        }
-      } else if (currDirection < 0.0) { // if going left
-        if (!collector.getRightCollector().isCollectorDown()) {
-          collector.getLeftCollector().goDown();
-        } else {
-          collector.getRightCollector().goUp();
-          ;
+    lastDirection = currDirection;
+    currDirection = direction.getAsDouble();
+    if ((currDirection * lastDirection) < 0) {
+      count++;
+      if (count >= 3) {
+        if (currDirection > 0.0) { // if going right
+          if (!collector.getLeftCollector().isCollectorDown()) {
+            collector.getRightCollector().goDown();
+          } else {
+            collector.getLeftCollector().goUp();
+          }
+        } else if (currDirection < 0.0) { // if going left
+          if (!collector.getRightCollector().isCollectorDown()) {
+            collector.getLeftCollector().goDown();
+          } else {
+            collector.getRightCollector().goUp();
+          }
         }
       }
-    } else if (currDirection == lastDirection) {
-
+    } else if ((currDirection * lastDirection) > 0) {
+      count = 0;
     }
-    lastDirection = currDirection;
-    currDirection = drive.getDirection();
   }
 
   // Called once the command ends or is interrupted.

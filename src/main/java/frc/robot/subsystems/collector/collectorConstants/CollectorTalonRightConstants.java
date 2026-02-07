@@ -5,8 +5,10 @@
 package frc.robot.subsystems.collector.collectorConstants;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
 
 /**
  * This class is a grouping of constants with get methods
@@ -16,8 +18,7 @@ import edu.wpi.first.units.measure.Angle;
  */
 public class CollectorTalonRightConstants implements CollectorConstants {
   // Collector side
-  public static side collectorSide =
-      frc.robot.subsystems.collector.collectorConstants.CollectorTalonRightConstants.side.RIGHT;
+  public static Side collectorSide = Side.RIGHT; // TODO: set constants
 
   // Hardware ID's
   public static final int turnMotorID = 0;
@@ -48,6 +49,9 @@ public class CollectorTalonRightConstants implements CollectorConstants {
   public static final double turnkA = 0.01;
 
   // Position
-  public static final Angle CollectorUpPos = Angle.ofBaseUnits(90, Degrees);
-  public static final Angle CollectorDownPos = Angle.ofBaseUnits(0, Degrees);
+  public static final Angle CollectorUpPos = Degrees.of(90);
+  public static final Angle CollectorDownPos = Degrees.of(0);
+
+  // Collector Intake Speeds
+  public static final AngularVelocity CollectorIntakeSpeed = RotationsPerSecond.of(130);
 }

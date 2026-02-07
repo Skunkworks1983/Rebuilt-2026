@@ -7,7 +7,8 @@ package frc.robot.subsystems.collector;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
-import frc.robot.subsystems.collector.collectorConstants.CollectorConstants.side;
+import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
+import frc.robot.subsystems.collector.collectorConstants.CollectorConstants.Side;
 import org.littletonrobotics.junction.AutoLog;
 
 /**
@@ -47,40 +48,9 @@ public interface CollectorModuleIO {
    */
   public default void updateInputs(CollectorIOInputs inputs) {}
 
-  /**
-   * Gets the position of the collector
-   *
-   * @return -WPILib Angle
-   */
-  public default Angle getPosition() {
-    return Angle.ofBaseUnits(0, null);
-  }
-
-  /**
-   * Gets the velocity of the collectors intake upper motor
-   *
-   * @return -Angular Velocity
-   */
-  public default AngularVelocity getVelocityOfIntakeLower() {
-    return AngularVelocity.ofBaseUnits(0, null);
-  }
-
-  /**
-   * Gets the velocity of the collectors intake lower motor
-   *
-   * @return -Angular Velocity
-   */
-  public default AngularVelocity getVelocityOfIntakeUpper() {
-    return AngularVelocity.ofBaseUnits(0, null);
-  }
-
-  /**
-   * Gets the velocity of the turn motor
-   *
-   * @return -Angular Velocity
-   */
-  public default AngularVelocity getVelocityOfTurn() {
-    return AngularVelocity.ofBaseUnits(0, null);
+  /** Gets Constants */
+  public default CollectorConstants getConstants() {
+    return null;
   }
 
   /**
@@ -124,19 +94,8 @@ public interface CollectorModuleIO {
     return false;
   }
 
-  // Sound feedback 😈
-  public default void playSound(String file) {}
-
-  // Stop sound feedback
-  public default void stopSound() {}
-
-  // is sound playing?
-  public default boolean isSoundPlaying() {
-    return false;
-  }
-
   // gets side i.e: left
-  public default side getSide() {
+  public default Side getSide() {
     return null;
   }
 
