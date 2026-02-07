@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -124,7 +125,7 @@ public class RobotContainer {
 
         shooter =
             new Shooter(
-                new FlywheelIOTalonFX(ShooterConstants.forwardFlywheelId),
+                new FlywheelIOTalonFX(ShooterConstants.upperFlywheelId),
                 new FlywheelIOTalonFX(ShooterConstants.backFlywheelId));
 
         // This is a solution to the vision-drive cross dependency issue that hurts my
@@ -187,7 +188,7 @@ public class RobotContainer {
                     simulation::getSimulatedDriveTrainPose));
         shooter =
             new Shooter(
-                new FlywheelIOSim(ShooterConstants.forwardFlywheelId),
+                new FlywheelIOSim(ShooterConstants.upperFlywheelId),
                 new FlywheelIOSim(ShooterConstants.backFlywheelId));
 
         indexer = new Indexer(new IndexerIO() {});
@@ -247,8 +248,9 @@ public class RobotContainer {
         "Shooter SysId (Dynamic Reverse)", shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
     autoChooser.addOption(
         "Shooter SysId (Dynamic Forward)", shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    
 
+    autoChooser.addOption(
+        "Shooter Duty Cycle Max", new InstantCommand(()->shooter.maxShooterDuty()));
     // Configure the button bindings
     configureButtonBindings();
   }

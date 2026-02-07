@@ -23,7 +23,6 @@ public interface FlywheelIO {
 
     public Current primaryTorqueCurrentAmps = Amps.of(0);
 
-    public Current primaryCurrent = Amps.of(0);
   }
 
   public default void setVelocity(AngularVelocity velocity) {}
@@ -35,4 +34,6 @@ public interface FlywheelIO {
   public default void setPID(double kP, double kI, double kD, double kS, double kV, double kA) {}
 
   public default void setMotionConstraints(AngularAcceleration maxAcceleration, double maxJerk) {}
+
+  public default void maxDutyCycle() {}
 }

@@ -99,7 +99,7 @@ public class Shooter extends SubsystemBase {
                 Volts.per(Second).of(2),
                 Volts.of(5),
                 null,
-                (state) -> SignalLogger.writeString("Shooter/SysIdState", state.toString())),
+                (state) -> Logger.recordOutput("Shooter/SysID State", state.toString())),
             new SysIdRoutine.Mechanism(
                 (voltage) -> runCharacterization(voltage.in(Volts)), null, this));
   }
@@ -107,7 +107,7 @@ public class Shooter extends SubsystemBase {
   @Override
   public void periodic() {
     forwardFlywheel.updateInputs(forwardFlywheelInputs);
-    Logger.processInputs("Shooter/ForwardFlywheel", forwardFlywheelInputs);
+    Logger.processInputs("Shooter/Upper (Launch) Flywheel", forwardFlywheelInputs);
 
     forwardFlywheelDisconnectedAlert.set(
         (!forwardFlywheelInputs.primaryConnected) && Constants.currentMode != Constants.Mode.SIM);
@@ -134,7 +134,7 @@ public class Shooter extends SubsystemBase {
     }
 
     backFlywheel.updateInputs(backFlywheelInputs);
-    Logger.processInputs("Shooter/BackFlywheel", backFlywheelInputs);
+    Logger.processInputs("Shooter/Lower Flywheel", backFlywheelInputs);
 
     backFlywheelDisconnectedAlert.set(
         (!forwardFlywheelInputs.primaryConnected) && Constants.currentMode != Constants.Mode.SIM);
@@ -204,5 +204,10 @@ public class Shooter extends SubsystemBase {
 
     forwardFlywheel.setVelocity(forwardFlywheelVelocity);
     backFlywheel.setVelocity(backFlywheelVelocity);
+  }
+
+  public void maxShooterDuty() {
+    forwardFlywheel.maxDutyCycle();
+    backFlywheel.maxDutyCycle();
   }
 }

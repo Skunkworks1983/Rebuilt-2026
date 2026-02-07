@@ -7,6 +7,7 @@ import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.ParentDevice;
@@ -26,6 +27,8 @@ public class FlywheelIOTalonFX implements FlywheelIO {
   private final StatusSignal<Current> flywheelTorqueCurrent;
 
   private final TorqueCurrentFOC torqueCurrentRequest = new TorqueCurrentFOC(0);
+
+  private final DutyCycleOut dutyCycleRequest = new DutyCycleOut(0);
   private final MotionMagicVelocityTorqueCurrentFOC velocityTorqueCurrentRequest =
       new MotionMagicVelocityTorqueCurrentFOC(0.0);
 
@@ -121,8 +124,10 @@ public class FlywheelIOTalonFX implements FlywheelIO {
     tryUntilOk(5, () -> flywheelMotor.getConfigurator().apply(config.Slot0));
   }
 
-  enum CollectorSide {
-    Left,
-    Right
+  @Override
+  public void maxDutyCycle() {
+    flywheelMotor.setControl(dutyCycleRequest.withOutput(1.0));
   }
+
+  
 }
