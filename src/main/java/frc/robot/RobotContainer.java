@@ -259,15 +259,20 @@ public class RobotContainer {
     JoystickButton autoModeSwitch = new JoystickButton(buttonPanel, Constants.JoystickConstants.CollectorAutoModeID);
 
     // Switch States
-    manualModeSwitch.onTrue(Commands.runOnce(() -> collector.changeMode(Mode.MANUAL), collector));
-    autoModeSwitch.onTrue(Commands.runOnce(() -> collector.changeMode(Mode.AUTOMATIC), collector));
+    manualModeSwitch
+      .onTrue(Commands.runOnce(() -> collector.changeMode(Mode.MANUAL), collector));
+
+    autoModeSwitch
+      .onTrue(Commands.runOnce(() -> collector.changeMode(Mode.AUTOMATIC), collector));
+
     manualModeSwitch
         .negate()
         .and(autoModeSwitch.negate())
         .onTrue(Commands.runOnce(() -> collector.changeMode(Mode.ALWAYSUP), collector));
 
     // Collector Intake Button
-    new JoystickButton(buttonPanel, Constants.JoystickConstants.CollectorIntakeID).whileTrue(new CollectorIntake(collector));
+    new JoystickButton(buttonPanel, Constants.JoystickConstants.CollectorIntakeID)
+      .whileTrue(new CollectorIntake(collector));
 
     // Right Collector Down
     new JoystickButton(buttonPanel, Constants.JoystickConstants.CollectorRightDownID)

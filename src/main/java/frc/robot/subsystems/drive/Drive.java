@@ -428,6 +428,6 @@ public class Drive extends SubsystemBase implements VisionConsumer {
   }
 
   public double getDirection() {
-    return gyroIO.getDirection();
+    return getChassisSpeeds().vyMetersPerSecond;
   }
 }
