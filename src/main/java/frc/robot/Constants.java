@@ -46,4 +46,23 @@ public final class Constants {
     Reefscape,
     Rebuilt
   }
+
+  /**
+   * Joystick constants
+   */
+  public final class JoystickConstants { // TODO: find constants
+    // Joystick ID's
+    public static final int LeftJoystick = 0;
+    public static final int RightJoystick = 0;
+    public static final int ButtonJoystick = 0;
+
+    // Collector button joystick ID's
+    public static final int CollectorManualModeID = 0;
+    public static final int CollectorAutoModeID = 0;
+    public static final int CollectorIntakeID = 0;
+    public static final int CollectorRightDownID = 0;
+    public static final int CollectorLeftDownID = 0;
+    public static final int CollectorBothUpID = 0;
+
+  }
 }

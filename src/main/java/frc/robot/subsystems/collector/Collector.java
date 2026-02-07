@@ -4,7 +4,11 @@
 
 package frc.robot.subsystems.collector;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.collectorCommands.AutomaticStateChange;
+import frc.robot.commands.collectorCommands.BothCollectorsUpState;
 
 /**
  * This is the collector Subsystem
@@ -15,15 +19,17 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  */
 public class Collector extends SubsystemBase {
 
-  private CollectorModule[] collectors = new CollectorModule[2];
+  private CollectorModule leftCollector;
+  private CollectorModule rightCollector;
+  private DoubleSupplier direction;
 
-  public static enum State {
+  public static enum Mode {
     MANUAL,
     AUTOMATIC,
     ALWAYSUP;
   }
 
-  State state = State.MANUAL; // TODO: switch back to always up
+  Mode mode = Mode.ALWAYSUP;
 
   /**
    * Collector subsystem.
@@ -37,62 +43,59 @@ public class Collector extends SubsystemBase {
    * @param leftIO left collector
    * @param rightIO right collector
    */
-  public Collector(CollectorModuleIO leftIO, CollectorModuleIO rightIO) {
-    collectors[0] = new CollectorModule(leftIO);
-    collectors[1] = new CollectorModule(rightIO);
+  public Collector(CollectorModuleIO leftIO, CollectorModuleIO rightIO, DoubleSupplier direction) {
+    // Collector Modules
+    leftCollector = new CollectorModule(leftIO);
+    rightCollector = new CollectorModule(rightIO);
+
+    // Drivebase direction
+    this.direction = direction;
   }
 
-  /**
-   * @return -The current down collector
-   */
-  public String getDownCollector() {
-    if (getLeftCollector().isCollectorDown() && getRightCollector().isCollectorDown()) {
-      return "BOTH";
-    } else if (getLeftCollector().isCollectorDown()) {
-      return "LEFT";
-    } else if (getRightCollector().isCollectorDown()) {
-      return "RIGHT";
-    } else {
-      return "NEITHER";
-    }
-  }
-
-  /**
-   * @return -The current up collector
-   */
-  public String getUpCollector() {
-    if (!getLeftCollector().isCollectorDown() && !getLeftCollector().isCollectorDown()) {
-      return "BOTH";
-    } else if (!getLeftCollector().isCollectorDown()) {
-      return "LEFT";
-    } else if (!getRightCollector().isCollectorDown()) {
-      return "RIGHT";
-    } else {
-      return "NEITHER";
-    }
+  @Override
+  public void periodic() {
+    leftCollector.periodic();
+    rightCollector.periodic();
   }
 
   /**
    * @return -Left collector Module
    */
   public CollectorModule getLeftCollector() {
-    return collectors[0];
+    return leftCollector;
   }
 
   /**
    * @return -Right collector module
    */
   public CollectorModule getRightCollector() {
-    return collectors[1];
+    return rightCollector;
   }
 
   // Changes State
-  public void changeState(State desiredState) {
-    state = desiredState;
+  public void changeMode(Mode desiredMode) {
+    mode = desiredMode;
+    // Collector State Control
+    switch (desiredMode) {
+      case ALWAYSUP:
+        new BothCollectorsUpState(this);
+        break;
+
+      case MANUAL:
+
+        break;
+
+      case AUTOMATIC:
+        new AutomaticStateChange(this, direction);
+        break;
+
+      default:
+        break;
+    }
   }
 
   // Gets State
-  public State getState() {
-    return state;
+  public Mode getMode() {
+    return mode;
   }
 }

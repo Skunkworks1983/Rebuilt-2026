@@ -26,7 +26,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
-import frc.robot.subsystems.collector.collectorConstants.CollectorConstants.side;
+import frc.robot.subsystems.collector.collectorConstants.CollectorConstants.Side;
 import frc.robot.subsystems.drive.PhoenixOdometryThread;
 import java.util.Queue;
 
@@ -47,19 +47,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
 
   // Helper variables
   private boolean isDown;
-  private side side;
-
-  // Voltage control requests
-  private final VoltageOut voltageRequest = new VoltageOut(0);
-  private final PositionVoltage positionVoltageRequest = new PositionVoltage(0.0);
-  private final VelocityVoltage velocityVoltageRequest = new VelocityVoltage(0.0);
-
-  // Torque-current control requests
-  private final TorqueCurrentFOC torqueCurrentRequest = new TorqueCurrentFOC(0);
-  private final PositionTorqueCurrentFOC positionTorqueCurrentRequest =
-      new PositionTorqueCurrentFOC(0.0);
-  private final VelocityTorqueCurrentFOC velocityTorqueCurrentRequest =
-      new VelocityTorqueCurrentFOC(0.0);
+  private Side side;
 
   // Timestamp inputs from Phoenix thread
   private final Queue<Double> timestampQueue;
@@ -228,44 +216,6 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
   }
 
   /**
-   * Gets the position of the collector
-   *
-   * <ul>
-   *
-   * @return -WPILib Angle
-   */
-  public Angle getPosition() {
-    return turnMotor.getPosition().getValue();
-  }
-
-  /**
-   * Gets the velocity of the collectors intake upper motor
-   *
-   * @return -Angular Velocity
-   */
-  public AngularVelocity getVelocityOfIntakeLower() {
-    return intakeMotorLower.getVelocity().getValue();
-  }
-
-  /**
-   * Gets the velocity of the collectors intake lower motor
-   *
-   * @return -Angular Velocity
-   */
-  public AngularVelocity getVelocityOfIntakeUpper() {
-    return intakeMotorUpper.getVelocity().getValue();
-  }
-
-  /**
-   * Gets the velocity of the turn motor
-   *
-   * @return -Angular Velocity
-   */
-  public AngularVelocity getVelocityOfTurn() {
-    return turnMotor.getVelocity().getValue();
-  }
-
-  /**
    * Gets the turn motors gear ratio
    *
    * @return -Turn motors gear ratio
@@ -310,14 +260,14 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     // I know this methods a bit silly rn but its gonna be replaced by magnet sensors anyway
     switch (side) {
       case LEFT:
-        if (getPosition().in(Degrees) <= constants.CollectorDownPos.in(Degrees)) {
+        if (turnPosition.getValue().lte( constants.CollectorDownPos)) {
           return true;
         } else {
           return false;
         }
 
       case RIGHT:
-        if (getPosition().in(Degrees) <= constants.CollectorDownPos.in(Degrees)) {
+        if (turnPosition.getValue().lte(constants.CollectorDownPos)) {
           return true;
         } else {
           return false;
@@ -328,7 +278,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
   }
 
   // Gets side i.e: left
-  public side getSide() {
+  public Side getSide() {
     return side;
   }
 

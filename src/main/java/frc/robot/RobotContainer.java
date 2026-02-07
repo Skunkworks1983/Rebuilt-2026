@@ -26,7 +26,8 @@ import frc.robot.commands.collectorCommands.CollectorIntake;
 import frc.robot.commands.collectorCommands.LeftCollectorDownState;
 import frc.robot.commands.collectorCommands.RightCollectorDownState;
 import frc.robot.subsystems.collector.Collector;
-import frc.robot.subsystems.collector.Collector.State;
+import frc.robot.subsystems.collector.CollectorModuleIO;
+import frc.robot.subsystems.collector.Collector.Mode;
 import frc.robot.subsystems.collector.CollectorModuleSimIO;
 import frc.robot.subsystems.collector.CollectorModuleTalonIO;
 import frc.robot.subsystems.collector.collectorConstants.CollectorTalonLeftConstants;
@@ -82,9 +83,9 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     if (Constants.controlScheme == Constants.ControlScheme.OI) {
-      leftJoystick = new Joystick(0);
-      rightJoystick = new Joystick(1);
-      buttonPanel = new Joystick(2);
+      leftJoystick = new Joystick(Constants.JoystickConstants.LeftJoystick);
+      rightJoystick = new Joystick(Constants.JoystickConstants.RightJoystick);
+      buttonPanel = new Joystick(Constants.JoystickConstants.ButtonJoystick);
       xboxController = null;
     } else {
       xboxController = new XboxController(0);
@@ -118,7 +119,8 @@ public class RobotContainer {
         collector =
             new Collector(
                 new CollectorModuleTalonIO(new CollectorTalonLeftConstants()),
-                new CollectorModuleTalonIO(new CollectorTalonRightConstants()));
+                new CollectorModuleTalonIO(new CollectorTalonRightConstants()),
+                () -> drive.getDirection());
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
@@ -173,7 +175,9 @@ public class RobotContainer {
 
         collector =
             new Collector(
-                new CollectorModuleSimIO(simulation, 0), new CollectorModuleSimIO(simulation, 1));
+                new CollectorModuleSimIO(simulation, 0), 
+                new CollectorModuleSimIO(simulation, 1),
+                () -> drive.getDirection());
         break;
 
       default:
@@ -192,7 +196,9 @@ public class RobotContainer {
 
         collector =
             new Collector(
-                new CollectorModuleSimIO(simulation, 0), new CollectorModuleSimIO(simulation, 1));
+                new CollectorModuleIO() {},
+                new CollectorModuleIO() {},
+                () -> drive.getDirection());
         break;
     }
 
@@ -248,47 +254,35 @@ public class RobotContainer {
 
     TestPathCommands.publishTestPaths(drive);
 
-    // collector.setDefaultCommand(new HoldPositionCommand(collector));
-
     // State Butoons
-    JoystickButton manualMode = new JoystickButton(buttonPanel, 0);
-    JoystickButton autoMode = new JoystickButton(buttonPanel, 0);
+    JoystickButton manualModeSwitch = new JoystickButton(buttonPanel, Constants.JoystickConstants.CollectorManualModeID);
+    JoystickButton autoModeSwitch = new JoystickButton(buttonPanel, Constants.JoystickConstants.CollectorAutoModeID);
 
     // Switch States
-    manualMode.onTrue(Commands.runOnce(() -> collector.changeState(State.MANUAL), collector));
-    autoMode.onTrue(Commands.runOnce(() -> collector.changeState(State.AUTOMATIC), collector));
-    manualMode
+    manualModeSwitch.onTrue(Commands.runOnce(() -> collector.changeMode(Mode.MANUAL), collector));
+    autoModeSwitch.onTrue(Commands.runOnce(() -> collector.changeMode(Mode.AUTOMATIC), collector));
+    manualModeSwitch
         .negate()
-        .and(autoMode.negate())
-        .onTrue(Commands.runOnce(() -> collector.changeState(State.ALWAYSUP), collector));
+        .and(autoModeSwitch.negate())
+        .onTrue(Commands.runOnce(() -> collector.changeMode(Mode.ALWAYSUP), collector));
 
     // Collector Intake Button
-    new JoystickButton(buttonPanel, 4).whileTrue(new CollectorIntake(collector));
+    new JoystickButton(buttonPanel, Constants.JoystickConstants.CollectorIntakeID).whileTrue(new CollectorIntake(collector));
 
-    // Collector State Controll
-    switch (collector.getState()) {
-      case ALWAYSUP:
-        // Both Collectors will always be up
-        new BothCollectorsUpState(collector);
-        break;
+    // Right Collector Down
+    new JoystickButton(buttonPanel, Constants.JoystickConstants.CollectorRightDownID)
+      .and(() -> collector.getMode().equals(Mode.MANUAL))
+      .onTrue(new RightCollectorDownState(collector));
 
-      case MANUAL:
-        // Right Collector Down
-        new JoystickButton(buttonPanel, 1).onTrue(new RightCollectorDownState(collector));
+    // Left Collector Down
+    new JoystickButton(buttonPanel, Constants.JoystickConstants.CollectorLeftDownID)
+      .and(() -> collector.getMode().equals(Mode.MANUAL))
+      .onTrue(new LeftCollectorDownState(collector));
 
-        // Left Collector Down
-        new JoystickButton(buttonPanel, 2).onTrue(new LeftCollectorDownState(collector));
-
-        // Both Collectors Up
-        new JoystickButton(leftJoystick, 3).onTrue(new BothCollectorsUpState(collector));
-        break;
-
-      case AUTOMATIC:
-        break;
-
-      default:
-        break;
-    }
+    // Both Collectors Up
+    new JoystickButton(leftJoystick, Constants.JoystickConstants.CollectorBothUpID)
+      .and(() -> collector.getMode().equals(Mode.MANUAL))
+      .onTrue(new BothCollectorsUpState(collector));
 
     // Lock to 0° when A button is held
     // controller

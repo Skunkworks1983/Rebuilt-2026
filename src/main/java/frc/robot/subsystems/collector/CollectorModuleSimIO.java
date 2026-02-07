@@ -12,7 +12,7 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-import frc.robot.subsystems.collector.collectorConstants.CollectorConstants.side;
+import frc.robot.subsystems.collector.collectorConstants.CollectorConstants.Side;
 import org.ironmaple.simulation.IntakeSimulation;
 import org.ironmaple.simulation.drivesims.AbstractDriveTrainSimulation;
 
@@ -131,46 +131,6 @@ public class CollectorModuleSimIO implements CollectorModuleIO {
   }
 
   /**
-   * Gets the position of the collector
-   *
-   * @return
-   */
-  @Override
-  public Angle getPosition() {
-    return turnMotorSim.getAngularPosition();
-  }
-
-  /**
-   * Gets the velocity of the collectors intake upper motor
-   *
-   * @return
-   */
-  @Override
-  public AngularVelocity getVelocityOfIntakeLower() {
-    return intakeMotorLowerSim.getAngularVelocity();
-  }
-
-  /**
-   * Gets the velocity of the collectors intake lower motor
-   *
-   * @return
-   */
-  @Override
-  public AngularVelocity getVelocityOfIntakeUpper() {
-    return intakeMotorUpperSim.getAngularVelocity();
-  }
-
-  /**
-   * Gets the velocity of the turn motor
-   *
-   * @return
-   */
-  @Override
-  public AngularVelocity getVelocityOfTurn() {
-    return turnMotorSim.getAngularVelocity();
-  }
-
-  /**
    * Gets the turn motors gear ratio
    *
    * @return
@@ -233,12 +193,12 @@ public class CollectorModuleSimIO implements CollectorModuleIO {
 
   /** */
   @Override
-  public side getSide() {
+  public Side getSide() {
     if (c == 0) {
-      return side.LEFT;
+      return Side.LEFT;
     }
     if (c == 1) {
-      return side.RIGHT;
+      return Side.RIGHT;
     }
 
     return null;

@@ -13,13 +13,12 @@ import edu.wpi.first.units.measure.AngularVelocity;
 /** An Interface for collector constants */
 public interface CollectorConstants {
   // Collector side
-  public static enum side {
+  public static enum Side {
     LEFT,
     RIGHT;
   }
 
-  public static side collectorSide =
-      frc.robot.subsystems.collector.collectorConstants.CollectorConstants.side.LEFT;
+  public static Side collectorSide = Side.LEFT;
 
   // Hardware ID's
   public static final int turnMotorID = 0;
@@ -50,8 +49,8 @@ public interface CollectorConstants {
   public static final double turnkA = 0.01;
 
   // Position
-  public static final Angle CollectorUpPos = Angle.ofBaseUnits(0, Degrees);
-  public static final Angle CollectorDownPos = Angle.ofBaseUnits(0, Degrees);
+  public static final Angle CollectorUpPos = Degrees.of(0);
+  public static final Angle CollectorDownPos = Degrees.of(0);
 
   // Collector Intake Speeds
   public static final AngularVelocity CollectorIntakeSpeed = RotationsPerSecond.of(0);

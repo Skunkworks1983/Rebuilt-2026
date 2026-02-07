@@ -18,8 +18,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
  */
 public class CollectorTalonRightConstants implements CollectorConstants {
   // Collector side
-  public static side collectorSide =
-      frc.robot.subsystems.collector.collectorConstants.CollectorTalonRightConstants.side.RIGHT;
+  public static Side collectorSide = Side.RIGHT;
 
   // Hardware ID's
   public static final int turnMotorID = 0;

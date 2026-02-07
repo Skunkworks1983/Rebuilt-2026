@@ -8,7 +8,10 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
-import frc.robot.subsystems.collector.collectorConstants.CollectorConstants.side;
+import frc.robot.subsystems.collector.collectorConstants.CollectorConstants.Side;
+
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+
 import org.littletonrobotics.junction.Logger;
 
 /**
@@ -20,7 +23,7 @@ import org.littletonrobotics.junction.Logger;
  *
  * @author Liam B
  */
-public class CollectorModule extends SubsystemBase {
+public class CollectorModule{
   private final CollectorModuleIO collectorIO;
   private final CollectorIOInputsAutoLogged inputs = new CollectorIOInputsAutoLogged();
 
@@ -36,11 +39,10 @@ public class CollectorModule extends SubsystemBase {
   public CollectorModule(CollectorModuleIO collectorIO) {
     this.collectorIO = collectorIO;
   }
-
-  @Override
+  
   public void periodic() {
     collectorIO.updateInputs(inputs);
-    Logger.processInputs(getName() + collectorIO.getSide().name(), inputs);
+    Logger.processInputs("Collector/Module " + collectorIO.getSide().name(), inputs);
   }
 
   /** Gets Constants */
@@ -54,7 +56,7 @@ public class CollectorModule extends SubsystemBase {
    * @return -WPILib Angle
    */
   public Angle getPosition() {
-    return collectorIO.getPosition();
+    return inputs.turnPosition.getMeasure();
   }
 
   /**
@@ -63,7 +65,7 @@ public class CollectorModule extends SubsystemBase {
    * @return -Angular Velocity
    */
   public AngularVelocity getVelocityOfIntakeLower() {
-    return collectorIO.getVelocityOfIntakeLower();
+    return RadiansPerSecond.of(inputs.lowerVelocityRadPerSec);
   }
 
   /**
@@ -72,7 +74,7 @@ public class CollectorModule extends SubsystemBase {
    * @return -Angular Velocity
    */
   public AngularVelocity getVelocityOfIntakeUpper() {
-    return collectorIO.getVelocityOfIntakeUpper();
+    return RadiansPerSecond.of(inputs.upperVelocityRadPerSec);
   }
 
   /**
@@ -81,7 +83,7 @@ public class CollectorModule extends SubsystemBase {
    * @return -Angular Velocity
    */
   public AngularVelocity getVelocityOfTurn() {
-    return collectorIO.getVelocityOfTurn();
+    return RadiansPerSecond.of(inputs.turnVelocityRadPerSec);
   }
 
   /**
@@ -141,7 +143,7 @@ public class CollectorModule extends SubsystemBase {
     collectorIO.goDown();
   }
 
-  public side getSide() {
+  public Side getSide() {
     return collectorIO.getSide();
   }
 }
