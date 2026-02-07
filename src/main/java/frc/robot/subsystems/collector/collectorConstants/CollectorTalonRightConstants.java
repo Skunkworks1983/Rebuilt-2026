@@ -18,7 +18,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
  */
 public class CollectorTalonRightConstants implements CollectorConstants {
   // Collector side
-  public static Side collectorSide = Side.RIGHT;
+  public static Side collectorSide = Side.RIGHT; // TODO: set constants
 
   // Hardware ID's
   public static final int turnMotorID = 0;

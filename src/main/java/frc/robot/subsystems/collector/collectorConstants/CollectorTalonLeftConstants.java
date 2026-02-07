@@ -17,8 +17,8 @@ import edu.wpi.first.units.measure.AngularVelocity;
  *   Only to be used with The talonFX collector IO for the left collector
  */
 public class CollectorTalonLeftConstants implements CollectorConstants {
-  // Collector side
-  public static Side collectorSide = Side.LEFT;
+  // Collector side           
+  public static Side collectorSide = Side.LEFT; // TODO: set constants
 
   // Hardware ID's
   public static final int turnMotorID = 0;
