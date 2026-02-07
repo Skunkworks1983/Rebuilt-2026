@@ -61,7 +61,6 @@ public class RobotContainer {
   private final XboxController xboxController;
 
   // Dashboard inputs
-  private final LoggedDashboardChooser<Command> autoChooser;
 
   // Sim
   private SwerveDriveSimulation simulation = null;
@@ -82,13 +81,13 @@ public class RobotContainer {
         // Real robot, instantiate hardware IO implementations
         // ModuleIOTalonFX is intended for modules with TalonFX drive, TalonFX turn, and
         // a CANcoder
-        drive =
+       drive =
             new Drive(
-                new GyroIOPigeon2(),
-                new ModuleIOTalonFX(Constants.tunerConstants.getFrontLeft()),
-                new ModuleIOTalonFX(Constants.tunerConstants.getFrontRight()),
-                new ModuleIOTalonFX(Constants.tunerConstants.getBackLeft()),
-                new ModuleIOTalonFX(Constants.tunerConstants.getBackRight()),
+                new GyroIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
                 (pose) -> {},
                 (pose) -> {});
 
@@ -171,7 +170,7 @@ public class RobotContainer {
     }
 
     // Set up auto routines
-    autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
+    // autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
     // Set up SysId routines
     // autoChooser.addOption(
@@ -196,7 +195,6 @@ public class RobotContainer {
     // PathPlannerAuto("SimPhysTest"));
 
     // Configure the button bindings
-    configureButtonBindings();
   }
 
   public void playMusic() {
@@ -308,7 +306,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return autoChooser.get();
+    return null;
   }
 
   /**
