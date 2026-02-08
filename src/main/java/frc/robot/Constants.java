@@ -7,8 +7,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.units.Units;
-import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.generated.TunerConstants;
 

@@ -6,44 +6,54 @@ package frc.robot.subsystems.indexer;
 
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
+import com.ctre.phoenix6.sim.ChassisReference;
+
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
 /** This is the Indexer IO sim */
-public class IndexerIOSim implements IndexerIO {
+public class IndexerIOSim extends IndexerIOTalonFX {
   DCMotorSim indexerMotorSim;
   Voltage voltage;
 
-  public IndexerIOSim() {
+  public IndexerIOSim(int motorID) {
+    super(motorID);
     LinearSystem linearSystem = LinearSystemId.createDCMotorSystem(12.45, 0.07);
-    
+
     double[] stdevs = {0.001, 0.001};
 
-    indexerMotorSim = 
-      new DCMotorSim(
-        linearSystem,
-        DCMotor.getKrakenX44(1), 
-        stdevs);
+    indexerMotorSim = new DCMotorSim(linearSystem, DCMotor.getKrakenX44(1), stdevs);
   }
 
   @Override
   public void updateInputs(IndexerIOInputs input) {
+    var talonFXSim = super.indexerMotor.getSimState();
+
+    talonFXSim.Orientation = ChassisReference.Clockwise_Positive;
+    talonFXSim.setSupplyVoltage(RobotController.getBatteryVoltage());
+
+    Voltage primaryAppliedVolts = talonFXSim.getMotorVoltageMeasure();
+    indexerMotorSim.setInputVoltage(primaryAppliedVolts.magnitude());
+
+    indexerMotorSim.update(0.020);
+
+    talonFXSim.setRotorVelocity(
+        indexerMotorSim.getAngularVelocity());
+
+    talonFXSim.setRawRotorPosition(indexerMotorSim.getAngularPosition());
 
     indexerMotorSim.update(0.020);
 
     input.connected = true;
     input.position = indexerMotorSim.getAngularPosition();
     input.angularVelocity = indexerMotorSim.getAngularVelocity();
-    input.appliedVolts = Units.Volts.of(indexerMotorSim.getInputVoltage());
+    input.appliedVolts = primaryAppliedVolts;
     input.currentAmps = Units.Amps.of(indexerMotorSim.getCurrentDrawAmps());
-  }
-
-  public void setIndexerVelocity(AngularVelocity velocity) {
-    indexerMotorSim.setAngularVelocity(velocity.in(RadiansPerSecond));
   }
 }

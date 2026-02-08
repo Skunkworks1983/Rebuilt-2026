@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.subsystems.indexer.IndexerConstants;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.IndexerCommand;
 import frc.robot.commands.TestPathCommands;
@@ -30,6 +29,7 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.drive.ModuleIOTalonFXSim;
 import frc.robot.subsystems.indexer.Indexer;
+import frc.robot.subsystems.indexer.IndexerConstants;
 import frc.robot.subsystems.indexer.IndexerIO;
 import frc.robot.subsystems.indexer.IndexerIOSim;
 import frc.robot.subsystems.indexer.IndexerIOTalonFX;
@@ -163,7 +163,7 @@ public class RobotContainer {
                     VisionConstants.robotToCamera1,
                     simulation::getSimulatedDriveTrainPose));
 
-        indexer = new Indexer(new IndexerIOSim());
+        indexer = new Indexer(new IndexerIOSim(IndexerConstants.indexerMotorID));
 
         break;
 

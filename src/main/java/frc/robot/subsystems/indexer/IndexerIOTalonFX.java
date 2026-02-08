@@ -25,7 +25,7 @@ public class IndexerIOTalonFX implements IndexerIO {
 
   VelocityTorqueCurrentFOC velocityTorqueCurrentRequest = new VelocityTorqueCurrentFOC(0);
 
-  private final TalonFX indexerMotor;
+  protected final TalonFX indexerMotor;
 
   private final Debouncer indexerDebouncer = new Debouncer(0.5, DebounceType.kFalling);
 
