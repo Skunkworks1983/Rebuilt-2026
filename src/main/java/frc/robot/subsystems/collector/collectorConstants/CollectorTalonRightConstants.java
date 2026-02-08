@@ -29,7 +29,7 @@ public class CollectorTalonRightConstants implements CollectorConstants {
   public static final double turnMotorGearRatio = 0.0;
 
   // Turn PID
-  public static final double turnkP = 0.0;
+  public static final double turnkP = 1;
   public static final double turnkD = 0.0;
   public static final double turnkI = 0.0;
 

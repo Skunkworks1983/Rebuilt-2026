@@ -49,26 +49,20 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
   private boolean isDown;
   private Side side;
 
-  // Timestamp inputs from Phoenix thread
-  private final Queue<Double> timestampQueue;
-
   // Inputs from turn motor
   private final StatusSignal<Angle> turnPosition;
-  private final Queue<Double> turnPositionQueue;
   private final StatusSignal<AngularVelocity> turnVelocity;
   private final StatusSignal<Voltage> turnAppliedVolts;
   private final StatusSignal<Current> turnCurrent;
 
   // Inputs from lower intake motor
   private final StatusSignal<Angle> lowerPosition;
-  private final Queue<Double> lowerPositionQueue;
   private final StatusSignal<AngularVelocity> lowerVelocity;
   private final StatusSignal<Voltage> lowerAppliedVolts;
   private final StatusSignal<Current> lowerCurrent;
 
   // Inputs from upper intake motor
   private final StatusSignal<Angle> upperPosition;
-  private final Queue<Double> upperPositionQueue;
   private final StatusSignal<AngularVelocity> upperVelocity;
   private final StatusSignal<Voltage> upperAppliedVolts;
   private final StatusSignal<Current> upperCurrent;
@@ -133,26 +127,20 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     // Applying Upper Intake Configs
     tryUntilOk(5, () -> intakeMotorUpper.getConfigurator().apply(upperConfig, 0.25));
 
-    // Create timestamp queue
-    timestampQueue = PhoenixOdometryThread.getInstance().makeTimestampQueue();
-
     // Create turn status signals
     turnPosition = turnMotor.getPosition();
-    turnPositionQueue = PhoenixOdometryThread.getInstance().registerSignal(turnPosition.clone());
     turnVelocity = turnMotor.getVelocity();
     turnAppliedVolts = turnMotor.getMotorVoltage();
     turnCurrent = turnMotor.getStatorCurrent();
 
     // Create drive status signals
     lowerPosition = intakeMotorLower.getPosition();
-    lowerPositionQueue = PhoenixOdometryThread.getInstance().registerSignal(lowerPosition.clone());
     lowerVelocity = intakeMotorLower.getVelocity();
     lowerAppliedVolts = intakeMotorLower.getMotorVoltage();
     lowerCurrent = intakeMotorLower.getStatorCurrent();
 
     // Create drive status signals
     upperPosition = intakeMotorUpper.getPosition();
-    upperPositionQueue = PhoenixOdometryThread.getInstance().registerSignal(upperPosition.clone());
     upperVelocity = intakeMotorUpper.getVelocity();
     upperAppliedVolts = intakeMotorUpper.getMotorVoltage();
     upperCurrent = intakeMotorUpper.getStatorCurrent();
