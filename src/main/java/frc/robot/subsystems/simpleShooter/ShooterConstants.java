@@ -26,20 +26,20 @@ public class ShooterConstants {
   public static final int upperFlywheelId = 46;
   public static final int backFlywheelId = 45;
 
-  public static final double forwardFlywheelKP = 0.033002;
+  public static final double forwardFlywheelKP = 3.5;
   public static final double forwardFlywheelKD = 0.0;
   public static final double forwardFlywheelKS = 1.0994;
-  public static final double forwardFlywheelKV = 0.018791;
-  public static final double forwardFlywheelKA = 0.62373;
+  public static final double forwardFlywheelKV = 0.318791;
+  public static final double forwardFlywheelKA = 0.72373;
 
   public static final double forwardFlywheelMaxVelocityRotationsPerSec = 85.6667;
   public static final double forwardFlywheelMaxAccelerationRotationsPerSec = 200.0;
   public static final double forwardFlywheelMaxJerkRotationsPerSecCubed = 100;
 
-  public static final double backFlywheelKP = 0.1;
+  public static final double backFlywheelKP = 0.5;
   public static final double backFlywheelKD = 0.0;
   public static final double backFlywheelKS = 0.0;
-  public static final double backFlywheelKV = 0.0;
+  public static final double backFlywheelKV = 0.1;
   public static final double backFlywheelKA = 0.0;
 
   public static final double backFlywheelMaxVelocityRotationsPerSec = 85.6667;
@@ -50,7 +50,7 @@ public class ShooterConstants {
 
   public static final double flywheelStatorCurrentLimitAmps = 120.0;
 
-  public static final InvertedValue flywheelMotorInverted = InvertedValue.Clockwise_Positive;
+  public static final InvertedValue flywheelMotorInverted = InvertedValue.CounterClockwise_Positive;
 
   public static final MomentOfInertia flywheelInertia = KilogramSquareMeters.of(0.01);
 
@@ -67,8 +67,8 @@ public class ShooterConstants {
       MetersPerSecond.of(
           RotationsPerSecond.of(85.66667).in(RadiansPerSecond) * flywheelRadius.in(Meters));
 
-  public static final AngularVelocity defaultForwardFlywheelVelocity = RotationsPerSecond.of(15);
-  public static final AngularVelocity defaultBackFlywheelVelocity = RotationsPerSecond.of(15);
+  public static final AngularVelocity defaultForwardFlywheelVelocity = RotationsPerSecond.of(55);
+  public static final AngularVelocity defaultBackFlywheelVelocity = RotationsPerSecond.of(55);
 
   public static Angle shooterPitch = Degrees.of(45);
 }

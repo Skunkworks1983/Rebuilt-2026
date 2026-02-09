@@ -9,6 +9,7 @@ import static edu.wpi.first.units.Units.DegreesPerSecond;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import edu.wpi.first.units.measure.AngularVelocity;
 
 /** Add your docs here. */
@@ -36,6 +37,8 @@ public class IndexerTalonIO implements IndexerIO {
     intakeMotionMagicConfig.MotionMagicCruiseVelocity = 80;
     intakeMotionMagicConfig.MotionMagicAcceleration = 160;
 
+    intakeConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+
     intakeMotor.getConfigurator().apply(slot0Configs);
   }
 
@@ -48,7 +51,7 @@ public class IndexerTalonIO implements IndexerIO {
   }
 
   @Override
-  public void intake(AngularVelocity velocity) {
-    intakeMotor.setControl(new DutyCycleOut(velocity.in(DegreesPerSecond)));
+  public void intake(double dutyCycleOut) {
+    intakeMotor.setControl(new DutyCycleOut(dutyCycleOut));
   }
 }

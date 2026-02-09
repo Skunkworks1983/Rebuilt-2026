@@ -23,7 +23,7 @@ public class CollectorTalonIO implements CollectorIO {
     var intakeConfig = new TalonFXConfiguration();
 
     var slot0Configs = intakeConfig.Slot0;
-    slot0Configs.kP = 0.2;
+    slot0Configs.kP = 0.1;
     slot0Configs.kI = 0.0;
     slot0Configs.kD = 0.0;
     slot0Configs.kS = 0.0;

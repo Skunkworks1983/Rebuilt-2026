@@ -28,7 +28,7 @@ public class CollectorIntake extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    collector.intake(AngularVelocity.ofBaseUnits(-1000, DegreesPerSecond));
+    collector.intake(AngularVelocity.ofBaseUnits(50, DegreesPerSecond));
   }
 
   // Called once the command ends or is interrupted.

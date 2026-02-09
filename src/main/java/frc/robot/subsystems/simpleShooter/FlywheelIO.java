@@ -1,9 +1,11 @@
 package frc.robot.subsystems.simpleShooter;
 
 import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -21,8 +23,9 @@ public interface FlywheelIO {
 
     public Current primaryStatorCurrentAmps = Amps.of(0);
 
-    public Current primaryTorqueCurrentAmps = Amps.of(0);
+    public Angle position = Degrees.of(0);
 
+    public Current primaryTorqueCurrentAmps = Amps.of(0);
   }
 
   public default void setVelocity(AngularVelocity velocity) {}

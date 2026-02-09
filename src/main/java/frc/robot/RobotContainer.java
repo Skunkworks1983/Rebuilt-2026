@@ -250,7 +250,7 @@ public class RobotContainer {
         "Shooter SysId (Dynamic Forward)", shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
 
     autoChooser.addOption(
-        "Shooter Duty Cycle Max", new InstantCommand(()->shooter.maxShooterDuty()));
+        "Shooter Duty Cycle Max", new InstantCommand(() -> shooter.maxShooterDuty()));
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -283,7 +283,7 @@ public class RobotContainer {
       alignShot.whileTrue(
           DriveCommands.joystickDriveAimedHub(
               drive, shooter, () -> -leftJoystick.getY(), () -> -leftJoystick.getX()));
-      shoot.onTrue(SimpleShoot.simpleShoot(shooter));
+      shoot.whileTrue(SimpleShoot.simpleShoot(shooter));
     } else {
 
       drive.setDefaultCommand(

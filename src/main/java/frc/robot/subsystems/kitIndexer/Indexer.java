@@ -24,7 +24,7 @@ public class Indexer extends SubsystemBase {
     Logger.processInputs(getName(), inputs);
   }
 
-  public void intake(AngularVelocity velocity) {
-    io.intake(velocity);
+  public void intake(double dutyCycle) {
+    io.intake(dutyCycle);
   }
 }

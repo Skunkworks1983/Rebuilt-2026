@@ -24,6 +24,6 @@ public class SimpleShoot {
               RotationsPerSecond.of(forwardFlywheelVelocity.get()),
               RotationsPerSecond.of(backFlywheelVelocity.get()));
         },
-        shooter);
+        shooter).finallyDo(()->{shooter.setShooterControls(RotationsPerSecond.of(0), RotationsPerSecond.of(0));});
   }
 }

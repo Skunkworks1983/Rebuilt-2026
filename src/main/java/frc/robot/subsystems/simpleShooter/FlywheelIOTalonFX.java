@@ -13,6 +13,7 @@ import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -25,6 +26,7 @@ public class FlywheelIOTalonFX implements FlywheelIO {
   private final StatusSignal<Voltage> flywheelAppliedVolts;
   private final StatusSignal<Current> flywheelCurrent;
   private final StatusSignal<Current> flywheelTorqueCurrent;
+  private final StatusSignal<Angle> flywheelPosition;
 
   private final TorqueCurrentFOC torqueCurrentRequest = new TorqueCurrentFOC(0);
 
@@ -68,8 +70,9 @@ public class FlywheelIOTalonFX implements FlywheelIO {
     flywheelAppliedVolts = flywheelMotor.getMotorVoltage();
     flywheelCurrent = flywheelMotor.getStatorCurrent();
     flywheelTorqueCurrent = flywheelMotor.getTorqueCurrent();
+    flywheelPosition = flywheelMotor.getPosition();
     BaseStatusSignal.setUpdateFrequencyForAll(
-        50.0, flywheelVelocity, flywheelAppliedVolts, flywheelCurrent);
+        50.0, flywheelVelocity, flywheelAppliedVolts, flywheelCurrent, flywheelPosition);
 
     flywheelTorqueCurrent.setUpdateFrequency(
         250); // This is what follower uses to follow, so faser updates
@@ -100,6 +103,9 @@ public class FlywheelIOTalonFX implements FlywheelIO {
     inputs.primaryStatorCurrentAmps = flywheelCurrent.getValue();
 
     inputs.primaryTorqueCurrentAmps = flywheelTorqueCurrent.getValue();
+    inputs.position = flywheelPosition.getValue();
+
+    
   }
 
   @Override
@@ -128,6 +134,4 @@ public class FlywheelIOTalonFX implements FlywheelIO {
   public void maxDutyCycle() {
     flywheelMotor.setControl(dutyCycleRequest.withOutput(1.0));
   }
-
-  
 }

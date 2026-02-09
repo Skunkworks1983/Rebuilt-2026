@@ -19,5 +19,5 @@ public interface IndexerIO {
 
   public default void updateInputs(IndexerIOInputs inputs) {}
 
-  public default void intake(AngularVelocity velocity) {}
+  public default void intake(double velocity) {}
 }
