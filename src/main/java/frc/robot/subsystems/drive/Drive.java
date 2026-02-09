@@ -427,7 +427,12 @@ public class Drive extends SubsystemBase implements VisionConsumer {
     resetLimelightIMUCallback = resetIMUCallback;
   }
 
+  /**
+   * Returns the X-axis acceleration from the Pigeon 2.0 gyro.
+   * Positive values indicate acceleration towards the right collector.
+   * Negative values indicate acceleration towards the left collector.
+   */
   public double getDirection() {
-    return getChassisSpeeds().vyMetersPerSecond;
+    return gyroInputs.accelerationXMetersPerSecSq;
   }
 }
