@@ -68,6 +68,11 @@ public interface CollectorModuleIO {
     return false;
   }
 
+  /**
+   * Zeros the collector position when limit switch is triggered
+   */
+  public default void zeroPosition() {}
+
   // Sets collector up
   public default void goUp() {}
 

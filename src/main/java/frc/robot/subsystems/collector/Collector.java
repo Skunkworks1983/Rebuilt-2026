@@ -13,6 +13,8 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.wpilibj.Alert;
+import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -48,9 +50,19 @@ public class Collector extends SubsystemBase {
   }
 
   Mode mode = Mode.ALWAYSUP;
-  CollectorState currentState = CollectorState.UP; // Default assumption, will be updated based on sensors
-  CollectorState targetState = CollectorState.UP;
+  private CollectorState currentState = CollectorState.UP; // Default assumption, will be updated based on sensors
+  private CollectorState targetState = CollectorState.UP;
   private boolean stateInitialized = false;
+
+  // Alerts for collector not zeroed
+  private final Alert leftCollectorNotZeroedAlert =
+      new Alert("Left collector not zeroed - limit switch not triggered", AlertType.kWarning);
+  private final Alert rightCollectorNotZeroedAlert =
+      new Alert("Right collector not zeroed - limit switch not triggered", AlertType.kWarning);
+
+  // Track if collectors have been zeroed
+  private boolean leftCollectorZeroed = false;
+  private boolean rightCollectorZeroed = false;
 
   /**
    * Collector subsystem.
@@ -76,6 +88,20 @@ public class Collector extends SubsystemBase {
     rightIO.updateInputs(rightInputs);
     Logger.processInputs("Collector/Left", leftInputs);
     Logger.processInputs("Collector/Right", rightInputs);
+    
+    // Zero collector positions when limit switches are triggered
+    if (leftInputs.turnUpperLimitSwitch && !leftCollectorZeroed) {
+      leftIO.zeroPosition();
+      leftCollectorZeroed = true;
+    }
+    if (rightInputs.turnUpperLimitSwitch && !rightCollectorZeroed) {
+      rightIO.zeroPosition();
+      rightCollectorZeroed = true;
+    }
+    
+    // Update alerts for non-zeroed collectors
+    leftCollectorNotZeroedAlert.set(!leftCollectorZeroed);
+    rightCollectorNotZeroedAlert.set(!rightCollectorZeroed);
     
     // Initialize state based on actual sensor readings on first periodic call
     if (!stateInitialized) {

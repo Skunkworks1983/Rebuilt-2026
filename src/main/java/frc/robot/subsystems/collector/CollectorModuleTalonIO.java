@@ -210,6 +210,13 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     return turnUpperLimit.getValue() == ForwardLimitValue.ClosedToGround;
   }
 
+  /**
+   * Zeros the collector position when limit switch is triggered
+   */
+  public void zeroPosition() {
+    turnMotor.setPosition(CollectorConstants.COLLECTOR_UP_POS);
+  }
+
   // Sets collector up
   public void goUp() {
     turnMotor.setControl(new PositionVoltage(CollectorConstants.COLLECTOR_UP_POS).withSlot(0));

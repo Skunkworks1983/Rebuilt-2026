@@ -161,6 +161,14 @@ public class CollectorModuleSimIO implements CollectorModuleIO {
     return turnMotorSim.getAngularPositionRad() >= (Math.PI/2 - LIMIT_SWITCH_TOLERANCE_RAD);
   }
 
+  /**
+   * Zeros the collector position when simulated limit switch is triggered
+   */
+  @Override
+  public void zeroPosition() {
+    turnMotorSim.setState(Math.PI/2, turnMotorSim.getAngularVelocityRadPerSec());
+  }
+
   // Sets collector up
   @Override
   public void goUp() {
