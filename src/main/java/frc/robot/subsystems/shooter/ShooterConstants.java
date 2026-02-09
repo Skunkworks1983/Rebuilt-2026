@@ -48,18 +48,18 @@ public class ShooterConstants {
   // FLYWHEEL CONSTANTS
 
   /** CAN ID for the primary flywheel motor. */
-  public static final int flywheelMotorOneId = 0; // TODO: Motor IDS
+  public static final int flywheelMotorOneId = 49; // TODO: Motor IDS
 
   /** CAN ID for the secondary flywheel motor. */
-  public static final int flywheelSecondaryMotorId = 1;
+  public static final int flywheelSecondaryMotorId = 50;
 
   // PID for flywheel
-  public static final double flywheelKP = 0.1; // TODO: Flywheel Tuning
+  public static final double flywheelKP = 3.5; // TODO: Flywheel Tuning
   public static final double flywheelKD = 0.0;
 
   // Feed forwards for the flywheel
-  public static final double flywheelKS = 0.0;
-  public static final double flywheelKV = 0.0;
+  public static final double flywheelKS = 1.0;
+  public static final double flywheelKV = 0.50;
   public static final double flywheelKA = 0.0;
 
   /** Maximum velocity of the flywheel in rotations per second. */
@@ -102,7 +102,7 @@ public class ShooterConstants {
   public static final Distance flywheelRadius = Inches.of(4);
 
   /** Simulation PID for the flywheel. */
-  public static final Slot0Configs simFlywheelConfigs = new Slot0Configs().withKP(30);
+  public static final Slot0Configs simFlywheelConfigs = new Slot0Configs().withKP(70).withKD(0).withKV(0).withKS(0).withKA(0);
 
   /** Maximum linear velocity of the flywheel surface. */
   public static final LinearVelocity flywheelMaxLinearVelocity =
@@ -115,20 +115,21 @@ public class ShooterConstants {
   // PIVOT CONSTANTS
 
   /** CAN ID for the primary pivot motor. */
-  public static final int pivotMotorId = 0; // TODO: SET MOTOR IDS
-
-  /** CAN ID for the secondary pivot motor. */
-  public static final int pivotSecondaryMotorId = 1;
+  public static final int pivotMotorId = 8; // TODO: SET MOTOR IDS
 
   /** Allowable error tolerance for the pivot position. */
   public static final Angle pivotPositionTolerence = Degrees.of(3);
 
   // PID for pivot
-  public static final double pivotkP = 0; // TODO: SET VALUES
+  public static final double pivotkP = 90; // TODO: SET VALUES
   public static final double pivotkD = 0;
 
   // Feedforwards for pivot
-  public static final double pivotkS = 0;
+  public static final double pivotkS = 1;
   public static final double pivotkV = 0;
   public static final double pivotkA = 0;
+
+public static final InvertedValue pivotMotorInverted = InvertedValue.Clockwise_Positive;
+
+public static final Current pivotStatorCurrent = Amps.of(120);
 }

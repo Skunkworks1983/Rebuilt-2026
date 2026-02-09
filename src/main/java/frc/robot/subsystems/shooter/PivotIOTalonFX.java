@@ -11,6 +11,8 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -22,16 +24,17 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 
 public class PivotIOTalonFX implements PivotIO {
-  private final TalonFX pivotMotor;
+  protected final TalonFX pivotMotor;
 
   private final StatusSignal<Angle> pivotPostion;
   private final StatusSignal<Voltage> pivotAppliedVolts;
   private final StatusSignal<Current> pivotCurrent;
   private final StatusSignal<Current> pivotTorqueCurrent;
+  protected final StatusSignal<Double> closedLoopError;
 
   private final TorqueCurrentFOC torqueCurrentRequest = new TorqueCurrentFOC(0);
-  private final MotionMagicTorqueCurrentFOC postionTorqueCurrentRequest =
-      new MotionMagicTorqueCurrentFOC(0.0);
+  private final PositionTorqueCurrentFOC positionTorqueCurentRequest = new PositionTorqueCurrentFOC(0);
+
 
   private final Debouncer primaryConnectedDebounce =
       new Debouncer(ShooterConstants.disconnectedDebounceTimeSec, Debouncer.DebounceType.kFalling);
@@ -41,8 +44,7 @@ public class PivotIOTalonFX implements PivotIO {
 
     TalonFXConfiguration pivotConfig = new TalonFXConfiguration();
 
-    pivotConfig.Feedback.SensorToMechanismRatio = ShooterConstants.flywheelGearRatio;
-    pivotConfig.MotorOutput.Inverted = ShooterConstants.flywheelMotorInverted;
+    pivotConfig.MotorOutput.Inverted = ShooterConstants.pivotMotorInverted;
     pivotConfig.ClosedLoopGeneral.ContinuousWrap = true;
 
     pivotConfig.Slot0.kP = ShooterConstants.pivotkP;
@@ -53,12 +55,9 @@ public class PivotIOTalonFX implements PivotIO {
     pivotConfig.Slot0.kV = ShooterConstants.pivotkV;
     pivotConfig.Slot0.kA = ShooterConstants.pivotkA;
 
-    pivotConfig.MotionMagic.MotionMagicAcceleration =
-        ShooterConstants.flywheelMaxAcceleration.in(RotationsPerSecondPerSecond);
-
     pivotConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     pivotConfig.CurrentLimits.StatorCurrentLimit =
-        ShooterConstants.flywheelStatorCurrentLimitAmps.in(Amps);
+        ShooterConstants.pivotStatorCurrent.in(Amps);
 
     tryUntilOk(5, () -> pivotMotor.getConfigurator().apply(pivotConfig, 0.25));
 
@@ -66,16 +65,17 @@ public class PivotIOTalonFX implements PivotIO {
     pivotAppliedVolts = pivotMotor.getMotorVoltage();
     pivotCurrent = pivotMotor.getStatorCurrent();
     pivotTorqueCurrent = pivotMotor.getTorqueCurrent();
+    closedLoopError = pivotMotor.getClosedLoopError();
 
     BaseStatusSignal.setUpdateFrequencyForAll(
-        50.0, pivotPostion, pivotAppliedVolts, pivotCurrent, pivotTorqueCurrent);
+        50.0, pivotPostion, pivotAppliedVolts, pivotCurrent, pivotTorqueCurrent, closedLoopError);
 
     ParentDevice.optimizeBusUtilizationForAll(pivotMotor);
   }
 
   @Override
   public void setPosition(Angle position) {
-    pivotMotor.setControl(postionTorqueCurrentRequest.withPosition(position));
+    pivotMotor.setControl(positionTorqueCurentRequest.withPosition(position));
   }
 
   @Override

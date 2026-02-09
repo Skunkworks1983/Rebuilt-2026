@@ -35,6 +35,7 @@ import frc.robot.subsystems.drive.ModuleIOTalonFXSim;
 import frc.robot.subsystems.shooter.FlywheelIO;
 import frc.robot.subsystems.shooter.FlywheelIOSim;
 import frc.robot.subsystems.shooter.PivotIO;
+import frc.robot.subsystems.shooter.PivotIOSim;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterConstants;
 import frc.robot.subsystems.vision.Vision;
@@ -161,7 +162,7 @@ public class RobotContainer {
             new Shooter(
                 new FlywheelIOSim(ShooterConstants.flywheelMotorOneId),
                 new FlywheelIOSim(ShooterConstants.flywheelSecondaryMotorId),
-                new PivotIO() {});
+                new PivotIOSim());
 
         vision =
             new Vision(

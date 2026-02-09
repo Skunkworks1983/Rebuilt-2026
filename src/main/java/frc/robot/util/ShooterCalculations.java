@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
@@ -190,14 +191,29 @@ public class ShooterCalculations {
    * @return Calculated {@link ShooterControls}.
    */
   public static ShooterControls getApexConstrainedShooterControls(
-      Pose2d odometryPose, ChassisSpeeds chassisSpeeds, AngularVelocity gyroRate) {
+      Pose2d odometryPose, ChassisSpeeds chassisSpeeds) {
+        double shotDelaySeconds = 0.08; 
+
+    // 2. PROJECT POSE FORWARD
+    // We assume the robot keeps moving at current speeds for the duration of the delay.
+    Twist2d motionPrediction = new Twist2d(
+        chassisSpeeds.vxMetersPerSecond * shotDelaySeconds,
+        chassisSpeeds.vyMetersPerSecond * shotDelaySeconds,
+        chassisSpeeds.omegaRadiansPerSecond * shotDelaySeconds
+    );
+    
+    // This is where the robot will be when the ball actually leaves
+    Pose2d futurePose = odometryPose.exp(motionPrediction);
 
     Translation3d goal =
         DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red
             ? FieldConstants.redGoal
             : FieldConstants.blueGoal;
 
-    Translation2d targetVector = goal.toTranslation2d().minus(odometryPose.getTranslation());
+    Translation2d shooterPosField =
+    odometryPose.getTranslation().plus(ShooterConstants.shooterInitalPosition.getTranslation().toTranslation2d().rotateBy(futurePose.getRotation()));
+
+    Translation2d targetVector = goal.toTranslation2d().minus(shooterPosField);
 
     double trueDistance = targetVector.getNorm();
 
@@ -229,22 +245,13 @@ public class ShooterCalculations {
         new Translation2d(
             requiredSpeedField * rawYaw.getCos(), requiredSpeedField * rawYaw.getSin());
 
-    Rotation2d robotRotation = odometryPose.getRotation();
+    Rotation2d robotRotation = futurePose.getRotation();
 
     Translation2d robotLinearVelocityField =
         new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond)
             .rotateBy(robotRotation);
 
-    Translation2d rShooterRobot =
-        ShooterConstants.shooterInitalPosition.getTranslation().toTranslation2d();
-
-    double omega = gyroRate.in(RadiansPerSecond);
-    Translation2d tangentialRobot =
-        new Translation2d(-omega * rShooterRobot.getY(), omega * rShooterRobot.getX());
-
-    Translation2d tangentialField = tangentialRobot.rotateBy(robotRotation);
-    Translation2d totalRobotVelocityField = robotLinearVelocityField.plus(tangentialField);
-    Translation2d launchVelocityField = requiredFieldVelocity.minus(totalRobotVelocityField);
+    Translation2d launchVelocityField = requiredFieldVelocity.minus(robotLinearVelocityField);
 
     double shooterHorizontalSpeed = Math.max(launchVelocityField.getNorm(), 1e-6);
 
