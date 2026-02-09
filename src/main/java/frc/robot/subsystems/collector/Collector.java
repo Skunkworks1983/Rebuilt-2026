@@ -48,7 +48,7 @@ public class Collector extends SubsystemBase {
   }
 
   Mode mode = Mode.ALWAYSUP;
-  CollectorState currentState = null; // Will be initialized in periodic()
+  CollectorState currentState = CollectorState.UP; // Default assumption, will be updated based on sensors
   CollectorState targetState = CollectorState.UP;
   private boolean stateInitialized = false;
 

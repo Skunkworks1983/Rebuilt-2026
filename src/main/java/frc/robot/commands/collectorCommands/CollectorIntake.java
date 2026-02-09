@@ -16,9 +16,11 @@ public class CollectorIntake extends Command {
 
   /** Creates a new CollectorIntake. */
   public CollectorIntake(Collector collector) {
-    // Use addRequirements() here to declare subsystem dependencies.
+    // NOTE: Intentionally NOT requiring collector subsystem.
+    // State commands need exclusive control of collector position, and this intake command
+    // needs to run concurrently with them to spin the intake rollers while a collector is down.
+    // This was confirmed as the correct design in PR review comments.
     this.collector = collector;
-    // Note: Not requiring collector subsystem since state commands need to control it
   }
 
   // Called when the command is initially scheduled.
