@@ -56,11 +56,11 @@ public class DriveAimedGoal extends Command {
     Logger.recordOutput("Auto Shoot/Target Yaw", targetYawRadians);
     Logger.recordOutput("Auto Shoot/Current Yaw", currentYawRadians);
 
-    double omegaCmd = yawController.calculate(currentYawRadians, targetYawRadians);
+    double omegaCalculated = yawController.calculate(currentYawRadians, targetYawRadians);
 
     ChassisSpeeds targetSpeeds =
         DriveUtils.getChassisSpeeds(
-            drive, xSupplier, ySupplier, omegaCmd // Override rotation
+            drive, xSupplier, ySupplier, omegaCalculated // Override rotation
             );
 
     boolean isRed = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red;
