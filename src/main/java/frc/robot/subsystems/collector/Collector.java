@@ -48,8 +48,9 @@ public class Collector extends SubsystemBase {
   }
 
   Mode mode = Mode.ALWAYSUP;
-  CollectorState currentState = CollectorState.UP;
+  CollectorState currentState = null; // Will be initialized in periodic()
   CollectorState targetState = CollectorState.UP;
+  private boolean stateInitialized = false;
 
   /**
    * Collector subsystem.
@@ -75,6 +76,18 @@ public class Collector extends SubsystemBase {
     rightIO.updateInputs(rightInputs);
     Logger.processInputs("Collector/Left", leftInputs);
     Logger.processInputs("Collector/Right", rightInputs);
+    
+    // Initialize state based on actual sensor readings on first periodic call
+    if (!stateInitialized) {
+      if (isLeftCollectorDown() && !isRightCollectorDown()) {
+        currentState = CollectorState.LEFT_DOWN;
+      } else if (isRightCollectorDown() && !isLeftCollectorDown()) {
+        currentState = CollectorState.RIGHT_DOWN;
+      } else {
+        currentState = CollectorState.UP;
+      }
+      stateInitialized = true;
+    }
   }
 
   /**
@@ -128,6 +141,20 @@ public class Collector extends SubsystemBase {
   }
 
   /**
+   * Checks to see if the left collector is up
+   */
+  public boolean isLeftCollectorUp() {
+    return leftIO.isCollectorUp();
+  }
+
+  /**
+   * Checks to see if the right collector is up
+   */
+  public boolean isRightCollectorUp() {
+    return rightIO.isCollectorUp();
+  }
+
+  /**
    * Gets the constants for the left collector
    */
   public CollectorConstants getLeftConstants() {
@@ -157,7 +184,7 @@ public class Collector extends SubsystemBase {
           // Right is down, need to put it up first
           return Commands.sequence(
             Commands.runOnce(() -> rightIO.goUp(), this),
-            Commands.waitUntil(() -> !isRightCollectorDown()),
+            Commands.waitUntil(() -> isRightCollectorUp()),
             Commands.runOnce(() -> {
               leftIO.goDown();
               currentState = CollectorState.LEFT_DOWN;
@@ -176,7 +203,7 @@ public class Collector extends SubsystemBase {
           // Left is down, need to put it up first
           return Commands.sequence(
             Commands.runOnce(() -> leftIO.goUp(), this),
-            Commands.waitUntil(() -> !isLeftCollectorDown()),
+            Commands.waitUntil(() -> isLeftCollectorUp()),
             Commands.runOnce(() -> {
               rightIO.goDown();
               currentState = CollectorState.RIGHT_DOWN;

@@ -160,6 +160,14 @@ public class CollectorModuleSimIO implements CollectorModuleIO {
     return turnMotorSim.getAngularPositionRad() < minimumCollectorRadiansToBeDown;
   }
 
+  /**
+   * Checks to see if the collector is up
+   */
+  @Override
+  public boolean isCollectorUp() {
+    return turnMotorSim.getAngularPositionRad() >= (Math.PI/2 - 0.1); // 90 degrees minus small tolerance
+  }
+
   // Sets collector up
   @Override
   public void goUp() {

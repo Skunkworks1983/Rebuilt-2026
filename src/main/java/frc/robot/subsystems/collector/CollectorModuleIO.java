@@ -71,6 +71,13 @@ public interface CollectorModuleIO {
     return false;
   }
 
+  /**
+   * Checks to see if the collector is up
+   */
+  public default boolean isCollectorUp() {
+    return false;
+  }
+
   /** Gets Constants */
   public default CollectorConstants getConstants() {
     return null;

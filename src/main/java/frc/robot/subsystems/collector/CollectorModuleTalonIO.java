@@ -224,6 +224,13 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     return turnPosition.getValue().lte(constants.CollectorDownPos);
   }
 
+  /**
+   * Checks to see if the collector is up
+   */
+  public boolean isCollectorUp() {
+    return turnPosition.getValue().gte(constants.CollectorUpPos);
+  }
+
   // Sets collector up
   public void goUp() {
     turnMotor.setControl(new PositionVoltage(constants.CollectorUpPos).withSlot(0));

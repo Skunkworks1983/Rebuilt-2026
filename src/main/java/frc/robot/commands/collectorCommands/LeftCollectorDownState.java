@@ -11,6 +11,7 @@ import frc.robot.subsystems.collector.Collector.CollectorState;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class LeftCollectorDownState extends Command {
   private Collector collector;
+  private Command stateCommand;
 
   /** Creates a new LeftCollectorDownState. */
   public LeftCollectorDownState(Collector collector) {
@@ -22,7 +23,8 @@ public class LeftCollectorDownState extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    collector.setCollectorState(CollectorState.LEFT_DOWN).schedule();
+    stateCommand = collector.setCollectorState(CollectorState.LEFT_DOWN);
+    stateCommand.schedule();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -36,6 +38,6 @@ public class LeftCollectorDownState extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return collector.isLeftCollectorDown() && !collector.isRightCollectorDown();
+    return stateCommand != null && !stateCommand.isScheduled();
   }
 }
