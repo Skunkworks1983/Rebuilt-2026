@@ -1,7 +1,6 @@
 package frc.robot.subsystems.shooter;
 
 import static edu.wpi.first.units.Units.Amps;
-import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
 import static frc.robot.util.PhoenixUtil.tryUntilOk;
 
 import com.ctre.phoenix6.BaseStatusSignal;
@@ -10,9 +9,7 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
-import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -33,8 +30,8 @@ public class PivotIOTalonFX implements PivotIO {
   protected final StatusSignal<Double> closedLoopError;
 
   private final TorqueCurrentFOC torqueCurrentRequest = new TorqueCurrentFOC(0);
-  private final PositionTorqueCurrentFOC positionTorqueCurentRequest = new PositionTorqueCurrentFOC(0);
-
+  private final PositionTorqueCurrentFOC positionTorqueCurentRequest =
+      new PositionTorqueCurrentFOC(0);
 
   private final Debouncer primaryConnectedDebounce =
       new Debouncer(ShooterConstants.disconnectedDebounceTimeSec, Debouncer.DebounceType.kFalling);
@@ -56,8 +53,7 @@ public class PivotIOTalonFX implements PivotIO {
     pivotConfig.Slot0.kA = ShooterConstants.pivotkA;
 
     pivotConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-    pivotConfig.CurrentLimits.StatorCurrentLimit =
-        ShooterConstants.pivotStatorCurrent.in(Amps);
+    pivotConfig.CurrentLimits.StatorCurrentLimit = ShooterConstants.pivotStatorCurrent.in(Amps);
 
     tryUntilOk(5, () -> pivotMotor.getConfigurator().apply(pivotConfig, 0.25));
 

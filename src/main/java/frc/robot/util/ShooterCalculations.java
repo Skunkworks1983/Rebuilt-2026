@@ -11,7 +11,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
@@ -19,6 +18,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterConstants;
 
 /**
@@ -191,82 +191,84 @@ public class ShooterCalculations {
    * @return Calculated {@link ShooterControls}.
    */
   public static ShooterControls getApexConstrainedShooterControls(
-      Pose2d odometryPose, ChassisSpeeds chassisSpeeds) {
-        double shotDelaySeconds = 0.08; 
-
-    // 2. PROJECT POSE FORWARD
-    // We assume the robot keeps moving at current speeds for the duration of the delay.
-    Twist2d motionPrediction = new Twist2d(
-        chassisSpeeds.vxMetersPerSecond * shotDelaySeconds,
-        chassisSpeeds.vyMetersPerSecond * shotDelaySeconds,
-        chassisSpeeds.omegaRadiansPerSecond * shotDelaySeconds
-    );
+      Pose2d odometryPose, ChassisSpeeds robotRelativeSpeeds) {
     
-    // This is where the robot will be when the ball actually leaves
-    Pose2d futurePose = odometryPose.exp(motionPrediction);
+    Rotation2d currentRobotRotation = odometryPose.getRotation();
+
+    Translation2d robotLinearVelocityField =
+        new Translation2d(
+                robotRelativeSpeeds.vxMetersPerSecond, robotRelativeSpeeds.vyMetersPerSecond)
+            .rotateBy(currentRobotRotation);
+
+    Translation2d futureTranslation =
+        odometryPose.getTranslation().plus(robotLinearVelocityField.times(ShooterSolverConstants.defaultShotLatencySec));
+
+    Rotation2d futureRotation =
+        currentRobotRotation.plus(
+            Rotation2d.fromRadians(robotRelativeSpeeds.omegaRadiansPerSecond * ShooterSolverConstants.defaultShotLatencySec));
+
+    Pose2d futurePose = new Pose2d(futureTranslation, futureRotation);
 
     Translation3d goal =
         DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red
             ? FieldConstants.redGoal
             : FieldConstants.blueGoal;
 
-    Translation2d shooterPosField =
-    odometryPose.getTranslation().plus(ShooterConstants.shooterInitalPosition.getTranslation().toTranslation2d().rotateBy(futurePose.getRotation()));
+    Translation2d shooterOffsetField =
+        ShooterConstants.shooterInitalPosition
+            .getTranslation()
+            .toTranslation2d()
+            .rotateBy(futurePose.getRotation());
 
-    Translation2d targetVector = goal.toTranslation2d().minus(shooterPosField);
+    Translation2d futureShooterPosField = futurePose.getTranslation().plus(shooterOffsetField);
 
+    Translation2d targetVector = goal.toTranslation2d().minus(futureShooterPosField);
     double trueDistance = targetVector.getNorm();
 
-    double distanceForAngle = Math.max(trueDistance, 1e-6);
-    Rotation2d rawYaw = targetVector.times(1.0 / distanceForAngle).getAngle();
-
+    // Simple drag approximation
     double dragMultiplier = 1.0 + (ShooterSolverConstants.drag * trueDistance);
     dragMultiplier = MathUtil.clamp(dragMultiplier, 1.0, ShooterSolverConstants.maxDragMultiplier);
-    double x = trueDistance * dragMultiplier;
+    double distWithDrag = trueDistance * dragMultiplier;
 
-    double z = goal.getZ() - ShooterConstants.shooterInitalPosition.getZ();
+    double relativeGoalZ = goal.getZ() - ShooterConstants.shooterInitalPosition.getZ();
 
-    double heightTrajectoryPeak = z + ShooterSolverConstants.hubHeightClearance.in(Meters);
+    // Apex height calculation
+    double heightTrajectoryPeak = relativeGoalZ + ShooterSolverConstants.hubHeightClearance.in(Meters);
     heightTrajectoryPeak = Math.max(heightTrajectoryPeak, 0.1);
 
     double launchVelocityZ = Math.sqrt(2.0 * ShooterSolverConstants.gravity * heightTrajectoryPeak);
 
     double timeUp = launchVelocityZ / ShooterSolverConstants.gravity;
-
-    double heightDown = Math.max(heightTrajectoryPeak - z, 0.0);
+    double heightDown = Math.max(heightTrajectoryPeak - relativeGoalZ, 0.0);
     double timeDescend = Math.sqrt(2.0 * heightDown / ShooterSolverConstants.gravity);
 
     double totalTime = timeUp + timeDescend;
     totalTime = Math.max(totalTime, 1e-4);
 
-    double requiredSpeedField = x / totalTime;
+    // Speed required if the robot were standing still
+    double requiredHorizontalSpeed = distWithDrag / totalTime;
 
-    Translation2d requiredFieldVelocity =
-        new Translation2d(
-            requiredSpeedField * rawYaw.getCos(), requiredSpeedField * rawYaw.getSin());
+    // Angle
+    Rotation2d angleToGoal = targetVector.getAngle();
+    Translation2d stationaryLaunchVectorField =
+        new Translation2d(requiredHorizontalSpeed, angleToGoal);
 
-    Rotation2d robotRotation = futurePose.getRotation();
+    // Chassis speeds compensation
+    Translation2d effectiveLaunchVectorField =
+        stationaryLaunchVectorField.minus(robotLinearVelocityField);
 
-    Translation2d robotLinearVelocityField =
-        new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond)
-            .rotateBy(robotRotation);
+    Rotation2d finalDriveYaw = effectiveLaunchVectorField.getAngle();
 
-    Translation2d launchVelocityField = requiredFieldVelocity.minus(robotLinearVelocityField);
+    double effectiveHorizontalSpeed = effectiveLaunchVectorField.getNorm();
+    double ballExitSpeed = Math.hypot(effectiveHorizontalSpeed, launchVelocityZ);
+    double flywheelSurfaceSpeed = ballExitSpeed / ShooterSolverConstants.flywheelEfficiency;
 
-    double shooterHorizontalSpeed = Math.max(launchVelocityField.getNorm(), 1e-6);
-
-    double finalPitch = Math.atan2(launchVelocityZ, shooterHorizontalSpeed);
-
-    double ballExitSpeed = Math.hypot(shooterHorizontalSpeed, launchVelocityZ);
-    double requiredFlywheelSurfaceSpeed = ballExitSpeed / ShooterSolverConstants.flywheelEfficiency;
-
-    Rotation2d finalYaw = launchVelocityField.getAngle();
+    double finalPitch = Math.atan2(launchVelocityZ, effectiveHorizontalSpeed);
 
     return new ShooterControls(
-        RadiansPerSecond.of(
-            requiredFlywheelSurfaceSpeed / ShooterConstants.flywheelRadius.in(Meters)),
+        RadiansPerSecond.of(flywheelSurfaceSpeed / ShooterConstants.flywheelRadius.in(Meters)),
         Radians.of(finalPitch),
-        finalYaw,
+        finalDriveYaw,
         true);
   }
 

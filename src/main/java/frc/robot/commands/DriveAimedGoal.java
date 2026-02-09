@@ -1,7 +1,5 @@
 package frc.robot.commands;
 
-import static edu.wpi.first.units.Units.Radians;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -44,35 +42,38 @@ public class DriveAimedGoal extends Command {
 
   @Override
   public void execute() {
+    var currentPose = drive.getPose();
+    var currentSpeeds = drive.getChassisSpeeds(); // Robot Relative
+
     ShooterControls controls =
-        ShooterCalculations.getApexConstrainedShooterControls(
-            drive.getPose(), drive.getChassisSpeeds());
+        ShooterCalculations.getApexConstrainedShooterControls(currentPose, currentSpeeds);
 
     shooter.setShooterControls(controls);
 
-    Logger.recordOutput("Auto Shoot/Drive Yaw Setpoint", controls.driveYaw().getRadians(), Radians);
+    double currentYawRadians = drive.getRotation().getRadians();
+    double targetYawRadians = controls.driveYaw().getRadians();
 
-    double omegaCmd =
-        yawController.calculate(drive.getRotation().getRadians(), controls.driveYaw().getRadians());
+    Logger.recordOutput("Auto Shoot/Target Yaw", targetYawRadians);
+    Logger.recordOutput("Auto Shoot/Current Yaw", currentYawRadians);
 
-    ChassisSpeeds joystickSpeeds =
-        DriveUtils.getChassisSpeeds(drive, xSupplier, ySupplier, omegaCmd);
+    double omegaCmd = yawController.calculate(currentYawRadians, targetYawRadians);
+
+    ChassisSpeeds targetSpeeds =
+        DriveUtils.getChassisSpeeds(
+            drive, xSupplier, ySupplier, omegaCmd // Override rotation
+            );
 
     boolean isRed = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red;
-    Rotation2d headingForFieldControl =
-        isRed ? drive.getRotation().plus(Rotation2d.fromRadians(Math.PI)) : drive.getRotation();
 
-    drive.runVelocity(ChassisSpeeds.fromFieldRelativeSpeeds(joystickSpeeds, headingForFieldControl));
+    Rotation2d fieldCentricOffset = isRed ? Rotation2d.fromDegrees(180) : Rotation2d.fromDegrees(0);
+
+    drive.runVelocity(
+        ChassisSpeeds.fromFieldRelativeSpeeds(
+            targetSpeeds, drive.getRotation().plus(fieldCentricOffset)));
   }
 
   @Override
   public void end(boolean interrupted) {
     yawController.close();
   }
-
-  @Override
-  public boolean isFinished() {
-    return false;
-  }
 }
-

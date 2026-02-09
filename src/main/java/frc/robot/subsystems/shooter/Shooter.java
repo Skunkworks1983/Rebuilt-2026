@@ -27,8 +27,7 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 /**
- * Subsystem responsible for the shooter mechanism, including the flywheel and
- * pivot. Handles
+ * Subsystem responsible for the shooter mechanism, including the flywheel and pivot. Handles
  * pivoting, spinning up the flywheel, and sysid characterization the mechanism.
  *
  * @author Eddy Walsh
@@ -47,53 +46,55 @@ public class Shooter extends SubsystemBase {
 
   private final SysIdRoutine sysId;
 
-  private static final LoggedTunableNumber flywheelKP = new LoggedTunableNumber("Shooter/Flywheel/kP",
-      ShooterConstants.flywheelKP);
-  private static final LoggedTunableNumber flywheelKD = new LoggedTunableNumber("Shooter/Flywheel/kD",
-      ShooterConstants.flywheelKD);
-  private static final LoggedTunableNumber flywheelKS = new LoggedTunableNumber("Shooter/Flywheel/kS",
-      ShooterConstants.flywheelKS);
-  private static final LoggedTunableNumber flywheelKV = new LoggedTunableNumber("Shooter/Flywheel/kV",
-      ShooterConstants.flywheelKV);
-  private static final LoggedTunableNumber flywheelKA = new LoggedTunableNumber("Shooter/Flywheel/kA",
-      ShooterConstants.flywheelKA);
+  private static final LoggedTunableNumber flywheelKP =
+      new LoggedTunableNumber("Shooter/Flywheel/kP", ShooterConstants.flywheelKP);
+  private static final LoggedTunableNumber flywheelKD =
+      new LoggedTunableNumber("Shooter/Flywheel/kD", ShooterConstants.flywheelKD);
+  private static final LoggedTunableNumber flywheelKS =
+      new LoggedTunableNumber("Shooter/Flywheel/kS", ShooterConstants.flywheelKS);
+  private static final LoggedTunableNumber flywheelKV =
+      new LoggedTunableNumber("Shooter/Flywheel/kV", ShooterConstants.flywheelKV);
+  private static final LoggedTunableNumber flywheelKA =
+      new LoggedTunableNumber("Shooter/Flywheel/kA", ShooterConstants.flywheelKA);
 
-  private static final LoggedTunableNumber pivotKP = new LoggedTunableNumber("Shooter/Pivot/kP",
-      ShooterConstants.pivotkP);
-  private static final LoggedTunableNumber pivotKD = new LoggedTunableNumber("Shooter/Pivot/kD",
-      ShooterConstants.pivotkD);
-  private static final LoggedTunableNumber pivotKS = new LoggedTunableNumber("Shooter/Pivot/kS",
-      ShooterConstants.pivotkS);
-  private static final LoggedTunableNumber pivotKV = new LoggedTunableNumber("Shooter/Pivot/kV",
-      ShooterConstants.pivotkV);
-  private static final LoggedTunableNumber pivotKA = new LoggedTunableNumber("Shooter/Pivot/kA",
-      ShooterConstants.pivotkA);
+  private static final LoggedTunableNumber pivotKP =
+      new LoggedTunableNumber("Shooter/Pivot/kP", ShooterConstants.pivotkP);
+  private static final LoggedTunableNumber pivotKD =
+      new LoggedTunableNumber("Shooter/Pivot/kD", ShooterConstants.pivotkD);
+  private static final LoggedTunableNumber pivotKS =
+      new LoggedTunableNumber("Shooter/Pivot/kS", ShooterConstants.pivotkS);
+  private static final LoggedTunableNumber pivotKV =
+      new LoggedTunableNumber("Shooter/Pivot/kV", ShooterConstants.pivotkV);
+  private static final LoggedTunableNumber pivotKA =
+      new LoggedTunableNumber("Shooter/Pivot/kA", ShooterConstants.pivotkA);
 
-  private final Alert upperFlywheelDisconnectedAlert = new Alert("Forward Flywheel disconnected", AlertType.kError);
-  private final Alert lowerFlywheelDisconnectedAlert = new Alert("Back Flywheel disconnected", AlertType.kError);
+  private final Alert upperFlywheelDisconnectedAlert =
+      new Alert("Forward Flywheel disconnected", AlertType.kError);
+  private final Alert lowerFlywheelDisconnectedAlert =
+      new Alert("Back Flywheel disconnected", AlertType.kError);
   private final Alert pivotDisconnectedAlert = new Alert("Pivot disconnected", AlertType.kError);
 
   /**
    * Constructs a new Shooter instance.
    *
-   * @param forwardFlywheel The IO implementation for the forward (launch)
-   *                        flywheel.
+   * @param forwardFlywheel The IO implementation for the forward (launch) flywheel.
    * @param forwardFlywheel The IO implementation for the back flywheel.
-   * @param pivot           The IO implementation for the pivot.
+   * @param pivot The IO implementation for the pivot.
    */
   public Shooter(FlywheelIO forwardFlywheel, FlywheelIO backFlywheel, PivotIO pivot) {
     this.upperFlywheel = forwardFlywheel;
     this.lowerFlywheel = backFlywheel;
     this.pivot = pivot;
 
-    sysId = new SysIdRoutine(
-        new SysIdRoutine.Config(
-            ShooterConstants.sysIdRampRate,
-            ShooterConstants.sysIdStepSize,
-            null,
-            (state) -> SignalLogger.writeString("Shooter/SysIdState", state.toString())),
-        new SysIdRoutine.Mechanism(
-            (voltage) -> runFlywheelTorqueCurrent(voltage.in(Volts)), null, this));
+    sysId =
+        new SysIdRoutine(
+            new SysIdRoutine.Config(
+                ShooterConstants.sysIdRampRate,
+                ShooterConstants.sysIdStepSize,
+                null,
+                (state) -> SignalLogger.writeString("Shooter/SysIdState", state.toString())),
+            new SysIdRoutine.Mechanism(
+                (voltage) -> runFlywheelTorqueCurrent(voltage.in(Volts)), null, this));
   }
 
   @Override
@@ -195,9 +196,9 @@ public class Shooter extends SubsystemBase {
   @AutoLogOutput(key = "Shooter/canShoot")
   public boolean canShoot() {
     return MathUtil.isNear(
-        flywheelSetpoint.in(RotationsPerSecond),
-        upperFlywheelInputs.angularVelocity.in(RotationsPerSecond),
-        ShooterConstants.flywheelVelocityTolerance.in(RotationsPerSecond))
+            flywheelSetpoint.in(RotationsPerSecond),
+            upperFlywheelInputs.angularVelocity.in(RotationsPerSecond),
+            ShooterConstants.flywheelVelocityTolerance.in(RotationsPerSecond))
         && MathUtil.isNear(
             pivotSetpoint.in(Degrees),
             pivotInputs.pivotPosition.in(Degrees),
@@ -225,8 +226,7 @@ public class Shooter extends SubsystemBase {
   /**
    * Sets the shooter setpoints based on the calculated controls.
    *
-   * @param controls The calculated shooter controls containing pitch and
-   *                 velocity.
+   * @param controls The calculated shooter controls containing pitch and velocity.
    */
   public void setShooterControls(ShooterControls controls) {
     flywheelSetpoint = controls.shooterVelocity();

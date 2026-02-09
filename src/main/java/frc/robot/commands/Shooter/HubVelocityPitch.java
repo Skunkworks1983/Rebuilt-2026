@@ -7,26 +7,27 @@ import frc.robot.util.ShooterCalculations;
 import frc.robot.util.ShooterCalculations.ShooterControls;
 
 public class HubVelocityPitch extends Command {
-    private final Shooter shooter;
-    private final Drive drive;
+  private final Shooter shooter;
+  private final Drive drive;
 
-    public HubVelocityPitch(Shooter shooter, Drive drive) {
-        this.shooter = shooter;
-        this.drive = drive;
+  public HubVelocityPitch(Shooter shooter, Drive drive) {
+    this.shooter = shooter;
+    this.drive = drive;
 
-        addRequirements(shooter);
-    }
+    addRequirements(shooter);
+  }
 
-    @Override
-    public void execute() {
-        ShooterControls controls = ShooterCalculations.getApexConstrainedShooterControls(
-                drive.getPose(), drive.getChassisSpeeds());
+  @Override
+  public void execute() {
+    ShooterControls controls =
+        ShooterCalculations.getApexConstrainedShooterControls(
+            drive.getPose(), drive.getChassisSpeeds());
 
-        shooter.setShooterControls(controls);
-    }
+    shooter.setShooterControls(controls);
+  }
 
-    @Override
-    public boolean isFinished() {
-        return false;
-    }
+  @Override
+  public boolean isFinished() {
+    return false;
+  }
 }

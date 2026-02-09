@@ -10,7 +10,6 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.MotionMagicVelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.ParentDevice;
@@ -32,10 +31,11 @@ public class FlywheelIOTalonFX implements FlywheelIO {
   private final StatusSignal<Current> flywheelTorqueCurrent;
 
   private final TorqueCurrentFOC torqueCurrentRequest = new TorqueCurrentFOC(0);
-  private final VelocityTorqueCurrentFOC velocityTorqueCurrentRequest = new VelocityTorqueCurrentFOC(0.0);
+  private final VelocityTorqueCurrentFOC velocityTorqueCurrentRequest =
+      new VelocityTorqueCurrentFOC(0.0);
 
-  private final Debouncer primaryConnectedDebounce = new Debouncer(ShooterConstants.disconnectedDebounceTimeSec,
-      Debouncer.DebounceType.kFalling);
+  private final Debouncer primaryConnectedDebounce =
+      new Debouncer(ShooterConstants.disconnectedDebounceTimeSec, Debouncer.DebounceType.kFalling);
 
   public FlywheelIOTalonFX(int flywheelCanID) {
     flywheelMotor = new TalonFX(flywheelCanID, ShooterConstants.shooterCan);
@@ -53,11 +53,12 @@ public class FlywheelIOTalonFX implements FlywheelIO {
     flywheelConfig.Slot0.kV = ShooterConstants.flywheelKV;
     flywheelConfig.Slot0.kA = ShooterConstants.flywheelKA;
 
-    flywheelConfig.MotionMagic.MotionMagicAcceleration = ShooterConstants.flywheelMaxAcceleration
-        .in(RotationsPerSecondPerSecond);
+    flywheelConfig.MotionMagic.MotionMagicAcceleration =
+        ShooterConstants.flywheelMaxAcceleration.in(RotationsPerSecondPerSecond);
 
     flywheelConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-    flywheelConfig.CurrentLimits.StatorCurrentLimit = ShooterConstants.flywheelStatorCurrentLimitAmps.in(Amps);
+    flywheelConfig.CurrentLimits.StatorCurrentLimit =
+        ShooterConstants.flywheelStatorCurrentLimitAmps.in(Amps);
 
     if (Constants.currentMode != Mode.SIM) {
       tryUntilOk(5, () -> flywheelMotor.getConfigurator().apply(flywheelConfig, 0.25));
@@ -89,8 +90,9 @@ public class FlywheelIOTalonFX implements FlywheelIO {
 
   @Override
   public void updateInputs(FlywheelIOInputs inputs) {
-    StatusCode flywheelStatus = BaseStatusSignal.refreshAll(
-        flywheelVelocity, flywheelAppliedVolts, flywheelCurrent, flywheelTorqueCurrent);
+    StatusCode flywheelStatus =
+        BaseStatusSignal.refreshAll(
+            flywheelVelocity, flywheelAppliedVolts, flywheelCurrent, flywheelTorqueCurrent);
 
     inputs.connected = primaryConnectedDebounce.calculate(flywheelStatus.isOK());
     inputs.angularVelocity = flywheelVelocity.getValue();
@@ -101,7 +103,8 @@ public class FlywheelIOTalonFX implements FlywheelIO {
 
   @Override
   public void setMotionConstraints(AngularAcceleration maxAcceleration) {
-    MotionMagicConfigs config = new TalonFXConfiguration().MotionMagic.withMotionMagicAcceleration(maxAcceleration);
+    MotionMagicConfigs config =
+        new TalonFXConfiguration().MotionMagic.withMotionMagicAcceleration(maxAcceleration);
 
     tryUntilOk(5, () -> flywheelMotor.getConfigurator().apply(config));
   }

@@ -34,7 +34,7 @@ public class ShooterSolverConstants {
 
   // CONSTRAINED HEIGHT SOLVER
   /** Vertical clearance required above the hub for specialized constrained shots. */
-  public static final Distance hubHeightClearance = Meters.of(1);
+  public static final Distance hubHeightClearance = Meters.of(0.5);
 
   // ITERATIVE SOLVER
   /** Maximum iterations for the numerical solver loop. */
@@ -54,7 +54,7 @@ public class ShooterSolverConstants {
 
   // SHOT LATENCY MODEL
   /** Default time delay from code trigger to shot release. */
-  public static double defaultShotLatencySec = 0.070;
+  public static double defaultShotLatencySec = 0.080;
 
   /** Minimum reasonable shot latency. */
   public static final double minShotLatencySec = 0.015;

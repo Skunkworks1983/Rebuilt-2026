@@ -102,7 +102,8 @@ public class ShooterConstants {
   public static final Distance flywheelRadius = Inches.of(4);
 
   /** Simulation PID for the flywheel. */
-  public static final Slot0Configs simFlywheelConfigs = new Slot0Configs().withKP(70).withKD(0).withKV(0).withKS(0).withKA(0);
+  public static final Slot0Configs simFlywheelConfigs =
+      new Slot0Configs().withKP(70).withKD(0).withKV(0).withKS(0).withKA(0);
 
   /** Maximum linear velocity of the flywheel surface. */
   public static final LinearVelocity flywheelMaxLinearVelocity =
@@ -129,7 +130,7 @@ public class ShooterConstants {
   public static final double pivotkV = 0;
   public static final double pivotkA = 0;
 
-public static final InvertedValue pivotMotorInverted = InvertedValue.Clockwise_Positive;
+  public static final InvertedValue pivotMotorInverted = InvertedValue.Clockwise_Positive;
 
-public static final Current pivotStatorCurrent = Amps.of(120);
+  public static final Current pivotStatorCurrent = Amps.of(120);
 }
