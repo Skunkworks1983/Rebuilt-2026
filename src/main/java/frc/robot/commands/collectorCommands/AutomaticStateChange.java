@@ -8,7 +8,7 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.collector.Collector;
-import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.collector.Collector.CollectorState;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AutomaticStateChange extends Command {
@@ -42,17 +42,9 @@ public class AutomaticStateChange extends Command {
       count++;
       if (count >= 3) {
         if (currDirection > 0.0) { // if going right
-          if (!collector.getLeftCollector().isCollectorDown()) {
-            collector.getRightCollector().goDown();
-          } else {
-            collector.getLeftCollector().goUp();
-          }
+          collector.setCollectorState(CollectorState.RIGHT_DOWN).schedule();
         } else if (currDirection < 0.0) { // if going left
-          if (!collector.getRightCollector().isCollectorDown()) {
-            collector.getLeftCollector().goDown();
-          } else {
-            collector.getRightCollector().goUp();
-          }
+          collector.setCollectorState(CollectorState.LEFT_DOWN).schedule();
         }
       }
     } else if ((currDirection * lastDirection) > 0) {

@@ -204,37 +204,13 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
   }
 
   /**
-   * Gets the turn motors gear ratio
-   *
-   * @return -Turn motors gear ratio
-   */
-  public double getTurnGearRatio() {
-    return constants.turnMotorGearRatio;
-  }
-
-  /**
    * Sets the velocity of our intake collector motors
    *
    * @param velocity -Angular Velocity
    */
-  public void setCollectorVelocity(AngularVelocity velocity) {}
-
-  /**
-   * Sets the collectors position
-   *
-   * @param angle -WPILib Angle
-   */
-  public void setCollectorPos(Angle angle) {
-    turnMotor.setControl(new PositionVoltage(angle).withSlot(0));
-  }
-
-  /**
-   * Sets the collectors turn motor velocity
-   *
-   * @param velocity -Angular Velocity
-   */
-  public void setCollectorTurnMotorVelocity(AngularVelocity velocity) {
-    turnMotor.setControl(new VelocityVoltage(velocity).withSlot(0));
+  public void setCollectorVelocity(AngularVelocity velocity) {
+    intakeMotorLower.setControl(new VelocityVoltage(velocity).withSlot(0));
+    intakeMotorUpper.setControl(new VelocityVoltage(velocity).withSlot(0));
   }
 
   /**
@@ -245,38 +221,16 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
    * </ul>
    */
   public boolean isCollectorDown() {
-    // I know this methods a bit silly rn but its gonna be replaced by magnet sensors anyway
-    switch (side) {
-      case LEFT:
-        if (turnPosition.getValue().lte( constants.CollectorDownPos)) {
-          return true;
-        } else {
-          return false;
-        }
-
-      case RIGHT:
-        if (turnPosition.getValue().lte(constants.CollectorDownPos)) {
-          return true;
-        } else {
-          return false;
-        }
-      default:
-        return false;
-    }
-  }
-
-  // Gets side i.e: left
-  public Side getSide() {
-    return side;
+    return turnPosition.getValue().lte(constants.CollectorDownPos);
   }
 
   // Sets collector up
   public void goUp() {
-    setCollectorPos(constants.CollectorUpPos);
+    turnMotor.setControl(new PositionVoltage(constants.CollectorUpPos).withSlot(0));
   }
 
   // Sets collector down
   public void goDown() {
-    setCollectorPos(constants.CollectorDownPos);
+    turnMotor.setControl(new PositionVoltage(constants.CollectorDownPos).withSlot(0));
   }
 }

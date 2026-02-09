@@ -27,26 +27,18 @@ public class CollectorIntake extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (collector.getLeftCollector().isCollectorDown()) {
-      collector
-          .getLeftCollector()
-          .setCollectorVelocity(collector.getLeftCollector().getConstants().CollectorIntakeSpeed);
-    } else if (collector.getRightCollector().isCollectorDown()) {
-      collector
-          .getRightCollector()
-          .setCollectorVelocity(collector.getRightCollector().getConstants().CollectorIntakeSpeed);
+    if (collector.isLeftCollectorDown()) {
+      collector.setLeftCollectorVelocity(collector.getLeftConstants().CollectorIntakeSpeed);
+    } else if (collector.isRightCollectorDown()) {
+      collector.setRightCollectorVelocity(collector.getRightConstants().CollectorIntakeSpeed);
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    collector
-        .getLeftCollector()
-        .setCollectorVelocity(AngularVelocity.ofBaseUnits(0, DegreesPerSecond));
-    collector
-        .getRightCollector()
-        .setCollectorVelocity(AngularVelocity.ofBaseUnits(0, DegreesPerSecond));
+    collector.setLeftCollectorVelocity(AngularVelocity.ofBaseUnits(0, DegreesPerSecond));
+    collector.setRightCollectorVelocity(AngularVelocity.ofBaseUnits(0, DegreesPerSecond));
   }
 
   // Returns true when the command should end.

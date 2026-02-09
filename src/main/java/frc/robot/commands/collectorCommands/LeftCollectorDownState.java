@@ -6,6 +6,7 @@ package frc.robot.commands.collectorCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.collector.Collector;
+import frc.robot.subsystems.collector.Collector.CollectorState;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class LeftCollectorDownState extends Command {
@@ -20,18 +21,13 @@ public class LeftCollectorDownState extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    collector.setCollectorState(CollectorState.LEFT_DOWN).schedule();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    if (!collector.getRightCollector().isCollectorDown()) {
-      collector.getLeftCollector().goDown();
-    } else if (collector.getRightCollector().isCollectorDown()) {
-      collector.getRightCollector().goUp();
-    }
-
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
@@ -40,11 +36,6 @@ public class LeftCollectorDownState extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (collector.getLeftCollector().isCollectorDown()
-        && !collector.getRightCollector().isCollectorDown()) {
-      return true;
-    } else {
-      return false;
-    }
+    return collector.isLeftCollectorDown() && !collector.isRightCollectorDown();
   }
 }

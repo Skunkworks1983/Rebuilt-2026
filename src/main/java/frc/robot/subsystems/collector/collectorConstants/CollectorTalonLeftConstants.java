@@ -53,5 +53,5 @@ public class CollectorTalonLeftConstants implements CollectorConstants {
   public static final Angle CollectorDownPos = Degrees.of(0);
 
   // Collector Intake Speeds
-  public static final AngularVelocity CollecterIntakeSpeed = RotationsPerSecond.of(130);
+  public static final AngularVelocity CollectorIntakeSpeed = RotationsPerSecond.of(130);
 }

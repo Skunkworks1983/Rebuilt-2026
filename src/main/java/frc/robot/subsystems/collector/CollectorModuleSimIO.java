@@ -131,19 +131,9 @@ public class CollectorModuleSimIO implements CollectorModuleIO {
   }
 
   /**
-   * Gets the turn motors gear ratio
-   *
-   * @return
-   */
-  @Override
-  public double getTurnGearRatio() {
-    return turnMotorSim.getGearing();
-  }
-
-  /**
    * Sets the velocity of our intake collector motors
    *
-   * @param
+   * @param velocity
    */
   @Override
   public void setCollectorVelocity(AngularVelocity velocity) {
@@ -162,27 +152,6 @@ public class CollectorModuleSimIO implements CollectorModuleIO {
   }
 
   /**
-   * Sets the collectors position
-   *
-   * @param
-   */
-  @Override
-  public void setCollectorPos(Angle angle) {
-    double angleInDegrees = angle.in(Degrees);
-    turnMotorPid.setSetpoint(angleInDegrees);
-  }
-
-  /**
-   * Sets the collectors turn motor velocity
-   *
-   * @param
-   */
-  @Override
-  public void setCollectorTurnMotorVelocity(AngularVelocity velocity) {
-    turnMotorSim.setAngularVelocity(velocity.in(RadiansPerSecond));
-  }
-
-  /**
    * Checks to see if the collector is down This is to help ensure that we only have one collector
    * down at a time
    */
@@ -191,28 +160,17 @@ public class CollectorModuleSimIO implements CollectorModuleIO {
     return turnMotorSim.getAngularPositionRad() < minimumCollectorRadiansToBeDown;
   }
 
-  /** */
-  @Override
-  public Side getSide() {
-    if (c == 0) {
-      return Side.LEFT;
-    }
-    if (c == 1) {
-      return Side.RIGHT;
-    }
-
-    return null;
-  }
-
   // Sets collector up
   @Override
   public void goUp() {
-    setCollectorPos(Degrees.of(90));
+    double angleInDegrees = 90;
+    turnMotorPid.setSetpoint(angleInDegrees);
   }
 
   // Sets collector down
   @Override
   public void goDown() {
-    setCollectorPos(Degrees.of(0));
+    double angleInDegrees = 0;
+    turnMotorPid.setSetpoint(angleInDegrees);
   }
 }
