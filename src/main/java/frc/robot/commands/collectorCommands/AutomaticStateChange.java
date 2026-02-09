@@ -6,6 +6,7 @@ package frc.robot.commands.collectorCommands;
 
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.collector.Collector;
 import frc.robot.subsystems.collector.Collector.CollectorState;
@@ -15,8 +16,8 @@ public class AutomaticStateChange extends Command {
   private Collector collector;
   private double lastDirection;
   private double currDirection;
-  private int count;
   private DoubleSupplier direction;
+  private Debouncer directionDebouncer;
 
   /** Creates a new AutomaticStateChange. */
   public AutomaticStateChange(Collector collector, DoubleSupplier direction) {
@@ -24,13 +25,15 @@ public class AutomaticStateChange extends Command {
     this.collector = collector;
     addRequirements(collector);
     this.direction = direction;
+    // Debounce for 0.06 seconds (3 cycles at 50Hz) before accepting direction change
+    this.directionDebouncer = new Debouncer(0.06, Debouncer.DebounceType.kRising);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     currDirection = direction.getAsDouble();
-    count = 0;
+    lastDirection = currDirection;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -38,17 +41,17 @@ public class AutomaticStateChange extends Command {
   public void execute() {
     lastDirection = currDirection;
     currDirection = direction.getAsDouble();
-    if ((currDirection * lastDirection) < 0) {
-      count++;
-      if (count >= 3) {
-        if (currDirection > 0.0) { // if going right
-          collector.setCollectorState(CollectorState.RIGHT_DOWN).schedule();
-        } else if (currDirection < 0.0) { // if going left
-          collector.setCollectorState(CollectorState.LEFT_DOWN).schedule();
-        }
+    
+    // Check if direction has changed (different sign)
+    boolean directionChanged = (currDirection * lastDirection) < 0;
+    
+    // Use debouncer to ensure direction change is sustained
+    if (directionDebouncer.calculate(directionChanged)) {
+      if (currDirection > 0.0) { // if going right
+        collector.setCollectorState(CollectorState.RIGHT_DOWN).schedule();
+      } else if (currDirection < 0.0) { // if going left
+        collector.setCollectorState(CollectorState.LEFT_DOWN).schedule();
       }
-    } else if ((currDirection * lastDirection) > 0) {
-      count = 0;
     }
   }
 

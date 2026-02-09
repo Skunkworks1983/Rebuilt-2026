@@ -114,6 +114,7 @@ public class CollectorModuleSimIO implements CollectorModuleIO {
     input.turnVelocityRadPerSec = turnMotorSim.getAngularVelocityRadPerSec();
     input.turnAppliedVolts = turnMotorSim.getInputVoltage();
     input.turnCurrentAmps = turnMotorSim.getCurrentDrawAmps();
+    input.turnUpperLimitSwitch = turnMotorSim.getAngularPositionRad() >= (Math.PI/2 - 0.1); // Simulated limit switch
 
     // Lower Intake Motor Inputs
     input.lowerConnected = true;
@@ -152,16 +153,7 @@ public class CollectorModuleSimIO implements CollectorModuleIO {
   }
 
   /**
-   * Checks to see if the collector is down This is to help ensure that we only have one collector
-   * down at a time
-   */
-  @Override
-  public boolean isCollectorDown() {
-    return turnMotorSim.getAngularPositionRad() < minimumCollectorRadiansToBeDown;
-  }
-
-  /**
-   * Checks to see if the collector is up
+   * Checks to see if the collector is up using simulated limit switch
    */
   @Override
   public boolean isCollectorUp() {

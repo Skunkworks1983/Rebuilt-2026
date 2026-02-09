@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.collectorCommands.AutomaticStateChange;
-import frc.robot.commands.collectorCommands.BothCollectorsUpState;
 import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
 
 /**
@@ -79,9 +78,9 @@ public class Collector extends SubsystemBase {
     
     // Initialize state based on actual sensor readings on first periodic call
     if (!stateInitialized) {
-      if (isLeftCollectorDown() && !isRightCollectorDown()) {
+      if (!isLeftCollectorUp() && isRightCollectorUp()) {
         currentState = CollectorState.LEFT_DOWN;
-      } else if (isRightCollectorDown() && !isLeftCollectorDown()) {
+      } else if (!isRightCollectorUp() && isLeftCollectorUp()) {
         currentState = CollectorState.RIGHT_DOWN;
       } else {
         currentState = CollectorState.UP;
@@ -127,20 +126,6 @@ public class Collector extends SubsystemBase {
   }
 
   /**
-   * Checks to see if the left collector is down
-   */
-  public boolean isLeftCollectorDown() {
-    return leftIO.isCollectorDown();
-  }
-
-  /**
-   * Checks to see if the right collector is down
-   */
-  public boolean isRightCollectorDown() {
-    return rightIO.isCollectorDown();
-  }
-
-  /**
    * Checks to see if the left collector is up
    */
   public boolean isLeftCollectorUp() {
@@ -155,20 +140,6 @@ public class Collector extends SubsystemBase {
   }
 
   /**
-   * Gets the constants for the left collector
-   */
-  public CollectorConstants getLeftConstants() {
-    return leftIO.getConstants();
-  }
-
-  /**
-   * Gets the constants for the right collector
-   */
-  public CollectorConstants getRightConstants() {
-    return rightIO.getConstants();
-  }
-
-  /**
    * Sets the collector state with safe transitions.
    * If wrong collector is down, puts it up first before putting the commanded one down.
    *
@@ -180,7 +151,7 @@ public class Collector extends SubsystemBase {
     
     switch (state) {
       case LEFT_DOWN:
-        if (isRightCollectorDown()) {
+        if (!isRightCollectorUp()) {
           // Right is down, need to put it up first
           return Commands.sequence(
             Commands.runOnce(() -> rightIO.goUp(), this),
@@ -199,7 +170,7 @@ public class Collector extends SubsystemBase {
         }
         
       case RIGHT_DOWN:
-        if (isLeftCollectorDown()) {
+        if (!isLeftCollectorUp()) {
           // Left is down, need to put it up first
           return Commands.sequence(
             Commands.runOnce(() -> leftIO.goUp(), this),
@@ -242,7 +213,7 @@ public class Collector extends SubsystemBase {
     // Collector State Control
     switch (desiredMode) {
       case ALWAYSUP:
-        new BothCollectorsUpState(this).schedule();
+        setCollectorState(CollectorState.UP).schedule();
         break;
 
       case MANUAL:

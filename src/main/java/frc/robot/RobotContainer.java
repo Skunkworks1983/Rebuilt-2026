@@ -21,17 +21,14 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.TestPathCommands;
-import frc.robot.commands.collectorCommands.BothCollectorsUpState;
 import frc.robot.commands.collectorCommands.CollectorIntake;
-import frc.robot.commands.collectorCommands.LeftCollectorDownState;
-import frc.robot.commands.collectorCommands.RightCollectorDownState;
 import frc.robot.subsystems.collector.Collector;
 import frc.robot.subsystems.collector.CollectorModuleIO;
+import frc.robot.subsystems.collector.Collector.CollectorState;
 import frc.robot.subsystems.collector.Collector.Mode;
 import frc.robot.subsystems.collector.CollectorModuleSimIO;
 import frc.robot.subsystems.collector.CollectorModuleTalonIO;
-import frc.robot.subsystems.collector.collectorConstants.CollectorTalonLeftConstants;
-import frc.robot.subsystems.collector.collectorConstants.CollectorTalonRightConstants;
+import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -118,8 +115,8 @@ public class RobotContainer {
 
         collector =
             new Collector(
-                new CollectorModuleTalonIO(new CollectorTalonLeftConstants()),
-                new CollectorModuleTalonIO(new CollectorTalonRightConstants()),
+                new CollectorModuleTalonIO(CollectorConstants.Side.LEFT),
+                new CollectorModuleTalonIO(CollectorConstants.Side.RIGHT),
                 () -> drive.getDirection());
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
@@ -277,17 +274,17 @@ public class RobotContainer {
     // Right Collector Down
     new JoystickButton(buttonPanel, Constants.JoystickConstants.CollectorRightDownID)
       .and(() -> collector.getMode().equals(Mode.MANUAL))
-      .onTrue(new RightCollectorDownState(collector));
+      .onTrue(collector.setCollectorState(CollectorState.RIGHT_DOWN));
 
     // Left Collector Down
     new JoystickButton(buttonPanel, Constants.JoystickConstants.CollectorLeftDownID)
       .and(() -> collector.getMode().equals(Mode.MANUAL))
-      .onTrue(new LeftCollectorDownState(collector));
+      .onTrue(collector.setCollectorState(CollectorState.LEFT_DOWN));
 
     // Both Collectors Up
     new JoystickButton(leftJoystick, Constants.JoystickConstants.CollectorBothUpID)
       .and(() -> collector.getMode().equals(Mode.MANUAL))
-      .onTrue(new BothCollectorsUpState(collector));
+      .onTrue(collector.setCollectorState(CollectorState.UP));
 
     // Lock to 0° when A button is held
     // controller

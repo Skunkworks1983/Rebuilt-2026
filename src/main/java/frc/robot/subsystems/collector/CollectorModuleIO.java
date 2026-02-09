@@ -25,6 +25,7 @@ public interface CollectorModuleIO {
     public double turnVelocityRadPerSec = 0.0;
     public double turnAppliedVolts = 0.0;
     public double turnCurrentAmps = 0.0;
+    public boolean turnUpperLimitSwitch = false;
 
     // Lower Intake Motor Inputs
     public boolean lowerConnected = false;
@@ -61,26 +62,10 @@ public interface CollectorModuleIO {
   public default void setCollectorVelocity(AngularVelocity velocity) {}
 
   /**
-   * Checks to see if the collector is down
-   *
-   * <ul>
-   *   <li>This is to help ensure that we only have one collectordown at a time
-   * </ul>
-   */
-  public default boolean isCollectorDown() {
-    return false;
-  }
-
-  /**
    * Checks to see if the collector is up
    */
   public default boolean isCollectorUp() {
     return false;
-  }
-
-  /** Gets Constants */
-  public default CollectorConstants getConstants() {
-    return null;
   }
 
   // Sets collector up

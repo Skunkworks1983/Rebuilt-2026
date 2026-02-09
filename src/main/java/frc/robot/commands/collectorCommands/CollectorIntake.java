@@ -9,6 +9,7 @@ import static edu.wpi.first.units.Units.DegreesPerSecond;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.collector.Collector;
+import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class CollectorIntake extends Command {
@@ -30,10 +31,10 @@ public class CollectorIntake extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (collector.isLeftCollectorDown()) {
-      collector.setLeftCollectorVelocity(collector.getLeftConstants().CollectorIntakeSpeed);
-    } else if (collector.isRightCollectorDown()) {
-      collector.setRightCollectorVelocity(collector.getRightConstants().CollectorIntakeSpeed);
+    if (!collector.isLeftCollectorUp()) {
+      collector.setLeftCollectorVelocity(CollectorConstants.COLLECTOR_INTAKE_SPEED);
+    } else if (!collector.isRightCollectorUp()) {
+      collector.setRightCollectorVelocity(CollectorConstants.COLLECTOR_INTAKE_SPEED);
     }
   }
 
