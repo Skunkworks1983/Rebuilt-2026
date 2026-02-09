@@ -62,7 +62,8 @@ public class GyroIOPigeon2 implements GyroIO {
     inputs.connected = BaseStatusSignal.refreshAll(yaw, yawVelocity, accelerationX).equals(StatusCode.OK);
     inputs.yawPosition = Rotation2d.fromDegrees(yaw.getValueAsDouble());
     inputs.yawVelocityRadPerSec = Units.degreesToRadians(yawVelocity.getValueAsDouble());
-    inputs.accelerationXMetersPerSecSq = accelerationX.getValueAsDouble();
+    // Convert from G's to m/s² (1 G = 9.80665 m/s²)
+    inputs.accelerationXMetersPerSecSq = accelerationX.getValueAsDouble() * 9.80665;
 
     inputs.odometryYawTimestamps =
         yawTimestampQueue.stream().mapToDouble((Double value) -> value).toArray();
