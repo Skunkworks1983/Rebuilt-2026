@@ -215,14 +215,14 @@ public class Collector extends SubsystemBase {
     // Collector State Control
     switch (desiredMode) {
       case ALWAYSUP:
-        new BothCollectorsUpState(this);
+        new BothCollectorsUpState(this).schedule();
         break;
 
       case MANUAL:
         break;
 
       case AUTOMATIC:
-        new AutomaticStateChange(this, direction);
+        new AutomaticStateChange(this, direction).schedule();
         break;
 
       default:

@@ -18,6 +18,7 @@ public class CollectorIntake extends Command {
   public CollectorIntake(Collector collector) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.collector = collector;
+    // Note: Not requiring collector subsystem since state commands need to control it
   }
 
   // Called when the command is initially scheduled.
