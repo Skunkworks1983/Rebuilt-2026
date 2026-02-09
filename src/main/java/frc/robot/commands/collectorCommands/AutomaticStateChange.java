@@ -33,7 +33,7 @@ public class AutomaticStateChange extends Command {
   @Override
   public void initialize() {
     currDirection = direction.getAsDouble();
-    lastDirection = currDirection;
+    lastDirection = 0; // Initialize to neutral to allow detecting first direction
   }
 
   // Called every time the scheduler runs while the command is scheduled.

@@ -28,6 +28,7 @@ public class CollectorModuleSimIO implements CollectorModuleIO {
   final double minimumCollectorRadiansToCollect = 0.1;
   final double minimumCollectorRadiansToBeDown = 1.55;
   final double minimumCollectorSpeedToCollect = 5;
+  final double LIMIT_SWITCH_TOLERANCE_RAD = 0.1; // Tolerance for simulated limit switch trigger
 
   int c = 0;
 
@@ -114,7 +115,7 @@ public class CollectorModuleSimIO implements CollectorModuleIO {
     input.turnVelocityRadPerSec = turnMotorSim.getAngularVelocityRadPerSec();
     input.turnAppliedVolts = turnMotorSim.getInputVoltage();
     input.turnCurrentAmps = turnMotorSim.getCurrentDrawAmps();
-    input.turnUpperLimitSwitch = turnMotorSim.getAngularPositionRad() >= (Math.PI/2 - 0.1); // Simulated limit switch
+    input.turnUpperLimitSwitch = turnMotorSim.getAngularPositionRad() >= (Math.PI/2 - LIMIT_SWITCH_TOLERANCE_RAD); // Simulated limit switch
 
     // Lower Intake Motor Inputs
     input.lowerConnected = true;
@@ -157,7 +158,7 @@ public class CollectorModuleSimIO implements CollectorModuleIO {
    */
   @Override
   public boolean isCollectorUp() {
-    return turnMotorSim.getAngularPositionRad() >= (Math.PI/2 - 0.1); // 90 degrees minus small tolerance
+    return turnMotorSim.getAngularPositionRad() >= (Math.PI/2 - LIMIT_SWITCH_TOLERANCE_RAD);
   }
 
   // Sets collector up
