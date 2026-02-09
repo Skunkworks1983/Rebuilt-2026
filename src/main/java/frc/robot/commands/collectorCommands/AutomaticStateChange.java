@@ -8,6 +8,7 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.collector.Collector;
 import frc.robot.subsystems.collector.Collector.CollectorState;
 
@@ -48,9 +49,9 @@ public class AutomaticStateChange extends Command {
     // Use debouncer to ensure direction change is sustained
     if (directionDebouncer.calculate(directionChanged)) {
       if (currDirection > 0.0) { // if going right
-        collector.setCollectorState(CollectorState.RIGHT_DOWN).schedule();
+        CommandScheduler.getInstance().schedule(collector.setCollectorState(CollectorState.RIGHT_DOWN));
       } else if (currDirection < 0.0) { // if going left
-        collector.setCollectorState(CollectorState.LEFT_DOWN).schedule();
+        CommandScheduler.getInstance().schedule(collector.setCollectorState(CollectorState.LEFT_DOWN));
       }
     }
   }

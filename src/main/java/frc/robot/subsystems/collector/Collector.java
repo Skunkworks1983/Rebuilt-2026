@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.collectorCommands.AutomaticStateChange;
@@ -213,14 +214,14 @@ public class Collector extends SubsystemBase {
     // Collector State Control
     switch (desiredMode) {
       case ALWAYSUP:
-        setCollectorState(CollectorState.UP).schedule();
+        CommandScheduler.getInstance().schedule(setCollectorState(CollectorState.UP));
         break;
 
       case MANUAL:
         break;
 
       case AUTOMATIC:
-        new AutomaticStateChange(this, direction).schedule();
+        CommandScheduler.getInstance().schedule(new AutomaticStateChange(this, direction));
         break;
 
       default:
