@@ -211,10 +211,14 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
   }
 
   /**
-   * Zeros the collector position when limit switch is triggered
+   * Zeros the collector position when limit switch is triggered.
+   * This method should only be called when the limit switch is active.
    */
   public void zeroPosition() {
-    turnMotor.setPosition(CollectorConstants.COLLECTOR_UP_POS);
+    // Only zero if limit switch is actually triggered for safety
+    if (turnUpperLimit.getValue() == ForwardLimitValue.ClosedToGround) {
+      turnMotor.setPosition(CollectorConstants.COLLECTOR_UP_POS);
+    }
   }
 
   // Sets collector up

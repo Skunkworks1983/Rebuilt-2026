@@ -61,6 +61,8 @@ public class Collector extends SubsystemBase {
       new Alert("Right collector not zeroed - limit switch not triggered", AlertType.kWarning);
 
   // Track if collectors have been zeroed
+  // Note: Once zeroed, this status persists. The position tracking from the TalonFX
+  // is assumed to remain accurate after initial zeroing at the limit switch.
   private boolean leftCollectorZeroed = false;
   private boolean rightCollectorZeroed = false;
 
