@@ -30,6 +30,8 @@ public class GyroIOSim implements GyroIO {
     inputs.yawPosition = gyroSimulation.getGyroReading();
     inputs.yawVelocityRadPerSec =
         Units.degreesToRadians(gyroSimulation.getMeasuredAngularVelocity().in(RadiansPerSecond));
+    // Simulation doesn't provide accelerationX, leave at default 0.0
+    inputs.accelerationXMetersPerSecSq = 0.0;
 
     inputs.odometryYawTimestamps = PhoenixUtil.getSimulationOdometryTimeStamps();
     inputs.odometryYawPositions = gyroSimulation.getCachedGyroReadings();
