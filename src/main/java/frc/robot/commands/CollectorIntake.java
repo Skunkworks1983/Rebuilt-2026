@@ -15,9 +15,9 @@ import frc.robot.util.LoggedTunableNumber;
 public class CollectorIntake extends Command {
   private Collector collector;
   LoggedTunableNumber collectorVelocity =
-        new LoggedTunableNumber(
-            "Collector/VelocitySetpointRotPerSec",
-            CollectorConstants.defaultCollectorVelocity.in(RotationsPerSecond));
+      new LoggedTunableNumber(
+          "Collector/VelocitySetpointRotPerSec",
+          CollectorConstants.defaultCollectorVelocity.in(RotationsPerSecond));
 
   /** Creates a new collectorIntake. */
   public CollectorIntake(Collector collector) {
@@ -33,13 +33,13 @@ public class CollectorIntake extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    collector.intake(RotationsPerSecond.of(collectorVelocity.get()));
+    collector.setVelocity(RotationsPerSecond.of(collectorVelocity.get()));
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    collector.intake(RotationsPerSecond.of(0));
+    collector.setVelocity(RotationsPerSecond.of(0));
   }
 
   // Returns true when the command should end.
