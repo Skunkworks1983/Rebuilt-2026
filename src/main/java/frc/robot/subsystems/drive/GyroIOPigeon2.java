@@ -15,9 +15,9 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.measure.Acceleration;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.LinearAcceleration;
 import frc.robot.Constants;
 import frc.robot.generated.TunerConstants;
 import java.util.Queue;
@@ -29,7 +29,7 @@ public class GyroIOPigeon2 implements GyroIO {
   private final Queue<Double> yawPositionQueue;
   private final Queue<Double> yawTimestampQueue;
   private final StatusSignal<AngularVelocity> yawVelocity;
-  private final StatusSignal<Acceleration> accelerationX;
+  private final StatusSignal<LinearAcceleration> accelerationX;
 
   public GyroIOPigeon2() {
     TunerConstants constants = Constants.tunerConstants;
@@ -62,7 +62,9 @@ public class GyroIOPigeon2 implements GyroIO {
     inputs.connected = BaseStatusSignal.refreshAll(yaw, yawVelocity, accelerationX).equals(StatusCode.OK);
     inputs.yawPosition = Rotation2d.fromDegrees(yaw.getValueAsDouble());
     inputs.yawVelocityRadPerSec = Units.degreesToRadians(yawVelocity.getValueAsDouble());
-    // Convert from G's to m/s² (1 G = 9.80665 m/s²)
+    // Get acceleration in G's and convert to m/s²
+    // Note: This includes gravity component. For a level robot on flat ground,
+    // the gravity contribution in X direction is minimal (~0g)
     inputs.accelerationXMetersPerSecSq = accelerationX.getValueAsDouble() * 9.80665;
 
     inputs.odometryYawTimestamps =
