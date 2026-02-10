@@ -4,11 +4,10 @@
 
 package frc.robot.subsystems.collector;
 
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.collectorCommands.AutomaticStateChange;
 import frc.robot.commands.collectorCommands.BothCollectorsUpState;
+import java.util.function.DoubleSupplier;
 
 /**
  * This is the collector Subsystem
@@ -82,7 +81,6 @@ public class Collector extends SubsystemBase {
         break;
 
       case MANUAL:
-
         break;
 
       case AUTOMATIC:

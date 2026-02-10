@@ -4,14 +4,12 @@
 
 package frc.robot.subsystems.collector;
 
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
-import frc.robot.subsystems.collector.collectorConstants.CollectorConstants.Side;
-
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
+import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
+import frc.robot.subsystems.collector.collectorConstants.CollectorConstants.Side;
 import org.littletonrobotics.junction.Logger;
 
 /**
@@ -23,7 +21,7 @@ import org.littletonrobotics.junction.Logger;
  *
  * @author Liam B
  */
-public class CollectorModule{
+public class CollectorModule {
   private final CollectorModuleIO collectorIO;
   private final CollectorIOInputsAutoLogged inputs = new CollectorIOInputsAutoLogged();
 
@@ -39,7 +37,7 @@ public class CollectorModule{
   public CollectorModule(CollectorModuleIO collectorIO) {
     this.collectorIO = collectorIO;
   }
-  
+
   public void periodic() {
     collectorIO.updateInputs(inputs);
     Logger.processInputs("Collector/Module " + collectorIO.getSide().name(), inputs);

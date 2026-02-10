@@ -4,18 +4,13 @@
 
 package frc.robot.subsystems.collector;
 
-import static edu.wpi.first.units.Units.Degrees;
 import static frc.robot.util.PhoenixUtil.tryUntilOk;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.controls.TorqueCurrentFOC;
-import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
-import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.filter.Debouncer;
@@ -27,8 +22,6 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
 import frc.robot.subsystems.collector.collectorConstants.CollectorConstants.Side;
-import frc.robot.subsystems.drive.PhoenixOdometryThread;
-import java.util.Queue;
 
 /**
  * This CollectorIO pretains to a talonFX collector, it has the functions of raising lowering, and
@@ -248,7 +241,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     // I know this methods a bit silly rn but its gonna be replaced by magnet sensors anyway
     switch (side) {
       case LEFT:
-        if (turnPosition.getValue().lte( constants.CollectorDownPos)) {
+        if (turnPosition.getValue().lte(constants.CollectorDownPos)) {
           return true;
         } else {
           return false;
