@@ -9,8 +9,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
 
 /**
- * Collector subsystem — brings in the collector I/O and logs inputs 📥🤖🎉
- * Use this to run the intake motor and monitor its sensors. 🌀🔋📈
+ * Collector subsystem — brings in the collector I/O and logs inputs
+ * Use this to run the intake motor and monitor its sensors.
  */
 public class Collector extends SubsystemBase {
 
@@ -23,13 +23,13 @@ public class Collector extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // refresh inputs from hardware and feed to logger 🔁🖥️🧾
-    io.updateInputs(inputs); // 🔄📡
-    Logger.processInputs(getName(), inputs); // 🧾➡️logger
+    // refresh inputs from hardware and feed to logger 
+    io.updateInputs(inputs); 
+    Logger.processInputs(getName(), inputs);
   }
 
   public void intake(AngularVelocity velocity) {
-    // command the collector to intake at the requested velocity 🟡🌀🚀
-    io.intake(velocity); // go collect! 🍩⚽️🏀
+    // command the collector to intake at the requested velocity 
+    io.intake(velocity); // go collect!
   }
 }

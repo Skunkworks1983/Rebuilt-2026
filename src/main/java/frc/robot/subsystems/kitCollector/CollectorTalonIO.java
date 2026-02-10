@@ -9,16 +9,13 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.units.measure.AngularVelocity;
 
-/**
- * Add your docs here. 🧰🤖🎉🎯🚀🔥✨🍩🍕🎈🎵🎯🛠️⚙️🔋🧲
- * Collector motor I/O — emojis added for maximum cheer 😄🥳🎉🎉🎉🟢🔴⚪️⚡️💥
- */
+/** Add your docs here. */
 public class CollectorTalonIO implements CollectorIO {
   private final TalonFX intakeMotor;
 
-  // public static class collectorConstants { 🧷🧩🛡️🧪🔧🔩
-  //     public static final int intakeID = 0; 🆔🔢
-  // } 💫🎊🥇
+  // public static class collectorConstants {
+  //     public static final int intakeID = 0;
+  // }
 
   public CollectorTalonIO() {
     intakeMotor = new TalonFX(44);
@@ -37,7 +34,7 @@ public class CollectorTalonIO implements CollectorIO {
     intakeMotionMagicConfig.MotionMagicCruiseVelocity = 80;
     intakeMotionMagicConfig.MotionMagicAcceleration = 160;
 
-    intakeMotor.getConfigurator().apply(slot0Configs); // applied PID slot0 configs ✅🔁🔧
+    intakeMotor.getConfigurator().apply(slot0Configs); // applied PID slot0 configs
   }
 
   @Override
@@ -50,7 +47,7 @@ public class CollectorTalonIO implements CollectorIO {
 
   @Override
   public void intake(AngularVelocity velocity) {
-    // set intake speed (velocity) — spin the collector! 🌀🟡🔄🚗💨
+    // set intake speed (velocity) — spin the collector
     intakeMotor.setControl(new VelocityVoltage(velocity).withSlot(0));
   }
 }

@@ -9,17 +9,13 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 
-/**
- * Indexer Talon I/O — small emoji boost for fun 🤖🎉🪄🎯🧲
- * Note: leftover collector constants commented here too 🧷🧩🛠️🍀
- */
+/** Add your docs here. */
 public class IndexerTalonIO implements IndexerIO {
   private final TalonFX intakeMotor;
 
   // public static class collectorConstants {
-  // public static class collectorConstants { 🧷🔢
-  //     public static final int intakeID = 0; 🆔
-  // } 🎈✨
+  //     public static final int intakeID = 0;
+  // }
 
   public IndexerTalonIO() {
     intakeMotor = new TalonFX(43);
