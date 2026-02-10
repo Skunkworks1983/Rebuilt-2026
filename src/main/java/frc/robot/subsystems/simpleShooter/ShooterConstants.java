@@ -36,11 +36,11 @@ public class ShooterConstants {
   public static final double forwardFlywheelMaxAccelerationRotationsPerSec = 200.0;
   public static final double forwardFlywheelMaxJerkRotationsPerSecCubed = 100;
 
-  public static final double backFlywheelKP = 0.5;
+  public static final double backFlywheelKP = 3.5;
   public static final double backFlywheelKD = 0.0;
-  public static final double backFlywheelKS = 0.0;
-  public static final double backFlywheelKV = 0.1;
-  public static final double backFlywheelKA = 0.0;
+  public static final double backFlywheelKS = 1.099;
+  public static final double backFlywheelKV = 0.318791;
+  public static final double backFlywheelKA = 0.72373;
 
   public static final double backFlywheelMaxVelocityRotationsPerSec = 85.6667;
   public static final double backFlywheelMaxAccelerationRotationsPerSec = 200.0;
@@ -54,18 +54,16 @@ public class ShooterConstants {
 
   public static final MomentOfInertia flywheelInertia = KilogramSquareMeters.of(0.01);
 
-  public static final Pose3d shooterInitalPosition =
-      new Pose3d(
-          new Translation3d(Meters.of(0), Meters.of(0), Meters.of(0.5)),
-          new Rotation3d(Degrees.of(0), Degrees.of(-40), Degrees.of(0)));
+  public static final Pose3d shooterInitalPosition = new Pose3d(
+      new Translation3d(Meters.of(0), Meters.of(0), Meters.of(0.5)),
+      new Rotation3d(Degrees.of(0), Degrees.of(-40), Degrees.of(0)));
 
   public static final Distance flywheelRadius = Inches.of(4);
 
   public static final Slot0Configs simFlywheelConfigs = new Slot0Configs().withKP(30);
 
-  public static final LinearVelocity flywheelMaxLinearVelocity =
-      MetersPerSecond.of(
-          RotationsPerSecond.of(85.66667).in(RadiansPerSecond) * flywheelRadius.in(Meters));
+  public static final LinearVelocity flywheelMaxLinearVelocity = MetersPerSecond.of(
+      RotationsPerSecond.of(85.66667).in(RadiansPerSecond) * flywheelRadius.in(Meters));
 
   public static final AngularVelocity defaultForwardFlywheelVelocity = RotationsPerSecond.of(55);
   public static final AngularVelocity defaultBackFlywheelVelocity = RotationsPerSecond.of(55);

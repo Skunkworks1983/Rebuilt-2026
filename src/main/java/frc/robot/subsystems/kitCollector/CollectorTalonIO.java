@@ -11,6 +11,7 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.units.measure.Angle;
@@ -20,7 +21,7 @@ import edu.wpi.first.units.measure.Voltage;
 
 public class CollectorTalonIO implements CollectorIO {
   private final TalonFX collectorMotor;
-  private final VelocityTorqueCurrentFOC velocityRequest = new VelocityTorqueCurrentFOC(0.0);
+  private final VelocityVoltage velocityRequest = new VelocityVoltage(0.0);
 
   private final StatusSignal<AngularVelocity> collectorVelocity;
   private final StatusSignal<Voltage> collectorAppliedVolts;
@@ -40,6 +41,8 @@ public class CollectorTalonIO implements CollectorIO {
     slot0Configs.kS = CollectorConstants.kS;
     slot0Configs.kV = CollectorConstants.kV;
     slot0Configs.kA = CollectorConstants.kA;
+
+    collectorConfig.MotorOutput.Inverted = CollectorConstants.motorInvert;
 
     tryUntilOk(5, () -> collectorMotor.getConfigurator().apply(collectorConfig, 0.25));
     collectorVelocity = collectorMotor.getVelocity();

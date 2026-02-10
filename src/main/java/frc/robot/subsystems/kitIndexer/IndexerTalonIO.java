@@ -11,6 +11,7 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.units.measure.Angle;
@@ -20,7 +21,7 @@ import edu.wpi.first.units.measure.Voltage;
 
 public class IndexerTalonIO implements IndexerIO {
   private final TalonFX intakeMotor;
-  private final VelocityTorqueCurrentFOC velocityRequest = new VelocityTorqueCurrentFOC(0.0);
+  private final VelocityVoltage velocityRequest = new VelocityVoltage(0.0);
 
   private final StatusSignal<AngularVelocity> indexerVelocity;
   private final StatusSignal<Voltage> indexerAppliedVolts;
@@ -29,7 +30,7 @@ public class IndexerTalonIO implements IndexerIO {
   private final StatusSignal<Angle> indexerPosition;
 
   public IndexerTalonIO() {
-    intakeMotor = new TalonFX(IndexerConstants.motorID);
+    intakeMotor = new TalonFX(IndexerConstants.motorID, "rio");
 
     var intakeConfig = new TalonFXConfiguration();
 

@@ -14,8 +14,8 @@ import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
 
 /**
- * Collector subsystem — brings in the collector I/O and logs inputs
- * Use this to run the intake motor and monitor its sensors.
+ * Collector subsystem — brings in the collector I/O and logs inputs Use this to run the intake
+ * motor and monitor its sensors.
  */
 public class Collector extends SubsystemBase {
 
@@ -39,8 +39,8 @@ public class Collector extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // refresh inputs from hardware and feed to logger 
-    io.updateInputs(inputs); 
+    // refresh inputs from hardware and feed to logger
+    io.updateInputs(inputs);
     Logger.processInputs(getName(), inputs);
 
     if (collectorKP.hasChanged(hashCode())
