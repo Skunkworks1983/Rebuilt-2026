@@ -5,14 +5,21 @@
 package frc.robot.commands;
 
 import static edu.wpi.first.units.Units.DegreesPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.kitCollector.Collector;
+import frc.robot.subsystems.simpleShooter.ShooterConstants;
+import frc.robot.util.LoggedTunableNumber;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class CollectorIntake extends Command {
   private Collector collector;
+  LoggedTunableNumber collectorVelocity =
+        new LoggedTunableNumber(
+            "Collector/VelocitySetpointRotPerSec",
+            ShooterConstants.defaultBackFlywheelVelocity.in(RotationsPerSecond));
 
   /** Creates a new collectorIntake. */
   public CollectorIntake(Collector collector) {
@@ -28,7 +35,7 @@ public class CollectorIntake extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    collector.intake(AngularVelocity.ofBaseUnits(50, DegreesPerSecond));
+    collector.intake(AngularVelocity.ofBaseUnits(collectorVelocity.get(), DegreesPerSecond));
   }
 
   // Called once the command ends or is interrupted.
