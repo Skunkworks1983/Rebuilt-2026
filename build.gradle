@@ -126,17 +126,16 @@ spotless {
         trimTrailingWhitespace()
         endWithNewline()
     }
-    // Temporarily commented out due to network issues with groovy.jfrog.io
-    // groovyGradle {
-    //     target fileTree('.') {
-    //         include '**/*.gradle'
-    //         exclude '**/build/**', '**/build-*/**', '**/akit/**'
-    //     }
-    //     greclipse()
-    //     indentWithSpaces(4)
-    //     trimTrailingWhitespace()
-    //     endWithNewline()
-    // }
+    groovyGradle {
+        target fileTree('.') {
+            include '**/*.gradle'
+            exclude '**/build/**', '**/build-*/**', '**/akit/**'
+        }
+        greclipse()
+        indentWithSpaces(4)
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
     format 'xml', {
         target fileTree('.') {
             include '**/*.xml'
