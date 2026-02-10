@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -117,7 +119,7 @@ public class RobotContainer {
             new Collector(
                 new CollectorModuleTalonIO(CollectorConstants.Side.LEFT),
                 new CollectorModuleTalonIO(CollectorConstants.Side.RIGHT),
-                () -> drive.getDirection());
+                () -> drive.getAccelerationX().in(MetersPerSecondPerSecond));
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
@@ -174,7 +176,7 @@ public class RobotContainer {
             new Collector(
                 new CollectorModuleSimIO(simulation, 0), 
                 new CollectorModuleSimIO(simulation, 1),
-                () -> drive.getDirection());
+                () -> drive.getAccelerationX().in(MetersPerSecondPerSecond));
         break;
 
       default:
@@ -195,7 +197,7 @@ public class RobotContainer {
             new Collector(
                 new CollectorModuleIO() {},
                 new CollectorModuleIO() {},
-                () -> drive.getDirection());
+                () -> drive.getAccelerationX().in(MetersPerSecondPerSecond));
         break;
     }
 

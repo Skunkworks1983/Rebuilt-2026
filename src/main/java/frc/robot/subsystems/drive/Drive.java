@@ -34,6 +34,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -428,14 +429,16 @@ public class Drive extends SubsystemBase implements VisionConsumer {
   }
 
   /**
-   * Returns the X-axis acceleration from the Pigeon 2.0 gyro in m/s².
+   * Returns the X-axis acceleration from the Pigeon 2.0 gyro as a LinearAcceleration measure.
    * Positive values indicate acceleration towards the right collector.
    * Negative values indicate acceleration towards the left collector.
+   * 
+   * @return LinearAcceleration measure, or zero if not available
    */
-  public double getDirection() {
+  public LinearAcceleration getAccelerationX() {
     if (gyroInputs.accelerationX == null) {
-      return 0.0;
+      return MetersPerSecondPerSecond.zero();
     }
-    return gyroInputs.accelerationX.in(MetersPerSecondPerSecond);
+    return gyroInputs.accelerationX;
   }
 }
