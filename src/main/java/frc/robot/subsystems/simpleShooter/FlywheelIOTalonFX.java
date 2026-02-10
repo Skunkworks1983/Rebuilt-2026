@@ -104,8 +104,6 @@ public class FlywheelIOTalonFX implements FlywheelIO {
 
     inputs.primaryTorqueCurrentAmps = flywheelTorqueCurrent.getValue();
     inputs.position = flywheelPosition.getValue();
-
-    
   }
 
   @Override
