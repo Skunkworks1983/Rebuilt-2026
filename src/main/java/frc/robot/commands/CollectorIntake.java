@@ -4,14 +4,11 @@
 
 package frc.robot.commands;
 
-import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
-import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.kitCollector.Collector;
 import frc.robot.subsystems.kitCollector.CollectorConstants;
-import frc.robot.subsystems.simpleShooter.ShooterConstants;
 import frc.robot.util.LoggedTunableNumber;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
