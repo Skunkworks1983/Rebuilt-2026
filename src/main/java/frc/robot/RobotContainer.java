@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -27,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.CollectorIntake;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.IndexerIntake;
+import frc.robot.commands.IndexerReverse;
 import frc.robot.commands.SimpleShoot;
 import frc.robot.commands.TestPathCommands;
 import frc.robot.subsystems.drive.Drive;
@@ -279,10 +281,13 @@ public class RobotContainer {
 
       Trigger shoot = new JoystickButton(leftJoystick, 1);
       Trigger alignShot = new JoystickButton(rightJoystick, 1);
+      indexerIntake.whileTrue(new IndexerReverse(indexer));
 
-      alignShot.whileTrue(
-          DriveCommands.joystickDriveAimedHub(
-              drive, shooter, () -> -leftJoystick.getY(), () -> -leftJoystick.getX()));
+      // alignShot.whileTrue(
+      //     DriveCommands.joystickDriveAimedHub(
+      //         drive, shooter, () -> -leftJoystick.getY(), () -> -leftJoystick.getX()));
+
+      alignShot.whileTrue(Commands.parallel(new CollectorIntake(collector), new IndexerIntake(indexer)));
   shoot.whileTrue(SimpleShoot.simpleShoot(shooter));
 
 
@@ -299,8 +304,8 @@ public class RobotContainer {
       indexerIntake = new JoystickButton(xboxController, 2);
     }
 
-    collectorIntake.whileTrue(new CollectorIntake(collector));
-    indexerIntake.whileTrue(new IndexerIntake(indexer));
+    // collectorIntake.whileTrue(new CollectorIntake(collector));
+    // indexerIntake.whileTrue(new IndexerIntake(indexer));
 
     Logger.recordOutput("Control Scheme", Constants.controlScheme);
 
