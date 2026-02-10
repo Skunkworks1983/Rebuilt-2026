@@ -1,17 +1,12 @@
 package frc.robot.subsystems.collector;
 
-import static edu.wpi.first.units.Units.Degrees;
 import static frc.robot.util.PhoenixUtil.tryUntilOk;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.controls.TorqueCurrentFOC;
-import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
-import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.ForwardLimitValue;
@@ -24,8 +19,6 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
 import frc.robot.subsystems.collector.collectorConstants.CollectorConstants.Side;
-import frc.robot.subsystems.drive.PhoenixOdometryThread;
-import java.util.Queue;
 
 /**
  * This CollectorIO pertains to a talonFX collector, it has the functions of raising lowering, and
@@ -140,7 +133,8 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     upperCurrent = intakeMotorUpper.getStatorCurrent();
 
     // Configure periodic frames
-    BaseStatusSignal.setUpdateFrequencyForAll(50.0, turnPosition, lowerPosition, upperPosition, turnUpperLimit);
+    BaseStatusSignal.setUpdateFrequencyForAll(
+        50.0, turnPosition, lowerPosition, upperPosition, turnUpperLimit);
     BaseStatusSignal.setUpdateFrequencyForAll(
         50.0,
         upperVelocity,
@@ -164,7 +158,8 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
   public void updateInputs(CollectorIOInputs inputs) {
     // Refresh all signals
     var turnStatus =
-        BaseStatusSignal.refreshAll(turnPosition, turnVelocity, turnAppliedVolts, turnCurrent, turnUpperLimit);
+        BaseStatusSignal.refreshAll(
+            turnPosition, turnVelocity, turnAppliedVolts, turnCurrent, turnUpperLimit);
     var lowerStatus =
         BaseStatusSignal.refreshAll(lowerPosition, lowerVelocity, lowerAppliedVolts, lowerCurrent);
     var upperStatus =
@@ -203,16 +198,14 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     intakeMotorUpper.setControl(new VelocityVoltage(velocity).withSlot(0));
   }
 
-  /**
-   * Checks to see if the collector is up using the upper limit switch
-   */
+  /** Checks to see if the collector is up using the upper limit switch */
   public boolean isCollectorUp() {
     return turnUpperLimit.getValue() == ForwardLimitValue.ClosedToGround;
   }
 
   /**
-   * Zeros the collector position when limit switch is triggered.
-   * This method should only be called when the limit switch is active.
+   * Zeros the collector position when limit switch is triggered. This method should only be called
+   * when the limit switch is active.
    */
   public void zeroPosition() {
     // Only zero if limit switch is actually triggered for safety

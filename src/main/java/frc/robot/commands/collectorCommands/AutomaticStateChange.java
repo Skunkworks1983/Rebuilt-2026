@@ -4,13 +4,12 @@
 
 package frc.robot.commands.collectorCommands;
 
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.collector.Collector;
 import frc.robot.subsystems.collector.Collector.CollectorState;
+import java.util.function.DoubleSupplier;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AutomaticStateChange extends Command {
@@ -42,16 +41,18 @@ public class AutomaticStateChange extends Command {
   public void execute() {
     lastDirection = currDirection;
     currDirection = direction.getAsDouble();
-    
+
     // Check if direction has changed (different sign)
     boolean directionChanged = (currDirection * lastDirection) < 0;
-    
+
     // Use debouncer to ensure direction change is sustained
     if (directionDebouncer.calculate(directionChanged)) {
       if (currDirection > 0.0) { // if going right
-        CommandScheduler.getInstance().schedule(collector.setCollectorState(CollectorState.RIGHT_DOWN));
+        CommandScheduler.getInstance()
+            .schedule(collector.setCollectorState(CollectorState.RIGHT_DOWN));
       } else if (currDirection < 0.0) { // if going left
-        CommandScheduler.getInstance().schedule(collector.setCollectorState(CollectorState.LEFT_DOWN));
+        CommandScheduler.getInstance()
+            .schedule(collector.setCollectorState(CollectorState.LEFT_DOWN));
       }
     }
   }

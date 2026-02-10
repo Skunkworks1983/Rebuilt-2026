@@ -9,10 +9,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
-import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-import frc.robot.subsystems.collector.collectorConstants.CollectorConstants.Side;
 import org.ironmaple.simulation.IntakeSimulation;
 import org.ironmaple.simulation.drivesims.AbstractDriveTrainSimulation;
 
@@ -115,7 +113,9 @@ public class CollectorModuleSimIO implements CollectorModuleIO {
     input.turnVelocityRadPerSec = turnMotorSim.getAngularVelocityRadPerSec();
     input.turnAppliedVolts = turnMotorSim.getInputVoltage();
     input.turnCurrentAmps = turnMotorSim.getCurrentDrawAmps();
-    input.turnUpperLimitSwitch = turnMotorSim.getAngularPositionRad() >= (Math.PI/2 - LIMIT_SWITCH_TOLERANCE_RAD); // Simulated limit switch
+    input.turnUpperLimitSwitch =
+        turnMotorSim.getAngularPositionRad()
+            >= (Math.PI / 2 - LIMIT_SWITCH_TOLERANCE_RAD); // Simulated limit switch
 
     // Lower Intake Motor Inputs
     input.lowerConnected = true;
@@ -153,20 +153,16 @@ public class CollectorModuleSimIO implements CollectorModuleIO {
     }
   }
 
-  /**
-   * Checks to see if the collector is up using simulated limit switch
-   */
+  /** Checks to see if the collector is up using simulated limit switch */
   @Override
   public boolean isCollectorUp() {
-    return turnMotorSim.getAngularPositionRad() >= (Math.PI/2 - LIMIT_SWITCH_TOLERANCE_RAD);
+    return turnMotorSim.getAngularPositionRad() >= (Math.PI / 2 - LIMIT_SWITCH_TOLERANCE_RAD);
   }
 
-  /**
-   * Zeros the collector position when simulated limit switch is triggered
-   */
+  /** Zeros the collector position when simulated limit switch is triggered */
   @Override
   public void zeroPosition() {
-    turnMotorSim.setState(Math.PI/2, turnMotorSim.getAngularVelocityRadPerSec());
+    turnMotorSim.setState(Math.PI / 2, turnMotorSim.getAngularVelocityRadPerSec());
   }
 
   // Sets collector up

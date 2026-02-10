@@ -430,9 +430,9 @@ public class Drive extends SubsystemBase implements VisionConsumer {
 
   /**
    * Returns the X-axis acceleration from the Pigeon 2.0 gyro as a LinearAcceleration measure.
-   * Positive values indicate acceleration towards the right collector.
-   * Negative values indicate acceleration towards the left collector.
-   * 
+   * Positive values indicate acceleration towards the right collector. Negative values indicate
+   * acceleration towards the left collector.
+   *
    * @return LinearAcceleration measure, or zero if not available
    */
   public LinearAcceleration getAccelerationX() {

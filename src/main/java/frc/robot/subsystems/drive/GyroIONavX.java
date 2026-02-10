@@ -31,7 +31,8 @@ public class GyroIONavX implements GyroIO {
     inputs.connected = navX.isConnected();
     inputs.yawPosition = Rotation2d.fromDegrees(-navX.getYaw());
     inputs.yawVelocityRadPerSec = Units.degreesToRadians(-navX.getRawGyroZ());
-    // NavX does not provide linear acceleration in this configuration, set to zero using WPILib units
+    // NavX does not provide linear acceleration in this configuration, set to zero using WPILib
+    // units
     inputs.accelerationX = MetersPerSecondPerSecond.zero();
 
     inputs.odometryYawTimestamps =

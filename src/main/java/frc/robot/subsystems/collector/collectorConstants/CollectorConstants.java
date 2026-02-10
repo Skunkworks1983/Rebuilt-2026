@@ -10,7 +10,7 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 
-/** Collector constants class - shared PID values with separate motor IDs for each side */ 
+/** Collector constants class - shared PID values with separate motor IDs for each side */
 public class CollectorConstants {
   // Collector side enum
   public static enum Side {

@@ -25,9 +25,9 @@ import frc.robot.commands.DriveCommands;
 import frc.robot.commands.TestPathCommands;
 import frc.robot.commands.collectorCommands.CollectorIntake;
 import frc.robot.subsystems.collector.Collector;
-import frc.robot.subsystems.collector.CollectorModuleIO;
 import frc.robot.subsystems.collector.Collector.CollectorState;
 import frc.robot.subsystems.collector.Collector.Mode;
+import frc.robot.subsystems.collector.CollectorModuleIO;
 import frc.robot.subsystems.collector.CollectorModuleSimIO;
 import frc.robot.subsystems.collector.CollectorModuleTalonIO;
 import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
@@ -174,7 +174,7 @@ public class RobotContainer {
 
         collector =
             new Collector(
-                new CollectorModuleSimIO(simulation, 0), 
+                new CollectorModuleSimIO(simulation, 0),
                 new CollectorModuleSimIO(simulation, 1),
                 () -> drive.getAccelerationX().in(MetersPerSecondPerSecond));
         break;
@@ -254,15 +254,15 @@ public class RobotContainer {
     TestPathCommands.publishTestPaths(drive);
 
     // State Butoons
-    JoystickButton manualModeSwitch = new JoystickButton(buttonPanel, Constants.JoystickConstants.CollectorManualModeID);
-    JoystickButton autoModeSwitch = new JoystickButton(buttonPanel, Constants.JoystickConstants.CollectorAutoModeID);
+    JoystickButton manualModeSwitch =
+        new JoystickButton(buttonPanel, Constants.JoystickConstants.CollectorManualModeID);
+    JoystickButton autoModeSwitch =
+        new JoystickButton(buttonPanel, Constants.JoystickConstants.CollectorAutoModeID);
 
     // Switch States
-    manualModeSwitch
-      .onTrue(Commands.runOnce(() -> collector.changeMode(Mode.MANUAL), collector));
+    manualModeSwitch.onTrue(Commands.runOnce(() -> collector.changeMode(Mode.MANUAL), collector));
 
-    autoModeSwitch
-      .onTrue(Commands.runOnce(() -> collector.changeMode(Mode.AUTOMATIC), collector));
+    autoModeSwitch.onTrue(Commands.runOnce(() -> collector.changeMode(Mode.AUTOMATIC), collector));
 
     manualModeSwitch
         .negate()
@@ -271,22 +271,22 @@ public class RobotContainer {
 
     // Collector Intake Button
     new JoystickButton(buttonPanel, Constants.JoystickConstants.CollectorIntakeID)
-      .whileTrue(new CollectorIntake(collector));
+        .whileTrue(new CollectorIntake(collector));
 
     // Right Collector Down
     new JoystickButton(buttonPanel, Constants.JoystickConstants.CollectorRightDownID)
-      .and(() -> collector.getMode().equals(Mode.MANUAL))
-      .onTrue(collector.setCollectorState(CollectorState.RIGHT_DOWN));
+        .and(() -> collector.getMode().equals(Mode.MANUAL))
+        .onTrue(collector.setCollectorState(CollectorState.RIGHT_DOWN));
 
     // Left Collector Down
     new JoystickButton(buttonPanel, Constants.JoystickConstants.CollectorLeftDownID)
-      .and(() -> collector.getMode().equals(Mode.MANUAL))
-      .onTrue(collector.setCollectorState(CollectorState.LEFT_DOWN));
+        .and(() -> collector.getMode().equals(Mode.MANUAL))
+        .onTrue(collector.setCollectorState(CollectorState.LEFT_DOWN));
 
     // Both Collectors Up
     new JoystickButton(leftJoystick, Constants.JoystickConstants.CollectorBothUpID)
-      .and(() -> collector.getMode().equals(Mode.MANUAL))
-      .onTrue(collector.setCollectorState(CollectorState.UP));
+        .and(() -> collector.getMode().equals(Mode.MANUAL))
+        .onTrue(collector.setCollectorState(CollectorState.UP));
 
     // Lock to 0° when A button is held
     // controller

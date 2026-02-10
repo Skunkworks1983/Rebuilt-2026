@@ -47,9 +47,7 @@ public final class Constants {
     Rebuilt
   }
 
-  /**
-   * Joystick constants
-   */
+  /** Joystick constants */
   public final class JoystickConstants { // TODO: find constants
     // Joystick ID's
     public static final int LeftJoystick = 0;
@@ -63,6 +61,5 @@ public final class Constants {
     public static final int CollectorRightDownID = 1;
     public static final int CollectorLeftDownID = 2;
     public static final int CollectorBothUpID = 0;
-
   }
 }

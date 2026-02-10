@@ -4,13 +4,6 @@
 
 package frc.robot.subsystems.collector;
 
-import static edu.wpi.first.units.Units.Degrees;
-
-import java.util.function.DoubleSupplier;
-
-import org.littletonrobotics.junction.Logger;
-
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.Alert;
@@ -20,7 +13,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.collectorCommands.AutomaticStateChange;
-import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
+import java.util.function.DoubleSupplier;
+import org.littletonrobotics.junction.Logger;
 
 /**
  * This is the collector Subsystem
@@ -50,7 +44,8 @@ public class Collector extends SubsystemBase {
   }
 
   Mode mode = Mode.ALWAYSUP;
-  private CollectorState currentState = CollectorState.UP; // Default assumption, will be updated based on sensors
+  private CollectorState currentState =
+      CollectorState.UP; // Default assumption, will be updated based on sensors
   private CollectorState targetState = CollectorState.UP;
   private boolean stateInitialized = false;
 
@@ -90,7 +85,7 @@ public class Collector extends SubsystemBase {
     rightIO.updateInputs(rightInputs);
     Logger.processInputs("Collector/Left", leftInputs);
     Logger.processInputs("Collector/Right", rightInputs);
-    
+
     // Zero collector positions when limit switches are triggered
     if (leftInputs.turnUpperLimitSwitch && !leftCollectorZeroed) {
       leftIO.zeroPosition();
@@ -100,11 +95,11 @@ public class Collector extends SubsystemBase {
       rightIO.zeroPosition();
       rightCollectorZeroed = true;
     }
-    
+
     // Update alerts for non-zeroed collectors
     leftCollectorNotZeroedAlert.set(!leftCollectorZeroed);
     rightCollectorNotZeroedAlert.set(!rightCollectorZeroed);
-    
+
     // Initialize state based on actual sensor readings on first periodic call
     if (!stateInitialized) {
       if (!isLeftCollectorUp() && isRightCollectorUp()) {
@@ -154,84 +149,86 @@ public class Collector extends SubsystemBase {
     rightIO.setCollectorVelocity(velocity);
   }
 
-  /**
-   * Checks to see if the left collector is up
-   */
+  /** Checks to see if the left collector is up */
   public boolean isLeftCollectorUp() {
     return leftIO.isCollectorUp();
   }
 
-  /**
-   * Checks to see if the right collector is up
-   */
+  /** Checks to see if the right collector is up */
   public boolean isRightCollectorUp() {
     return rightIO.isCollectorUp();
   }
 
   /**
-   * Sets the collector state with safe transitions.
-   * If wrong collector is down, puts it up first before putting the commanded one down.
+   * Sets the collector state with safe transitions. If wrong collector is down, puts it up first
+   * before putting the commanded one down.
    *
    * @param state the desired collector state
    * @return Command that transitions to the desired state
    */
   public Command setCollectorState(CollectorState state) {
     targetState = state;
-    
+
     switch (state) {
       case LEFT_DOWN:
         if (!isRightCollectorUp()) {
           // Right is down, need to put it up first
           return Commands.sequence(
-            Commands.runOnce(() -> rightIO.goUp(), this),
-            Commands.waitUntil(() -> isRightCollectorUp()),
-            Commands.runOnce(() -> {
-              leftIO.goDown();
-              currentState = CollectorState.LEFT_DOWN;
-            }, this)
-          );
+              Commands.runOnce(() -> rightIO.goUp(), this),
+              Commands.waitUntil(() -> isRightCollectorUp()),
+              Commands.runOnce(
+                  () -> {
+                    leftIO.goDown();
+                    currentState = CollectorState.LEFT_DOWN;
+                  },
+                  this));
         } else {
           // Safe to put left down directly
-          return Commands.runOnce(() -> {
-            leftIO.goDown();
-            currentState = CollectorState.LEFT_DOWN;
-          }, this);
+          return Commands.runOnce(
+              () -> {
+                leftIO.goDown();
+                currentState = CollectorState.LEFT_DOWN;
+              },
+              this);
         }
-        
+
       case RIGHT_DOWN:
         if (!isLeftCollectorUp()) {
           // Left is down, need to put it up first
           return Commands.sequence(
-            Commands.runOnce(() -> leftIO.goUp(), this),
-            Commands.waitUntil(() -> isLeftCollectorUp()),
-            Commands.runOnce(() -> {
-              rightIO.goDown();
-              currentState = CollectorState.RIGHT_DOWN;
-            }, this)
-          );
+              Commands.runOnce(() -> leftIO.goUp(), this),
+              Commands.waitUntil(() -> isLeftCollectorUp()),
+              Commands.runOnce(
+                  () -> {
+                    rightIO.goDown();
+                    currentState = CollectorState.RIGHT_DOWN;
+                  },
+                  this));
         } else {
           // Safe to put right down directly
-          return Commands.runOnce(() -> {
-            rightIO.goDown();
-            currentState = CollectorState.RIGHT_DOWN;
-          }, this);
+          return Commands.runOnce(
+              () -> {
+                rightIO.goDown();
+                currentState = CollectorState.RIGHT_DOWN;
+              },
+              this);
         }
-        
+
       case UP:
-        return Commands.runOnce(() -> {
-          leftIO.goUp();
-          rightIO.goUp();
-          currentState = CollectorState.UP;
-        }, this);
-        
+        return Commands.runOnce(
+            () -> {
+              leftIO.goUp();
+              rightIO.goUp();
+              currentState = CollectorState.UP;
+            },
+            this);
+
       default:
         return Commands.none();
     }
   }
 
-  /**
-   * Gets the current collector state
-   */
+  /** Gets the current collector state */
   public CollectorState getCurrentState() {
     return currentState;
   }

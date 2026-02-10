@@ -5,10 +5,8 @@
 package frc.robot.subsystems.collector;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
-import frc.robot.subsystems.collector.collectorConstants.CollectorConstants.Side;
 import org.littletonrobotics.junction.AutoLog;
 
 /**
@@ -61,16 +59,12 @@ public interface CollectorModuleIO {
    */
   public default void setCollectorVelocity(AngularVelocity velocity) {}
 
-  /**
-   * Checks to see if the collector is up
-   */
+  /** Checks to see if the collector is up */
   public default boolean isCollectorUp() {
     return false;
   }
 
-  /**
-   * Zeros the collector position when limit switch is triggered
-   */
+  /** Zeros the collector position when limit switch is triggered */
   public default void zeroPosition() {}
 
   // Sets collector up
