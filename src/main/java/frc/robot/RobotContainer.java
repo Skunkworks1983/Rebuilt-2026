@@ -17,7 +17,9 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.TestPathCommands;
 import frc.robot.subsystems.drive.Drive;
@@ -51,6 +53,9 @@ public class RobotContainer {
   // Controller
   private final Joystick leftJoystick;
   private final Joystick rightJoystick;
+
+    Orchestra m_orchestra = new Orchestra();
+
 
   /**
    * Xbox Controller for simulation.
@@ -195,6 +200,9 @@ public class RobotContainer {
     // PathPlannerAuto("SimPhysTest"));
 
     // Configure the button bindings
+    Command crazyCommand = new InstantCommand(this::playMusic).ignoringDisable(true);
+
+    SmartDashboard.putData("Do Thing!", crazyCommand);
   }
 
   public void playMusic() {
@@ -206,8 +214,8 @@ public class RobotContainer {
     int kBackLeftSteerMotorId = 10;
     int kBackRightDriveMotorId = 14;
     int kBackRightSteerMotorId = 13;
-    AudioConfigs config = new AudioConfigs().withAllowMusicDurDisable(false);
-    Orchestra m_orchestra = new Orchestra();
+
+    AudioConfigs config = new AudioConfigs().withAllowMusicDurDisable(true);
 
     TalonFX flDrive = new TalonFX(kFrontLeftDriveMotorId, "Drivebase 2025");
     flDrive.getConfigurator().apply(config);
