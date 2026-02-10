@@ -4,9 +4,6 @@
 
 package frc.robot.commands;
 
-import static edu.wpi.first.units.Units.DegreesPerSecond;
-
-import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.kitIndexer.Indexer;
 

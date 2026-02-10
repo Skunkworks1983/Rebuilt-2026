@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems.kitIndexer;
 
-import edu.wpi.first.units.measure.AngularVelocity;
 import org.littletonrobotics.junction.AutoLog;
 
 /** Add your docs here. */
