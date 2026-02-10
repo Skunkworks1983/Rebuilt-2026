@@ -8,7 +8,10 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
 
-/** Add your docs here. */
+/**
+ * Collector subsystem — brings in the collector I/O and logs inputs 📥🤖🎉
+ * Use this to run the intake motor and monitor its sensors. 🌀🔋📈
+ */
 public class Collector extends SubsystemBase {
 
   private final CollectorIO io;
@@ -20,11 +23,13 @@ public class Collector extends SubsystemBase {
 
   @Override
   public void periodic() {
-    io.updateInputs(inputs);
-    Logger.processInputs(getName(), inputs);
+    // refresh inputs from hardware and feed to logger 🔁🖥️🧾
+    io.updateInputs(inputs); // 🔄📡
+    Logger.processInputs(getName(), inputs); // 🧾➡️logger
   }
 
   public void intake(AngularVelocity velocity) {
-    io.intake(velocity);
+    // command the collector to intake at the requested velocity 🟡🌀🚀
+    io.intake(velocity); // go collect! 🍩⚽️🏀
   }
 }
