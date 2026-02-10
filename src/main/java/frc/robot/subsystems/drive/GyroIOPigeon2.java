@@ -62,10 +62,10 @@ public class GyroIOPigeon2 implements GyroIO {
     inputs.connected = BaseStatusSignal.refreshAll(yaw, yawVelocity, accelerationX).equals(StatusCode.OK);
     inputs.yawPosition = Rotation2d.fromDegrees(yaw.getValueAsDouble());
     inputs.yawVelocityRadPerSec = Units.degreesToRadians(yawVelocity.getValueAsDouble());
-    // Get acceleration in G's and convert to m/s²
-    // Note: This includes gravity component. For a level robot on flat ground,
-    // the gravity contribution in X direction is minimal (~0g)
-    inputs.accelerationXMetersPerSecSq = accelerationX.getValueAsDouble() * 9.80665;
+    // Store acceleration as WPILib LinearAcceleration measure
+    // Note: Pigeon returns in G's. The measure includes gravity component.
+    // On level ground, the X-component of gravity is minimal (~0g)
+    inputs.accelerationX = accelerationX.getValue();
 
     inputs.odometryYawTimestamps =
         yawTimestampQueue.stream().mapToDouble((Double value) -> value).toArray();

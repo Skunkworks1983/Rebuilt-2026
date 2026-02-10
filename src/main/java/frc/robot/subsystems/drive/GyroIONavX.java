@@ -7,6 +7,8 @@
 
 package frc.robot.subsystems.drive;
 
+import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
+
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -29,8 +31,8 @@ public class GyroIONavX implements GyroIO {
     inputs.connected = navX.isConnected();
     inputs.yawPosition = Rotation2d.fromDegrees(-navX.getYaw());
     inputs.yawVelocityRadPerSec = Units.degreesToRadians(-navX.getRawGyroZ());
-    // NavX does not provide linear acceleration in this configuration
-    inputs.accelerationXMetersPerSecSq = 0.0; 
+    // NavX does not provide linear acceleration in this configuration, set to zero using WPILib units
+    inputs.accelerationX = MetersPerSecondPerSecond.zero();
 
     inputs.odometryYawTimestamps =
         yawTimestampQueue.stream().mapToDouble((Double value) -> value).toArray();

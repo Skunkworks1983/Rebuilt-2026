@@ -1,5 +1,6 @@
 package frc.robot.subsystems.drive;
 
+import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import edu.wpi.first.math.util.Units;
@@ -30,8 +31,8 @@ public class GyroIOSim implements GyroIO {
     inputs.yawPosition = gyroSimulation.getGyroReading();
     inputs.yawVelocityRadPerSec =
         Units.degreesToRadians(gyroSimulation.getMeasuredAngularVelocity().in(RadiansPerSecond));
-    // Simulation doesn't provide accelerationX, leave at default 0.0
-    inputs.accelerationXMetersPerSecSq = 0.0;
+    // Simulation doesn't provide accelerationX, set to zero using WPILib units
+    inputs.accelerationX = MetersPerSecondPerSecond.zero();
 
     inputs.odometryYawTimestamps = PhoenixUtil.getSimulationOdometryTimeStamps();
     inputs.odometryYawPositions = gyroSimulation.getCachedGyroReadings();
