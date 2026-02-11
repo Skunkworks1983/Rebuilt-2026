@@ -262,7 +262,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
     // Default command, normal field-relative drive
     JoystickButton collectorIntake;
-    JoystickButton indexerIntake;
+    JoystickButton reverseIndexer;
 
     if (Constants.controlScheme == Constants.ControlScheme.OI) {
       drive.setDefaultCommand(
@@ -273,18 +273,19 @@ public class RobotContainer {
               () -> rightJoystick.getX())); // Confirm if negitive or not
 
       collectorIntake = new JoystickButton(buttonJoystick, Constants.collectorIntakeButtonID);
-      indexerIntake = new JoystickButton(buttonJoystick, Constants.IndexerIntakeButtonID);
+      reverseIndexer = new JoystickButton(buttonJoystick, Constants.IndexerIntakeButtonID);
 
       Trigger shoot = new JoystickButton(leftJoystick, 1);
-      Trigger alignShot = new JoystickButton(rightJoystick, 1);
-      indexerIntake.whileTrue(new IndexerReverse(indexer));
+      Trigger collect = new JoystickButton(rightJoystick, 1);
+      Trigger index = new JoystickButton(leftJoystick, 2);
+      reverseIndexer.whileTrue(new IndexerReverse(indexer));
 
       // alignShot.whileTrue(
       //     DriveCommands.joystickDriveAimedHub(
       //         drive, shooter, () -> -leftJoystick.getY(), () -> -leftJoystick.getX()));
 
-      alignShot.whileTrue(
-          Commands.parallel(new CollectorIntake(collector), new IndexerIntake(indexer)));
+      collect.whileTrue(new CollectorIntake(collector));
+      index.whileTrue( new IndexerIntake(indexer));
       shoot.whileTrue(SimpleShoot.simpleShoot(shooter));
 
     } else {
@@ -297,7 +298,7 @@ public class RobotContainer {
               () -> -xboxController.getRightX()));
 
       collectorIntake = new JoystickButton(xboxController, 1);
-      indexerIntake = new JoystickButton(xboxController, 2);
+      reverseIndexer = new JoystickButton(xboxController, 2);
     }
 
     // collectorIntake.whileTrue(new CollectorIntake(collector));

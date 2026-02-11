@@ -10,6 +10,7 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -21,6 +22,7 @@ import edu.wpi.first.units.measure.Voltage;
 public class IndexerTalonIO implements IndexerIO {
   private final TalonFX intakeMotor;
   private final VelocityVoltage velocityRequest = new VelocityVoltage(0.0);
+  private final DutyCycleOut dutyCycleRequest = new DutyCycleOut(0);
 
   private final StatusSignal<AngularVelocity> indexerVelocity;
   private final StatusSignal<Voltage> indexerAppliedVolts;
@@ -84,4 +86,11 @@ public class IndexerTalonIO implements IndexerIO {
   public void setPID(Slot0Configs gains) {
     tryUntilOk(5, () -> intakeMotor.getConfigurator().apply(gains));
   }
+
+  @Override
+  public void dutyCycle(double percent) {
+    intakeMotor.setControl(dutyCycleRequest.withOutput(percent).withEnableFOC(true));
+  }
+
+  
 }

@@ -16,4 +16,5 @@ public class IndexerConstants {
 
   public static final InvertedValue motorInvert = InvertedValue.Clockwise_Positive;
   public static final int motorID = 43;
+  public static final double defaultDutyCycle = 0.7;
 }

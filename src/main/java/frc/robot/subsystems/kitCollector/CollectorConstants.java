@@ -15,4 +15,5 @@ public class CollectorConstants {
   public static final AngularVelocity defaultCollectorVelocity = RotationsPerSecond.of(50);
   public static final int motorID = 44;
   public static final InvertedValue motorInvert = InvertedValue.Clockwise_Positive;
+  public static final double defaultDutyCycle = 0.5;
 }

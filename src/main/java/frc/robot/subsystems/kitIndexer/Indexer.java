@@ -58,4 +58,8 @@ public class Indexer extends SubsystemBase {
   public void setSpeed(AngularVelocity velocity) {
     io.intake(velocity);
   }
+
+  public void dutyCycle(double percent) {
+    io.dutyCycle(percent);
+  }
 }

@@ -16,8 +16,8 @@ public class IndexerIntake extends Command {
   private final Indexer indexer;
   private final LoggedTunableNumber indexerVelocity =
       new LoggedTunableNumber(
-          "Indexer/VelocitySetpointRotPerSec",
-          IndexerConstants.defaultIndexerVelocity.in(RotationsPerSecond));
+          "Indexer/Duty Cycle",
+          IndexerConstants.defaultDutyCycle);
 
   /** Creates a new IndexerIntake. */
   public IndexerIntake(Indexer indexer) {
@@ -33,13 +33,13 @@ public class IndexerIntake extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    indexer.setSpeed(RotationsPerSecond.of(indexerVelocity.get()));
+    indexer.dutyCycle(indexerVelocity.get());
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    indexer.setSpeed(RotationsPerSecond.of(0));
+    indexer.dutyCycle(0);
   }
 
   // Returns true when the command should end.

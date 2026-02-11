@@ -32,4 +32,6 @@ public interface IndexerIO {
   public default void intake(AngularVelocity velocity) {}
 
   public default void setPID(Slot0Configs gains) {}
+
+  public default void dutyCycle(double percent) {};
 }

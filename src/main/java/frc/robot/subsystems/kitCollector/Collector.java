@@ -63,4 +63,8 @@ public class Collector extends SubsystemBase {
   public void setVelocity(AngularVelocity velocity) {
     io.intake(velocity);
   }
+
+  public void setDutyCycle(double percent){
+    io.dutyCycle(percent);
+  }
 }

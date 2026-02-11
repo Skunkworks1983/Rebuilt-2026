@@ -32,4 +32,6 @@ public interface CollectorIO {
   public default void intake(AngularVelocity velocity) {}
 
   public default void setPID(Slot0Configs configs) {}
+
+  public default void dutyCycle(double percent) {};
 }

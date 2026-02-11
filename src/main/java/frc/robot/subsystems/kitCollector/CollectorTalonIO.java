@@ -10,6 +10,7 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -17,10 +18,12 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.DutyCycle;
 
 public class CollectorTalonIO implements CollectorIO {
   private final TalonFX collectorMotor;
   private final VelocityVoltage velocityRequest = new VelocityVoltage(0.0);
+  private final DutyCycleOut dutyCycleRequest = new DutyCycleOut(0);
 
   private final StatusSignal<AngularVelocity> collectorVelocity;
   private final StatusSignal<Voltage> collectorAppliedVolts;
@@ -83,6 +86,13 @@ public class CollectorTalonIO implements CollectorIO {
   @Override
   public void intake(AngularVelocity velocity) {
     collectorMotor.setControl(velocityRequest.withVelocity(velocity));
+  }
+
+  
+
+  @Override
+  public void dutyCycle(double percent) {
+    collectorMotor.setControl(dutyCycleRequest.withOutput(percent).withEnableFOC(true));
   }
 
   @Override
