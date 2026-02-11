@@ -23,9 +23,6 @@ public class DriveAimedGoal extends Command {
   private final PIDController yawController;
   private final Shooter shooter;
 
-  double YAW_CONTROL_KP = 1.0;
-  double YAW_CONTROL_KD = 0.0;
-
   public DriveAimedGoal(
       Drive drive, Shooter shooter, DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
     this.drive = drive;
@@ -35,7 +32,7 @@ public class DriveAimedGoal extends Command {
 
     yawController =
         new PIDController(
-            YAW_CONTROL_KP, 0.0, YAW_CONTROL_KD);
+            DriveControlConstants.yawControlKp, 0.0, DriveControlConstants.yawControlKD);
     yawController.enableContinuousInput(-Math.PI, Math.PI);
 
     addRequirements(drive, shooter);
