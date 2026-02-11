@@ -14,13 +14,17 @@ import edu.wpi.first.units.measure.AngularVelocity;
 
 /** An Interface for collector constants */
 public class CollectorConstants {
-/** An Interface for collector constants */
-public class CollectorConstants {
   // Collector side
   public static enum Side {
     LEFT,
     RIGHT;
   }
+
+  // Collectors Sim Position on Robot
+  public static final Translation2d collectorLeftOriginTranslation =
+      new Translation2d(Inches.of(13), Inches.of(2));
+  public static final Translation2d collectorRightOriginTranslation =
+      new Translation2d(Inches.of(-13), Inches.of(2));
 
   // Collectors side
   public static Side collectorSide;
@@ -61,6 +65,7 @@ public class CollectorConstants {
   public final AngularVelocity CollectorIntakeSpeed;
 
   public CollectorConstants() {
+
     // Collector Side
     collectorSide = Side.LEFT;
 

@@ -7,7 +7,6 @@ package frc.robot.commands.collectorCommands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.collector.Collector;
 import java.util.function.DoubleSupplier;
-import java.util.function.DoubleSupplier;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AutomaticStateChange extends Command {

@@ -8,10 +8,7 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.commands.collectorCommands.AutomaticStateChange;
-import frc.robot.commands.collectorCommands.BothCollectorsUpState;
 import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
-import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
 import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
@@ -49,14 +46,6 @@ public class Collector extends SubsystemBase {
   private CollectorModule leftCollector;
   private CollectorModule rightCollector;
 
-  public static enum Mode {
-    MANUAL,
-    AUTOMATIC,
-    ALWAYSUP;
-  }
-
-  Mode mode = Mode.MANUAL;
-
   /**
    * Collector subsystem.
    *
@@ -71,7 +60,7 @@ public class Collector extends SubsystemBase {
    */
   public Collector(CollectorModuleIO leftIO, CollectorModuleIO rightIO) {
     // Collector Modules
-    leftCollector = new CollectorModule(leftIO); // lllllllllllll
+    leftCollector = new CollectorModule(leftIO);
     rightCollector = new CollectorModule(rightIO);
 
     collectorLigamentLeft =
@@ -102,31 +91,5 @@ public class Collector extends SubsystemBase {
    */
   public CollectorModule getRightCollector() {
     return rightCollector;
-  }
-
-  // Changes State
-  public void changeMode(Mode desiredMode) {
-    mode = desiredMode;
-    // Collector State Control
-    switch (desiredMode) {
-      case ALWAYSUP:
-        new BothCollectorsUpState(this);
-        break;
-
-      case MANUAL:
-        break;
-
-      case AUTOMATIC:
-        new AutomaticStateChange(this, direction);
-        break;
-
-      default:
-        break;
-    }
-  }
-
-  // Gets State
-  public Mode getMode() {
-    return mode;
   }
 }

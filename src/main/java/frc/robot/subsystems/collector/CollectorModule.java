@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems.collector;
 
-import static edu.wpi.first.units.Units.RadiansPerSecond;
-
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
