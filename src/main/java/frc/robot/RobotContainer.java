@@ -183,10 +183,6 @@ public class RobotContainer {
                 new VisionIOPhotonVisionSim(
                     VisionConstants.camera0Name,
                     VisionConstants.robotToCamera0,
-                    simulation::getSimulatedDriveTrainPose),
-                new VisionIOPhotonVisionSim(
-                    VisionConstants.camera1Name,
-                    VisionConstants.robotToCamera1,
                     simulation::getSimulatedDriveTrainPose));
         shooter =
             new Shooter(
@@ -287,9 +283,9 @@ public class RobotContainer {
       //     DriveCommands.joystickDriveAimedHub(
       //         drive, shooter, () -> -leftJoystick.getY(), () -> -leftJoystick.getX()));
 
-      alignShot.whileTrue(Commands.parallel(new CollectorIntake(collector), new IndexerIntake(indexer)));
-  shoot.whileTrue(SimpleShoot.simpleShoot(shooter));
-
+      alignShot.whileTrue(
+          Commands.parallel(new CollectorIntake(collector), new IndexerIntake(indexer)));
+      shoot.whileTrue(SimpleShoot.simpleShoot(shooter));
 
     } else {
 

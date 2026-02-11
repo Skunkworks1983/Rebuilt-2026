@@ -54,16 +54,18 @@ public class ShooterConstants {
 
   public static final MomentOfInertia flywheelInertia = KilogramSquareMeters.of(0.01);
 
-  public static final Pose3d shooterInitalPosition = new Pose3d(
-      new Translation3d(Meters.of(0), Meters.of(0), Meters.of(0.5)),
-      new Rotation3d(Degrees.of(0), Degrees.of(-40), Degrees.of(0)));
+  public static final Pose3d shooterInitalPosition =
+      new Pose3d(
+          new Translation3d(Meters.of(0), Meters.of(0), Meters.of(0.5)),
+          new Rotation3d(Degrees.of(0), Degrees.of(-40), Degrees.of(0)));
 
   public static final Distance flywheelRadius = Inches.of(4);
 
   public static final Slot0Configs simFlywheelConfigs = new Slot0Configs().withKP(30);
 
-  public static final LinearVelocity flywheelMaxLinearVelocity = MetersPerSecond.of(
-      RotationsPerSecond.of(85.66667).in(RadiansPerSecond) * flywheelRadius.in(Meters));
+  public static final LinearVelocity flywheelMaxLinearVelocity =
+      MetersPerSecond.of(
+          RotationsPerSecond.of(85.66667).in(RadiansPerSecond) * flywheelRadius.in(Meters));
 
   public static final AngularVelocity defaultForwardFlywheelVelocity = RotationsPerSecond.of(55);
   public static final AngularVelocity defaultBackFlywheelVelocity = RotationsPerSecond.of(55);

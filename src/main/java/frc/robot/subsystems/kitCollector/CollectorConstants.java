@@ -3,7 +3,6 @@ package frc.robot.subsystems.kitCollector;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import com.ctre.phoenix6.signals.InvertedValue;
-
 import edu.wpi.first.units.measure.AngularVelocity;
 
 public class CollectorConstants {
