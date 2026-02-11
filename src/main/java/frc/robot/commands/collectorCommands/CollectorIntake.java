@@ -5,6 +5,7 @@
 package frc.robot.commands.collectorCommands;
 
 import static edu.wpi.first.units.Units.DegreesPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -43,10 +44,10 @@ public class CollectorIntake extends Command {
   public void end(boolean interrupted) {
     collector
         .getLeftCollector()
-        .setCollectorVelocity(AngularVelocity.ofBaseUnits(0, DegreesPerSecond));
+        .setCollectorVelocity(RotationsPerSecond.of(0));
     collector
         .getRightCollector()
-        .setCollectorVelocity(AngularVelocity.ofBaseUnits(0, DegreesPerSecond));
+        .setCollectorVelocity(RotationsPerSecond.of(0));
   }
 
   // Returns true when the command should end.

@@ -30,39 +30,39 @@ public class CollectorConstants {
   public static Side collectorSide;
 
   // Hardware ID's
-  public final int turnMotorID;
-  public final int intakeMotorLowerID;
-  public final int intakeMotorUpperID;
+  public int turnMotorID;
+  public int intakeMotorLowerID;
+  public int intakeMotorUpperID;
 
   // Gear ratio's
-  public final double turnMotorGearRatio;
+  public double turnMotorGearRatio;
 
   // Turn PID
-  public final double turnkP;
-  public final double turnkD;
-  public final double turnkI;
+  public double turnkP;
+  public double turnkD;
+  public double turnkI;
 
   // Lower intake PID
-  public final double lowerkP;
-  public final double lowerkD;
-  public final double lowerkI;
+  public double lowerkP;
+  public double lowerkD;
+  public double lowerkI;
 
   // Upper intake PID
-  public final double upperkP;
-  public final double upperkD;
-  public final double upperkI;
+  public double upperkP;
+  public double upperkD;
+  public double upperkI;
 
   // Feed forward
-  public final double turnkS;
-  public final double turnkV;
-  public final double turnkA;
+  public double turnkS;
+  public double turnkV;
+  public double turnkA;
 
   // Position
-  public final Angle CollectorUpPos;
-  public final Angle CollectorDownPos;
+  public Angle CollectorUpPos;
+  public Angle CollectorDownPos;
 
   // Collector Intake Speeds
-  public final AngularVelocity CollectorIntakeSpeed;
+  public AngularVelocity CollectorIntakeSpeed;
 
   public CollectorConstants() {
 
