@@ -1,11 +1,13 @@
 package frc.robot.subsystems.collector;
 
+import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Meters;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
@@ -34,7 +36,9 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
       AbstractDriveTrainSimulation driveTrain,
       CollectorSide collectorSide,
       CollectorConstants constants) {
+
     super(constants);
+
     this.collectorSide = collectorSide;
     // collectorSide, 0 = left, 1 = right
     switch (collectorSide) {
@@ -67,7 +71,7 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
     intakeMotorLowerSim = new DCMotorSim(linearSystemIntakeMotors, DCMotor.getKrakenX60(1), stdevs);
     intakeMotorUpperSim = new DCMotorSim(linearSystemIntakeMotors, DCMotor.getKrakenX60(1), stdevs);
     turnMotorSim = new DCMotorSim(linearSystemTurnMotor, DCMotor.getKrakenX60(1), stdevs);
-    turnMotorSim.setAngle(1.5708);
+    turnMotorSim.setAngle(0);
   }
 
   /**
@@ -88,6 +92,7 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
    */
   @Override
   public void updateInputs(CollectorIOInputs input) {
+
     var turnMotorTalonFX = super.turnMotor.getSimState();
     var intakeMotorLowerTalonFX = super.intakeMotorLower.getSimState();
     var intakeMotorUpperTalonFX = super.intakeMotorUpper.getSimState();
@@ -110,26 +115,28 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
     intakeMotorLowerTalonFX.setRotorVelocity(intakeMotorLowerSim.getAngularVelocity());
     intakeMotorUpperTalonFX.setRotorVelocity(intakeMotorUpperSim.getAngularVelocity());
 
+    turnMotorTalonFX.setRawRotorPosition(turnMotorSim.getAngularPosition());
+
     // Turn Motor Inputs
     input.turnConnected = true;
     input.turnPosition = Rotation2d.fromRadians(turnMotorSim.getAngularPositionRad());
-    input.turnVelocityRadPerSec = turnMotorSim.getAngularVelocityRadPerSec();
-    input.turnAppliedVolts = turnMotorTalonFX.getMotorVoltage();
-    input.turnCurrentAmps = turnMotorSim.getCurrentDrawAmps();
+    input.turnVelocity = turnMotorSim.getAngularVelocity();
+    input.turnAppliedVolts = turnMotorTalonFX.getMotorVoltageMeasure();
+    input.turnCurrentAmps = Current.ofBaseUnits(turnMotorSim.getCurrentDrawAmps(), Amps);
 
     // Lower Intake Motor Inputs
     input.lowerConnected = true;
-    input.lowerPositionRad = intakeMotorLowerSim.getAngularPositionRad();
-    input.lowerVelocityRadPerSec = intakeMotorLowerSim.getAngularVelocityRadPerSec();
-    input.lowerAppliedVolts = intakeMotorLowerTalonFX.getMotorVoltage();
-    input.lowerCurrentAmps = intakeMotorLowerSim.getCurrentDrawAmps();
+    input.lowerPositionRad = intakeMotorLowerSim.getAngularPosition();
+    input.lowerVelocity = intakeMotorLowerSim.getAngularVelocity();
+    input.lowerAppliedVolts = intakeMotorLowerTalonFX.getMotorVoltageMeasure();
+    input.lowerCurrentAmps = Current.ofBaseUnits(intakeMotorLowerSim.getCurrentDrawAmps(), Amps);
 
     // Upper Intake Motor Inputs
     input.upperConnected = true;
-    input.upperPositionRad = intakeMotorUpperSim.getAngularPositionRad();
-    input.upperVelocityRadPerSec = intakeMotorUpperSim.getAngularVelocityRadPerSec();
-    input.upperAppliedVolts = intakeMotorUpperTalonFX.getMotorVoltage();
-    input.upperCurrentAmps = intakeMotorUpperSim.getCurrentDrawAmps();
+    input.upperPositionRad = intakeMotorUpperSim.getAngularPosition();
+    input.upperVelocity = intakeMotorUpperSim.getAngularVelocity();
+    input.upperAppliedVolts = intakeMotorUpperTalonFX.getMotorVoltageMeasure();
+    input.upperCurrentAmps = Current.ofBaseUnits(intakeMotorUpperSim.getCurrentDrawAmps(), Amps);
 
     if (turnMotorSim.getAngularPositionRad() < minimumCollectorRadiansToCollect
         && intakeMotorLowerSim.getAngularVelocityRadPerSec() > minimumCollectorSpeedToCollect) {

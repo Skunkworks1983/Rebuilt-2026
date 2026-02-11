@@ -16,7 +16,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
  * <ul>
  *   Only to be used with The talonFX collector IO for the right collector
  */
-public class CollectorTalonRightConstants implements CollectorConstants {
+public class CollectorTalonRightConstants extends CollectorConstants {
   // Collector side
   public static Side collectorSide = Side.RIGHT; // TODO: set constants
 
@@ -29,7 +29,7 @@ public class CollectorTalonRightConstants implements CollectorConstants {
   public static final double turnMotorGearRatio = 0.0;
 
   // Turn PID
-  public static final double turnkP = 1;
+  public static final double turnkP = 50;
   public static final double turnkD = 0.0;
   public static final double turnkI = 0.0;
 
@@ -49,8 +49,8 @@ public class CollectorTalonRightConstants implements CollectorConstants {
   public static final double turnkA = 0.01;
 
   // Position
-  public static final Angle CollectorUpPos = Degrees.of(90);
-  public static final Angle CollectorDownPos = Degrees.of(0);
+  public static final Angle CollectorUpPos = Degrees.of(0);
+  public static final Angle CollectorDownPos = Degrees.of(90);
 
   // Collector Intake Speeds
   public static final AngularVelocity CollectorIntakeSpeed = RotationsPerSecond.of(130);

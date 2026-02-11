@@ -5,6 +5,7 @@
 package frc.robot.subsystems.collector.collectorConstants;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import edu.wpi.first.math.geometry.Translation2d;
@@ -12,7 +13,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 
 /** An Interface for collector constants */
-public interface CollectorConstants {
+public class CollectorConstants {
   // Collector side
   public static enum Side {
     LEFT,
@@ -21,20 +22,22 @@ public interface CollectorConstants {
 
   public static Side collectorSide = Side.LEFT;
 
-  public static Translation2d collectorLeftOriginTranslation = null;
+  public static Translation2d collectorLeftOriginTranslation =
+      new Translation2d(Inches.of(13), Inches.of(2));
 
-  public static Translation2d collectorRightOriginTranslation = null;
+  public static Translation2d collectorRightOriginTranslation =
+      new Translation2d(Inches.of(-13), Inches.of(2));
 
   // Hardware ID's
-  public static final int turnMotorID = 0;
-  public static final int intakeMotorLowerID = 0;
-  public static final int intakeMotorUpperID = 0;
+  public static final int turnMotorID = 42;
+  public static final int intakeMotorLowerID = 43;
+  public static final int intakeMotorUpperID = 44;
 
   // Gear ratio's
   public static final double turnMotorGearRatio = 0.0;
 
   // Turn PID
-  public static final double turnkP = 1;
+  public static final double turnkP = 50;
   public static final double turnkD = 0.0;
   public static final double turnkI = 0.0;
 
@@ -55,7 +58,7 @@ public interface CollectorConstants {
 
   // Position
   public static final Angle CollectorUpPos = Degrees.of(0);
-  public static final Angle CollectorDownPos = Degrees.of(0);
+  public static final Angle CollectorDownPos = Degrees.of(90);
 
   // Collector Intake Speeds
   public static final AngularVelocity CollectorIntakeSpeed = RotationsPerSecond.of(0);

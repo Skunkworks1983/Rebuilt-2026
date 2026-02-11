@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems.collector;
 
-import static edu.wpi.first.units.Units.RadiansPerSecond;
-
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
@@ -40,7 +38,7 @@ public class CollectorModule {
 
   public void periodic() {
     collectorIO.updateInputs(inputs);
-    Logger.processInputs("Collector/Module " + collectorIO.getSide().name(), inputs);
+    Logger.processInputs("Collector/Module/ " + hashCode() + collectorIO.getSide(), inputs);
   }
 
   /** Gets Constants */
@@ -63,7 +61,7 @@ public class CollectorModule {
    * @return -Angular Velocity
    */
   public AngularVelocity getVelocityOfIntakeLower() {
-    return RadiansPerSecond.of(inputs.lowerVelocityRadPerSec);
+    return inputs.lowerVelocity;
   }
 
   /**
@@ -72,7 +70,7 @@ public class CollectorModule {
    * @return -Angular Velocity
    */
   public AngularVelocity getVelocityOfIntakeUpper() {
-    return RadiansPerSecond.of(inputs.upperVelocityRadPerSec);
+    return inputs.upperVelocity;
   }
 
   /**
@@ -81,7 +79,7 @@ public class CollectorModule {
    * @return -Angular Velocity
    */
   public AngularVelocity getVelocityOfTurn() {
-    return RadiansPerSecond.of(inputs.turnVelocityRadPerSec);
+    return inputs.turnVelocity;
   }
 
   /**

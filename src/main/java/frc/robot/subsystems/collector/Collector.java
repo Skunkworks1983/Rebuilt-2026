@@ -56,7 +56,7 @@ public class Collector extends SubsystemBase {
     ALWAYSUP;
   }
 
-  Mode mode = Mode.ALWAYSUP;
+  Mode mode = Mode.MANUAL;
 
   /**
    * Collector subsystem.
@@ -72,7 +72,7 @@ public class Collector extends SubsystemBase {
    */
   public Collector(CollectorModuleIO leftIO, CollectorModuleIO rightIO, DoubleSupplier direction) {
     // Collector Modules
-    leftCollector = new CollectorModule(leftIO);
+    leftCollector = new CollectorModule(leftIO); // lllllllllllll
     rightCollector = new CollectorModule(rightIO);
 
     // Drivebase direction

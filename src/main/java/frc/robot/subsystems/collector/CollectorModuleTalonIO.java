@@ -15,11 +15,11 @@ import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
+import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
 import frc.robot.subsystems.collector.collectorConstants.CollectorConstants.Side;
 import frc.robot.subsystems.drive.PhoenixOdometryThread;
@@ -53,6 +53,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
   private final StatusSignal<AngularVelocity> turnVelocity;
   private final StatusSignal<Voltage> turnAppliedVolts;
   private final StatusSignal<Current> turnCurrent;
+  private final StatusSignal<Double> turnError;
 
   // Inputs from lower intake motor
   private final StatusSignal<Angle> lowerPosition;
@@ -86,9 +87,11 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     side = constants.collectorSide;
 
     // Instantiates all motors and hardware objects
-    turnMotor = new TalonFX(constants.turnMotorID);
-    intakeMotorLower = new TalonFX(constants.intakeMotorLowerID);
-    intakeMotorUpper = new TalonFX(constants.intakeMotorUpperID);
+    turnMotor = new TalonFX(constants.turnMotorID, TunerConstants.getTunerConstants().getCANBus());
+    intakeMotorLower =
+        new TalonFX(constants.intakeMotorLowerID, TunerConstants.getTunerConstants().getCANBus());
+    intakeMotorUpper =
+        new TalonFX(constants.intakeMotorUpperID, TunerConstants.getTunerConstants().getCANBus());
 
     // Config for turnMotor
     var turnConfig = new TalonFXConfiguration();
@@ -137,6 +140,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     turnVelocity = turnMotor.getVelocity();
     turnAppliedVolts = turnMotor.getMotorVoltage();
     turnCurrent = turnMotor.getStatorCurrent();
+    turnError = turnMotor.getClosedLoopError();
 
     // Create drive status signals
     lowerPosition = intakeMotorLower.getPosition();
@@ -164,7 +168,8 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
         lowerCurrent,
         turnVelocity,
         turnAppliedVolts,
-        turnCurrent);
+        turnCurrent,
+        turnError);
     ParentDevice.optimizeBusUtilizationForAll(turnMotor, intakeMotorLower, intakeMotorUpper);
   }
 
@@ -186,23 +191,24 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     // Update turn inputs
     inputs.turnConnected = turnConnectedDebounce.calculate(turnStatus.isOK());
     inputs.turnPosition = Rotation2d.fromRotations(turnPosition.getValueAsDouble());
-    inputs.turnVelocityRadPerSec = Units.rotationsToRadians(turnVelocity.getValueAsDouble());
-    inputs.turnAppliedVolts = turnAppliedVolts.getValueAsDouble();
-    inputs.turnCurrentAmps = turnCurrent.getValueAsDouble();
+    inputs.turnVelocity = turnVelocity.getValue();
+    inputs.turnAppliedVolts = turnAppliedVolts.getValue();
+    inputs.turnCurrentAmps = turnCurrent.getValue();
+    inputs.turnClosedLoopError = turnError.getValueAsDouble();
 
     // Update lower intake inputs
     inputs.lowerConnected = driveConnectedDebounce.calculate(lowerStatus.isOK());
-    inputs.lowerPositionRad = Units.rotationsToRadians(lowerPosition.getValueAsDouble());
-    inputs.lowerVelocityRadPerSec = Units.rotationsToRadians(lowerVelocity.getValueAsDouble());
-    inputs.lowerAppliedVolts = lowerAppliedVolts.getValueAsDouble();
-    inputs.lowerCurrentAmps = lowerCurrent.getValueAsDouble();
+    inputs.lowerPositionRad = lowerPosition.getValue();
+    inputs.lowerVelocity = lowerVelocity.getValue();
+    inputs.lowerAppliedVolts = lowerAppliedVolts.getValue();
+    inputs.lowerCurrentAmps = lowerCurrent.getValue();
 
     // Update upper intake inputs
     inputs.upperConnected = driveConnectedDebounce.calculate(upperStatus.isOK());
-    inputs.upperPositionRad = Units.rotationsToRadians(upperPosition.getValueAsDouble());
-    inputs.upperVelocityRadPerSec = Units.rotationsToRadians(upperVelocity.getValueAsDouble());
-    inputs.upperAppliedVolts = upperAppliedVolts.getValueAsDouble();
-    inputs.upperCurrentAmps = upperCurrent.getValueAsDouble();
+    inputs.upperPositionRad = upperPosition.getValue();
+    inputs.upperVelocity = upperVelocity.getValue();
+    inputs.upperAppliedVolts = upperAppliedVolts.getValue();
+    inputs.upperCurrentAmps = upperCurrent.getValue();
   }
 
   /** Gets Constants */
@@ -255,7 +261,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     // I know this methods a bit silly rn but its gonna be replaced by magnet sensors anyway
     switch (side) {
       case LEFT:
-        if (turnPosition.getValue().lte(constants.CollectorDownPos)) {
+        if (!turnPosition.getValue().lte(constants.CollectorDownPos)) {
           return true;
         } else {
           return false;
@@ -279,6 +285,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
 
   // Sets collector up
   public void goUp() {
+    System.out.println("BREAK!!!!");
     setCollectorPos(constants.CollectorUpPos);
   }
 

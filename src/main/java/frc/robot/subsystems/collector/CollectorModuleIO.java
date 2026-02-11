@@ -4,9 +4,16 @@
 
 package frc.robot.subsystems.collector;
 
+import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.DegreesPerSecond;
+import static edu.wpi.first.units.Units.Volts;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Voltage;
 import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
 import frc.robot.subsystems.collector.collectorConstants.CollectorConstants.Side;
 import org.littletonrobotics.junction.AutoLog;
@@ -22,23 +29,24 @@ public interface CollectorModuleIO {
     // Turn Motor Inputs
     public boolean turnConnected = false;
     public Rotation2d turnPosition = Rotation2d.kZero;
-    public double turnVelocityRadPerSec = 0.0;
-    public double turnAppliedVolts = 0.0;
-    public double turnCurrentAmps = 0.0;
+    public AngularVelocity turnVelocity = DegreesPerSecond.of(0.0);
+    public Voltage turnAppliedVolts = Volts.of(0.0);
+    public Current turnCurrentAmps = Amps.of(0.0);
+    public double turnClosedLoopError = 0.0;
 
     // Lower Intake Motor Inputs
     public boolean lowerConnected = false;
-    public double lowerPositionRad = 0.0;
-    public double lowerVelocityRadPerSec = 0.0;
-    public double lowerAppliedVolts = 0.0;
-    public double lowerCurrentAmps = 0.0;
+    public Angle lowerPositionRad = Degrees.of(0.0);
+    public AngularVelocity lowerVelocity = DegreesPerSecond.of(0.0);
+    public Voltage lowerAppliedVolts = Volts.of(0.0);
+    public Current lowerCurrentAmps = Amps.of(0.0);
 
     // Upper Intake Motor Inputs
     public boolean upperConnected = false;
-    public double upperPositionRad = 0.0;
-    public double upperVelocityRadPerSec = 0.0;
-    public double upperAppliedVolts = 0.0;
-    public double upperCurrentAmps = 0.0;
+    public Angle upperPositionRad = Degrees.of(0.0);
+    public AngularVelocity upperVelocity = DegreesPerSecond.of(0.0);
+    public Voltage upperAppliedVolts = Volts.of(0.0);
+    public Current upperCurrentAmps = Amps.of(0.0);
   }
 
   /**
