@@ -210,7 +210,10 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
    *
    * @param velocity -Angular Velocity
    */
-  public void setCollectorVelocity(AngularVelocity velocity) {}
+  public void setCollectorVelocity(AngularVelocity velocity) {
+    intakeMotorLower.setControl(new VelocityVoltage(velocity));
+    intakeMotorUpper.setControl(new VelocityVoltage(velocity));
+  }
 
   /**
    * Sets the collectors position

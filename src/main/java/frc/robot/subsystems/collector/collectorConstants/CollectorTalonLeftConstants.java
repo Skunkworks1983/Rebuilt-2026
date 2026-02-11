@@ -27,7 +27,7 @@ public class CollectorTalonLeftConstants extends CollectorConstants {
 
   // Gear ratio's
   public final double turnMotorGearRatio;
-  
+
   // Turn PID
   public final double turnkP;
   public final double turnkD;

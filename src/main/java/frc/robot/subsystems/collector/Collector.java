@@ -20,7 +20,6 @@ public class Collector extends SubsystemBase {
 
   private CollectorModule leftCollector;
   private CollectorModule rightCollector;
-  private DoubleSupplier direction;
 
   public static enum Mode {
     MANUAL,
@@ -42,13 +41,10 @@ public class Collector extends SubsystemBase {
    * @param leftIO left collector
    * @param rightIO right collector
    */
-  public Collector(CollectorModuleIO leftIO, CollectorModuleIO rightIO, DoubleSupplier direction) {
+  public Collector(CollectorModuleIO leftIO, CollectorModuleIO rightIO) {
     // Collector Modules
     leftCollector = new CollectorModule(leftIO);
     rightCollector = new CollectorModule(rightIO);
-
-    // Drivebase direction
-    this.direction = direction;
   }
 
   @Override
@@ -69,31 +65,5 @@ public class Collector extends SubsystemBase {
    */
   public CollectorModule getRightCollector() {
     return rightCollector;
-  }
-
-  // Changes State
-  public void changeMode(Mode desiredMode) {
-    mode = desiredMode;
-    // Collector State Control
-    switch (desiredMode) {
-      case ALWAYSUP:
-        new BothCollectorsUpState(this);
-        break;
-
-      case MANUAL:
-        break;
-
-      case AUTOMATIC:
-        new AutomaticStateChange(this, direction);
-        break;
-
-      default:
-        break;
-    }
-  }
-
-  // Gets State
-  public Mode getMode() {
-    return mode;
   }
 }
