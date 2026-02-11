@@ -286,7 +286,7 @@ public class RobotContainer {
 
       collect.whileTrue(new CollectorIntake(collector));
       index.whileTrue( new IndexerIntake(indexer));
-      shoot.whileTrue(SimpleShoot.simpleShoot(shooter));
+      shoot.whileTrue(new DriveAimedGoal(drive, shooter));
 
     } else {
 

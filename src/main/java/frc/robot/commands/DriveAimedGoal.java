@@ -1,0 +1,85 @@
+package frc.robot.commands;
+
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.simpleShooter.Shooter;
+import frc.robot.subsystems.simpleShooter.ShooterConstants;
+import frc.robot.util.ShooterCalculations;
+import frc.robot.util.ShooterCalculations.NoPitchShooterControls;
+import frc.robot.util.ShooterCalculations.ShooterControls;
+import java.util.function.DoubleSupplier;
+import org.littletonrobotics.junction.Logger;
+
+
+public class DriveAimedGoal extends Command {
+  private final Drive drive;
+  private final DoubleSupplier xSupplier;
+  private final DoubleSupplier ySupplier;
+  private final PIDController yawController;
+  private final Shooter shooter;
+
+  double YAW_CONTROL_KP = 1.0;
+  double YAW_CONTROL_KD = 0.0;
+
+  public DriveAimedGoal(
+      Drive drive, Shooter shooter, DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
+    this.drive = drive;
+    this.shooter = shooter;
+    this.xSupplier = xSupplier;
+    this.ySupplier = ySupplier;
+
+    yawController =
+        new PIDController(
+            YAW_CONTROL_KP, 0.0, YAW_CONTROL_KD);
+    yawController.enableContinuousInput(-Math.PI, Math.PI);
+
+    addRequirements(drive, shooter);
+  }
+
+  @Override
+  public void initialize() {
+    yawController.reset();
+  }
+
+  @Override
+  public void execute() {
+    var currentPose = drive.getPose();
+    var currentSpeeds = drive.getChassisSpeeds(); // Robot Relative
+
+    NoPitchShooterControls controls =
+        ShooterCalculations.getNoPitchShooterControls(currentPose, currentSpeeds, drive.getAngularVelocity(), ShooterConstants.shooterPitch);
+
+    shooter.setShooterControls(controls.shooterVelocity(), controls.shooterVelocity());
+
+    double currentYawRadians = drive.getRotation().getRadians();
+    double targetYawRadians = controls.driveYaw().getRadians();
+
+    Logger.recordOutput("Auto Shoot/Target Yaw", targetYawRadians);
+    Logger.recordOutput("Auto Shoot/Current Yaw", currentYawRadians);
+
+    double omegaCmd = yawController.calculate(currentYawRadians, targetYawRadians);
+
+    ChassisSpeeds targetSpeeds =
+        DriveUtils.getChassisSpeeds(
+            drive, xSupplier, ySupplier, omegaCmd // Override rotation
+            );
+
+    boolean isRed = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red;
+
+    Rotation2d fieldCentricOffset = isRed ? Rotation2d.fromDegrees(180) : Rotation2d.fromDegrees(0);
+
+    drive.runVelocity(
+        ChassisSpeeds.fromFieldRelativeSpeeds(
+            targetSpeeds, drive.getRotation().plus(fieldCentricOffset)));
+  }
+
+  @Override
+  public void end(boolean interrupted) {
+    yawController.close();
+  }
+}
