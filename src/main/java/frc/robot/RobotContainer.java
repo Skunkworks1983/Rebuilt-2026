@@ -250,6 +250,10 @@ public class RobotContainer {
      TalonFX collector = new TalonFX(46, "rio");
     collector.getConfigurator().apply(config);
 
+    m_orchestra.addInstrument(forwardShoot);
+    m_orchestra.addInstrument(backShoot);
+    m_orchestra.addInstrument(indexer);
+    m_orchestra.addInstrument(collector);
     m_orchestra.addInstrument(flDrive);
     m_orchestra.addInstrument(flSteer);
     m_orchestra.addInstrument(frDrive);
@@ -259,10 +263,6 @@ public class RobotContainer {
     m_orchestra.addInstrument(brDrive);
     m_orchestra.addInstrument(brSteer);
     
-    m_orchestra.addInstrument(forwardShoot);
-    m_orchestra.addInstrument(backShoot);
-    m_orchestra.addInstrument(indexer);
-    m_orchestra.addInstrument(collector);
 
 
     var status = m_orchestra.loadMusic("notification.chrp");
