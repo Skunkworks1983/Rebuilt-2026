@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.collector;
 
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static frc.robot.util.PhoenixUtil.tryUntilOk;
 
 import com.ctre.phoenix6.BaseStatusSignal;
@@ -247,23 +249,11 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
    * </ul>
    */
   public boolean isCollectorDown() {
-    // I know this methods a bit silly rn but its gonna be replaced by magnet sensors anyway
-    switch (side) {
-      case LEFT:
-        if (turnPosition.getValue().lte(constants.CollectorDownPos)) {
-          return true;
-        } else {
-          return false;
-        }
-
-      case RIGHT:
-        if (turnPosition.getValue().lte(constants.CollectorDownPos)) {
-          return true;
-        } else {
-          return false;
-        }
-      default:
-        return false;
+    if (turnMotor.getPosition().getValue().gte(constants.CollectorDownPos.plus(Degrees.of(2))) 
+        || turnMotor.getPosition().getValue().gte(constants.CollectorDownPos.minus(Degrees.of(2)))) {
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -274,7 +264,6 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
 
   // Sets collector up
   public void goUp() {
-    System.out.println("BREAK!!!!");
     setCollectorPos(constants.CollectorUpPos);
   }
 

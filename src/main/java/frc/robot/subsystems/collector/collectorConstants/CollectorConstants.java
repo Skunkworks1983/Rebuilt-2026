@@ -27,7 +27,7 @@ public class CollectorConstants {
       new Translation2d(Inches.of(-13), Inches.of(2));
 
   // Collectors side
-  public static Side collectorSide;
+  public Side collectorSide;
 
   // Hardware ID's
   public int turnMotorID;
@@ -78,7 +78,7 @@ public class CollectorConstants {
     turnMotorGearRatio = 0.0;
 
     // Turn PID
-    turnkP = 0.0;
+    turnkP = 1;
     turnkD = 0.0;
     turnkI = 0.0;
 

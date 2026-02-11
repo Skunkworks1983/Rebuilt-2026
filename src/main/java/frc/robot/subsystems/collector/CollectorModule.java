@@ -38,7 +38,7 @@ public class CollectorModule {
 
   public void periodic() {
     collectorIO.updateInputs(inputs);
-    Logger.processInputs("Collector/Module/ " + hashCode() + collectorIO.getSide(), inputs);
+    Logger.processInputs("Collector/Module/ " + collectorIO.getSide(), inputs);
   }
 
   /** Gets Constants */

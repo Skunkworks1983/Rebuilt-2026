@@ -23,7 +23,7 @@ public class CollectorTalonLeftConstants extends CollectorConstants {
     collectorSide = Side.LEFT;
 
     // Hardware ID's
-    turnMotorID = 0;
+    turnMotorID = 2;
     intakeMotorLowerID = 0;
     intakeMotorUpperID = 0;
 
@@ -31,8 +31,8 @@ public class CollectorTalonLeftConstants extends CollectorConstants {
     turnMotorGearRatio = 0.0;
 
     // Turn PID
-    turnkP = 0.0;
-    turnkD = 0.0;
+    turnkP = 5;
+    turnkD = 0;
     turnkI = 0.0;
 
     // Lower intake PID
@@ -52,7 +52,7 @@ public class CollectorTalonLeftConstants extends CollectorConstants {
 
     // Position
     CollectorUpPos = Degrees.of(0);
-    CollectorDownPos = Degrees.of(0);
+    CollectorDownPos = Degrees.of(90);
 
     // Collector Intake Speeds
     CollectorIntakeSpeed = RotationsPerSecond.of(0);
