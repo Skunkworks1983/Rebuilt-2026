@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -28,8 +29,8 @@ import frc.robot.commands.collectorCommands.LeftCollectorDownState;
 import frc.robot.commands.collectorCommands.RightCollectorDownState;
 import frc.robot.subsystems.collector.Collector;
 import frc.robot.subsystems.collector.Collector.Mode;
-import frc.robot.subsystems.collector.CollectorModuleIO;
 import frc.robot.subsystems.collector.CollectorModuleSimIO;
+import frc.robot.subsystems.collector.CollectorModuleSimIO.CollectorSide;
 import frc.robot.subsystems.collector.CollectorModuleTalonIO;
 import frc.robot.subsystems.collector.collectorConstants.CollectorTalonLeftConstants;
 import frc.robot.subsystems.collector.collectorConstants.CollectorTalonRightConstants;
@@ -66,6 +67,8 @@ public class RobotContainer {
   private final Joystick leftJoystick;
   private final Joystick rightJoystick;
   private final Joystick buttonPanel;
+
+  private Mechanism2d mechanism2d = new Mechanism2d(0, 0);
 
   /**
    * Xbox Controller for simulation.
@@ -175,8 +178,11 @@ public class RobotContainer {
 
         collector =
             new Collector(
-                new CollectorModuleSimIO(simulation, 0),
-                new CollectorModuleSimIO(simulation, 1));
+                new CollectorModuleSimIO(
+                    simulation, CollectorSide.Left, new CollectorTalonLeftConstants()),
+                new CollectorModuleSimIO(
+                    simulation, CollectorSide.Right, new CollectorTalonRightConstants()),
+                () -> drive.getDirection());
         break;
 
       default:
@@ -195,7 +201,9 @@ public class RobotContainer {
 
         collector =
             new Collector(
-                new CollectorModuleIO() {}, new CollectorModuleIO() {});
+                new CollectorModuleSimIO(
+                    simulation, CollectorSide.Left, new CollectorTalonLeftConstants()), new CollectorModuleSimIO(
+                    simulation, CollectorSide.Right, new CollectorTalonRightConstants()));
         break;
     }
 
@@ -256,6 +264,10 @@ public class RobotContainer {
         new JoystickButton(buttonPanel, Constants.JoystickConstants.CollectorManualModeID);
     JoystickButton autoModeSwitch =
         new JoystickButton(buttonPanel, Constants.JoystickConstants.CollectorAutoModeID);
+    JoystickButton manualModeSwitch =
+        new JoystickButton(buttonPanel, Constants.JoystickConstants.CollectorManualModeID);
+    JoystickButton autoModeSwitch =
+        new JoystickButton(buttonPanel, Constants.JoystickConstants.CollectorAutoModeID);
 
     autoModeSwitch.onTrue(new AutomaticStateChange(collector, () -> drive.getDirection()));
 
@@ -266,6 +278,7 @@ public class RobotContainer {
 
     // Collector Intake Button
     new JoystickButton(buttonPanel, Constants.JoystickConstants.CollectorIntakeID)
+        .whileTrue(new CollectorIntake(collector));
         .whileTrue(new CollectorIntake(collector));
 
     // Right Collector Down
