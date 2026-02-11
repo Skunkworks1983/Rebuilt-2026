@@ -250,10 +250,10 @@ public class RobotContainer {
      TalonFX collector = new TalonFX(46, "rio");
     collector.getConfigurator().apply(config);
 
-    m_orchestra.addInstrument(forwardShoot);
-    m_orchestra.addInstrument(backShoot);
-    m_orchestra.addInstrument(indexer);
-    m_orchestra.addInstrument(collector);
+    m_orchestra.addInstrument(forwardShoot, 1);
+    m_orchestra.addInstrument(backShoot, 1);
+    m_orchestra.addInstrument(indexer, 1);
+    m_orchestra.addInstrument(collector, 1);
     m_orchestra.addInstrument(flDrive);
     m_orchestra.addInstrument(flSteer);
     m_orchestra.addInstrument(frDrive);
