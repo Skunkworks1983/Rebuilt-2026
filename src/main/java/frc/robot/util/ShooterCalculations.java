@@ -2,6 +2,7 @@ package frc.robot.util;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
@@ -16,10 +17,12 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterConstants;
+import frc.robot.util.FieldConstants.HubCorners;
+import org.littletonrobotics.junction.Logger;
 
 /**
  * Utility class for calculating shooter setpoints based on field geometry and robot state. Includes
@@ -192,7 +195,7 @@ public class ShooterCalculations {
    */
   public static ShooterControls getApexConstrainedShooterControls(
       Pose2d odometryPose, ChassisSpeeds robotRelativeSpeeds) {
-    
+
     Rotation2d currentRobotRotation = odometryPose.getRotation();
 
     Translation2d robotLinearVelocityField =
@@ -201,11 +204,15 @@ public class ShooterCalculations {
             .rotateBy(currentRobotRotation);
 
     Translation2d futureTranslation =
-        odometryPose.getTranslation().plus(robotLinearVelocityField.times(ShooterSolverConstants.defaultShotLatencySec));
+        odometryPose
+            .getTranslation()
+            .plus(robotLinearVelocityField.times(ShooterSolverConstants.defaultShotLatencySec));
 
     Rotation2d futureRotation =
         currentRobotRotation.plus(
-            Rotation2d.fromRadians(robotRelativeSpeeds.omegaRadiansPerSecond * ShooterSolverConstants.defaultShotLatencySec));
+            Rotation2d.fromRadians(
+                robotRelativeSpeeds.omegaRadiansPerSecond
+                    * ShooterSolverConstants.defaultShotLatencySec));
 
     Pose2d futurePose = new Pose2d(futureTranslation, futureRotation);
 
@@ -233,7 +240,8 @@ public class ShooterCalculations {
     double relativeGoalZ = goal.getZ() - ShooterConstants.shooterInitalPosition.getZ();
 
     // Apex height calculation
-    double heightTrajectoryPeak = relativeGoalZ + ShooterSolverConstants.hubHeightClearance.in(Meters);
+    double heightTrajectoryPeak =
+        relativeGoalZ + ShooterSolverConstants.hubHeightClearance.in(Meters);
     heightTrajectoryPeak = Math.max(heightTrajectoryPeak, 0.1);
 
     double launchVelocityZ = Math.sqrt(2.0 * ShooterSolverConstants.gravity * heightTrajectoryPeak);
@@ -414,82 +422,156 @@ public class ShooterCalculations {
    * Calculates shooter controls for the "transfer" shot (shooting into the alliance zone from the
    * transfer zone). Includes logic to avoid hitting the hub structure.
    *
+   * <p>It is attempted to first calculate shooter pitch from the current velocity (beause we can
+   * change pitch faster than velocity and it uses less amperage) If this fails, we set pitch to be
+   * the midpoint of the possible pitch range, and caluclate needed flywheel velocity (this ensures
+   * that we minimize having to change flywheel velocity)
+   *
    * @param speeds Current robot chassis speeds.
    * @param odometryPose Current robot pose.
-   * @param shooterInterporlations Lookup table helper for transfer shots.
+   * @param flywheelLinearVelocity Current flywheel linear velocity
    * @return Calculated {@link ShooterControls}.
    */
   public static ShooterControls getShooterControlsTransfer(
-      ChassisSpeeds speeds, Pose2d odometryPose, ShooterInterpolation shooterInterporlations) {
+      ChassisSpeeds speeds, Pose2d odometryPose, LinearVelocity flywheelLinearVelocity) {
     Translation2d target =
         DriverStation.getAlliance().get() == Alliance.Red
             ? FieldConstants.redFuelTransferTarget
             : FieldConstants.blueFuelTransferTarget;
-    Translation2d hubCenter =
+
+    HubCorners hubCorners =
         DriverStation.getAlliance().get() == Alliance.Red
-            ? FieldConstants.redHubCenter
-            : FieldConstants.blueHubCenter;
-
+            ? FieldConstants.redHubCorners
+            : FieldConstants.blueHubCorners;
     Translation2d targetVector = target.minus(odometryPose.getTranslation());
-
+    Logger.recordOutput("TransferShot/TargetVector", targetVector);
+    Logger.recordOutput("TransferShot/Target", target);
     Rotation2d rawYaw = targetVector.getAngle();
-    Distance distance = Meters.of(targetVector.getNorm());
+    Distance distanceToTarget = Meters.of(targetVector.getNorm());
 
-    Translation2d robotToHub = hubCenter.minus(odometryPose.getTranslation());
-    Translation2d hubInShotFrame = robotToHub.rotateBy(rawYaw.unaryMinus());
+    Rotation2d finalYaw = rawYaw;
 
-    double xHub = hubInShotFrame.getX();
-    double yHub = hubInShotFrame.getY();
+    // PART 1: YAW/ACTUAL TARGET CALCULATER (Hub avoidance)
+    Translation2d[] corners =
+        new Translation2d[] {
+          hubCorners.getAllianceSideLeft(),
+          hubCorners.getAllianceSideRight(),
+          hubCorners.getNeutralSideLeft(),
+          hubCorners.getNeutralSideRight()
+        };
 
-    boolean hitsHub = xHub > 0 && Math.abs(yHub) < FieldConstants.halfHubWidth.in(Meters);
+    Angle hubFurthestCCWAngle = Radians.of(-Double.MAX_VALUE); // Most positive (CCW) angle to hub
+    Angle hubFurthestCWAngle = Radians.of(Double.MAX_VALUE); // Most negative (CW) angle to hub
+    Distance minDistToHub = Meters.of(Double.MAX_VALUE);
 
-    if (hitsHub) {
-      Rotation2d hubAngularWidth =
-          new Rotation2d(
-              Radians.of(Math.atan2(FieldConstants.halfHubWidth.in(Meters), robotToHub.getNorm())));
+    for (Translation2d corner : corners) {
+      Translation2d robotToCorner = corner.minus(odometryPose.getTranslation());
 
-      Rotation2d leftEdgeOption =
-          rawYaw.minus(hubAngularWidth.minus(ShooterSolverConstants.hubSafetyAngle));
-      Rotation2d rightEdgeOption =
-          rawYaw.plus(hubAngularWidth.plus(ShooterSolverConstants.hubSafetyAngle));
+      Distance distToCorner = Meters.of(robotToCorner.getNorm());
+      if (distToCorner.lt(minDistToHub)) {
+        minDistToHub = distToCorner;
+      }
 
-      // Choose the one closer to the original aim
-      rawYaw =
-          Math.abs(rawYaw.minus(leftEdgeOption).getRadians())
-                  < Math.abs(rawYaw.minus(rightEdgeOption).getRadians())
-              ? leftEdgeOption
-              : rightEdgeOption;
+      Rotation2d angleToCorner =
+          robotToCorner.getAngle().minus(rawYaw); // Using Rotation2d to handle angle wrapping
+
+      Angle angleToCornerMeasure = Radians.of(angleToCorner.getRadians());
+
+      if (angleToCornerMeasure.gt(hubFurthestCCWAngle)) hubFurthestCCWAngle = angleToCornerMeasure;
+      if (angleToCornerMeasure.lt(hubFurthestCWAngle)) hubFurthestCWAngle = angleToCornerMeasure;
     }
 
-    AngularVelocity shooterVelocity = shooterInterporlations.getShooterVelocityTransfer(distance);
-    Angle shooterPitch = shooterInterporlations.getPivotAngleTransfer(distance);
+    // 5. Collision Detection & Avoidance Logic
+    boolean hubIsCloser = minDistToHub.lt(distanceToTarget);
+    boolean lineOfSightBlocked =
+        hubFurthestCWAngle.lt(Radians.of(0)) && hubFurthestCCWAngle.gt(Radians.of(0));
 
-    // Get field relative chassis speeds
-    Translation2d robotVel =
-        new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond)
-            .rotateBy(odometryPose.getRotation());
-    double fieldVx = robotVel.getX();
-    double fieldVy = robotVel.getY();
+    if (hubIsCloser && lineOfSightBlocked) {
+      Angle rightCandidate =
+          hubFurthestCWAngle.minus(ShooterSolverConstants.transferShotSafetyMargin);
+      Angle leftCandidate =
+          hubFurthestCCWAngle.plus(ShooterSolverConstants.transferShotSafetyMargin);
 
-    // Unit vectors of the shot direction (field frame)
-    double ux = rawYaw.getCos();
-    double uy = rawYaw.getSin();
+      // Pick the smaller magnitude adjustment
+      if (Math.abs(rightCandidate.in(Radians)) <= Math.abs(leftCandidate.in(Radians))) {
+        finalYaw = rawYaw.plus(Rotation2d.fromRadians(rightCandidate.in(Radians)));
+      } else {
+        finalYaw = rawYaw.plus(Rotation2d.fromRadians(leftCandidate.in(Radians)));
+      }
 
-    // Components of the robot velocity along the shot-forward and shot-lateral
-    // directions
-    double parallelComponent = fieldVx * ux + fieldVy * uy; // Velocity along direction of shot
-    double perpendicularComponent = fieldVx * -uy + fieldVy * ux; // Velocity perpendicular to shot
+      double cosYaw = finalYaw.getCos();
+      double netTargetDx = target.getX() - odometryPose.getTranslation().getX();
 
-    // Flywheel parallel velocity
-    double shooterLinear =
-        shooterVelocity.in(RadiansPerSecond)
-            * ShooterConstants.flywheelRadius.in(Meters)
-            * Math.cos(shooterPitch.in(Radians));
+      if (Math.abs(cosYaw) > 1e-3) {
+        double distanceToNewTarget = netTargetDx / cosYaw;
 
-    Angle compensationAngle =
-        Radians.of(Math.atan2(perpendicularComponent, shooterLinear + parallelComponent));
+        if (distanceToNewTarget > 0.0) { // intersection is in front of robot
+          distanceToTarget = Meters.of(distanceToNewTarget);
+        }
+      }
+    }
 
+    // PART 2: BALLISTIC SOLVER
+    // This solves the standard projectile range equation
+    double distanceToTargetMeters = distanceToTarget.in(Meters);
+    double currentFlywheelLienarVelocity = flywheelLinearVelocity.in(MetersPerSecond);
+    Angle calculatedPitch = null;
+
+    double calculatedFlywheelVelocity = currentFlywheelLienarVelocity;
+
+    // Attempt 1: Solve for Shooter Pitch given Current Velocity
+    double flywheelLinearVelocitySquared =
+        currentFlywheelLienarVelocity * currentFlywheelLienarVelocity;
+    double sinArgument =
+        (ShooterSolverConstants.gravity * distanceToTargetMeters) / flywheelLinearVelocitySquared;
+
+    // If sinArgument > 1, the target is out of range for this velocity
+    if (Math.abs(sinArgument) <= 1.0) {
+      double twoTheta = Math.asin(sinArgument);
+
+      // This is the "Low Arc" (Direct shot)
+      Angle lowArc = Radians.of(0.5 * twoTheta);
+
+      // This is the "High Arc" (90 degrees - Low Arc)
+      Angle highArc = Radians.of(Math.toRadians(90)).minus(lowArc);
+
+      if (isValidPitch(lowArc)) {
+        calculatedPitch = lowArc;
+      } else if (isValidPitch(highArc)) {
+        calculatedPitch = highArc;
+      }
+    }
+
+    // Attempt 2: Solve for Flywheel Velocity given Midpoint Pitch
+    if (calculatedPitch == null) {
+      double minRad = ShooterConstants.minShooterPitch.in(Radians);
+      double maxRad = ShooterConstants.maxShooterPitch.in(Radians);
+      Angle midpointPitch = Radians.of((minRad + maxRad) / 2.0);
+
+      double sinTwoTheta = Math.sin(2.0 * midpointPitch.in(Radians));
+
+      if (Math.abs(sinTwoTheta) > 1e-6) { // Avoid divide by zero
+        double requiredV =
+            Math.sqrt((ShooterSolverConstants.gravity * distanceToTargetMeters) / sinTwoTheta);
+        calculatedFlywheelVelocity = requiredV;
+        calculatedPitch = midpointPitch;
+      } else {
+        // Should basically never happen unless pitch is 0 or 90
+        calculatedFlywheelVelocity = 0;
+        calculatedPitch = midpointPitch;
+      }
+    }
     return new ShooterControls(
-        shooterVelocity, shooterPitch, rawYaw.minus(new Rotation2d(compensationAngle)), true);
+        RadiansPerSecond.of(
+            calculatedFlywheelVelocity / ShooterConstants.flywheelRadius.in(Meters)),
+        calculatedPitch,
+        finalYaw,
+        true);
+  }
+
+  private static boolean isValidPitch(Angle pitch) {
+    double pitchDeg = pitch.in(Degrees);
+    return pitchDeg >= ShooterConstants.minShooterPitch.in(Degrees)
+        && pitchDeg <= ShooterConstants.maxShooterPitch.in(Degrees);
   }
 }

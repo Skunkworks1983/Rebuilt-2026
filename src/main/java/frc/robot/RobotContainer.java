@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveAimedGoal;
+import frc.robot.commands.DriveAimedTransfer;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.Shooter.HubVelocityPitch;
 import frc.robot.commands.TestPathCommands;
@@ -244,6 +245,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     Trigger shootGoalButton;
+    Trigger shootTransferButton;
     // Default command, normal field-relative drive
     if (Constants.controlScheme == Constants.ControlScheme.OI) {
       drive.setDefaultCommand(
@@ -269,10 +271,14 @@ public class RobotContainer {
               () -> -xboxController.getLeftX(),
               () -> -xboxController.getRightX()));
       shootGoalButton = new JoystickButton(xboxController, XboxController.Button.kA.value);
+      shootTransferButton = new JoystickButton(xboxController, XboxController.Button.kY.value);
       Trigger shootButton = new JoystickButton(xboxController, XboxController.Button.kB.value);
 
       shootGoalButton.whileTrue(
           new DriveAimedGoal(
+              drive, shooter, () -> -xboxController.getLeftY(), () -> -xboxController.getLeftX()));
+      shootTransferButton.whileTrue(
+          new DriveAimedTransfer(
               drive, shooter, () -> -xboxController.getLeftY(), () -> -xboxController.getLeftX()));
       shootButton.onTrue(new InstantCommand(this::launchSimFuel));
     }
