@@ -129,6 +129,17 @@ public class CollectorModule {
     return collectorIO.isCollectorDown();
   }
 
+  /**
+   * Checks to see if the collector is down
+   *
+   * <ul>
+   *   <li>This is to help ensure that we only have one collectordown at a time
+   * </ul>
+   */
+  public boolean isCollectorUp() {
+    return collectorIO.isCollectorDown();
+  }
+
   // Sets collector up
   public void goUp() {
     collectorIO.goUp();

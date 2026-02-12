@@ -102,6 +102,17 @@ public interface CollectorModuleIO {
     return false;
   }
 
+  /**
+   * Checks to see if the collector is down
+   *
+   * <ul>
+   *   <li>This is to help ensure that we only have one collectordown at a time
+   * </ul>
+   */
+  public default boolean isCollectorUp() {
+    return false;
+  }
+
   // gets side i.e: left
   public default Side getSide() {
     return null;

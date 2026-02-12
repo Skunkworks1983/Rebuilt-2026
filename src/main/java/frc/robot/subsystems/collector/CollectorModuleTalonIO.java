@@ -257,6 +257,22 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     }
   }
 
+  /**
+   * Checks to see if the collector is down
+   *
+   * <ul>
+   *   <li>This is to help ensure that we only have one collectordown at a time
+   * </ul>
+   */
+  public boolean isCollectorUp() {
+    if (turnMotor.getPosition().getValue().gte(constants.CollectorUpPos.plus(Degrees.of(2))) 
+        || turnMotor.getPosition().getValue().gte(constants.CollectorUpPos.minus(Degrees.of(2)))) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   // Gets side i.e: left
   public Side getSide() {
     return side;
