@@ -54,7 +54,7 @@ public class ShooterSolverConstants {
 
   // SHOT LATENCY MODEL
   /** Default time delay from code trigger to shot release. */
-  public static double defaultShotLatencySec = 0.080;
+  public static double defaultShotLatencySec = 0.1;
 
   /** Minimum reasonable shot latency. */
   public static final double minShotLatencySec = 0.015;
