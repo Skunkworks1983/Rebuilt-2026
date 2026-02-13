@@ -137,7 +137,7 @@ public class CollectorModule {
    * </ul>
    */
   public boolean isCollectorUp() {
-    return collectorIO.isCollectorDown();
+    return collectorIO.isCollectorUp();
   }
 
   // Sets collector up

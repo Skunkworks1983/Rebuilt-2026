@@ -15,6 +15,8 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
@@ -103,6 +105,11 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     var turnMotionMagicConfig = turnConfig.MotionMagic;
     turnMotionMagicConfig.MotionMagicCruiseVelocity = 80;
     turnMotionMagicConfig.MotionMagicAcceleration = 160;
+
+    // Inverts left motor
+    if(side.equals(Side.LEFT)){
+      turnConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    }
 
     // Applying Turn Motor Configs
     tryUntilOk(5, () -> turnMotor.getConfigurator().apply(turnConfig, 0.25));
@@ -249,8 +256,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
    * </ul>
    */
   public boolean isCollectorDown() {
-    if (turnMotor.getPosition().getValue().gte(constants.CollectorDownPos.plus(Degrees.of(2))) 
-        || turnMotor.getPosition().getValue().gte(constants.CollectorDownPos.minus(Degrees.of(2)))) {
+    if (turnMotor.getPosition().getValue().gte(constants.CollectorDownPos.minus(Degrees.of(10)))) {
       return true;
     } else {
       return false;
@@ -258,15 +264,14 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
   }
 
   /**
-   * Checks to see if the collector is down
+   * Checks to see if the collector is up
    *
    * <ul>
    *   <li>This is to help ensure that we only have one collectordown at a time
    * </ul>
    */
   public boolean isCollectorUp() {
-    if (turnMotor.getPosition().getValue().gte(constants.CollectorUpPos.plus(Degrees.of(2))) 
-        || turnMotor.getPosition().getValue().gte(constants.CollectorUpPos.minus(Degrees.of(2)))) {
+    if (turnMotor.getPosition().getValue().lte(constants.CollectorUpPos.plus(Degrees.of(10)))) {
       return true;
     } else {
       return false;

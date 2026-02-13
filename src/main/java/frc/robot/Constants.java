@@ -53,14 +53,14 @@ public final class Constants {
     // Joystick ID's
     public static final int LeftJoystick = 0;
     public static final int RightJoystick = 0;
-    public static final int ButtonJoystick = 2;
+    public static final int ButtonJoystick = 0;
 
     // Collector button joystick ID's
-    public static final int CollectorManualModeID = 100;
-    public static final int CollectorAutoModeID = 100;
-    public static final int CollectorIntakeID = 100;
-    public static final int CollectorRightDownID = 1;
-    public static final int CollectorLeftDownID = 2;
-    public static final int CollectorBothUpID = 100;
+    public static final int CollectorManualModeID = 0;
+    public static final int CollectorAutoModeID = 0;
+    public static final int CollectorIntakeID = 0;
+    public static final int CollectorRightDownID = 0;
+    public static final int CollectorLeftDownID = 0;
+    public static final int CollectorBothUpID = 0;
   }
 }
