@@ -16,8 +16,10 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.IndexerCommand;
 import frc.robot.commands.TestPathCommands;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -26,6 +28,11 @@ import frc.robot.subsystems.drive.GyroIOSim;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.drive.ModuleIOTalonFXSim;
+import frc.robot.subsystems.indexer.Indexer;
+import frc.robot.subsystems.indexer.IndexerConstants;
+import frc.robot.subsystems.indexer.IndexerIO;
+import frc.robot.subsystems.indexer.IndexerIOSim;
+import frc.robot.subsystems.indexer.IndexerIOTalonFX;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
@@ -46,10 +53,12 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final Vision vision;
+  private final Indexer indexer;
 
   // Controller
   private final Joystick leftJoystick;
   private final Joystick rightJoystick;
+  private final Joystick buttonJoystick;
 
   /**
    * Xbox Controller for simulation.
@@ -70,11 +79,13 @@ public class RobotContainer {
     if (Constants.controlScheme == Constants.ControlScheme.OI) {
       leftJoystick = new Joystick(0);
       rightJoystick = new Joystick(1);
+      buttonJoystick = new Joystick(2);
       xboxController = null;
     } else {
       xboxController = new XboxController(0);
       leftJoystick = null;
       rightJoystick = null;
+      buttonJoystick = null;
     }
     switch (Constants.currentMode) {
       case REAL:
@@ -94,6 +105,8 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive, new VisionIOLimelight(VisionConstants.camera0Name, drive::getRotation));
+
+        indexer = new Indexer(new IndexerIOTalonFX(IndexerConstants.indexerMotorID));
 
         // This is a solution to the vision-drive cross dependency issue that hurts my eys, but it
         // does work
@@ -149,6 +162,9 @@ public class RobotContainer {
                     VisionConstants.camera1Name,
                     VisionConstants.robotToCamera1,
                     simulation::getSimulatedDriveTrainPose));
+
+        indexer = new Indexer(new IndexerIOSim(IndexerConstants.indexerMotorID));
+
         break;
 
       default:
@@ -164,6 +180,8 @@ public class RobotContainer {
                 (pose) -> {});
 
         vision = new Vision(drive, new VisionIO() {}, new VisionIO() {});
+
+        indexer = new Indexer(new IndexerIO() {});
         break;
     }
 
@@ -198,6 +216,7 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    JoystickButton runIndexer;
     // Default command, normal field-relative drive
     if (Constants.controlScheme == Constants.ControlScheme.OI) {
       drive.setDefaultCommand(
@@ -206,6 +225,8 @@ public class RobotContainer {
               () -> -leftJoystick.getY(), // -X (used to be)
               () -> -leftJoystick.getX(), // -Y (used to be)
               () -> rightJoystick.getX())); // Confirm if negitive or not
+      runIndexer = new JoystickButton(buttonJoystick, IndexerConstants.runIndexerButtonID);
+
     } else {
 
       drive.setDefaultCommand(
@@ -214,7 +235,10 @@ public class RobotContainer {
               () -> -xboxController.getLeftY(),
               () -> -xboxController.getLeftX(),
               () -> -xboxController.getRightX()));
+      runIndexer = new JoystickButton(xboxController, IndexerConstants.runIndexerButtonID);
     }
+
+    runIndexer.whileTrue(new IndexerCommand(indexer));
     Logger.recordOutput("Control Scheme", Constants.controlScheme);
 
     TestPathCommands.publishTestPaths(drive);
