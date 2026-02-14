@@ -5,7 +5,6 @@ import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -14,7 +13,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
@@ -47,8 +45,26 @@ public class ShooterCalculations {
       boolean possibleShot) {}
 
   /**
-   * Calculates shooter controls using an apex-constrained ballistic model. Assumes the shot peaks
-   * at a specific height clearance above the goal.
+   * Calculates shooter controls using an apex-constrained ballistic model. It forces the trajectory
+   * to peak a certain height above the Hub, meaning that it must enter with a downward trajectory
+   *
+   * <h2>Implementation Details </h2>
+   *
+   * <ol>
+   *   <li>Predicts the robot pose at ball release by extrapolating the current chassis speeds
+   *       forward by shot latency.
+   *   <li>Computes the shooter’s field position at release and the horizontal vector from that
+   *       point to the goal.
+   *   <li>Approximates drag by inflating distance
+   *   <li>Forces the trajectory to have an apex above the goal by a fixed clearance and computes
+   *       the required vertical launch velocity and total flight time.
+   *   <li>Use the total flight time to determine the horizontal field-relative launch speed
+   *       required to reach the goal.
+   *   <li>Subtracts the shooter’s instantaneous field-relative velocity (translation and rotation)
+   *       from the desired launch vector to compensate for robot motion.
+   *   <li>Determines the commanded drive yaw, shooter pitch, and flywheel speed from the
+   *       compensated launch velocity.
+   * </ol>
    *
    * @param odometryPose Current robot pose.
    * @param chassisSpeeds Current robot chassis speeds.
@@ -103,6 +119,7 @@ public class ShooterCalculations {
 
     double launchVelocityZ = Math.sqrt(2.0 * ShooterSolverConstants.gravity * heightTrajectoryPeak);
 
+    // Calculate the time for the ball to follow trajectory
     double timeUp = launchVelocityZ / ShooterSolverConstants.gravity;
     double heightDown = Math.max(heightTrajectoryPeak - relativeGoalZ, 0.0);
     double timeDescend = Math.sqrt(2.0 * heightDown / ShooterSolverConstants.gravity);
@@ -113,7 +130,7 @@ public class ShooterCalculations {
     // Speed required if the robot were standing still
     double requiredHorizontalSpeed = distWithDrag / totalTime;
 
-    // Angle
+    // Angle to aim
     Rotation2d angleToGoal = targetVector.getAngle();
     Translation2d stationaryLaunchVectorField =
         new Translation2d(requiredHorizontalSpeed, angleToGoal);
@@ -179,6 +196,25 @@ public class ShooterCalculations {
    * change pitch faster than velocity and it uses less amperage) If this fails, we set pitch to be
    * the midpoint of the possible pitch range, and caluclate needed flywheel velocity (this ensures
    * that we minimize having to change flywheel velocity)
+   *
+   * <h2>Implementation details</h2>
+   *
+   * <ol>
+   *   <li>Selects the transfer target and the hub (blocking geometry) corner points based on
+   *       alliance.
+   *   <li>Computes the raw drive yaw and straight-line distance from the robot pose to the target.
+   *   <li>Computes the robot's angle interval blocked by the hub by finding the most CW and most
+   *       CCW corner angles, and also track the nearest hub-corner distance.
+   *   <li>Decides if the hub blocks the shot line
+   *   <li>If blocked, pick the smaller-magnitude yaw adjustment to clear the hub (with a safety
+   *       margin)
+   *   <li>If yaw is adjusted, recompute an effective distance by intersecting the new yaw ray with
+   *       the target’s X coordinate (only if the intersection is in front of the robot).
+   *   <li>Ballistic solve (range equation): first try to compute pitch using the current flywheel
+   *       linear speed; choose low-arc if valid, otherwise high-arc if valid.
+   *   <li>If no valid pitch exists at the current speed, solve for the required flywheel speed
+   *       using the midpoint pitch
+   * </ol>
    *
    * @param speeds Current robot chassis speeds.
    * @param odometryPose Current robot pose.

@@ -35,6 +35,11 @@ public class FlywheelIOTalonFX implements FlywheelIO {
   private final Debouncer primaryConnectedDebounce =
       new Debouncer(ShooterConstants.disconnectedDebounceTimeSec, Debouncer.DebounceType.kFalling);
 
+  /**
+   * One TalonFX controlled shooter flywheel
+   *
+   * @param flywheelCanID This is primarily used to differentiate the two flywheels in logging
+   */
   public FlywheelIOTalonFX(int flywheelCanID) {
     flywheelMotor = new TalonFX(flywheelCanID, ShooterConstants.shooterCan);
 
