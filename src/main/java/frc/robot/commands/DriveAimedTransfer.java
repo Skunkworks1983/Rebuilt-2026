@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.Shooter.ShooterSetpoints;
 import frc.robot.util.ShooterCalculations;
 import frc.robot.util.ShooterCalculations.ShooterControls;
 import java.util.function.DoubleSupplier;
@@ -29,7 +30,7 @@ public class DriveAimedTransfer extends Command {
 
     yawController =
         new PIDController(
-            DriveControlConstants.yawControlKp, 0.0, DriveControlConstants.yawControlKD);
+            DriveControlConstants.YAW_CONTROL_KP, 0.0, DriveControlConstants.YAW_CONTROL_KD);
     yawController.enableContinuousInput(-Math.PI, Math.PI);
 
     addRequirements(drive, shooter);
@@ -49,7 +50,7 @@ public class DriveAimedTransfer extends Command {
         ShooterCalculations.getShooterControlsTransfer(
             currentSpeeds, currentPose, shooter.getShooterForwardLinearVelocity());
 
-    shooter.setShooterControls(controls);
+    shooter.setShooterSetpoints(new ShooterSetpoints(controls.shooterVelocity(), controls.shooterPitch()));
 
     double currentYawRadians = drive.getRotation().getRadians();
     double targetYawRadians = controls.driveYaw().getRadians();

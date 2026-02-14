@@ -240,8 +240,6 @@ public class ShooterCalculations {
     // Apex height calculation
     double heightTrajectoryPeak =
         relativeGoalZ + ShooterSolverConstants.hubHeightClearance.in(Meters);
-    double heightTrajectoryPeak =
-        relativeGoalZ + ShooterSolverConstants.hubHeightClearance.in(Meters);
     heightTrajectoryPeak = Math.max(heightTrajectoryPeak, 0.1);
 
     double launchVelocityZ = Math.sqrt(2.0 * ShooterSolverConstants.gravity * heightTrajectoryPeak);
