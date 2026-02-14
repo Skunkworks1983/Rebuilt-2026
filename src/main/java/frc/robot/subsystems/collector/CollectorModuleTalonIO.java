@@ -5,7 +5,6 @@
 package frc.robot.subsystems.collector;
 
 import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static frc.robot.util.PhoenixUtil.tryUntilOk;
 
 import com.ctre.phoenix6.BaseStatusSignal;
@@ -16,7 +15,6 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
-
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
@@ -107,7 +105,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     turnMotionMagicConfig.MotionMagicAcceleration = 160;
 
     // Inverts left motor
-    if(side.equals(Side.LEFT)){
+    if (side.equals(Side.LEFT)) {
       turnConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     }
 

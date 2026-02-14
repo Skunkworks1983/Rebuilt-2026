@@ -75,10 +75,10 @@ public class Collector extends SubsystemBase {
   public void periodic() {
     leftCollector.periodic();
     rightCollector.periodic();
-    collectorLigamentLeft.setAngle(getLeftCollector().getPosition()
-      .plus(leftCollector.getConstants().CollectorDownPos));
-    collectorLigamentRight.setAngle(getRightCollector().getPosition()
-      .plus(rightCollector.getConstants().CollectorDownPos));
+    collectorLigamentLeft.setAngle(
+        getLeftCollector().getPosition().plus(leftCollector.getConstants().CollectorDownPos));
+    collectorLigamentRight.setAngle(
+        getRightCollector().getPosition().plus(rightCollector.getConstants().CollectorDownPos));
   }
 
   /**

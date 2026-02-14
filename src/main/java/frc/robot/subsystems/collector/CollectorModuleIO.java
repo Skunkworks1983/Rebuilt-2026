@@ -20,7 +20,9 @@ import org.littletonrobotics.junction.AutoLog;
 
 /**
  * Main CollectorModuleIO, Implemented by both left and right collectors.
- * <ul> Base for other collector IO's as well as sending collector data to advantage scope
+ *
+ * <ul>
+ *   Base for other collector IO's as well as sending collector data to advantage scope
  *
  * @author Liam B
  */

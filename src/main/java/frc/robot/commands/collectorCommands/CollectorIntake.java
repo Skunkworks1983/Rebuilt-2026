@@ -4,10 +4,8 @@
 
 package frc.robot.commands.collectorCommands;
 
-import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
-import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.collector.Collector;
 import frc.robot.subsystems.collector.CollectorModule;
@@ -34,21 +32,17 @@ public class CollectorIntake extends Command {
   @Override
   public void execute() {
     if (leftCollector.isCollectorDown()) {
-      leftCollector
-        .setCollectorVelocity(leftCollector.getConstants().CollectorIntakeSpeed);
+      leftCollector.setCollectorVelocity(leftCollector.getConstants().CollectorIntakeSpeed);
     } else if (rightCollector.isCollectorDown()) {
-      rightCollector
-        .setCollectorVelocity(rightCollector.getConstants().CollectorIntakeSpeed);
+      rightCollector.setCollectorVelocity(rightCollector.getConstants().CollectorIntakeSpeed);
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    leftCollector
-      .setCollectorVelocity(RotationsPerSecond.of(0));
-    rightCollector
-      .setCollectorVelocity(RotationsPerSecond.of(0));
+    leftCollector.setCollectorVelocity(RotationsPerSecond.of(0));
+    rightCollector.setCollectorVelocity(RotationsPerSecond.of(0));
   }
 
   // Returns true when the command should end.

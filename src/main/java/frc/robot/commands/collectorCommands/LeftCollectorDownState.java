@@ -40,6 +40,6 @@ public class LeftCollectorDownState extends Command {
   @Override
   public boolean isFinished() {
     return collector.getLeftCollector().isCollectorDown()
-      && collector.getRightCollector().isCollectorUp();
+        && collector.getRightCollector().isCollectorUp();
   }
 }

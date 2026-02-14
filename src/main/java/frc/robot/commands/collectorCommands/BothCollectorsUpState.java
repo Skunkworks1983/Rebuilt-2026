@@ -40,6 +40,7 @@ public class BothCollectorsUpState extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return collector.getLeftCollector().isCollectorUp() && collector.getRightCollector().isCollectorUp();
+    return collector.getLeftCollector().isCollectorUp()
+        && collector.getRightCollector().isCollectorUp();
   }
 }
