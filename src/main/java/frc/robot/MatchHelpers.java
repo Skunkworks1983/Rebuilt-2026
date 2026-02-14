@@ -2,72 +2,56 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import java.util.Optional;
 
-public class MatchHelpers {
-  private static Alliance alliance;
-  private static Alliance firstInactive;
+public final class MatchHelpers {
+  private static Optional<Alliance> alliance = Optional.empty();
+  private static Optional<Alliance> firstInactive = Optional.empty();
 
-  /**
-   * Uses FMS data to get if the hub is currently active for scoring. This is based on the current
-   * match time
-   *
-   * <p>Warning: The FMS does not send an official match time. When connected to the real field,
-   * this number only changes in full integer second increments. This differs from when in practice,
-   * which is a floating point number. This means that this function is not testable.
-   *
-   * @return is the hub active for the robot's current alliance?
-   */
+  private static final double TRANSITION_SHIFT_END = 130.0;
+  private static final double ENDGAME_START = 30.0;
+  private static final double SHIFT_LENGTH = 25.0;
+
   public static boolean getIsHubActive() {
-    double matchTime = DriverStation.getMatchTime();
+    double t = DriverStation.getMatchTime();
 
-    // Transition Shift
-    if (matchTime >= 130) {
+    // Transition shift
+    if (t >= TRANSITION_SHIFT_END) {
       return true;
     }
 
-    // Shift 1
-    if (130 >= matchTime && matchTime >= 105 && alliance != firstInactive) {
+    // Endgame / last 30 seconds
+    if (t <= ENDGAME_START) {
       return true;
     }
 
-    // Shift 2
-    if (105 >= matchTime && matchTime >= 80 && alliance == firstInactive) {
-      return true;
+    if (alliance.isEmpty() || firstInactive.isEmpty()) {
+      return false;
     }
 
-    // Shift 3
-    if (80 >= matchTime && matchTime >= 55 && alliance != firstInactive) {
-      return true;
-    }
+    // [105,130) shiftIndex 0
+    // [80,105)  shiftIndex 1
+    // [55,80)   shiftIndex 2
+    // [30,55)   shiftIndex 3
+    int shiftIndex = (int) ((TRANSITION_SHIFT_END - t) / SHIFT_LENGTH);
 
-    // Shift 4
-    if (55 >= matchTime && matchTime >= 30 && alliance == firstInactive) {
-      return true;
-    }
-
-    // End Game
-    return true;
+    boolean isShiftOdd = (shiftIndex % 2 == 1);
+    return isShiftOdd
+        ? alliance.get() == firstInactive.get()
+        : alliance.get() != firstInactive.get();
   }
 
   public static void teleopInit() {
-    String gameData;
-    gameData = DriverStation.getGameSpecificMessage();
+    alliance = DriverStation.getAlliance();
+    String gameData = DriverStation.getGameSpecificMessage();
 
-    alliance =
-        DriverStation.getAlliance().isPresent()
-                && DriverStation.getAlliance().get() == Alliance.Blue
-            ? Alliance.Blue
-            : Alliance.Red;
-
-    if (gameData.length() > 0) {
-      switch (gameData.charAt(0)) {
-        case 'B':
-          firstInactive = Alliance.Blue;
-          break;
-        case 'R':
-          firstInactive = Alliance.Red;
-          break;
-      }
+    if (gameData != null && !gameData.isEmpty()) {
+      char c = gameData.charAt(0);
+      if (c == 'B') firstInactive = Optional.of(Alliance.Blue);
+      else if (c == 'R') firstInactive = Optional.of(Alliance.Red);
+      else firstInactive = Optional.empty();
+    } else {
+      firstInactive = Optional.empty();
     }
   }
 }
