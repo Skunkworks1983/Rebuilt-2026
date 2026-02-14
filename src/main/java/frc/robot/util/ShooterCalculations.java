@@ -50,6 +50,7 @@ public class ShooterCalculations {
    * Calculates shooter controls for aiming at the goal using linear interpolation. Compensates for
    * robot velocity to enable shooting while moving.
    *
+   * @deprecated
    * @param speeds Current robot chassis speeds
    * @param odometryPose Current robot pose on the field.
    * @param shooterInterporlations Lookup table helper for goal shots.
@@ -103,6 +104,7 @@ public class ShooterCalculations {
    * Runs a convergence test for the numerical solver across the field to verify stability. Prints
    * results to stdout.
    *
+   * @deprecated
    * @param stepMeters Grid step size for the test in meters.
    * @param prevPitchDegrees Array of initial pitch guesses to test.
    * @param prevFlywheelRotPerSec Array of initial flywheel velocity guesses to test.
@@ -196,7 +198,6 @@ public class ShooterCalculations {
    */
   public static ShooterControls getApexConstrainedShooterControls(
       Pose2d odometryPose, ChassisSpeeds robotRelativeSpeeds) {
-
     Translation3d goal =
         DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red
             ? FieldConstants.redGoal
@@ -237,6 +238,8 @@ public class ShooterCalculations {
     double relativeGoalZ = goal.getZ() - ShooterConstants.shooterInitalPosition.getZ();
 
     // Apex height calculation
+    double heightTrajectoryPeak =
+        relativeGoalZ + ShooterSolverConstants.hubHeightClearance.in(Meters);
     double heightTrajectoryPeak =
         relativeGoalZ + ShooterSolverConstants.hubHeightClearance.in(Meters);
     heightTrajectoryPeak = Math.max(heightTrajectoryPeak, 0.1);
@@ -315,6 +318,7 @@ public class ShooterCalculations {
    * Calculates shooter controls using an iterative numerical solver (Gradient Descent). Solves for
    * pitch and velocity simultaneously to minimize error.
    *
+   * @deprecated
    * @param odometryPose Current robot pose.
    * @param chassisSpeeds Current robot chassis speeds.
    * @param prevShooterPitch Previous pitch setpoint for seeding the solver.

@@ -5,7 +5,6 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
-import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
@@ -60,12 +59,4 @@ public interface FlywheelIO {
    * @param configs controller gains
    */
   public default void setPID(Slot0Configs configs) {}
-
-  /**
-   * Set motion constraints for the flywheel's motion profiling or closed-loop control.
-   *
-   * @deprecated Motion magic has been removed from the flywheel
-   * @param maxAcceleration maximum angular acceleration allowed for the flywheel
-   */
-  public default void setMotionConstraints(AngularAcceleration maxAcceleration) {}
 }

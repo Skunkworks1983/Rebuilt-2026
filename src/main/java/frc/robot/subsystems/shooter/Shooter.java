@@ -12,6 +12,7 @@ import static edu.wpi.first.units.Units.Volts;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
@@ -22,7 +23,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.util.LoggedTunableNumber;
-import frc.robot.util.ShooterCalculations.ShooterControls;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -33,6 +33,17 @@ import org.littletonrobotics.junction.Logger;
  * @author Eddy Walsh
  */
 public class Shooter extends SubsystemBase {
+  /**
+   * Data record representing the calculated control outputs for the shooter subsystem.
+   *
+   * @param shooterVelocity Target flywheel angular velocity.
+   * @param shooterPitch Target pivot angle.
+   */
+  public record ShooterSetpoints(
+      AngularVelocity shooterVelocity,
+      Angle shooterPitch) {}
+
+
   private final FlywheelIO upperFlywheel;
   private final FlywheelIO lowerFlywheel;
 
@@ -86,6 +97,7 @@ public class Shooter extends SubsystemBase {
     this.lowerFlywheel = backFlywheel;
     this.pivot = pivot;
 
+    // Allows for system identification of the flywheel via auto routines (finds torque current required to overcome static friction, current for one unit of velocity, and current for one unit of acceleration)
     sysId =
         new SysIdRoutine(
             new SysIdRoutine.Config(
@@ -147,7 +159,7 @@ public class Shooter extends SubsystemBase {
   /**
    * Gets the linear velocity of the flywheel at its effective radius.
    *
-   * @return The linear velocity in meters per second.
+   * @return The linear velocity of the flywheel
    */
   public LinearVelocity getShooterForwardLinearVelocity() {
     return MetersPerSecond.of(
@@ -226,11 +238,11 @@ public class Shooter extends SubsystemBase {
   /**
    * Sets the shooter setpoints based on the calculated controls.
    *
-   * @param controls The calculated shooter controls containing pitch and velocity.
+   * @param setpoints The calculated shooter controls containing pitch and velocity.
    */
-  public void setShooterControls(ShooterControls controls) {
-    flywheelSetpoint = controls.shooterVelocity();
-    pivotSetpoint = controls.shooterPitch();
+  public void setShooterSetpoints(ShooterSetpoints setpoints) {
+    flywheelSetpoint = setpoints.shooterVelocity();
+    pivotSetpoint = setpoints.shooterPitch();
 
     Logger.recordOutput(
         "Shooter/Velocity Setpoint Rotations Per Sec",

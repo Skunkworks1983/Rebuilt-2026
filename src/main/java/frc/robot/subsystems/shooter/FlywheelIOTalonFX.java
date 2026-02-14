@@ -7,7 +7,6 @@ import static frc.robot.util.PhoenixUtil.tryUntilOk;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.TorqueCurrentFOC;
@@ -15,7 +14,6 @@ import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.filter.Debouncer;
-import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
@@ -102,15 +100,7 @@ public class FlywheelIOTalonFX implements FlywheelIO {
   }
 
   @Override
-  public void setMotionConstraints(AngularAcceleration maxAcceleration) {
-    MotionMagicConfigs config =
-        new TalonFXConfiguration().MotionMagic.withMotionMagicAcceleration(maxAcceleration);
-
-    tryUntilOk(5, () -> flywheelMotor.getConfigurator().apply(config));
-  }
-
-  @Override
   public void setPID(Slot0Configs gains) {
-    // tryUntilOk(5, () -> flywheelMotor.getConfigurator().apply(gains));
+    tryUntilOk(5, () -> flywheelMotor.getConfigurator().apply(gains));
   }
 }

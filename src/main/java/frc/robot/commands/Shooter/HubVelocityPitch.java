@@ -3,6 +3,7 @@ package frc.robot.commands.Shooter;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.Shooter.ShooterSetpoints;
 import frc.robot.util.ShooterCalculations;
 import frc.robot.util.ShooterCalculations.ShooterControls;
 
@@ -23,7 +24,7 @@ public class HubVelocityPitch extends Command {
         ShooterCalculations.getApexConstrainedShooterControls(
             drive.getPose(), drive.getChassisSpeeds());
 
-    shooter.setShooterControls(controls);
+    shooter.setShooterSetpoints(new ShooterSetpoints(controls.shooterVelocity(), controls.shooterPitch()));
   }
 
   @Override
