@@ -10,6 +10,8 @@ import static frc.robot.util.PhoenixUtil.tryUntilOk;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.ParentDevice;
@@ -234,7 +236,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
    * @param angle -WPILib Angle
    */
   public void setCollectorPos(Angle angle) {
-    turnMotor.setControl(new PositionVoltage(angle).withSlot(0));
+    turnMotor.setControl(new MotionMagicVoltage(angle).withSlot(0));
   }
 
   /**
@@ -243,7 +245,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
    * @param velocity -Angular Velocity
    */
   public void setCollectorTurnMotorVelocity(AngularVelocity velocity) {
-    turnMotor.setControl(new VelocityVoltage(velocity).withSlot(0));
+    turnMotor.setControl(new MotionMagicVelocityVoltage(velocity).withSlot(0));
   }
 
   /**
