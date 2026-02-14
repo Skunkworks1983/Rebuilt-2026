@@ -28,7 +28,7 @@ public class AutomaticStateChange extends Command {
   @Override
   public void initialize() {
     currDirection = direction.getAsDouble();
-    count = 0;
+    count = 0; // Count is to give a small wait period before changing which collector is down
   }
 
   // Called every time the scheduler runs while the command is scheduled.

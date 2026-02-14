@@ -256,11 +256,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
    * </ul>
    */
   public boolean isCollectorDown() {
-    if (turnMotor.getPosition().getValue().gte(constants.CollectorDownPos.minus(Degrees.of(10)))) {
-      return true;
-    } else {
-      return false;
-    }
+    return turnMotor.getPosition().getValue().gte(constants.CollectorDownPos.minus(Degrees.of(10)));
   }
 
   /**
@@ -271,11 +267,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
    * </ul>
    */
   public boolean isCollectorUp() {
-    if (turnMotor.getPosition().getValue().lte(constants.CollectorUpPos.plus(Degrees.of(10)))) {
-      return true;
-    } else {
-      return false;
-    }
+    return turnMotor.getPosition().getValue().lte(constants.CollectorUpPos.plus(Degrees.of(10)));
   }
 
   // Gets side i.e: left

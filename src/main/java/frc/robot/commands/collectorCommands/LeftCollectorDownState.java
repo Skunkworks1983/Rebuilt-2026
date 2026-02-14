@@ -39,11 +39,7 @@ public class LeftCollectorDownState extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (collector.getLeftCollector().isCollectorDown()
-        && collector.getRightCollector().isCollectorUp()) {
-      return true;
-    } else {
-      return false;
-    }
+    return collector.getLeftCollector().isCollectorDown()
+      && collector.getRightCollector().isCollectorUp();
   }
 }

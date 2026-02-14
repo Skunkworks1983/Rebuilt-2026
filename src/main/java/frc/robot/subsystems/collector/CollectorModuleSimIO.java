@@ -3,6 +3,8 @@ package frc.robot.subsystems.collector;
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Meters;
 
+import java.util.Map;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -11,7 +13,10 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
+import frc.robot.subsystems.collector.collectorConstants.CollectorConstants.Side;
+
 import org.ironmaple.simulation.IntakeSimulation;
+import org.ironmaple.simulation.IntakeSimulation.IntakeSide;
 import org.ironmaple.simulation.drivesims.AbstractDriveTrainSimulation;
 
 public class CollectorModuleSimIO extends CollectorModuleTalonIO {
@@ -40,29 +45,20 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
     super(constants);
 
     this.collectorSide = collectorSide;
-    // collectorSide, 0 = left, 1 = right
-    switch (collectorSide) {
-      case Left:
-        this.collectorSimulation =
-            IntakeSimulation.OverTheBumperIntake(
-                "Fuel",
-                driveTrain,
-                Meters.of(0.7),
-                Meters.of(0.2),
-                IntakeSimulation.IntakeSide.LEFT,
-                1);
-        break;
-      case Right:
-        this.collectorSimulation =
-            IntakeSimulation.OverTheBumperIntake(
-                "Fuel",
-                driveTrain,
-                Meters.of(0.7),
-                Meters.of(0.2),
-                IntakeSimulation.IntakeSide.RIGHT,
-                1);
-        break;
-    }
+
+    Map<Side, IntakeSimulation.IntakeSide> collectorToSim = Map.of(
+      Side.LEFT, IntakeSide.LEFT,
+      Side.RIGHT, IntakeSide.RIGHT
+    );
+
+    this.collectorSimulation =
+        IntakeSimulation.OverTheBumperIntake(
+            "Fuel",
+            driveTrain,
+            Meters.of(0.7),
+            Meters.of(0.2),
+            collectorToSim.get(collectorSide),
+            1);
 
     LinearSystem linearSystemIntakeMotors = LinearSystemId.createDCMotorSystem(0.002, 0.02);
     LinearSystem linearSystemTurnMotor = LinearSystemId.createDCMotorSystem(1, 1);
