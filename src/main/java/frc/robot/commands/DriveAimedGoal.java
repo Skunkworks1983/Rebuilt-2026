@@ -1,5 +1,8 @@
 package frc.robot.commands;
 
+import static edu.wpi.first.units.Units.DegreesPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -11,10 +14,8 @@ import frc.robot.subsystems.simpleShooter.Shooter;
 import frc.robot.subsystems.simpleShooter.ShooterConstants;
 import frc.robot.util.ShooterCalculations;
 import frc.robot.util.ShooterCalculations.NoPitchShooterControls;
-import frc.robot.util.ShooterCalculations.ShooterControls;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
-
 
 public class DriveAimedGoal extends Command {
   private final Drive drive;
@@ -24,11 +25,11 @@ public class DriveAimedGoal extends Command {
   private final Shooter shooter;
 
   public DriveAimedGoal(
-      Drive drive, Shooter shooter, DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
+      Drive drive, DoubleSupplier xSupplier, DoubleSupplier ySupplier, Shooter shooter) {
     this.drive = drive;
-    this.shooter = shooter;
     this.xSupplier = xSupplier;
     this.ySupplier = ySupplier;
+    this.shooter = shooter;
 
     yawController =
         new PIDController(
@@ -49,10 +50,10 @@ public class DriveAimedGoal extends Command {
     var currentSpeeds = drive.getChassisSpeeds(); // Robot Relative
 
     NoPitchShooterControls controls =
-        ShooterCalculations.getNoPitchShooterControls(currentPose, currentSpeeds, drive.getAngularVelocity(), ShooterConstants.shooterPitch);
+        ShooterCalculations.getNoPitchShooterControls(
+            currentPose, currentSpeeds, drive.getAngularVelocity(), ShooterConstants.shooterPitch);
 
     shooter.setShooterControls(controls.shooterVelocity(), controls.shooterVelocity());
-
     double currentYawRadians = drive.getRotation().getRadians();
     double targetYawRadians = controls.driveYaw().getRadians();
 
@@ -78,5 +79,6 @@ public class DriveAimedGoal extends Command {
   @Override
   public void end(boolean interrupted) {
     yawController.close();
+    shooter.setShooterControls(RadiansPerSecond.of(0), DegreesPerSecond.of(0));
   }
 }

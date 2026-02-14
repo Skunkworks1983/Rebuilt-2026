@@ -4,8 +4,6 @@
 
 package frc.robot.commands;
 
-import static edu.wpi.first.units.Units.RotationsPerSecond;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.kitCollector.Collector;
 import frc.robot.subsystems.kitCollector.CollectorConstants;
@@ -15,9 +13,7 @@ import frc.robot.util.LoggedTunableNumber;
 public class CollectorIntake extends Command {
   private Collector collector;
   LoggedTunableNumber collectorDutyCycle =
-      new LoggedTunableNumber(
-          "Collector/DutyCycle",
-          CollectorConstants.defaultDutyCycle);
+      new LoggedTunableNumber("Collector/DutyCycle", CollectorConstants.defaultDutyCycle);
 
   /** Creates a new collectorIntake. */
   public CollectorIntake(Collector collector) {

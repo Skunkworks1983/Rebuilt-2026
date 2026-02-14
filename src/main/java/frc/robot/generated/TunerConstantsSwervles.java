@@ -75,7 +75,8 @@ public class TunerConstantsSwervles implements TunerConstants {
                   .withStatorCurrentLimitEnable(true));
   private static final CANcoderConfiguration encoderInitialConfigs = new CANcoderConfiguration();
   // Configs for the Pigeon 2; leave this null to skip applying Pigeon 2 configs
-  private static final Pigeon2Configuration pigeonConfigs = null;
+  private static final Pigeon2Configuration pigeonConfigs =
+      new Pigeon2Configuration().withMountPose(new MountPoseConfigs());
 
   // CAN bus that the devices are located on;
   // All swerve devices must share the same CAN bus
@@ -138,10 +139,10 @@ public class TunerConstantsSwervles implements TunerConstants {
               .withDriveFrictionVoltage(kDriveFrictionVoltage);
 
   // Front Left
-  private static final int kFrontLeftDriveMotorId = 17;
-  private static final int kFrontLeftSteerMotorId = 16;
-  private static final int kFrontLeftEncoderId = 18;
-  private static final Angle kFrontLeftEncoderOffset = Rotations.of(-0.286865234375);
+  private static final int kFrontLeftDriveMotorId = 20;
+  private static final int kFrontLeftSteerMotorId = 19;
+  private static final int kFrontLeftEncoderId = 21;
+  private static final Angle kFrontLeftEncoderOffset = Rotations.of(-0.3720703125);
   private static final boolean kFrontLeftSteerMotorInverted = true;
   private static final boolean kFrontLeftEncoderInverted = false;
 
@@ -149,10 +150,10 @@ public class TunerConstantsSwervles implements TunerConstants {
   private static final Distance kFrontLeftYPos = Inches.of(11.375);
 
   // Front Right
-  private static final int kFrontRightDriveMotorId = 20;
-  private static final int kFrontRightSteerMotorId = 19;
-  private static final int kFrontRightEncoderId = 21;
-  private static final Angle kFrontRightEncoderOffset = Rotations.of(-0.11865234375);
+  private static final int kFrontRightDriveMotorId = 14;
+  private static final int kFrontRightSteerMotorId = 13;
+  private static final int kFrontRightEncoderId = 15;
+  private static final Angle kFrontRightEncoderOffset = Rotations.of(0.158203125);
   private static final boolean kFrontRightSteerMotorInverted = true;
   private static final boolean kFrontRightEncoderInverted = false;
 
@@ -160,10 +161,10 @@ public class TunerConstantsSwervles implements TunerConstants {
   private static final Distance kFrontRightYPos = Inches.of(-11.375);
 
   // Back Left
-  private static final int kBackLeftDriveMotorId = 11;
-  private static final int kBackLeftSteerMotorId = 10;
-  private static final int kBackLeftEncoderId = 12;
-  private static final Angle kBackLeftEncoderOffset = Rotations.of(0.058837890625);
+  private static final int kBackLeftDriveMotorId = 17;
+  private static final int kBackLeftSteerMotorId = 16;
+  private static final int kBackLeftEncoderId = 18;
+  private static final Angle kBackLeftEncoderOffset = Rotations.of(-0.02490234375);
   private static final boolean kBackLeftSteerMotorInverted = true;
   private static final boolean kBackLeftEncoderInverted = false;
 
@@ -171,10 +172,10 @@ public class TunerConstantsSwervles implements TunerConstants {
   private static final Distance kBackLeftYPos = Inches.of(11.375);
 
   // Back Right
-  private static final int kBackRightDriveMotorId = 14;
-  private static final int kBackRightSteerMotorId = 13;
-  private static final int kBackRightEncoderId = 15;
-  private static final Angle kBackRightEncoderOffset = Rotations.of(-0.1005859375);
+  private static final int kBackRightDriveMotorId = 11;
+  private static final int kBackRightSteerMotorId = 10;
+  private static final int kBackRightEncoderId = 12;
+  private static final Angle kBackRightEncoderOffset = Rotations.of(-0.18603515625);
   private static final boolean kBackRightSteerMotorInverted = true;
   private static final boolean kBackRightEncoderInverted = false;
 

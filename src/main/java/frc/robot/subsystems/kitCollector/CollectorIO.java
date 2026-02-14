@@ -33,5 +33,6 @@ public interface CollectorIO {
 
   public default void setPID(Slot0Configs configs) {}
 
-  public default void dutyCycle(double percent) {};
+  public default void dutyCycle(double percent) {}
+  ;
 }

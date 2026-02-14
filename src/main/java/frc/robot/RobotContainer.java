@@ -20,12 +20,13 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants.Mode;
 import frc.robot.commands.CollectorIntake;
+import frc.robot.commands.DriveAimedGoal;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.IndexerIntake;
 import frc.robot.commands.IndexerReverse;
@@ -270,13 +271,14 @@ public class RobotContainer {
               drive,
               () -> -leftJoystick.getY(), // -X (used to be)
               () -> -leftJoystick.getX(), // -Y (used to be)
-              () -> rightJoystick.getX())); // Confirm if negitive or not
+              () -> -rightJoystick.getX())); // Confirm if negitive or not
 
       collectorIntake = new JoystickButton(buttonJoystick, Constants.collectorIntakeButtonID);
       reverseIndexer = new JoystickButton(buttonJoystick, Constants.IndexerIntakeButtonID);
 
+      Trigger aimGoal = new JoystickButton(rightJoystick, 1);
       Trigger shoot = new JoystickButton(leftJoystick, 1);
-      Trigger collect = new JoystickButton(rightJoystick, 1);
+      Trigger collect = new JoystickButton(rightJoystick, 2);
       Trigger index = new JoystickButton(leftJoystick, 2);
       reverseIndexer.whileTrue(new IndexerReverse(indexer));
 
@@ -285,8 +287,15 @@ public class RobotContainer {
       //         drive, shooter, () -> -leftJoystick.getY(), () -> -leftJoystick.getX()));
 
       collect.whileTrue(new CollectorIntake(collector));
-      index.whileTrue( new IndexerIntake(indexer));
-      shoot.whileTrue(new DriveAimedGoal(drive, shooter));
+      if (Constants.currentMode == Mode.REAL) {
+        shoot.whileTrue(SimpleShoot.simpleShoot(shooter));
+      } else {
+        shoot.whileTrue(new InstantCommand(this::shootSimProjectile));
+      }
+      index.whileTrue(new IndexerIntake(indexer));
+      aimGoal.whileTrue(
+          new DriveAimedGoal(
+              drive, () -> -leftJoystick.getY(), () -> -leftJoystick.getX(), shooter));
 
     } else {
 
@@ -396,5 +405,15 @@ public class RobotContainer {
             shooter.getForwardFlywheelVelocity().in(RadiansPerSecond)
                 * ShooterConstants.flywheelRadius.in(Meters)),
         ShooterConstants.shooterPitch);
+  }
+
+  public void setRobotPose() {
+    // if (DriverStation.getAlliance().isPresent()
+    //         && DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
+    //       drive.setPose(new Pose2d(7.6, 6.6, new Rotation2d()));
+    //     } else {
+    //       drive.setPose(new Pose2d(10, 1.5, new Rotation2d(Math.PI)));
+    //     }
+
   }
 }

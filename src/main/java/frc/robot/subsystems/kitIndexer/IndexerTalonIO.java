@@ -91,6 +91,4 @@ public class IndexerTalonIO implements IndexerIO {
   public void dutyCycle(double percent) {
     intakeMotor.setControl(dutyCycleRequest.withOutput(percent).withEnableFOC(true));
   }
-
-  
 }

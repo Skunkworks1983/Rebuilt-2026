@@ -4,8 +4,6 @@
 
 package frc.robot.commands;
 
-import static edu.wpi.first.units.Units.RotationsPerSecond;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.kitIndexer.Indexer;
 import frc.robot.subsystems.kitIndexer.IndexerConstants;
@@ -15,9 +13,7 @@ import frc.robot.util.LoggedTunableNumber;
 public class IndexerIntake extends Command {
   private final Indexer indexer;
   private final LoggedTunableNumber indexerVelocity =
-      new LoggedTunableNumber(
-          "Indexer/Duty Cycle",
-          IndexerConstants.defaultDutyCycle);
+      new LoggedTunableNumber("Indexer/Duty Cycle", IndexerConstants.defaultDutyCycle);
 
   /** Creates a new IndexerIntake. */
   public IndexerIntake(Indexer indexer) {

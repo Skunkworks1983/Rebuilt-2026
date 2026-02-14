@@ -19,7 +19,7 @@ public class VisionConstants {
       AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
   // Camera names, must match names configured on coprocessor
-  public static String camera0Name = "limelight-three";
+  public static String camera0Name = "limelight-two";
 
   // Robot to camera transforms
   // (Not used by Limelight, configure in web UI instead)
@@ -46,7 +46,7 @@ public class VisionConstants {
       };
 
   // Multipliers to apply for MegaTag 2 observations
-  public static double linearStdDevMegatag2Factor = 0.5; // More stable than full 3D solve
+  public static double linearStdDevMegatag2Factor = 0.4; // More stable than full 3D solve
   public static double angularStdDevMegatag2Factor =
       Double.POSITIVE_INFINITY; // No rotation data available
 

@@ -33,5 +33,6 @@ public interface IndexerIO {
 
   public default void setPID(Slot0Configs gains) {}
 
-  public default void dutyCycle(double percent) {};
+  public default void dutyCycle(double percent) {}
+  ;
 }

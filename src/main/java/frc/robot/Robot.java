@@ -119,6 +119,8 @@ public class Robot extends LoggedRobot {
   public void disabledPeriodic() {
     if (Constants.currentMode == Mode.SIM) {
       robotContainer.resetSimRobotPose();
+    } else {
+      robotContainer.setRobotPose();
     }
   }
 

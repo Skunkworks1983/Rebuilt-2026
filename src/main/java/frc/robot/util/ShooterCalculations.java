@@ -19,6 +19,7 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.subsystems.simpleShooter.ShooterConstants;
+import org.littletonrobotics.junction.Logger;
 
 public class ShooterCalculations {
   public record ShooterControls(
@@ -494,10 +495,13 @@ public class ShooterCalculations {
         DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red
             ? FieldConstants.redGoal
             : FieldConstants.blueGoal;
+    Logger.recordOutput("Shooter Solver/Goal", goal);
 
     Translation2d targetVector = goal.toTranslation2d().minus(odometryPose.getTranslation());
 
     double trueDistance = targetVector.getNorm();
+
+    Logger.recordOutput("Shooter Solver/Target Distance", trueDistance);
 
     double distanceForAngle = Math.max(trueDistance, 1e-6);
     Rotation2d rawYaw = targetVector.times(1.0 / distanceForAngle).getAngle();
@@ -555,7 +559,7 @@ public class ShooterCalculations {
     double requiredFlywheelSurfaceSpeed = ballExitSpeed / ShooterSolverConstants.flywheelEfficiency;
 
     return new NoPitchShooterControls(
-        RotationsPerSecond.of(
+        RadiansPerSecond.of(
             requiredFlywheelSurfaceSpeed / ShooterConstants.flywheelRadius.in(Meters)),
         finalYaw,
         true);

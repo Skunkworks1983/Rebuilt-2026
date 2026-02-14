@@ -14,7 +14,7 @@ public class ShooterSolverConstants {
   public static final Angle defaultPitch = Degrees.of(45);
   public static final double drag = 0.05;
   public static final double maxDragMultiplier = 1.5;
-  public static final double flywheelEfficiency = 1;
+  public static final double flywheelEfficiency = 0.5;
 
   // CONSTRAINED HEIGHT SOLVER
   public static final Distance hubHeightClearance = Meters.of(1);

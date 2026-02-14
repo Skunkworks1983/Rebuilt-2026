@@ -18,7 +18,6 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.DutyCycle;
 
 public class CollectorTalonIO implements CollectorIO {
   private final TalonFX collectorMotor;
@@ -87,8 +86,6 @@ public class CollectorTalonIO implements CollectorIO {
   public void intake(AngularVelocity velocity) {
     collectorMotor.setControl(velocityRequest.withVelocity(velocity));
   }
-
-  
 
   @Override
   public void dutyCycle(double percent) {
