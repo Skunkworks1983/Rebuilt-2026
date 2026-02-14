@@ -4,15 +4,11 @@
 
 package frc.robot.subsystems.indexer;
 
-import static edu.wpi.first.units.Units.RadiansPerSecond;
-
 import com.ctre.phoenix6.sim.ChassisReference;
-
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.units.Units;
-import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
@@ -24,9 +20,9 @@ public class IndexerIOSim extends IndexerIOTalonFX {
 
   public IndexerIOSim(int motorID) {
     super(motorID);
-    LinearSystem linearSystem = LinearSystemId.createDCMotorSystem(12.45, 0.07);
+    LinearSystem linearSystem = LinearSystemId.createDCMotorSystem(0.002, 0.02);
 
-    double[] stdevs = {0.001, 0.001};
+    double[] stdevs = {0.00, 0.00};
 
     indexerMotorSim = new DCMotorSim(linearSystem, DCMotor.getKrakenX44(1), stdevs);
   }
@@ -43,8 +39,7 @@ public class IndexerIOSim extends IndexerIOTalonFX {
 
     indexerMotorSim.update(0.020);
 
-    talonFXSim.setRotorVelocity(
-        indexerMotorSim.getAngularVelocity());
+    talonFXSim.setRotorVelocity(indexerMotorSim.getAngularVelocity());
 
     talonFXSim.setRawRotorPosition(indexerMotorSim.getAngularPosition());
 

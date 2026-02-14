@@ -33,7 +33,12 @@ public class Indexer extends SubsystemBase {
   }
 
   /** sets the velocity of the indexer to the defined velocity */
-  public void setIndexerVelocity(AngularVelocity Velocity) {
-    indexerMotor.setIndexerVelocity(Velocity);
+  public void setIndexerVelocity(AngularVelocity velocity) {
+    indexerMotor.setIndexerVelocity(velocity);
+  }
+
+  /** sets the duty cycle of the indexer to the defined value */
+  public void setIndexerDutyCycle(double dutyCycle) {
+    indexerMotor.setIndexerDutyCycle(dutyCycle);
   }
 }

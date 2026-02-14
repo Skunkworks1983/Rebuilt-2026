@@ -20,16 +20,25 @@ public class IndexerCommand extends Command {
   }
 
   @Override
-  public void initialize() {
-    indexer.setIndexerVelocity(IndexerConstants.indexerAngularVelocity);
+  public void initialize() {}
+
+  @Override
+  public void execute() {
+    // checks the drive mode and runs the indexer at the defined velocity or duty cycle
+    if (IndexerConstants.indexerDriveMode.equals(IndexerConstants.IndexerDriveMode.DutyCycle)) {
+      indexer.setIndexerDutyCycle(IndexerConstants.indexerDutyCycleValue);
+    } else {
+      indexer.setIndexerVelocity(IndexerConstants.indexerAngularVelocity);
+    }
   }
 
   @Override
-  public void execute() {}
-
-  @Override
   public void end(boolean interrupted) {
-    indexer.setIndexerVelocity(Units.RotationsPerSecond.of(0));
+    if (IndexerConstants.indexerDriveMode.equals(IndexerConstants.IndexerDriveMode.DutyCycle)) {
+      indexer.setIndexerDutyCycle(0);
+    } else {
+      indexer.setIndexerVelocity(Units.RadiansPerSecond.of(0));
+    }
   }
 
   @Override

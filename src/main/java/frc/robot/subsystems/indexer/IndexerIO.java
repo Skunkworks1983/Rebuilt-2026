@@ -23,6 +23,9 @@ public interface IndexerIO {
 
   public default void updateInputs(IndexerIOInputs inputs) {}
 
-  /** specify a velocity at which to run the indexer */
-  public default void setIndexerVelocity(AngularVelocity Velocity) {}
+  /** sets velocity at which to run the indexer */
+  public default void setIndexerVelocity(AngularVelocity velocity) {}
+
+  /** sets duty cycle at which to run the indexer */
+  public default void setIndexerDutyCycle(double dutyCycle) {}
 }
