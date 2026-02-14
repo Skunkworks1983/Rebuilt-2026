@@ -44,19 +44,33 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
 
     this.collectorSide = collectorSide;
 
-    Map<Side, IntakeSimulation.IntakeSide> collectorToSim =
-        Map.of(
-            Side.LEFT, IntakeSide.LEFT,
-            Side.RIGHT, IntakeSide.RIGHT);
-
-    this.collectorSimulation =
+    switch (collectorSide) {
+      case Left:
+        this.collectorSimulation =
         IntakeSimulation.OverTheBumperIntake(
             "Fuel",
             driveTrain,
             Meters.of(0.7),
             Meters.of(0.2),
-            collectorToSim.get(collectorSide),
+            IntakeSide.LEFT,
             1);
+        break;
+
+      case Right:
+
+      this.collectorSimulation =
+        IntakeSimulation.OverTheBumperIntake(
+            "Fuel",
+            driveTrain,
+            Meters.of(0.7),
+            Meters.of(0.2),
+            IntakeSide.RIGHT,
+            1);
+      break;
+    
+      default:
+        break;
+    }
 
     LinearSystem linearSystemIntakeMotors = LinearSystemId.createDCMotorSystem(0.002, 0.02);
     LinearSystem linearSystemTurnMotor = LinearSystemId.createDCMotorSystem(1, 1);

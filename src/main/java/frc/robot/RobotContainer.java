@@ -296,17 +296,17 @@ public class RobotContainer {
 
     // Right Collector Down
     new JoystickButton(buttonJoystick, Constants.JoystickConstants.CollectorRightDownID)
-        .and(manualModeSwitch)
+        //.and(manualModeSwitch)
         .onTrue(new RightCollectorDownState(collector));
 
     // Left Collector Down
     new JoystickButton(buttonJoystick, Constants.JoystickConstants.CollectorLeftDownID)
-        .and(manualModeSwitch)
+        //.and(manualModeSwitch)
         .onTrue(new LeftCollectorDownState(collector));
 
     // Both Collectors Up
     new JoystickButton(leftJoystick, Constants.JoystickConstants.CollectorBothUpID)
-        .and(manualModeSwitch)
+        //.and(manualModeSwitch)
         .onTrue(new BothCollectorsUpState(collector));
 
     // Lock to 0° when A button is held

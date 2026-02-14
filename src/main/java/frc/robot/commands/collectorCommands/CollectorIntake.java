@@ -15,6 +15,7 @@ public class CollectorIntake extends Command {
   Collector collector;
   CollectorModule leftCollector;
   CollectorModule rightCollector;
+  CollectorModule lastModule;
 
   /** Creates a new CollectorIntake. */
   public CollectorIntake(Collector collector) {
@@ -31,10 +32,14 @@ public class CollectorIntake extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (leftCollector.isCollectorDown()) {
+    if (leftCollector.isCollectorDown() && lastModule != leftCollector) {
+      rightCollector.setCollectorVelocity(RotationsPerSecond.of(0));
       leftCollector.setCollectorVelocity(leftCollector.getConstants().CollectorIntakeSpeed);
-    } else if (rightCollector.isCollectorDown()) {
+      lastModule = leftCollector;
+    } else if (rightCollector.isCollectorDown() && lastModule != rightCollector) {
+      leftCollector.setCollectorVelocity(RotationsPerSecond.of(0));
       rightCollector.setCollectorVelocity(rightCollector.getConstants().CollectorIntakeSpeed);
+      lastModule = rightCollector;
     }
   }
 
