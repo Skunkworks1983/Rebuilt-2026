@@ -225,7 +225,7 @@ public class RobotContainer {
               () -> -leftJoystick.getY(), // -X (used to be)
               () -> -leftJoystick.getX(), // -Y (used to be)
               () -> rightJoystick.getX())); // Confirm if negitive or not
-      runIndexer = new JoystickButton(buttonJoystick, IndexerConstants.runIdexerButtonID);
+      runIndexer = new JoystickButton(buttonJoystick, IndexerConstants.runIndexerButtonID);
 
     } else {
 
@@ -235,7 +235,7 @@ public class RobotContainer {
               () -> -xboxController.getLeftY(),
               () -> -xboxController.getLeftX(),
               () -> -xboxController.getRightX()));
-      runIndexer = new JoystickButton(xboxController, IndexerConstants.runIdexerButtonID);
+      runIndexer = new JoystickButton(xboxController, IndexerConstants.runIndexerButtonID);
     }
 
     runIndexer.whileTrue(new IndexerCommand(indexer));

@@ -11,6 +11,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.units.measure.Angle;
@@ -49,6 +50,7 @@ public class IndexerIOTalonFX implements IndexerIO {
     slot0Configs.kI = indexerConfigs.kI;
     slot0Configs.kD = indexerConfigs.kD;
     slot0Configs.kV = indexerConfigs.kV;
+    configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     indexerMotor.getConfigurator().apply(configs);
 
     BaseStatusSignal.setUpdateFrequencyForAll(
@@ -71,11 +73,11 @@ public class IndexerIOTalonFX implements IndexerIO {
 
   /** sets the control for the indexer motor to the defined velocity */
   public void setIndexerVelocity(AngularVelocity velocity) {
-    indexerMotor.setControl(new VelocityVoltage(velocity.unaryMinus()).withEnableFOC(true));
+    indexerMotor.setControl(new VelocityVoltage(velocity).withEnableFOC(true));
   }
 
   /** sets the duty cycle for the indexer motor to the defined value */
   public void setIndexerDutyCycle(double dutyCycle) {
-    indexerMotor.setControl(new DutyCycleOut(dutyCycle * -1).withEnableFOC(true));
+    indexerMotor.setControl(new DutyCycleOut(dutyCycle).withEnableFOC(true));
   }
 }

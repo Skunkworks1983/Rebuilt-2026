@@ -7,7 +7,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 public class IndexerConstants {
 
   public static final int indexerMotorID = 0;
-  public static final int runIdexerButtonID = 2;
+  public static final int runIndexerButtonID = 2;
 
   public static final AngularVelocity indexerAngularVelocity = RadiansPerSecond.of(5);
   public static final double indexerDutyCycleValue = 0.5;
@@ -17,6 +17,7 @@ public class IndexerConstants {
     DutyCycle
   }
 
+  // defines whether the indexer operated by velocity or duty cycle
   public static IndexerDriveMode indexerDriveMode = IndexerDriveMode.DutyCycle;
 
   public static final class indexerConfigs {
