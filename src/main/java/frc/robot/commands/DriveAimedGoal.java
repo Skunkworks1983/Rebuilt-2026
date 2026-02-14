@@ -49,7 +49,8 @@ public class DriveAimedGoal extends Command {
     ShooterControls controls =
         ShooterCalculations.getApexConstrainedShooterControls(currentPose, currentSpeeds);
 
-    shooter.setShooterSetpoints(new ShooterSetpoints(controls.shooterVelocity(), controls.shooterPitch()));
+    shooter.setShooterSetpoints(
+        new ShooterSetpoints(controls.shooterVelocity(), controls.shooterPitch()));
 
     double currentYawRadians = drive.getRotation().getRadians();
     double targetYawRadians = controls.driveYaw().getRadians();

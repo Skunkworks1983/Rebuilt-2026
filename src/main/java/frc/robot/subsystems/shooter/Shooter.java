@@ -12,7 +12,6 @@ import static edu.wpi.first.units.Units.Volts;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
@@ -39,10 +38,7 @@ public class Shooter extends SubsystemBase {
    * @param shooterVelocity Target flywheel angular velocity.
    * @param shooterPitch Target pivot angle.
    */
-  public record ShooterSetpoints(
-      AngularVelocity shooterVelocity,
-      Angle shooterPitch) {}
-
+  public record ShooterSetpoints(AngularVelocity shooterVelocity, Angle shooterPitch) {}
 
   private final FlywheelIO upperFlywheel;
   private final FlywheelIO lowerFlywheel;
@@ -97,7 +93,9 @@ public class Shooter extends SubsystemBase {
     this.lowerFlywheel = backFlywheel;
     this.pivot = pivot;
 
-    // Allows for system identification of the flywheel via auto routines (finds torque current required to overcome static friction, current for one unit of velocity, and current for one unit of acceleration)
+    // Allows for system identification of the flywheel via auto routines (finds torque current
+    // required to overcome static friction, current for one unit of velocity, and current for one
+    // unit of acceleration)
     sysId =
         new SysIdRoutine(
             new SysIdRoutine.Config(

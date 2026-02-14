@@ -24,7 +24,8 @@ public class HubVelocityPitch extends Command {
         ShooterCalculations.getApexConstrainedShooterControls(
             drive.getPose(), drive.getChassisSpeeds());
 
-    shooter.setShooterSetpoints(new ShooterSetpoints(controls.shooterVelocity(), controls.shooterPitch()));
+    shooter.setShooterSetpoints(
+        new ShooterSetpoints(controls.shooterVelocity(), controls.shooterPitch()));
   }
 
   @Override

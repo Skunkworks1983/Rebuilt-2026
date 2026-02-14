@@ -50,7 +50,8 @@ public class DriveAimedTransfer extends Command {
         ShooterCalculations.getShooterControlsTransfer(
             currentSpeeds, currentPose, shooter.getShooterForwardLinearVelocity());
 
-    shooter.setShooterSetpoints(new ShooterSetpoints(controls.shooterVelocity(), controls.shooterPitch()));
+    shooter.setShooterSetpoints(
+        new ShooterSetpoints(controls.shooterVelocity(), controls.shooterPitch()));
 
     double currentYawRadians = drive.getRotation().getRadians();
     double targetYawRadians = controls.driveYaw().getRadians();
