@@ -4,14 +4,11 @@
 
 package frc.robot.subsystems.indexer;
 
-import static edu.wpi.first.units.Units.RadiansPerSecond;
-
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.filter.Debouncer;
@@ -20,14 +17,10 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.indexer.IndexerConstants.indexerConfigs;
 
 /** This is the motor for the Indexer. it takes in a ID */
 public class IndexerIOTalonFX implements IndexerIO {
-
-  VelocityVoltage velocityVoltageRequest = new VelocityVoltage(0);
-  DutyCycleOut dutyCycleRequest = new DutyCycleOut(0);
 
   protected final TalonFX indexerMotor;
 
@@ -78,11 +71,11 @@ public class IndexerIOTalonFX implements IndexerIO {
 
   /** sets the control for the indexer motor to the defined velocity */
   public void setIndexerVelocity(AngularVelocity velocity) {
-    indexerMotor.setControl(velocityVoltageRequest.withVelocity((velocity.unaryMinus())).withEnableFOC(true).withSlot(0));
+    indexerMotor.setControl(new VelocityVoltage(velocity.unaryMinus()).withEnableFOC(true));
   }
 
   /** sets the duty cycle for the indexer motor to the defined value */
   public void setIndexerDutyCycle(double dutyCycle) {
-    indexerMotor.setControl(dutyCycleRequest.withOutput(dutyCycle * -1).withEnableFOC(true));
+    indexerMotor.setControl(new DutyCycleOut(dutyCycle * -1).withEnableFOC(true));
   }
 }
