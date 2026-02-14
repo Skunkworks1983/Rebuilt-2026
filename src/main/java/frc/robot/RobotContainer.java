@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.IndexerCommand;
 import frc.robot.commands.TestPathCommands;
 import frc.robot.commands.collectorCommands.AutomaticStateChange;
 import frc.robot.commands.collectorCommands.BothCollectorsUpState;
@@ -39,6 +40,11 @@ import frc.robot.subsystems.drive.GyroIOSim;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.drive.ModuleIOTalonFXSim;
+import frc.robot.subsystems.indexer.Indexer;
+import frc.robot.subsystems.indexer.IndexerConstants;
+import frc.robot.subsystems.indexer.IndexerIO;
+import frc.robot.subsystems.indexer.IndexerIOSim;
+import frc.robot.subsystems.indexer.IndexerIOTalonFX;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
@@ -60,13 +66,14 @@ public class RobotContainer {
   private final Drive drive;
   private final Vision vision;
   private final Collector collector;
+  private final Indexer indexer;
 
   // Controller
   private final Joystick leftJoystick;
   private final Joystick rightJoystick;
-  private final Joystick buttonPanel;
 
   private Mechanism2d mechanism2d = new Mechanism2d(0, 0);
+  private final Joystick buttonJoystick;
 
   /**
    * Xbox Controller for simulation.
@@ -87,13 +94,13 @@ public class RobotContainer {
     if (Constants.controlScheme == Constants.ControlScheme.OI) {
       leftJoystick = new Joystick(Constants.JoystickConstants.LeftJoystick);
       rightJoystick = new Joystick(Constants.JoystickConstants.RightJoystick);
-      buttonPanel = new Joystick(Constants.JoystickConstants.ButtonJoystick);
+      buttonJoystick = new Joystick(Constants.JoystickConstants.ButtonJoystick);
       xboxController = null;
     } else {
       xboxController = new XboxController(0);
       leftJoystick = null;
       rightJoystick = null;
-      buttonPanel = null;
+      buttonJoystick = null;
     }
     switch (Constants.currentMode) {
       case REAL:
@@ -114,7 +121,9 @@ public class RobotContainer {
             new Vision(
                 drive, new VisionIOLimelight(VisionConstants.camera0Name, drive::getRotation));
 
-        // This is a solution to the vision-drive cross dependency issue that hurts my eyes, but it
+        indexer = new Indexer(new IndexerIOTalonFX(IndexerConstants.indexerMotorID));
+
+        // This is a solution to the vision-drive cross dependency issue that hurts my eys, but it
         // does work
         drive.setResetVisionIMUCallback((pose) -> vision.resetCameraIMU(pose));
 
@@ -180,6 +189,9 @@ public class RobotContainer {
                     simulation, CollectorSide.Left, new CollectorTalonLeftConstants()),
                 new CollectorModuleSimIO(
                     simulation, CollectorSide.Right, new CollectorTalonRightConstants()));
+
+        indexer = new Indexer(new IndexerIOSim(IndexerConstants.indexerMotorID));
+
         break;
 
       default:
@@ -202,6 +214,8 @@ public class RobotContainer {
                     simulation, CollectorSide.Left, new CollectorTalonLeftConstants()),
                 new CollectorModuleSimIO(
                     simulation, CollectorSide.Right, new CollectorTalonRightConstants()));
+
+        indexer = new Indexer(new IndexerIO() {});
         break;
     }
 
@@ -236,6 +250,7 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    JoystickButton runIndexer;
     // Default command, normal field-relative drive
     if (Constants.controlScheme == Constants.ControlScheme.OI) {
       drive.setDefaultCommand(
@@ -244,6 +259,8 @@ public class RobotContainer {
               () -> -leftJoystick.getY(), // -X (used to be)
               () -> -leftJoystick.getX(), // -Y (used to be)
               () -> rightJoystick.getX())); // Confirm if negitive or not
+      runIndexer = new JoystickButton(buttonJoystick, IndexerConstants.runIndexerButtonID);
+
     } else {
 
       drive.setDefaultCommand(
@@ -252,16 +269,19 @@ public class RobotContainer {
               () -> -xboxController.getLeftY(),
               () -> -xboxController.getLeftX(),
               () -> -xboxController.getRightX()));
+      runIndexer = new JoystickButton(xboxController, IndexerConstants.runIndexerButtonID);
     }
+
+    runIndexer.whileTrue(new IndexerCommand(indexer));
     Logger.recordOutput("Control Scheme", Constants.controlScheme);
 
     TestPathCommands.publishTestPaths(drive);
 
     // State Butoons
     JoystickButton manualModeSwitch =
-        new JoystickButton(buttonPanel, Constants.JoystickConstants.CollectorManualModeID);
+        new JoystickButton(buttonJoystick, Constants.JoystickConstants.CollectorManualModeID);
     JoystickButton autoModeSwitch =
-        new JoystickButton(buttonPanel, Constants.JoystickConstants.CollectorAutoModeID);
+        new JoystickButton(buttonJoystick, Constants.JoystickConstants.CollectorAutoModeID);
 
     autoModeSwitch.onTrue(new AutomaticStateChange(collector, () -> drive.getDirection()));
 
@@ -271,16 +291,16 @@ public class RobotContainer {
         .onTrue(new BothCollectorsUpState(collector));
 
     // Collector Intake Button
-    new JoystickButton(buttonPanel, Constants.JoystickConstants.CollectorIntakeID)
+    new JoystickButton(buttonJoystick, Constants.JoystickConstants.CollectorIntakeID)
         .whileTrue(new CollectorIntake(collector));
 
     // Right Collector Down
-    new JoystickButton(buttonPanel, Constants.JoystickConstants.CollectorRightDownID)
+    new JoystickButton(buttonJoystick, Constants.JoystickConstants.CollectorRightDownID)
         .and(manualModeSwitch)
         .onTrue(new RightCollectorDownState(collector));
 
     // Left Collector Down
-    new JoystickButton(buttonPanel, Constants.JoystickConstants.CollectorLeftDownID)
+    new JoystickButton(buttonJoystick, Constants.JoystickConstants.CollectorLeftDownID)
         .and(manualModeSwitch)
         .onTrue(new LeftCollectorDownState(collector));
 
