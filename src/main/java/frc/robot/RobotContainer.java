@@ -25,7 +25,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.commands.DriveAimedShot;
+import frc.robot.commands.DriveAimedShoot;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.IndexerCommand;
 import frc.robot.commands.Shooter.NoYawShootHub;
@@ -272,12 +272,12 @@ public class RobotContainer {
       Trigger shootButton = new JoystickButton(rightJoystick, 1);
 
       shootGoalButton.whileTrue(
-          new DriveAimedShot(
+          new DriveAimedShoot(
               drive,
               shooter,
               () -> -leftJoystick.getY(),
               () -> -leftJoystick.getX(),
-              DriveAimedShot.TargetType.GOAL));
+              DriveAimedShoot.TargetType.GOAL));
       shootButton.onTrue(new InstantCommand(this::launchSimFuel));
 
       runIndexer = new JoystickButton(buttonJoystick, IndexerConstants.runIndexerButtonID);
@@ -294,19 +294,19 @@ public class RobotContainer {
       Trigger shootButton = new JoystickButton(xboxController, XboxController.Button.kB.value);
 
       shootGoalButton.whileTrue(
-          new DriveAimedShot(
+          new DriveAimedShoot(
               drive,
               shooter,
               () -> -xboxController.getLeftY(),
               () -> -xboxController.getLeftX(),
-              DriveAimedShot.TargetType.GOAL));
+              DriveAimedShoot.TargetType.GOAL));
       shootTransferButton.whileTrue(
-          new DriveAimedShot(
+          new DriveAimedShoot(
               drive,
               shooter,
               () -> -xboxController.getLeftY(),
               () -> -xboxController.getLeftX(),
-              DriveAimedShot.TargetType.TRANSFER));
+              DriveAimedShoot.TargetType.TRANSFER));
       shootButton.onTrue(new InstantCommand(this::launchSimFuel));
       runIndexer = new JoystickButton(xboxController, IndexerConstants.runIndexerButtonID);
     }

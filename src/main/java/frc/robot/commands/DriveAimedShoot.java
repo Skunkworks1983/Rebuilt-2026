@@ -14,7 +14,7 @@ import frc.robot.util.ShooterCalculations.ShooterControls;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
-public class DriveAimedShot extends Command {
+public class DriveAimedShoot extends Command {
   public enum TargetType {
     GOAL,
     TRANSFER
@@ -28,7 +28,7 @@ public class DriveAimedShot extends Command {
   private final TargetType targetType;
   private final String logKey;
 
-  public DriveAimedShot(
+  public DriveAimedShoot(
       Drive drive,
       Shooter shooter,
       DoubleSupplier xSupplier,
