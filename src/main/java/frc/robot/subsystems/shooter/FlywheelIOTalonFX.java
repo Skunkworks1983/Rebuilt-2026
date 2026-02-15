@@ -21,7 +21,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.Mode;
 
 public class FlywheelIOTalonFX implements FlywheelIO {
-  protected final TalonFX flywheelMotor;
+  protected final TalonFX flywheelMotor; // Protected for the sim
 
   private final StatusSignal<AngularVelocity> flywheelVelocity;
   private final StatusSignal<Voltage> flywheelAppliedVolts;
