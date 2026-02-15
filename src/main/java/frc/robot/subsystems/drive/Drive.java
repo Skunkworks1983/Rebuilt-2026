@@ -426,4 +426,8 @@ public class Drive extends SubsystemBase implements VisionConsumer {
   public void setResetVisionIMUCallback(Consumer<Pose2d> resetIMUCallback) {
     resetLimelightIMUCallback = resetIMUCallback;
   }
+
+  public double getDirection() {
+    return getChassisSpeeds().vyMetersPerSecond;
+  }
 }
