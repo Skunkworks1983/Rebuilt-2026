@@ -30,6 +30,16 @@ import frc.robot.commands.DriveCommands;
 import frc.robot.commands.IndexerCommand;
 import frc.robot.commands.Shooter.NoYawShootHub;
 import frc.robot.commands.TestPathCommands;
+import frc.robot.commands.collectorCommands.AutomaticStateChange;
+import frc.robot.commands.collectorCommands.BothCollectorsUpState;
+import frc.robot.commands.collectorCommands.CollectorIntake;
+import frc.robot.commands.collectorCommands.LeftCollectorDownState;
+import frc.robot.commands.collectorCommands.RightCollectorDownState;
+import frc.robot.subsystems.collector.Collector;
+import frc.robot.subsystems.collector.CollectorModuleSimIO;
+import frc.robot.subsystems.collector.CollectorModuleTalonIO;
+import frc.robot.subsystems.collector.collectorConstants.CollectorTalonLeftConstants;
+import frc.robot.subsystems.collector.collectorConstants.CollectorTalonRightConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -70,6 +80,7 @@ public class RobotContainer {
   private final Drive drive;
   private final Vision vision;
   private final Shooter shooter;
+  private final Collector collector;
   private final Indexer indexer;
 
   // Controller
@@ -90,13 +101,15 @@ public class RobotContainer {
 
   // Sim
   private SwerveDriveSimulation simulation = null;
+  private Pose2d robotSimStartPosBlue = new Pose2d(7.485, 7.064, new Rotation2d(Math.PI));
+  private Pose2d robotSimStartPosRed = new Pose2d(10, 1.5, new Rotation2d());
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     if (Constants.controlScheme == Constants.ControlScheme.OI) {
-      leftJoystick = new Joystick(0);
-      rightJoystick = new Joystick(1);
-      buttonJoystick = new Joystick(2);
+      leftJoystick = new Joystick(Constants.JoystickConstants.LeftJoystick);
+      rightJoystick = new Joystick(Constants.JoystickConstants.RightJoystick);
+      buttonJoystick = new Joystick(Constants.JoystickConstants.ButtonJoystick);
       xboxController = null;
     } else {
       xboxController = new XboxController(0);
@@ -130,6 +143,11 @@ public class RobotContainer {
         drive.setResetVisionIMUCallback((pose) -> vision.resetCameraIMU(pose));
 
         indexer = new Indexer(new IndexerIOTalonFX(IndexerConstants.indexerMotorID));
+
+        collector =
+            new Collector(
+                new CollectorModuleTalonIO(new CollectorTalonLeftConstants()),
+                new CollectorModuleTalonIO(new CollectorTalonRightConstants()));
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
@@ -188,6 +206,13 @@ public class RobotContainer {
                     VisionConstants.robotToCamera1,
                     simulation::getSimulatedDriveTrainPose));
 
+        collector =
+            new Collector(
+                new CollectorModuleSimIO(
+                    simulation, new CollectorTalonLeftConstants()),
+                new CollectorModuleSimIO(
+                    simulation, new CollectorTalonRightConstants()));
+
         indexer = new Indexer(new IndexerIOSim(IndexerConstants.indexerMotorID));
 
         break;
@@ -206,6 +231,13 @@ public class RobotContainer {
         shooter = new Shooter(new FlywheelIO() {}, new FlywheelIO() {}, new PivotIO() {});
 
         vision = new Vision(drive, new VisionIO() {}, new VisionIO() {});
+
+        collector =
+            new Collector(
+                new CollectorModuleSimIO(
+                    simulation, new CollectorTalonLeftConstants()),
+                new CollectorModuleSimIO(
+                    simulation, new CollectorTalonRightConstants()));
 
         indexer = new Indexer(new IndexerIO() {});
         break;
@@ -321,6 +353,38 @@ public class RobotContainer {
         "Shooter/Set Manual Velocity",
         new InstantCommand(() -> shooter.setManualVelocity(RotationsPerSecond.of(25))));
 
+    // State Buttons
+    JoystickButton manualModeSwitch =
+        new JoystickButton(buttonJoystick, Constants.JoystickConstants.CollectorManualModeID);
+    JoystickButton autoModeSwitch =
+        new JoystickButton(buttonJoystick, Constants.JoystickConstants.CollectorAutoModeID);
+
+    autoModeSwitch.onTrue(new AutomaticStateChange(collector, () -> drive.getDirection()));
+
+    manualModeSwitch
+        .negate()
+        .and(autoModeSwitch.negate())
+        .onTrue(new BothCollectorsUpState(collector));
+
+    // Collector Intake Button
+    new JoystickButton(buttonJoystick, Constants.JoystickConstants.CollectorIntakeID)
+        .whileTrue(new CollectorIntake(collector));
+
+    // Right Collector Down
+    new JoystickButton(buttonJoystick, Constants.JoystickConstants.CollectorRightDownID)
+        .and(manualModeSwitch)
+        .onTrue(new RightCollectorDownState(collector));
+
+    // Left Collector Down
+    new JoystickButton(buttonJoystick, Constants.JoystickConstants.CollectorLeftDownID)
+        .and(manualModeSwitch)
+        .onTrue(new LeftCollectorDownState(collector));
+
+    // Both Collectors Up
+    new JoystickButton(leftJoystick, Constants.JoystickConstants.CollectorBothUpID)
+        .and(manualModeSwitch)
+        .onTrue(new BothCollectorsUpState(collector));
+
     // Lock to 0° when A button is held
     // controller
     // .a()
@@ -395,9 +459,9 @@ public class RobotContainer {
   public void resetSimRobotPose() {
     if (DriverStation.getAlliance().isPresent()
         && DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
-      simulation.setSimulationWorldPose(new Pose2d(3.529, 7.383, new Rotation2d()));
+      simulation.setSimulationWorldPose(robotSimStartPosBlue);
     } else {
-      simulation.setSimulationWorldPose(new Pose2d(10, 1.5, new Rotation2d()));
+      simulation.setSimulationWorldPose(robotSimStartPosRed);
     }
   }
 

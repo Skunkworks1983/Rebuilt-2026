@@ -431,4 +431,8 @@ public class Drive extends SubsystemBase implements VisionConsumer {
   public AngularVelocity getAngularVelocity() {
     return RadiansPerSecond.of(gyroInputs.yawVelocityRadPerSec);
   }
+
+  public double getDirection() {
+    return getChassisSpeeds().vyMetersPerSecond;
+  }
 }
