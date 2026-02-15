@@ -33,7 +33,7 @@ public class NoYawShootHub extends Command {
 
   @Override
   public void initialize() {
-    Logger.recordOutput("Auto Shoot/Drive Aimed Goal No Yaw", true);
+    Logger.recordOutput("Commands/Auto Shoot/Drive Aimed Goal No Yaw", true);
   }
 
   @Override
@@ -54,6 +54,6 @@ public class NoYawShootHub extends Command {
   @Override
   public void end(boolean interrupted) {
     shooter.setShooterSetpoints(new ShooterSetpoints(RadiansPerSecond.of(0), Degrees.of(0)));
-    Logger.recordOutput("Auto Shoot/Drive Aimed Goal No Yaw", false);
+    Logger.recordOutput("Commands/Auto Shoot/Drive Aimed Goal No Yaw", false);
   }
 }

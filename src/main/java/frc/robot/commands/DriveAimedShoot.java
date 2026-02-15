@@ -45,7 +45,7 @@ public class DriveAimedShoot extends Command {
             DriveControlConstants.YAW_CONTROL_KP, 0.0, DriveControlConstants.YAW_CONTROL_KD);
     yawController.enableContinuousInput(-Math.PI, Math.PI);
 
-    this.logKey = "Auto Shoot/Drive Aimed " + targetType.name();
+    this.logKey = "Commands/Auto Shoot/Drive Aimed " + targetType.name();
 
     addRequirements(drive, shooter);
   }
