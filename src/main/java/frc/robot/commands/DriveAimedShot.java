@@ -14,34 +14,38 @@ import frc.robot.util.ShooterCalculations.ShooterControls;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
-public class DriveAimedTransfer extends Command {
+public class DriveAimedShot extends Command {
+  public enum TargetType {
+    GOAL,
+    TRANSFER
+  }
+
   private final Drive drive;
   private final Shooter shooter;
   private final DoubleSupplier xSupplier;
   private final DoubleSupplier ySupplier;
   private final PIDController yawController;
+  private final TargetType targetType;
+  private final String logKey;
 
-  /**
-   * Allows teleop translational control of the robot while aiming to shoot into the alliance zone
-   * Controls yaw to avoid hitting hub, sets shooter pitch and velocity to the correct values for
-   * the given position
-   *
-   * @param drive
-   * @param shooter
-   * @param xSupplier
-   * @param ySupplier
-   */
-  public DriveAimedTransfer(
-      Drive drive, Shooter shooter, DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
+  public DriveAimedShot(
+      Drive drive,
+      Shooter shooter,
+      DoubleSupplier xSupplier,
+      DoubleSupplier ySupplier,
+      TargetType targetType) {
     this.drive = drive;
     this.shooter = shooter;
     this.xSupplier = xSupplier;
     this.ySupplier = ySupplier;
+    this.targetType = targetType;
 
     yawController =
         new PIDController(
             DriveControlConstants.YAW_CONTROL_KP, 0.0, DriveControlConstants.YAW_CONTROL_KD);
     yawController.enableContinuousInput(-Math.PI, Math.PI);
+
+    this.logKey = "Auto Shoot/Drive Aimed " + targetType.name();
 
     addRequirements(drive, shooter);
   }
@@ -49,17 +53,21 @@ public class DriveAimedTransfer extends Command {
   @Override
   public void initialize() {
     yawController.reset();
-    Logger.recordOutput("Auto Shoot/Drive Aimed Transfer", true);
+    Logger.recordOutput(logKey, true);
   }
 
   @Override
   public void execute() {
     var currentPose = drive.getPose();
-    var currentSpeeds = drive.getChassisSpeeds(); // Robot Relative
+    var currentSpeeds = drive.getChassisSpeeds();
 
     ShooterControls controls =
-        ShooterCalculations.getShooterControlsTransfer(
-            currentSpeeds, currentPose, shooter.getShooterForwardLinearVelocity());
+        switch (targetType) {
+          case GOAL -> ShooterCalculations.getApexConstrainedShooterControls(
+              currentPose, currentSpeeds);
+          case TRANSFER -> ShooterCalculations.getShooterControlsTransfer(
+              currentSpeeds, currentPose, shooter.getShooterForwardLinearVelocity());
+        };
 
     shooter.setShooterSetpoints(
         new ShooterSetpoints(controls.shooterVelocity(), controls.shooterPitch()));
@@ -67,8 +75,8 @@ public class DriveAimedTransfer extends Command {
     double currentYawRadians = drive.getRotation().getRadians();
     double targetYawRadians = controls.driveYaw().getRadians();
 
-    Logger.recordOutput("Auto Shoot/Target Yaw", targetYawRadians);
-    Logger.recordOutput("Auto Shoot/Current Yaw", currentYawRadians);
+    Logger.recordOutput(logKey + "/Target Yaw", targetYawRadians);
+    Logger.recordOutput(logKey + "/Current Yaw", currentYawRadians);
 
     double omegaCalculated = yawController.calculate(currentYawRadians, targetYawRadians);
 
@@ -89,6 +97,6 @@ public class DriveAimedTransfer extends Command {
   @Override
   public void end(boolean interrupted) {
     yawController.close();
-    Logger.recordOutput("Auto Shoot/Drive Aimed Transfer", false);
+    Logger.recordOutput(logKey, false);
   }
 }

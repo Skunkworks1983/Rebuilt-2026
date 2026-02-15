@@ -25,8 +25,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.commands.DriveAimedGoal;
-import frc.robot.commands.DriveAimedTransfer;
+import frc.robot.commands.DriveAimedShot;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.Shooter.NoYawShootHub;
 import frc.robot.commands.TestPathCommands;
@@ -258,8 +257,12 @@ public class RobotContainer {
       Trigger shootButton = new JoystickButton(rightJoystick, 1);
 
       shootGoalButton.whileTrue(
-          new DriveAimedGoal(
-              drive, shooter, () -> -leftJoystick.getY(), () -> -leftJoystick.getX()));
+          new DriveAimedShot(
+              drive,
+              shooter,
+              () -> -leftJoystick.getY(),
+              () -> -leftJoystick.getX(),
+              DriveAimedShot.TargetType.GOAL));
       shootButton.onTrue(new InstantCommand(this::launchSimFuel));
 
     } else {
@@ -274,11 +277,19 @@ public class RobotContainer {
       Trigger shootButton = new JoystickButton(xboxController, XboxController.Button.kB.value);
 
       shootGoalButton.whileTrue(
-          new DriveAimedGoal(
-              drive, shooter, () -> -xboxController.getLeftY(), () -> -xboxController.getLeftX()));
+          new DriveAimedShot(
+              drive,
+              shooter,
+              () -> -xboxController.getLeftY(),
+              () -> -xboxController.getLeftX(),
+              DriveAimedShot.TargetType.GOAL));
       shootTransferButton.whileTrue(
-          new DriveAimedTransfer(
-              drive, shooter, () -> -xboxController.getLeftY(), () -> -xboxController.getLeftX()));
+          new DriveAimedShot(
+              drive,
+              shooter,
+              () -> -xboxController.getLeftY(),
+              () -> -xboxController.getLeftX(),
+              DriveAimedShot.TargetType.TRANSFER));
       shootButton.onTrue(new InstantCommand(this::launchSimFuel));
     }
     Logger.recordOutput("Control Scheme", Constants.controlScheme);
