@@ -20,6 +20,8 @@ import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
+import com.ctre.phoenix6.SignalLogger;
+
 public class Shooter extends SubsystemBase {
 
   // FORWARD FLYWHEEL
@@ -28,15 +30,15 @@ public class Shooter extends SubsystemBase {
 
 
   private static final LoggedTunableNumber forwardFlywheelKP =
-      new LoggedTunableNumber("Shooter/ForwardFlywheel/kP", ShooterConstants.forwardFlywheelKP);
+      new LoggedTunableNumber("Shooter/UpperFlywheel/kP", ShooterConstants.upperFlywheelKp);
   private static final LoggedTunableNumber forwardFlywheelKD =
-      new LoggedTunableNumber("Shooter/ForwardFlywheel/kD", ShooterConstants.forwardFlywheelKD);
+      new LoggedTunableNumber("Shooter/UpperFlywheel/kD", ShooterConstants.forwardFlywheelKD);
   private static final LoggedTunableNumber forwardFlywheelKS =
-      new LoggedTunableNumber("Shooter/ForwardFlywheel/kS", ShooterConstants.forwardFlywheelKS);
+      new LoggedTunableNumber("Shooter/UpperFlywheel/kS", ShooterConstants.forwardFlywheelKS);
   private static final LoggedTunableNumber forwardFlywheelKV =
-      new LoggedTunableNumber("Shooter/ForwardFlywheel/kV", ShooterConstants.forwardFlywheelKV);
+      new LoggedTunableNumber("Shooter/UpperFlywheel/kV", ShooterConstants.forwardFlywheelKV);
   private static final LoggedTunableNumber forwardFlywheelKA =
-      new LoggedTunableNumber("Shooter/ForwardFlywheel/kA", ShooterConstants.forwardFlywheelKA);
+      new LoggedTunableNumber("Shooter/UpperFlywheel/kA", ShooterConstants.forwardFlywheelKA);
 
   private final Alert forwardFlywheelDisconnectedAlert =
       new Alert("Forward Flywheel disconnected", AlertType.kError);
@@ -68,10 +70,10 @@ public class Shooter extends SubsystemBase {
     sysId =
         new SysIdRoutine(
             new SysIdRoutine.Config(
-                Volts.per(Second).of(2),
-                Volts.of(5),
+                Volts.per(Second).of(1),
+                Volts.of(2),
                 null,
-                (state) -> Logger.recordOutput("Shooter/SysID State", state.toString())),
+                (state) -> SignalLogger.writeString("Shooter/SysID State", state.toString())),
             new SysIdRoutine.Mechanism(
                 (voltage) -> runCharacterization(voltage.in(Volts)), null, this));
   }
@@ -127,8 +129,8 @@ public class Shooter extends SubsystemBase {
   }
 
   private void runCharacterization(double output) {
-    forwardFlywheel.setOpenLoopVoltage(output);
-    backFlywheel.setOpenLoopVoltage(output);
+    forwardFlywheel.setOpenLoopCurrent(output);
+    backFlywheel.setOpenLoopCurrent(output);
   }
 
   /** Returns a command to run a quasistatic test in the specified direction. */

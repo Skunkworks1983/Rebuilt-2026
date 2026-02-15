@@ -26,21 +26,21 @@ public class ShooterConstants {
   public static final int upperFlywheelId = 46;
   public static final int backFlywheelId = 45;
 
-  public static final double forwardFlywheelKP = 3.5;
+  public static final double upperFlywheelKp = 1.0;
   public static final double forwardFlywheelKD = 0.0;
-  public static final double forwardFlywheelKS = 1.0994;
-  public static final double forwardFlywheelKV = 0.318791;
-  public static final double forwardFlywheelKA = 0.72373;
+  public static final double forwardFlywheelKS = 0.017988;
+  public static final double forwardFlywheelKV = 0.051044;
+  public static final double forwardFlywheelKA = 2.80181;
 
   public static final double forwardFlywheelMaxVelocityRotationsPerSec = 85.6667;
   public static final double forwardFlywheelMaxAccelerationRotationsPerSec = 200.0;
   public static final double forwardFlywheelMaxJerkRotationsPerSecCubed = 100;
 
-  public static final double backFlywheelKP = 3.5;
+  public static final double backFlywheelKP = 1.0;
   public static final double backFlywheelKD = 0.0;
-  public static final double backFlywheelKS = 1.099;
-  public static final double backFlywheelKV = 0.318791;
-  public static final double backFlywheelKA = 0.72373;
+  public static final double backFlywheelKS = 0.017988;
+  public static final double backFlywheelKV = 0.065044;
+  public static final double backFlywheelKA = 2.8181;
 
   public static final double backFlywheelMaxVelocityRotationsPerSec = 85.6667;
   public static final double backFlywheelMaxAccelerationRotationsPerSec = 200.0;

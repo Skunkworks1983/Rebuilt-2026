@@ -49,7 +49,7 @@ public class FlywheelIOTalonFX implements FlywheelIO {
 
     flywheelConfig.ClosedLoopGeneral.ContinuousWrap = true;
 
-    flywheelConfig.Slot0.kP = ShooterConstants.forwardFlywheelKP;
+    flywheelConfig.Slot0.kP = ShooterConstants.upperFlywheelKp;
     flywheelConfig.Slot0.kI = 0.0;
     flywheelConfig.Slot0.kD = ShooterConstants.forwardFlywheelKD;
 
