@@ -24,8 +24,8 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
-import frc.robot.subsystems.collector.collectorConstants.CollectorConstants.Side;
+import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstants;
+import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstants.Side;
 
 /**
  * This CollectorIO pretains to a talonFX collector, it has the functions of raising lowering, and
@@ -40,7 +40,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
   protected final TalonFX intakeMotorUpper;
 
   // Constants
-  private final CollectorConstants constants;
+  private final CollectorModuleConstants constants;
 
   // Helper variables
   private boolean isDown;
@@ -72,7 +72,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
       new Debouncer(0.5, Debouncer.DebounceType.kFalling);
 
   /** Instanciates, configures, and sets up the IO inputs for motors */
-  public CollectorModuleTalonIO(CollectorConstants constants) {
+  public CollectorModuleTalonIO(CollectorModuleConstants constants) {
     // Constants
     this.constants = constants;
 
@@ -207,7 +207,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
   }
 
   /** Gets Constants */
-  public CollectorConstants getConstants() {
+  public CollectorModuleConstants getConstants() {
     return constants;
   }
 

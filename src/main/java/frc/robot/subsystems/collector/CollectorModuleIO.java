@@ -14,8 +14,8 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
-import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
-import frc.robot.subsystems.collector.collectorConstants.CollectorConstants.Side;
+import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstants;
+import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstants.Side;
 import org.littletonrobotics.junction.AutoLog;
 
 /**
@@ -60,7 +60,7 @@ public interface CollectorModuleIO {
   public default void updateInputs(CollectorIOInputs inputs) {}
 
   /** Gets Constants */
-  public default CollectorConstants getConstants() {
+  public default CollectorModuleConstants getConstants() {
     return null;
   }
 

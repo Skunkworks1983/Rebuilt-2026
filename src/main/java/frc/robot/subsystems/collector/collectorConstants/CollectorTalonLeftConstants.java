@@ -13,7 +13,7 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
  * <ul>
  *   Only to be used with The talonFX collector IO for the left collector
  */
-public class CollectorTalonLeftConstants extends CollectorConstants {
+public class CollectorTalonLeftConstants extends CollectorModuleConstants {
 
   public CollectorTalonLeftConstants() {
     // Collector Side

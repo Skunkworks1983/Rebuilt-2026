@@ -10,8 +10,8 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
-import frc.robot.subsystems.collector.collectorConstants.CollectorConstants.Side;
+import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstants;
+import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstants.Side;
 import java.util.Map;
 import org.ironmaple.simulation.IntakeSimulation;
 import org.ironmaple.simulation.IntakeSimulation.IntakeSide;
@@ -32,7 +32,7 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
 
   public CollectorModuleSimIO(
       AbstractDriveTrainSimulation driveTrain,
-      CollectorConstants constants) {
+      CollectorModuleConstants constants) {
 
     super(constants);
 
