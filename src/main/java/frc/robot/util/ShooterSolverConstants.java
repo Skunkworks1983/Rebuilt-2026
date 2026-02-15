@@ -27,7 +27,7 @@ public class ShooterSolverConstants {
   public static final double changeRate = 0.85;
 
   // SHOT LATENCY MODEL
-  public static double defaultShotLatencySec = 0.070;
+  public static double defaultShotLatencySec = 0.080;
   public static final double minShotLatencySec = 0.015;
   public static final double maxShotLatencySec = 0.200;
   public static final double shotLatencyModelLearningRate = 0.15;

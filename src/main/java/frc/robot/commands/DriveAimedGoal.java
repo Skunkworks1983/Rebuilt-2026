@@ -61,8 +61,8 @@ public class DriveAimedGoal extends Command {
     var currentSpeeds = drive.getChassisSpeeds(); // Robot Relative
 
     NoPitchShooterControls controls =
-        ShooterCalculations.getNoPitchShooterControls(
-            currentPose, currentSpeeds, drive.getAngularVelocity(), ShooterConstants.shooterPitch);
+        ShooterCalculations.getNoPitchExtrapolatedControls(
+            currentPose, currentSpeeds, ShooterConstants.shooterPitch);
 
     shooter.setShooterControls(controls.shooterVelocity(), controls.shooterVelocity());
     double currentYawRadians = drive.getRotation().getRadians();
