@@ -30,13 +30,14 @@ public interface FlywheelIO {
 
   public default void setVelocity(AngularVelocity velocity) {}
 
-  public default void setOpenLoopOutput(double output) {}
+  public default void setOpenLoopCurrent(double output) {}
+
+  public default void setOpenLoopVoltage(double output) {}
 
   public default void updateInputs(FlywheelIOInputs inputs) {}
 
   public default void setPID(double kP, double kI, double kD, double kS, double kV, double kA) {}
 
-  public default void setMotionConstraints(AngularAcceleration maxAcceleration, double maxJerk) {}
 
   public default void maxDutyCycle() {}
 }

@@ -21,19 +21,11 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Shooter extends SubsystemBase {
-  public enum ShooterState {
-    OFF,
-    SHOOT_GOAL,
-    SHOOT_ALLIANCE_ZONE
-  }
-
-  private ShooterState shooterState = ShooterState.OFF;
 
   // FORWARD FLYWHEEL
   private final FlywheelIO forwardFlywheel;
   private final FlywheelIOInputsAutoLogged forwardFlywheelInputs = new FlywheelIOInputsAutoLogged();
 
-  private AngularVelocity forwardFlywheelSetpoint = RadiansPerSecond.of(0 + .1e-6);
 
   private static final LoggedTunableNumber forwardFlywheelKP =
       new LoggedTunableNumber("Shooter/ForwardFlywheel/kP", ShooterConstants.forwardFlywheelKP);
@@ -46,15 +38,6 @@ public class Shooter extends SubsystemBase {
   private static final LoggedTunableNumber forwardFlywheelKA =
       new LoggedTunableNumber("Shooter/ForwardFlywheel/kA", ShooterConstants.forwardFlywheelKA);
 
-  private static final LoggedTunableNumber forwardFlywheelMaxAccelerationRotationsPerSec2 =
-      new LoggedTunableNumber(
-          "Shooter/ForwardFlywheel/MaxAccelerationRotationsPerSec2",
-          ShooterConstants.forwardFlywheelMaxAccelerationRotationsPerSec);
-  private static final LoggedTunableNumber forwardFlywheelMaxJerkRotationsPerSec3 =
-      new LoggedTunableNumber(
-          "Shooter/ForwardFlywheel/MaxJerkRotationsPerSec3",
-          ShooterConstants.forwardFlywheelMaxJerkRotationsPerSecCubed);
-
   private final Alert forwardFlywheelDisconnectedAlert =
       new Alert("Forward Flywheel disconnected", AlertType.kError);
 
@@ -63,7 +46,6 @@ public class Shooter extends SubsystemBase {
   private final FlywheelIO backFlywheel;
   private final FlywheelIOInputsAutoLogged backFlywheelInputs = new FlywheelIOInputsAutoLogged();
 
-  private AngularVelocity backFlywheelSetpoint = RadiansPerSecond.of(0 + .1e-6);
 
   private static final LoggedTunableNumber backFlywheelKP =
       new LoggedTunableNumber("Shooter/BackFlywheel/kP", ShooterConstants.backFlywheelKP);
@@ -75,15 +57,6 @@ public class Shooter extends SubsystemBase {
       new LoggedTunableNumber("Shooter/BackFlywheel/kV", ShooterConstants.backFlywheelKV);
   private static final LoggedTunableNumber backFlywheelKA =
       new LoggedTunableNumber("Shooter/BackFlywheel/kA", ShooterConstants.backFlywheelKA);
-
-  private static final LoggedTunableNumber backFlywheelMaxAccelerationRotationsPerSec2 =
-      new LoggedTunableNumber(
-          "Shooter/BackFlywheel/MaxAccelerationRotationsPerSec2",
-          ShooterConstants.backFlywheelMaxAccelerationRotationsPerSec);
-  private static final LoggedTunableNumber backFlywheelMaxJerkRotationsPerSec3 =
-      new LoggedTunableNumber(
-          "Shooter/BackFlywheel/MaxJerkRotationsPerSec3",
-          ShooterConstants.backFlywheelMaxJerkRotationsPerSecCubed);
 
   private final Alert backFlywheelDisconnectedAlert =
       new Alert("Back Flywheel disconnected", AlertType.kError);
@@ -125,13 +98,6 @@ public class Shooter extends SubsystemBase {
           forwardFlywheelKA.get());
     }
 
-    if (forwardFlywheelMaxAccelerationRotationsPerSec2.hasChanged(hashCode())
-        || forwardFlywheelMaxJerkRotationsPerSec3.hasChanged(hashCode())) {
-      forwardFlywheel.setMotionConstraints(
-          RotationsPerSecondPerSecond.of(forwardFlywheelMaxAccelerationRotationsPerSec2.get()),
-          forwardFlywheelMaxAccelerationRotationsPerSec2.get());
-    }
-
     backFlywheel.updateInputs(backFlywheelInputs);
     Logger.processInputs("Shooter/Lower Flywheel", backFlywheelInputs);
 
@@ -152,12 +118,6 @@ public class Shooter extends SubsystemBase {
           backFlywheelKA.get());
     }
 
-    if (backFlywheelMaxAccelerationRotationsPerSec2.hasChanged(hashCode())
-        || backFlywheelMaxJerkRotationsPerSec3.hasChanged(hashCode())) {
-      backFlywheel.setMotionConstraints(
-          RotationsPerSecondPerSecond.of(backFlywheelMaxAccelerationRotationsPerSec2.get()),
-          backFlywheelMaxAccelerationRotationsPerSec2.get());
-    }
   }
 
   public LinearVelocity getForwardFlywheelLinearVelocity() {
@@ -167,8 +127,8 @@ public class Shooter extends SubsystemBase {
   }
 
   private void runCharacterization(double output) {
-    forwardFlywheel.setOpenLoopOutput(output);
-    backFlywheel.setOpenLoopOutput(output);
+    forwardFlywheel.setOpenLoopVoltage(output);
+    backFlywheel.setOpenLoopVoltage(output);
   }
 
   /** Returns a command to run a quasistatic test in the specified direction. */
