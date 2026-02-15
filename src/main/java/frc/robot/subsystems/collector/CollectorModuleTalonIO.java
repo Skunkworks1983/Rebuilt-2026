@@ -212,15 +212,6 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
   }
 
   /**
-   * Gets the turn motors gear ratio
-   *
-   * @return -Turn motors gear ratio
-   */
-  public double getTurnGearRatio() {
-    return constants.turnMotorGearRatio;
-  }
-
-  /**
    * Sets the velocity of our intake collector motors
    *
    * @param velocity -Angular Velocity
@@ -237,15 +228,6 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
    */
   public void setCollectorPos(Angle angle) {
     turnMotor.setControl(new MotionMagicVoltage(angle).withSlot(0));
-  }
-
-  /**
-   * Sets the collectors turn motor velocity
-   *
-   * @param velocity -Angular Velocity
-   */
-  public void setCollectorTurnMotorVelocity(AngularVelocity velocity) {
-    turnMotor.setControl(new MotionMagicVelocityVoltage(velocity).withSlot(0));
   }
 
   /**

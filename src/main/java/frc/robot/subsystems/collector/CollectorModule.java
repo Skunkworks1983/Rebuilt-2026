@@ -83,15 +83,6 @@ public class CollectorModule {
   }
 
   /**
-   * Gets the turn motors gear ratio
-   *
-   * @return -Turn motors gear ratio
-   */
-  public double getTurnGearRatio() {
-    return collectorIO.getTurnGearRatio();
-  }
-
-  /**
    * Sets the velocity of our collector motors
    *
    * @param velocity -Angular Velocity
@@ -107,15 +98,6 @@ public class CollectorModule {
    */
   public void setCollectorPos(Angle angle) {
     collectorIO.setCollectorPos(angle);
-  }
-
-  /**
-   * Sets the collectors turn motor velocity
-   *
-   * @param velocity -Angular Velocity
-   */
-  public void setCollectorTurnMotorVelocity(AngularVelocity velocity) {
-    collectorIO.setCollectorTurnMotorVelocity(velocity);
   }
 
   /**

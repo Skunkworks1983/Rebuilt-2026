@@ -20,11 +20,16 @@ public class CollectorConstants {
     RIGHT;
   }
 
+  // X, Y pos from robot center
+  public static double inchesFromOriginX = 13;
+  public static double inchesFromOriginY = 2;
+
+
   // Collectors Sim Position on Robot
   public static final Translation2d collectorLeftOriginTranslation =
-      new Translation2d(Inches.of(13), Inches.of(2));
+      new Translation2d(Inches.of(inchesFromOriginX), Inches.of(inchesFromOriginY));
   public static final Translation2d collectorRightOriginTranslation =
-      new Translation2d(Inches.of(-13), Inches.of(2));
+      new Translation2d(Inches.of(-inchesFromOriginX), Inches.of(inchesFromOriginY));
 
   // Collectors side
   public Side collectorSide;

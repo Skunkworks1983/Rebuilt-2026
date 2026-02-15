@@ -26,26 +26,20 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
 
   final double minimumCollectorRadiansToCollect = 0.1;
   final double minimumCollectorRadiansToBeDown = 1.55;
-  final double minimumCollectorSpeedToCollect = 5;
+  final double collectorSpeedToCollect = 5;
 
-  public static enum CollectorSide {
-    Left,
-    Right
-  }
-
-  public final CollectorSide collectorSide;
+  final Side collectorSide;
 
   public CollectorModuleSimIO(
       AbstractDriveTrainSimulation driveTrain,
-      CollectorSide collectorSide,
       CollectorConstants constants) {
 
     super(constants);
 
-    this.collectorSide = collectorSide;
+    this.collectorSide = constants.collectorSide;
 
     switch (collectorSide) {
-      case Left:
+      case LEFT:
         this.collectorSimulation =
         IntakeSimulation.OverTheBumperIntake(
             "Fuel",
@@ -56,7 +50,7 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
             1);
         break;
 
-      case Right:
+      case RIGHT:
 
       this.collectorSimulation =
         IntakeSimulation.OverTheBumperIntake(
@@ -147,7 +141,7 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
     input.upperCurrentAmps = Current.ofBaseUnits(intakeMotorUpperSim.getCurrentDrawAmps(), Amps);
 
     if (turnMotorSim.getAngularPositionRad() < minimumCollectorRadiansToCollect
-        && intakeMotorLowerSim.getAngularVelocityRadPerSec() > minimumCollectorSpeedToCollect) {
+        && intakeMotorLowerSim.getAngularVelocityRadPerSec() > collectorSpeedToCollect) {
 
       collectorSimulation.startIntake();
     } else {

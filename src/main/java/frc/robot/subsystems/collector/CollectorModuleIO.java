@@ -65,15 +65,6 @@ public interface CollectorModuleIO {
   }
 
   /**
-   * Gets the turn motors gear ratio
-   *
-   * @return -Turn motors gear ratio
-   */
-  public default double getTurnGearRatio() {
-    return 0.0;
-  }
-
-  /**
    * Sets the velocity of our intake collector motors
    *
    * @param velocity -Angular Velocity
@@ -86,13 +77,6 @@ public interface CollectorModuleIO {
    * @param angle WPILib angle
    */
   public default void setCollectorPos(Angle angle) {}
-
-  /**
-   * Sets the collectors turn motor velocity
-   *
-   * @param velocity -Angular Velocity
-   */
-  public default void setCollectorTurnMotorVelocity(AngularVelocity velocity) {}
 
   /**
    * Checks to see if the collector is down

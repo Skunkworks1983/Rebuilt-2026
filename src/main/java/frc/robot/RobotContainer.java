@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -29,7 +28,6 @@ import frc.robot.commands.collectorCommands.LeftCollectorDownState;
 import frc.robot.commands.collectorCommands.RightCollectorDownState;
 import frc.robot.subsystems.collector.Collector;
 import frc.robot.subsystems.collector.CollectorModuleSimIO;
-import frc.robot.subsystems.collector.CollectorModuleSimIO.CollectorSide;
 import frc.robot.subsystems.collector.CollectorModuleTalonIO;
 import frc.robot.subsystems.collector.collectorConstants.CollectorTalonLeftConstants;
 import frc.robot.subsystems.collector.collectorConstants.CollectorTalonRightConstants;
@@ -71,8 +69,6 @@ public class RobotContainer {
   // Controller
   private final Joystick leftJoystick;
   private final Joystick rightJoystick;
-
-  private Mechanism2d mechanism2d = new Mechanism2d(0, 0);
   private final Joystick buttonJoystick;
 
   /**
@@ -88,6 +84,8 @@ public class RobotContainer {
 
   // Sim
   private SwerveDriveSimulation simulation = null;
+  private Pose2d robotSimStartPosBlue = new Pose2d(7.485, 7.064, new Rotation2d(Math.PI));
+  private Pose2d robotSimStartPosRed = new Pose2d(10, 1.5, new Rotation2d());
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -105,7 +103,7 @@ public class RobotContainer {
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
-        // ModuleIOTalonFX is intended for modules  ith TalonFX drive, TalonFX turn, and
+        // ModuleIOTalonFX is intended for modules with TalonFX drive, TalonFX turn, and
         // a CANcoder
         drive =
             new Drive(
@@ -186,9 +184,9 @@ public class RobotContainer {
         collector =
             new Collector(
                 new CollectorModuleSimIO(
-                    simulation, CollectorSide.Left, new CollectorTalonLeftConstants()),
+                    simulation, new CollectorTalonLeftConstants()),
                 new CollectorModuleSimIO(
-                    simulation, CollectorSide.Right, new CollectorTalonRightConstants()));
+                    simulation, new CollectorTalonRightConstants()));
 
         indexer = new Indexer(new IndexerIOSim(IndexerConstants.indexerMotorID));
 
@@ -211,9 +209,9 @@ public class RobotContainer {
         collector =
             new Collector(
                 new CollectorModuleSimIO(
-                    simulation, CollectorSide.Left, new CollectorTalonLeftConstants()),
+                    simulation, new CollectorTalonLeftConstants()),
                 new CollectorModuleSimIO(
-                    simulation, CollectorSide.Right, new CollectorTalonRightConstants()));
+                    simulation, new CollectorTalonRightConstants()));
 
         indexer = new Indexer(new IndexerIO() {});
         break;
@@ -383,9 +381,9 @@ public class RobotContainer {
   public void resetSimRobotPose() {
     if (DriverStation.getAlliance().isPresent()
         && DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
-      simulation.setSimulationWorldPose(new Pose2d(7.485, 7.064, new Rotation2d(Math.PI)));
+      simulation.setSimulationWorldPose(robotSimStartPosBlue);
     } else {
-      simulation.setSimulationWorldPose(new Pose2d(10, 1.5, new Rotation2d()));
+      simulation.setSimulationWorldPose(robotSimStartPosRed);
     }
   }
 }
