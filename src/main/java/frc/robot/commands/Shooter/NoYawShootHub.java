@@ -1,21 +1,39 @@
 package frc.robot.commands.Shooter;
 
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.Shooter.ShooterSetpoints;
 import frc.robot.util.ShooterCalculations;
 import frc.robot.util.ShooterCalculations.ShooterControls;
+import org.littletonrobotics.junction.Logger;
 
-public class HubVelocityPitch extends Command {
+public class NoYawShootHub extends Command {
   private final Shooter shooter;
   private final Drive drive;
 
-  public HubVelocityPitch(Shooter shooter, Drive drive) {
+  /**
+   * Sets shooter to correct flywheel velocity and pivot pitch to shoot into the hub without
+   * controlling drive yaw
+   *
+   * <p>This is primarily for autonomous
+   *
+   * @param shooter The shooter..
+   * @param drive The drivetrain....
+   */
+  public NoYawShootHub(Shooter shooter, Drive drive) {
     this.shooter = shooter;
     this.drive = drive;
 
     addRequirements(shooter);
+  }
+
+  @Override
+  public void initialize() {
+    Logger.recordOutput("Auto Shoot/Drive Aimed Goal No Yaw", true);
   }
 
   @Override
@@ -31,5 +49,11 @@ public class HubVelocityPitch extends Command {
   @Override
   public boolean isFinished() {
     return false;
+  }
+
+  @Override
+  public void end(boolean interrupted) {
+    shooter.setShooterSetpoints(new ShooterSetpoints(RadiansPerSecond.of(0), Degrees.of(0)));
+    Logger.recordOutput("Auto Shoot/Drive Aimed Goal No Yaw", false);
   }
 }

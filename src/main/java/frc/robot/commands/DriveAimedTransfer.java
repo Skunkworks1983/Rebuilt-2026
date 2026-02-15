@@ -21,6 +21,16 @@ public class DriveAimedTransfer extends Command {
   private final DoubleSupplier ySupplier;
   private final PIDController yawController;
 
+  /**
+   * Allows teleop translational control of the robot while aiming to shoot into the alliance zone
+   * Controls yaw to avoid hitting hub, sets shooter pitch and velocity to the correct values for
+   * the given position
+   *
+   * @param drive
+   * @param shooter
+   * @param xSupplier
+   * @param ySupplier
+   */
   public DriveAimedTransfer(
       Drive drive, Shooter shooter, DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
     this.drive = drive;
@@ -39,6 +49,7 @@ public class DriveAimedTransfer extends Command {
   @Override
   public void initialize() {
     yawController.reset();
+    Logger.recordOutput("Auto Shoot/Drive Aimed Transfer", true);
   }
 
   @Override
@@ -78,5 +89,6 @@ public class DriveAimedTransfer extends Command {
   @Override
   public void end(boolean interrupted) {
     yawController.close();
+    Logger.recordOutput("Auto Shoot/Drive Aimed Transfer", false);
   }
 }

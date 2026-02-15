@@ -75,7 +75,6 @@ public interface PivotIO {
   /**
    * Set motion constraints for motion-profile generation on the pivot.
    *
-   * @deprecated MotionMagic has been removed from the Pivot
    * @param maxVelocity maximum angular velocity allowed for the pivot
    * @param maxAcceleration maximum angular acceleration allowed for the pivot
    */

@@ -21,6 +21,15 @@ public class DriveAimedGoal extends Command {
   private final DoubleSupplier ySupplier;
   private final PIDController yawController;
 
+  /**
+   * Allows teleop drivetrain translation control while keeping yaw aimed at hub Sets shooter pitch
+   * and velocity to correct setpoint for current position
+   *
+   * @param drive The drivetrain.
+   * @param shooter The shooter.
+   * @param xSupplier Supplier for control of robot velocity in the x direction of the field frame
+   * @param ySupplier Supplier for control of robot velocity in the y direction of the field frame
+   */
   public DriveAimedGoal(
       Drive drive, Shooter shooter, DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
     this.drive = drive;
@@ -39,6 +48,7 @@ public class DriveAimedGoal extends Command {
   @Override
   public void initialize() {
     yawController.reset();
+    Logger.recordOutput("Auto Shoot/Drive Aimed Goal", true);
   }
 
   @Override
@@ -77,5 +87,6 @@ public class DriveAimedGoal extends Command {
   @Override
   public void end(boolean interrupted) {
     yawController.close();
+    Logger.recordOutput("Auto Shoot/Drive Aimed Goal", false);
   }
 }

@@ -63,12 +63,10 @@ public class FlywheelIOTalonFX implements FlywheelIO {
     flywheelConfig.CurrentLimits.StatorCurrentLimit =
         ShooterConstants.flywheelStatorCurrentLimitAmps.in(Amps);
 
-    if (Constants.currentMode != Mode.SIM) {
-      tryUntilOk(5, () -> flywheelMotor.getConfigurator().apply(flywheelConfig, 0.25));
-    } else {
+    if (Constants.currentMode == Mode.SIM) {
       flywheelConfig.Slot0 = ShooterConstants.simFlywheelConfigs;
-      tryUntilOk(5, () -> flywheelMotor.getConfigurator().apply(flywheelConfig, 0.25));
     }
+    tryUntilOk(5, () -> flywheelMotor.getConfigurator().apply(flywheelConfig, 0.25));
 
     flywheelVelocity = flywheelMotor.getVelocity();
     flywheelAppliedVolts = flywheelMotor.getMotorVoltage();

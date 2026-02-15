@@ -28,7 +28,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveAimedGoal;
 import frc.robot.commands.DriveAimedTransfer;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.Shooter.HubVelocityPitch;
+import frc.robot.commands.Shooter.NoYawShootHub;
 import frc.robot.commands.TestPathCommands;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -120,8 +120,7 @@ public class RobotContainer {
                 drive, new VisionIOLimelight(VisionConstants.camera0Name, drive::getRotation));
 
         // This is a solution to the vision-drive cross dependency issue that hurts my
-        // eys, but it
-        // does work
+        // eys, but it does work
         drive.setResetVisionIMUCallback((pose) -> vision.resetCameraIMU(pose));
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
@@ -203,7 +202,7 @@ public class RobotContainer {
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
     new EventTrigger("FIRE")
         .onTrue(Commands.print("LEBRON!").andThen(new InstantCommand(this::launchSimFuel)));
-    new PointTowardsZoneTrigger("Aim Hub").whileTrue(new HubVelocityPitch(shooter, drive));
+    new PointTowardsZoneTrigger("Aim Hub").whileTrue(new NoYawShootHub(shooter, drive));
 
     // Set up SysId routines
     autoChooser.addOption(

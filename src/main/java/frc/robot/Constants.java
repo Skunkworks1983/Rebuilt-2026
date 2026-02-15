@@ -18,7 +18,7 @@ import frc.robot.generated.TunerConstants;
 public final class Constants {
   public static final Mode simMode = Mode.SIM;
   public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
-  public static final ControlScheme controlScheme = ControlScheme.XBOX;
+  public static final ControlScheme controlScheme = ControlScheme.OI;
   public static final RobotHardware robotHardware = RobotHardware.Swerveles;
   public static final TunerConstants tunerConstants = TunerConstants.getTunerConstants();
 

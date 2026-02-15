@@ -53,7 +53,8 @@ public class PivotIOTalonFX implements PivotIO {
     pivotConfig.Slot0.kA = ShooterConstants.pivotkA;
 
     pivotConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-    pivotConfig.CurrentLimits.StatorCurrentLimit = ShooterConstants.pivotStatorCurrent.in(Amps);
+    pivotConfig.CurrentLimits.StatorCurrentLimit =
+        ShooterConstants.pivotStatorCurrentLimit.in(Amps);
 
     tryUntilOk(5, () -> pivotMotor.getConfigurator().apply(pivotConfig, 0.25));
 
