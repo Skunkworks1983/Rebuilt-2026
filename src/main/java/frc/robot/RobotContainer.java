@@ -275,7 +275,7 @@ public class RobotContainer {
 
     TestPathCommands.publishTestPaths(drive);
 
-    // State Butoons
+    // State Buttons
     JoystickButton manualModeSwitch =
         new JoystickButton(buttonJoystick, Constants.JoystickConstants.CollectorManualModeID);
     JoystickButton autoModeSwitch =
