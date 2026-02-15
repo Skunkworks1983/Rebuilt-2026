@@ -40,6 +40,9 @@ public interface FlywheelIO {
    * Apply an open-loop torque/current command to the flywheel motor.
    *
    * <p>This is primarily for SysID
+   * 
+   * @see <a href="https://www.chiefdelphi.com/t/sysid-with-ctre-swerve-characterization/452631/9">
+   *      SysID for FOC Torque Control</a>
    */
   public default void setOpenLoopTorqueCurrent(Current output) {}
 
