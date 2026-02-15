@@ -24,10 +24,12 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveAimedShot;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.Shooter.NoYawShootHub;
+import frc.robot.commands.IndexerCommand;
 import frc.robot.commands.TestPathCommands;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -42,6 +44,11 @@ import frc.robot.subsystems.shooter.PivotIO;
 import frc.robot.subsystems.shooter.PivotIOSim;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterConstants;
+import frc.robot.subsystems.indexer.Indexer;
+import frc.robot.subsystems.indexer.IndexerConstants;
+import frc.robot.subsystems.indexer.IndexerIO;
+import frc.robot.subsystems.indexer.IndexerIOSim;
+import frc.robot.subsystems.indexer.IndexerIOTalonFX;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
@@ -64,11 +71,12 @@ public class RobotContainer {
   private final Drive drive;
   private final Vision vision;
   private final Shooter shooter;
+  private final Indexer indexer;
 
   // Controller
   private final Joystick leftJoystick;
   private final Joystick rightJoystick;
-  private final Joystick buttonBoard;
+  private final Joystick buttonJoystick;
 
   /**
    * Xbox Controller for simulation.
@@ -89,13 +97,13 @@ public class RobotContainer {
     if (Constants.controlScheme == Constants.ControlScheme.OI) {
       leftJoystick = new Joystick(0);
       rightJoystick = new Joystick(1);
-      buttonBoard = new Joystick(2);
+      buttonJoystick = new Joystick(2);
       xboxController = null;
     } else {
       xboxController = new XboxController(0);
       leftJoystick = null;
       rightJoystick = null;
-      buttonBoard = null;
+      buttonJoystick = null;
     }
     switch (Constants.currentMode) {
       case REAL:
@@ -178,6 +186,9 @@ public class RobotContainer {
                     VisionConstants.camera1Name,
                     VisionConstants.robotToCamera1,
                     simulation::getSimulatedDriveTrainPose));
+
+        indexer = new Indexer(new IndexerIOSim(IndexerConstants.indexerMotorID));
+
         break;
 
       default:
@@ -194,6 +205,8 @@ public class RobotContainer {
         shooter = new Shooter(new FlywheelIO() {}, new FlywheelIO() {}, new PivotIO() {});
 
         vision = new Vision(drive, new VisionIO() {}, new VisionIO() {});
+
+        indexer = new Indexer(new IndexerIO() {});
         break;
     }
 
@@ -244,6 +257,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
     Trigger shootGoalButton;
     Trigger shootTransferButton;
+    JoystickButton runIndexer;
     // Default command, normal field-relative drive
     if (Constants.controlScheme == Constants.ControlScheme.OI) {
       drive.setDefaultCommand(
@@ -264,6 +278,8 @@ public class RobotContainer {
               () -> -leftJoystick.getX(),
               DriveAimedShot.TargetType.GOAL));
       shootButton.onTrue(new InstantCommand(this::launchSimFuel));
+
+      runIndexer = new JoystickButton(buttonJoystick, IndexerConstants.runIndexerButtonID);
 
     } else {
       drive.setDefaultCommand(
@@ -291,7 +307,10 @@ public class RobotContainer {
               () -> -xboxController.getLeftX(),
               DriveAimedShot.TargetType.TRANSFER));
       shootButton.onTrue(new InstantCommand(this::launchSimFuel));
+      runIndexer = new JoystickButton(xboxController, IndexerConstants.runIndexerButtonID);
     }
+
+    runIndexer.whileTrue(new IndexerCommand(indexer));
     Logger.recordOutput("Control Scheme", Constants.controlScheme);
 
     TestPathCommands.publishTestPaths(drive);
