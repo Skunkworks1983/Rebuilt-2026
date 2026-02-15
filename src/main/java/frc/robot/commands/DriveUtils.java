@@ -16,7 +16,7 @@ public class DriveUtils {
     Translation2d linearVelocity =
         getLinearVelocityFromJoysticks(xSupplier.getAsDouble(), ySupplier.getAsDouble());
 
-    // Convert to field relative speeds & send command
+    // Convert to field relative speeds
     return new ChassisSpeeds(
         linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
         linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
