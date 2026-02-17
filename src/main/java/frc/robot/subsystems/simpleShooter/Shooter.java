@@ -16,6 +16,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
+import frc.robot.util.Elastic;
+import frc.robot.util.Elastic.Notification;
+import frc.robot.util.Elastic.NotificationLevel;
 import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -94,6 +97,11 @@ public class Shooter extends SubsystemBase {
           forwardFlywheelKS.get(),
           forwardFlywheelKV.get(),
           forwardFlywheelKA.get());
+      Elastic.sendNotification(
+          new Notification(
+              NotificationLevel.INFO,
+              "Closed Loop Gains Updated",
+              "Forward Flywheel Closed Loop Gains Updated"));
     }
 
     backFlywheel.updateInputs(backFlywheelInputs);
@@ -114,6 +122,11 @@ public class Shooter extends SubsystemBase {
           backFlywheelKS.get(),
           backFlywheelKV.get(),
           backFlywheelKA.get());
+      Elastic.sendNotification(
+          new Notification(
+              NotificationLevel.INFO,
+              "Closed Loop Gains Updated",
+              "Lower Flywheel Closed Loop Gains Updated"));
     }
   }
 
