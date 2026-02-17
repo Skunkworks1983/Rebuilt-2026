@@ -64,7 +64,7 @@ public class DriveAimedGoal extends Command {
         ShooterCalculations.getNoPitchExtrapolatedControls(
             currentPose, currentSpeeds, ShooterConstants.shooterPitch);
 
-    shooter.setShooterControls(controls.shooterVelocity(), controls.shooterVelocity());
+    shooter.setShooterControls(controls.upperFlywheelVelocity(), controls.lowerFlywheelVelocity());
     double currentYawRadians = drive.getRotation().getRadians();
     double targetYawRadians = controls.driveYaw().getRadians();
 

@@ -4,10 +4,10 @@ import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
-import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
 
+import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.Alert;
@@ -20,14 +20,11 @@ import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-import com.ctre.phoenix6.SignalLogger;
-
 public class Shooter extends SubsystemBase {
 
   // FORWARD FLYWHEEL
   private final FlywheelIO forwardFlywheel;
   private final FlywheelIOInputsAutoLogged forwardFlywheelInputs = new FlywheelIOInputsAutoLogged();
-
 
   private static final LoggedTunableNumber forwardFlywheelKP =
       new LoggedTunableNumber("Shooter/UpperFlywheel/kP", ShooterConstants.upperFlywheelKp);
@@ -47,7 +44,6 @@ public class Shooter extends SubsystemBase {
 
   private final FlywheelIO backFlywheel;
   private final FlywheelIOInputsAutoLogged backFlywheelInputs = new FlywheelIOInputsAutoLogged();
-
 
   private static final LoggedTunableNumber backFlywheelKP =
       new LoggedTunableNumber("Shooter/BackFlywheel/kP", ShooterConstants.backFlywheelKP);
@@ -119,7 +115,6 @@ public class Shooter extends SubsystemBase {
           backFlywheelKV.get(),
           backFlywheelKA.get());
     }
-
   }
 
   public LinearVelocity getForwardFlywheelLinearVelocity() {

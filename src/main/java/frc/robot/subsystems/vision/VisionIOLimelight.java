@@ -68,12 +68,10 @@ public class VisionIOLimelight implements VisionIO {
 
     // When robot is enabled use internal IMU with external IMU assisted convergence (the internal
     // IMU should be seeded before enabled)
-    enableTrigger.onTrue(
-        new InstantCommand(() -> imuModePublisher.accept(0)));
+    enableTrigger.onTrue(new InstantCommand(() -> imuModePublisher.accept(0)));
 
     // When robot disables go back to seeding the internal IMU
-    enableTrigger.onFalse(
-        new InstantCommand(() -> imuModePublisher.accept(0)));
+    enableTrigger.onFalse(new InstantCommand(() -> imuModePublisher.accept(0)));
   }
 
   @Override

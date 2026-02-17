@@ -27,8 +27,14 @@ public class ShooterSolverConstants {
   public static final double changeRate = 0.85;
 
   // SHOT LATENCY MODEL
-  public static double defaultShotLatencySec = 0.080;
+  public static double defaultShotLatencySec = 0.10;
+  public static double velocityDragMultiplier = 0.5;
   public static final double minShotLatencySec = 0.015;
   public static final double maxShotLatencySec = 0.200;
   public static final double shotLatencyModelLearningRate = 0.15;
+  public static final double lowerFlywheelVelocityMultiplierDefault = 1.1;
+
+  public static final LoggedTunableNumber lowerFlywheelVelocityMultiplier =
+      new LoggedTunableNumber(
+          "Shooter Solver/LowerFlywheelVelocityMultiplier", lowerFlywheelVelocityMultiplierDefault);
 }

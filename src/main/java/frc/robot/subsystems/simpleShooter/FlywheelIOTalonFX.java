@@ -5,10 +5,8 @@ import static frc.robot.util.PhoenixUtil.tryUntilOk;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.MotionMagicVelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -16,7 +14,6 @@ import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
@@ -31,10 +28,10 @@ public class FlywheelIOTalonFX implements FlywheelIO {
   private final StatusSignal<Angle> flywheelPosition;
 
   private final TorqueCurrentFOC torqueCurrentRequest = new TorqueCurrentFOC(0);
-  private final VelocityTorqueCurrentFOC velocityTorqueCurrentRequest = new VelocityTorqueCurrentFOC(0);
+  private final VelocityTorqueCurrentFOC velocityTorqueCurrentRequest =
+      new VelocityTorqueCurrentFOC(0);
   private final DutyCycleOut dutyCycleRequest = new DutyCycleOut(0);
   private final VoltageOut voltageRequest = new VoltageOut(0);
-
 
   private final Debouncer primaryConnectedDebounce =
       new Debouncer(0.5, Debouncer.DebounceType.kFalling);
