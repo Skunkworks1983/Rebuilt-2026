@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstants;
 import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstants.Side;
-import java.util.Map;
 import org.ironmaple.simulation.IntakeSimulation;
 import org.ironmaple.simulation.IntakeSimulation.IntakeSide;
 import org.ironmaple.simulation.drivesims.AbstractDriveTrainSimulation;
@@ -31,8 +30,7 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
   final Side collectorSide;
 
   public CollectorModuleSimIO(
-      AbstractDriveTrainSimulation driveTrain,
-      CollectorModuleConstants constants) {
+      AbstractDriveTrainSimulation driveTrain, CollectorModuleConstants constants) {
 
     super(constants);
 
@@ -41,27 +39,16 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
     switch (collectorSide) {
       case LEFT:
         this.collectorSimulation =
-        IntakeSimulation.OverTheBumperIntake(
-            "Fuel",
-            driveTrain,
-            Meters.of(0.7),
-            Meters.of(0.2),
-            IntakeSide.LEFT,
-            1);
+            IntakeSimulation.OverTheBumperIntake(
+                "Fuel", driveTrain, Meters.of(0.7), Meters.of(0.2), IntakeSide.LEFT, 1);
         break;
 
       case RIGHT:
+        this.collectorSimulation =
+            IntakeSimulation.OverTheBumperIntake(
+                "Fuel", driveTrain, Meters.of(0.7), Meters.of(0.2), IntakeSide.RIGHT, 1);
+        break;
 
-      this.collectorSimulation =
-        IntakeSimulation.OverTheBumperIntake(
-            "Fuel",
-            driveTrain,
-            Meters.of(0.7),
-            Meters.of(0.2),
-            IntakeSide.RIGHT,
-            1);
-      break;
-    
       default:
         break;
     }
@@ -96,25 +83,19 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
   public void updateInputs(CollectorIOInputs input) {
 
     var turnMotorTalonFX = super.turnMotor.getSimState();
-    var intakeMotorLowerTalonFX = super.intakeMotorLower.getSimState();
-    var intakeMotorUpperTalonFX = super.intakeMotorUpper.getSimState();
+    var intakeMotorUpperTalonFX = super.intakeMotor.getSimState();
 
     turnMotorTalonFX.setSupplyVoltage(RobotController.getBatteryVoltage());
-    intakeMotorLowerTalonFX.setSupplyVoltage(RobotController.getBatteryVoltage());
     intakeMotorUpperTalonFX.setSupplyVoltage(RobotController.getBatteryVoltage());
 
     // Update simulations and input voltage for motors
     turnMotorSim.setInputVoltage(turnMotorTalonFX.getMotorVoltage());
     turnMotorSim.update(0.02);
 
-    intakeMotorLowerSim.setInputVoltage(intakeMotorLowerTalonFX.getMotorVoltage());
-    intakeMotorLowerSim.update(0.02);
-
     intakeMotorUpperSim.setInputVoltage(intakeMotorUpperTalonFX.getMotorVoltage());
     intakeMotorUpperSim.update(0.02);
 
     turnMotorTalonFX.setRotorVelocity(turnMotorSim.getAngularVelocity());
-    intakeMotorLowerTalonFX.setRotorVelocity(intakeMotorLowerSim.getAngularVelocity());
     intakeMotorUpperTalonFX.setRotorVelocity(intakeMotorUpperSim.getAngularVelocity());
 
     turnMotorTalonFX.setRawRotorPosition(turnMotorSim.getAngularPosition());
@@ -126,19 +107,12 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
     input.turnAppliedVolts = turnMotorTalonFX.getMotorVoltageMeasure();
     input.turnCurrentAmps = Current.ofBaseUnits(turnMotorSim.getCurrentDrawAmps(), Amps);
 
-    // Lower Intake Motor Inputs
-    input.lowerConnected = true;
-    input.lowerPositionRad = intakeMotorLowerSim.getAngularPosition();
-    input.lowerVelocity = intakeMotorLowerSim.getAngularVelocity();
-    input.lowerAppliedVolts = intakeMotorLowerTalonFX.getMotorVoltageMeasure();
-    input.lowerCurrentAmps = Current.ofBaseUnits(intakeMotorLowerSim.getCurrentDrawAmps(), Amps);
-
     // Upper Intake Motor Inputs
-    input.upperConnected = true;
-    input.upperPositionRad = intakeMotorUpperSim.getAngularPosition();
-    input.upperVelocity = intakeMotorUpperSim.getAngularVelocity();
-    input.upperAppliedVolts = intakeMotorUpperTalonFX.getMotorVoltageMeasure();
-    input.upperCurrentAmps = Current.ofBaseUnits(intakeMotorUpperSim.getCurrentDrawAmps(), Amps);
+    input.intakeConnected = true;
+    input.intakePositionRad = intakeMotorUpperSim.getAngularPosition();
+    input.intakeVelocity = intakeMotorUpperSim.getAngularVelocity();
+    input.intakeAppliedVolts = intakeMotorUpperTalonFX.getMotorVoltageMeasure();
+    input.intakeCurrentAmps = Current.ofBaseUnits(intakeMotorUpperSim.getCurrentDrawAmps(), Amps);
 
     if (turnMotorSim.getAngularPositionRad() < minimumCollectorRadiansToCollect
         && intakeMotorLowerSim.getAngularVelocityRadPerSec() > collectorSpeedToCollect) {

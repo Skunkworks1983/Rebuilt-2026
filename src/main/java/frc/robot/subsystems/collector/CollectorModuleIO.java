@@ -37,19 +37,16 @@ public interface CollectorModuleIO {
     public Current turnCurrentAmps = Amps.of(0.0);
     public double turnClosedLoopError = 0.0;
 
-    // Lower Intake Motor Inputs
-    public boolean lowerConnected = false;
-    public Angle lowerPositionRad = Degrees.of(0.0);
-    public AngularVelocity lowerVelocity = DegreesPerSecond.of(0.0);
-    public Voltage lowerAppliedVolts = Volts.of(0.0);
-    public Current lowerCurrentAmps = Amps.of(0.0);
+    // Intake Motor Inputs
+    public boolean intakeConnected = false;
+    public Angle intakePositionRad = Degrees.of(0.0);
+    public AngularVelocity intakeVelocity = DegreesPerSecond.of(0.0);
+    public Voltage intakeAppliedVolts = Volts.of(0.0);
+    public Current intakeCurrentAmps = Amps.of(0.0);
 
-    // Upper Intake Motor Inputs
-    public boolean upperConnected = false;
-    public Angle upperPositionRad = Degrees.of(0.0);
-    public AngularVelocity upperVelocity = DegreesPerSecond.of(0.0);
-    public Voltage upperAppliedVolts = Volts.of(0.0);
-    public Current upperCurrentAmps = Amps.of(0.0);
+    // Magnet Switch Inputs
+    public boolean upperTriggered = false;
+    public boolean lowerTriggered = false;
   }
 
   /**

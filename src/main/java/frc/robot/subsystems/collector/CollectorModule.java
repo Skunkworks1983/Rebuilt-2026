@@ -56,21 +56,12 @@ public class CollectorModule {
   }
 
   /**
-   * Gets the velocity of the collectors intake upper motor
+   * Gets the velocity of the collectors intake motor
    *
    * @return -Angular Velocity
    */
-  public AngularVelocity getVelocityOfIntakeLower() {
-    return inputs.lowerVelocity;
-  }
-
-  /**
-   * Gets the velocity of the collectors intake lower motor
-   *
-   * @return -Angular Velocity
-   */
-  public AngularVelocity getVelocityOfIntakeUpper() {
-    return inputs.upperVelocity;
+  public AngularVelocity getVelocityOfIntake() {
+    return inputs.intakeVelocity;
   }
 
   /**
