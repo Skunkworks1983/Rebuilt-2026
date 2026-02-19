@@ -43,7 +43,10 @@ public class FlywheelIOTalonFX implements FlywheelIO {
     TalonFXConfiguration flywheelConfig = new TalonFXConfiguration();
     flywheelConfig.Feedback.SensorToMechanismRatio = ShooterConstants.flywheelGearRatio;
 
-    flywheelConfig.MotorOutput.Inverted = flywheelMotorId == ShooterConstants.backFlywheelId ? ShooterConstants.lowerFlywheelInverted : ShooterConstants.upperFlywheelInverted;
+    flywheelConfig.MotorOutput.Inverted =
+        flywheelMotorId == ShooterConstants.backFlywheelId
+            ? ShooterConstants.lowerFlywheelInverted
+            : ShooterConstants.upperFlywheelInverted;
 
     flywheelConfig.ClosedLoopGeneral.ContinuousWrap = true;
 

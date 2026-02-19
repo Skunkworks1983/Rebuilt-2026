@@ -84,7 +84,7 @@ public class ShooterConstants {
   public static final Angle pivotInitialAngle = Degrees.of(63.5);
 
   /** Minimum physical pitch angle of the shooter. */
-  public static final Angle minShooterPitch = Degrees.of(63.5-32);
+  public static final Angle minShooterPitch = Degrees.of(63.5 - 32);
 
   /** Maximum physical pitch angle of the shooter. */
   public static final Angle maxShooterPitch = Degrees.of(63.5);
@@ -135,7 +135,8 @@ public class ShooterConstants {
   public static final Current pivotStatorCurrentLimit = Amps.of(120);
 
   /**
- * This is the conversion factor from TalonFX rotor rotations to one rotation of the hood driving pinion gear. (This does not convert from rotor rotations to hood degrees)
- */
-public static double pivotSensorToHoodRotations = 64.;
+   * This is the conversion factor from TalonFX rotor rotations to one rotation of the hood driving
+   * pinion gear. (This does not convert from rotor rotations to hood degrees)
+   */
+  public static double pivotSensorToHoodRotations = 64.;
 }

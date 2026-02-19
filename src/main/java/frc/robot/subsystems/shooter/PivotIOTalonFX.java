@@ -2,7 +2,6 @@ package frc.robot.subsystems.shooter;
 
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
 import static frc.robot.util.PhoenixUtil.tryUntilOk;
 
@@ -30,10 +29,11 @@ public class PivotIOTalonFX implements PivotIO {
   protected final StatusSignal<Double> closedLoopError;
 
   private final TorqueCurrentFOC torqueCurrentRequest = new TorqueCurrentFOC(0);
-  private final PositionTorqueCurrentFOC positionTorqueCurentRequest = new PositionTorqueCurrentFOC(0);
+  private final PositionTorqueCurrentFOC positionTorqueCurentRequest =
+      new PositionTorqueCurrentFOC(0);
 
-  private final Debouncer primaryConnectedDebounce = new Debouncer(ShooterConstants.disconnectedDebounceTimeSec,
-      Debouncer.DebounceType.kFalling);
+  private final Debouncer primaryConnectedDebounce =
+      new Debouncer(ShooterConstants.disconnectedDebounceTimeSec, Debouncer.DebounceType.kFalling);
 
   public PivotIOTalonFX() {
     pivotMotor = new TalonFX(ShooterConstants.pivotMotorId, ShooterConstants.shooterCan);
@@ -52,18 +52,24 @@ public class PivotIOTalonFX implements PivotIO {
     pivotConfig.Slot0.kA = ShooterConstants.pivotkA;
 
     pivotConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-    pivotConfig.CurrentLimits.StatorCurrentLimit = ShooterConstants.pivotStatorCurrentLimit.in(Amps);
+    pivotConfig.CurrentLimits.StatorCurrentLimit =
+        ShooterConstants.pivotStatorCurrentLimit.in(Amps);
 
-    pivotConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ShooterConstants.minShooterPitch.in(Rotations);
-    pivotConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ShooterConstants.maxShooterPitch.in(Rotations);
+    pivotConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold =
+        ShooterConstants.minShooterPitch.in(Rotations);
+    pivotConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold =
+        ShooterConstants.maxShooterPitch.in(Rotations);
     pivotConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
     pivotConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
 
     pivotConfig.Feedback.SensorToMechanismRatio = ShooterConstants.pivotSensorToHoodRotations;
 
-
     tryUntilOk(5, () -> pivotMotor.getConfigurator().apply(pivotConfig, 0.25));
-    tryUntilOk(5, ()-> pivotMotor.setPosition(angleToHoodAngle(ShooterConstants.pivotInitialAngle).in(Rotations)));
+    tryUntilOk(
+        5,
+        () ->
+            pivotMotor.setPosition(
+                angleToHoodAngle(ShooterConstants.pivotInitialAngle).in(Rotations)));
     pivotPostion = pivotMotor.getPosition();
     pivotAppliedVolts = pivotMotor.getMotorVoltage();
     pivotCurrent = pivotMotor.getStatorCurrent();
@@ -88,8 +94,9 @@ public class PivotIOTalonFX implements PivotIO {
 
   @Override
   public void updateInputs(PivotIOInputs inputs) {
-    StatusCode pivotStatus = BaseStatusSignal.refreshAll(
-        pivotPostion, pivotAppliedVolts, pivotCurrent, pivotTorqueCurrent);
+    StatusCode pivotStatus =
+        BaseStatusSignal.refreshAll(
+            pivotPostion, pivotAppliedVolts, pivotCurrent, pivotTorqueCurrent);
 
     inputs.connected = primaryConnectedDebounce.calculate(pivotStatus.isOK());
     inputs.pivotRawPosition = pivotPostion.getValue();
@@ -104,11 +111,17 @@ public class PivotIOTalonFX implements PivotIO {
     tryUntilOk(5, () -> pivotMotor.getConfigurator().apply(gains));
   }
 
-  public Angle angleToHoodAngle(Angle fieldAngle){
-    return Degrees.of(ShooterConstants.maxShooterPitch.in(Degrees) + ShooterConstants.minShooterPitch.in(Degrees) - fieldAngle.in(Degrees));
+  public Angle angleToHoodAngle(Angle fieldAngle) {
+    return Degrees.of(
+        ShooterConstants.maxShooterPitch.in(Degrees)
+            + ShooterConstants.minShooterPitch.in(Degrees)
+            - fieldAngle.in(Degrees));
   }
 
-  public Angle talonAngleToHoodAngle(Angle talonAngle){
-    return Degrees.of((ShooterConstants.maxShooterPitch.in(Degrees) + ShooterConstants.minShooterPitch.in(Degrees)) - talonAngle.in(Degrees));
+  public Angle talonAngleToHoodAngle(Angle talonAngle) {
+    return Degrees.of(
+        (ShooterConstants.maxShooterPitch.in(Degrees)
+                + ShooterConstants.minShooterPitch.in(Degrees))
+            - talonAngle.in(Degrees));
   }
 }
