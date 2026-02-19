@@ -1,0 +1,91 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CentreStartCW"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "StartNorthThroughTunnelCW"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CollectCW"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SouthOutToInCW"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ShootCW"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "StartNorthThroughTunnelCW"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CollectCW"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SouthOutToInCW"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ShootCW"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "StartNorthThroughTunnelCW"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CollectCW"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SouthOutToInCW"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ShootCW"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

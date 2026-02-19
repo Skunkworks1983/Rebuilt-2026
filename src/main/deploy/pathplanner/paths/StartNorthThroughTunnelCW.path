@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.0,
+        "y": 7.0
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.0169044222539223,
+        "y": 7.431398002853067
+      },
+      "isLocked": false,
+      "linkedName": "StartCycleCW"
+    },
+    {
+      "anchor": {
+        "x": 6.0,
+        "y": 7.3
+      },
+      "prevControl": {
+        "x": 4.414279600570612,
+        "y": 7.6125392296718974
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "NorthTrenchOut"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "useDefaultConstraints": true
+}
