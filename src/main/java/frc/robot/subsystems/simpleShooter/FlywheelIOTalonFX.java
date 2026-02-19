@@ -22,6 +22,7 @@ public class FlywheelIOTalonFX implements FlywheelIO {
   protected final TalonFX flywheelMotor;
 
   private final StatusSignal<AngularVelocity> flywheelVelocity;
+  private AngularVelocity desiredFlywheelVelocity;
   private final StatusSignal<Voltage> flywheelAppliedVolts;
   private final StatusSignal<Current> flywheelCurrent;
   private final StatusSignal<Current> flywheelTorqueCurrent;
@@ -61,6 +62,7 @@ public class FlywheelIOTalonFX implements FlywheelIO {
     tryUntilOk(5, () -> flywheelMotor.getConfigurator().apply(flywheelConfig, 0.25));
 
     flywheelVelocity = flywheelMotor.getVelocity();
+
     flywheelAppliedVolts = flywheelMotor.getMotorVoltage();
     flywheelCurrent = flywheelMotor.getStatorCurrent();
     flywheelTorqueCurrent = flywheelMotor.getTorqueCurrent();
@@ -76,6 +78,7 @@ public class FlywheelIOTalonFX implements FlywheelIO {
   @Override
   public void setVelocity(AngularVelocity velocity) {
     flywheelMotor.setControl(velocityTorqueCurrentRequest.withVelocity(velocity));
+    desiredFlywheelVelocity = velocity;
   }
 
   @Override
@@ -96,6 +99,8 @@ public class FlywheelIOTalonFX implements FlywheelIO {
 
     inputs.primaryConnected = primaryConnectedDebounce.calculate(flywheelStatus.isOK());
     inputs.velocity = flywheelVelocity.getValue();
+
+    inputs.desiredVelocity = desiredFlywheelVelocity;
 
     inputs.primaryAppliedVolts = flywheelAppliedVolts.getValue();
 
