@@ -4,20 +4,35 @@
 
 package frc.robot.subsystems.kitCollector;
 
+import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.Volts;
+
+import com.ctre.phoenix6.configs.Slot0Configs;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Voltage;
 import org.littletonrobotics.junction.AutoLog;
 
-/** Add your docs here. */
 public interface CollectorIO {
   @AutoLog
   public static class CollectorIOInputs {
-    public static double collectorVelocity = 0.0;
-    public static double collectorCurrent = 0.0;
-    public static double collectorVoltage = 0.0;
-    public static double collectorTorqueCurrent = 0.0;
+    public boolean connected = false;
+    public AngularVelocity collectorVelocity = RotationsPerSecond.of(0);
+    public Voltage collectorVoltage = Volts.of(0);
+    public Current collectorCurrent = Amps.of(0);
+    public Current collectorTorqueCurrent = Amps.of(0);
+    public Angle collectorPosition = Rotations.of(0);
   }
 
   public default void updateInputs(CollectorIOInputs inputs) {}
 
   public default void intake(AngularVelocity velocity) {}
+
+  public default void setPID(Slot0Configs configs) {}
+
+  public default void dutyCycle(double percent) {}
+  ;
 }

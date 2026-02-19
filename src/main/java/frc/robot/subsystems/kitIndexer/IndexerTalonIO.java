@@ -4,51 +4,91 @@
 
 package frc.robot.subsystems.kitIndexer;
 
-import static edu.wpi.first.units.Units.DegreesPerSecond;
+import static frc.robot.util.PhoenixUtil.tryUntilOk;
 
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Voltage;
 
-/** Add your docs here. */
 public class IndexerTalonIO implements IndexerIO {
   private final TalonFX intakeMotor;
+  private final VelocityVoltage velocityRequest = new VelocityVoltage(0.0);
+  private final DutyCycleOut dutyCycleRequest = new DutyCycleOut(0);
 
-  // public static class collectorConstants {
-  //     public static final int intakeID = 0;
-  // }
+  private final StatusSignal<AngularVelocity> indexerVelocity;
+  private final StatusSignal<Voltage> indexerAppliedVolts;
+  private final StatusSignal<Current> indexerCurrent;
+  private final StatusSignal<Current> indexerTorqueCurrent;
+  private final StatusSignal<Angle> indexerPosition;
 
   public IndexerTalonIO() {
-    intakeMotor = new TalonFX(43);
+    intakeMotor = new TalonFX(IndexerConstants.motorID, "rio");
 
     var intakeConfig = new TalonFXConfiguration();
 
     var slot0Configs = intakeConfig.Slot0;
-    slot0Configs.kP = 0.0;
-    slot0Configs.kI = 0.0;
-    slot0Configs.kD = 0.0;
-    slot0Configs.kS = 0.0;
-    slot0Configs.kV = 0.0;
-    slot0Configs.kA = 0.0;
+    slot0Configs.kP = IndexerConstants.kP;
+    slot0Configs.kD = IndexerConstants.kD;
+    slot0Configs.kS = IndexerConstants.kS;
+    slot0Configs.kV = IndexerConstants.kV;
+    slot0Configs.kA = IndexerConstants.kA;
 
-    var intakeMotionMagicConfig = intakeConfig.MotionMagic;
-    intakeMotionMagicConfig.MotionMagicCruiseVelocity = 80;
-    intakeMotionMagicConfig.MotionMagicAcceleration = 160;
+    intakeConfig.MotorOutput.Inverted = IndexerConstants.motorInvert;
 
-    intakeMotor.getConfigurator().apply(slot0Configs);
+    tryUntilOk(5, () -> intakeMotor.getConfigurator().apply(intakeConfig, 0.25));
+
+    indexerVelocity = intakeMotor.getVelocity();
+    indexerAppliedVolts = intakeMotor.getMotorVoltage();
+    indexerCurrent = intakeMotor.getStatorCurrent();
+    indexerTorqueCurrent = intakeMotor.getTorqueCurrent();
+    indexerPosition = intakeMotor.getPosition();
+
+    BaseStatusSignal.setUpdateFrequencyForAll(
+        50.0, indexerVelocity, indexerAppliedVolts, indexerCurrent, indexerPosition);
+
+    indexerTorqueCurrent.setUpdateFrequency(250);
+    ParentDevice.optimizeBusUtilizationForAll(intakeMotor);
   }
 
   @Override
   public void updateInputs(IndexerIOInputs inputs) {
-    inputs.indexerVelocity = intakeMotor.getVelocity().getValueAsDouble();
-    inputs.indexerCurrent = intakeMotor.getSupplyCurrent().getValueAsDouble();
-    inputs.indexerVoltage = intakeMotor.getMotorVoltage().getValueAsDouble();
-    inputs.indexerTorqueCurrent = intakeMotor.getTorqueCurrent().getValueAsDouble();
+    var status =
+        BaseStatusSignal.refreshAll(
+            indexerVelocity,
+            indexerAppliedVolts,
+            indexerCurrent,
+            indexerTorqueCurrent,
+            indexerPosition);
+
+    inputs.connected = status.isOK();
+    inputs.indexerVelocity = indexerVelocity.getValue();
+    inputs.indexerVoltage = indexerAppliedVolts.getValue();
+    inputs.indexerCurrent = indexerCurrent.getValue();
+    inputs.indexerTorqueCurrent = indexerTorqueCurrent.getValue();
+    inputs.indexerPosition = indexerPosition.getValue();
   }
 
   @Override
   public void intake(AngularVelocity velocity) {
-    intakeMotor.setControl(new DutyCycleOut(velocity.in(DegreesPerSecond)));
+    intakeMotor.setControl(velocityRequest.withVelocity(velocity));
+  }
+
+  @Override
+  public void setPID(Slot0Configs gains) {
+    tryUntilOk(5, () -> intakeMotor.getConfigurator().apply(gains));
+  }
+
+  @Override
+  public void dutyCycle(double percent) {
+    intakeMotor.setControl(dutyCycleRequest.withOutput(percent).withEnableFOC(true));
   }
 }

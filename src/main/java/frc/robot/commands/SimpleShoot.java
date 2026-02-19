@@ -19,11 +19,15 @@ public class SimpleShoot {
             "Shooter/BackFlywheelVelocitySetpointRotPerSec",
             ShooterConstants.defaultBackFlywheelVelocity.in(RotationsPerSecond));
     return Commands.run(
-        () -> {
-          shooter.setShooterControls(
-              RotationsPerSecond.of(forwardFlywheelVelocity.get()),
-              RotationsPerSecond.of(backFlywheelVelocity.get()));
-        },
-        shooter).finallyDo(() -> {shooter.setShooterControls(RotationsPerSecond.of(0), RotationsPerSecond.of(0));});
+            () -> {
+              shooter.setShooterControls(
+                  RotationsPerSecond.of(forwardFlywheelVelocity.get()),
+                  RotationsPerSecond.of(backFlywheelVelocity.get()));
+            },
+            shooter)
+        .finallyDo(
+            () -> {
+              shooter.setShooterControls(RotationsPerSecond.of(0), RotationsPerSecond.of(0));
+            });
   }
 }

@@ -5,14 +5,15 @@ import static frc.robot.util.PhoenixUtil.tryUntilOk;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.MotionMagicVelocityTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.TorqueCurrentFOC;
+import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.filter.Debouncer;
-import edu.wpi.first.units.measure.AngularAcceleration;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
@@ -25,10 +26,13 @@ public class FlywheelIOTalonFX implements FlywheelIO {
   private final StatusSignal<Voltage> flywheelAppliedVolts;
   private final StatusSignal<Current> flywheelCurrent;
   private final StatusSignal<Current> flywheelTorqueCurrent;
+  private final StatusSignal<Angle> flywheelPosition;
 
   private final TorqueCurrentFOC torqueCurrentRequest = new TorqueCurrentFOC(0);
-  private final MotionMagicVelocityTorqueCurrentFOC velocityTorqueCurrentRequest =
-      new MotionMagicVelocityTorqueCurrentFOC(0.0);
+  private final VelocityTorqueCurrentFOC velocityTorqueCurrentRequest =
+      new VelocityTorqueCurrentFOC(0);
+  private final DutyCycleOut dutyCycleRequest = new DutyCycleOut(0);
+  private final VoltageOut voltageRequest = new VoltageOut(0);
 
   private final Debouncer primaryConnectedDebounce =
       new Debouncer(0.5, Debouncer.DebounceType.kFalling);
@@ -43,18 +47,13 @@ public class FlywheelIOTalonFX implements FlywheelIO {
 
     flywheelConfig.ClosedLoopGeneral.ContinuousWrap = true;
 
-    flywheelConfig.Slot0.kP = ShooterConstants.forwardFlywheelKP;
+    flywheelConfig.Slot0.kP = ShooterConstants.upperFlywheelKp;
     flywheelConfig.Slot0.kI = 0.0;
     flywheelConfig.Slot0.kD = ShooterConstants.forwardFlywheelKD;
 
     flywheelConfig.Slot0.kS = ShooterConstants.forwardFlywheelKS;
     flywheelConfig.Slot0.kV = ShooterConstants.forwardFlywheelKV;
     flywheelConfig.Slot0.kA = ShooterConstants.forwardFlywheelKA;
-
-    flywheelConfig.MotionMagic.MotionMagicAcceleration =
-        ShooterConstants.forwardFlywheelMaxAccelerationRotationsPerSec;
-    flywheelConfig.MotionMagic.MotionMagicJerk =
-        ShooterConstants.forwardFlywheelMaxJerkRotationsPerSecCubed;
 
     flywheelConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     flywheelConfig.CurrentLimits.StatorCurrentLimit =
@@ -67,8 +66,9 @@ public class FlywheelIOTalonFX implements FlywheelIO {
     flywheelAppliedVolts = flywheelMotor.getMotorVoltage();
     flywheelCurrent = flywheelMotor.getStatorCurrent();
     flywheelTorqueCurrent = flywheelMotor.getTorqueCurrent();
+    flywheelPosition = flywheelMotor.getPosition();
     BaseStatusSignal.setUpdateFrequencyForAll(
-        50.0, flywheelVelocity, flywheelAppliedVolts, flywheelCurrent);
+        50.0, flywheelVelocity, flywheelAppliedVolts, flywheelCurrent, flywheelPosition);
 
     flywheelTorqueCurrent.setUpdateFrequency(
         250); // This is what follower uses to follow, so faser updates
@@ -82,8 +82,13 @@ public class FlywheelIOTalonFX implements FlywheelIO {
   }
 
   @Override
-  public void setOpenLoopOutput(double output) {
+  public void setOpenLoopCurrent(double output) {
     flywheelMotor.setControl(torqueCurrentRequest.withOutput(output));
+  }
+
+  @Override
+  public void setOpenLoopVoltage(double output) {
+    flywheelMotor.setControl(voltageRequest.withOutput(output));
   }
 
   @Override
@@ -93,7 +98,6 @@ public class FlywheelIOTalonFX implements FlywheelIO {
             flywheelVelocity, flywheelAppliedVolts, flywheelCurrent, flywheelTorqueCurrent);
 
     inputs.primaryConnected = primaryConnectedDebounce.calculate(flywheelStatus.isOK());
-
     inputs.velocity = flywheelVelocity.getValue();
 
     inputs.desiredVelocity = desiredFlywheelVelocity;
@@ -103,15 +107,7 @@ public class FlywheelIOTalonFX implements FlywheelIO {
     inputs.primaryStatorCurrentAmps = flywheelCurrent.getValue();
 
     inputs.primaryTorqueCurrentAmps = flywheelTorqueCurrent.getValue();
-  }
-
-  @Override
-  public void setMotionConstraints(AngularAcceleration maxAcceleration, double maxJerk) {
-    MotionMagicConfigs config =
-        new TalonFXConfiguration()
-            .MotionMagic.withMotionMagicAcceleration(maxAcceleration).withMotionMagicJerk(maxJerk);
-
-    tryUntilOk(5, () -> flywheelMotor.getConfigurator().apply(config));
+    inputs.position = flywheelPosition.getValue();
   }
 
   @Override
@@ -125,5 +121,10 @@ public class FlywheelIOTalonFX implements FlywheelIO {
     config.Slot0.kA = kA;
 
     tryUntilOk(5, () -> flywheelMotor.getConfigurator().apply(config.Slot0));
+  }
+
+  @Override
+  public void maxDutyCycle() {
+    flywheelMotor.setControl(dutyCycleRequest.withOutput(1.0));
   }
 }

@@ -23,24 +23,24 @@ import edu.wpi.first.units.measure.MomentOfInertia;
 public class ShooterConstants {
   public static final CANBus shooterCan = new CANBus("rio");
 
-  public static final int forwardFlywheelId = 46;
+  public static final int upperFlywheelId = 46;
   public static final int backFlywheelId = 45;
 
-  public static final double forwardFlywheelKP = 4.0;
+  public static final double upperFlywheelKp = 8.0;
   public static final double forwardFlywheelKD = 0.0;
-  public static final double forwardFlywheelKS = 0.0;
-  public static final double forwardFlywheelKV = 0.45;
-  public static final double forwardFlywheelKA = 0.0;
+  public static final double forwardFlywheelKS = 0.017988;
+  public static final double forwardFlywheelKV = 0.051044;
+  public static final double forwardFlywheelKA = 3.50181;
 
   public static final double forwardFlywheelMaxVelocityRotationsPerSec = 85.6667;
   public static final double forwardFlywheelMaxAccelerationRotationsPerSec = 200.0;
   public static final double forwardFlywheelMaxJerkRotationsPerSecCubed = 100;
 
-  public static final double backFlywheelKP = 4.0;
+  public static final double backFlywheelKP = 9.5;
   public static final double backFlywheelKD = 0.0;
-  public static final double backFlywheelKS = 0.0;
-  public static final double backFlywheelKV = 0.45;
-  public static final double backFlywheelKA = 0.0;
+  public static final double backFlywheelKS = 0.017988;
+  public static final double backFlywheelKV = 0.065044;
+  public static final double backFlywheelKA = 3.5181;
 
   public static final double backFlywheelMaxVelocityRotationsPerSec = 85.6667;
   public static final double backFlywheelMaxAccelerationRotationsPerSec = 200.0;
@@ -56,10 +56,10 @@ public class ShooterConstants {
 
   public static final Pose3d shooterInitalPosition =
       new Pose3d(
-          new Translation3d(Meters.of(0), Meters.of(0), Meters.of(0.5)),
-          new Rotation3d(Degrees.of(0), Degrees.of(-40), Degrees.of(0)));
+          new Translation3d(Inches.of(-4.97), Meters.of(0), Inches.of(19.746)),
+          new Rotation3d(Degrees.of(0), Degrees.of(74.5), Degrees.of(0)));
 
-  public static final Distance flywheelRadius = Inches.of(4);
+  public static final Distance flywheelRadius = Inches.of(2);
 
   public static final Slot0Configs simFlywheelConfigs = new Slot0Configs().withKP(30);
 
@@ -67,8 +67,8 @@ public class ShooterConstants {
       MetersPerSecond.of(
           RotationsPerSecond.of(85.66667).in(RadiansPerSecond) * flywheelRadius.in(Meters));
 
-  public static final AngularVelocity defaultForwardFlywheelVelocity = RotationsPerSecond.of(75);
-  public static final AngularVelocity defaultBackFlywheelVelocity = RotationsPerSecond.of(75);
+  public static final AngularVelocity defaultForwardFlywheelVelocity = RotationsPerSecond.of(55);
+  public static final AngularVelocity defaultBackFlywheelVelocity = RotationsPerSecond.of(55);
 
-  public static Angle shooterPitch = Degrees.of(45);
+  public static Angle shooterPitch = Degrees.of(74.5);
 }

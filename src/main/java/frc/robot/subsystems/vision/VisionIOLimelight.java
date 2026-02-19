@@ -64,16 +64,14 @@ public class VisionIOLimelight implements VisionIO {
         table.getDoubleArrayTopic("botpose_orb_wpiblue").subscribe(new double[] {});
 
     // By default set the limelight to seed the internal IMU with robot IMU
-    imuModePublisher.accept(SEED_IMU_WITH_ROBOT_IMU);
+    imuModePublisher.accept(0);
 
     // When robot is enabled use internal IMU with external IMU assisted convergence (the internal
     // IMU should be seeded before enabled)
-    enableTrigger.onTrue(
-        new InstantCommand(() -> imuModePublisher.accept(INTERNAL_IMU_WITH_EXTERNAL_IMU_ASSIST)));
+    enableTrigger.onTrue(new InstantCommand(() -> imuModePublisher.accept(0)));
 
     // When robot disables go back to seeding the internal IMU
-    enableTrigger.onFalse(
-        new InstantCommand(() -> imuModePublisher.accept(SEED_IMU_WITH_ROBOT_IMU)));
+    enableTrigger.onFalse(new InstantCommand(() -> imuModePublisher.accept(0)));
   }
 
   @Override

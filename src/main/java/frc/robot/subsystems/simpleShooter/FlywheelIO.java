@@ -1,10 +1,11 @@
 package frc.robot.subsystems.simpleShooter;
 
 import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
-import edu.wpi.first.units.measure.AngularAcceleration;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
@@ -23,16 +24,20 @@ public interface FlywheelIO {
 
     public Current primaryStatorCurrentAmps = Amps.of(0);
 
+    public Angle position = Degrees.of(0);
+
     public Current primaryTorqueCurrentAmps = Amps.of(0);
   }
 
   public default void setVelocity(AngularVelocity velocity) {}
 
-  public default void setOpenLoopOutput(double output) {}
+  public default void setOpenLoopCurrent(double output) {}
+
+  public default void setOpenLoopVoltage(double output) {}
 
   public default void updateInputs(FlywheelIOInputs inputs) {}
 
   public default void setPID(double kP, double kI, double kD, double kS, double kV, double kA) {}
 
-  public default void setMotionConstraints(AngularAcceleration maxAcceleration, double maxJerk) {}
+  public default void maxDutyCycle() {}
 }

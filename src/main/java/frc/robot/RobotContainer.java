@@ -20,12 +20,16 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants.Mode;
 import frc.robot.commands.CollectorIntake;
+import frc.robot.commands.DriveAimedGoal;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.IndexerIntake;
+import frc.robot.commands.IndexerReverse;
 import frc.robot.commands.SimpleShoot;
 import frc.robot.commands.TestPathCommands;
 import frc.robot.subsystems.drive.Drive;
@@ -36,8 +40,10 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.drive.ModuleIOTalonFXSim;
 import frc.robot.subsystems.kitCollector.Collector;
+import frc.robot.subsystems.kitCollector.CollectorIO;
 import frc.robot.subsystems.kitCollector.CollectorTalonIO;
 import frc.robot.subsystems.kitIndexer.Indexer;
+import frc.robot.subsystems.kitIndexer.IndexerIO;
 import frc.robot.subsystems.kitIndexer.IndexerTalonIO;
 import frc.robot.subsystems.simpleShooter.FlywheelIO;
 import frc.robot.subsystems.simpleShooter.FlywheelIOSim;
@@ -122,7 +128,7 @@ public class RobotContainer {
 
         shooter =
             new Shooter(
-                new FlywheelIOTalonFX(ShooterConstants.forwardFlywheelId),
+                new FlywheelIOTalonFX(ShooterConstants.upperFlywheelId),
                 new FlywheelIOTalonFX(ShooterConstants.backFlywheelId));
 
         // This is a solution to the vision-drive cross dependency issue that hurts my
@@ -178,18 +184,14 @@ public class RobotContainer {
                 new VisionIOPhotonVisionSim(
                     VisionConstants.camera0Name,
                     VisionConstants.robotToCamera0,
-                    simulation::getSimulatedDriveTrainPose),
-                new VisionIOPhotonVisionSim(
-                    VisionConstants.camera1Name,
-                    VisionConstants.robotToCamera1,
                     simulation::getSimulatedDriveTrainPose));
         shooter =
             new Shooter(
-                new FlywheelIOSim(ShooterConstants.forwardFlywheelId),
+                new FlywheelIOSim(ShooterConstants.upperFlywheelId),
                 new FlywheelIOSim(ShooterConstants.backFlywheelId));
 
-        indexer = null;
-        collector = null;
+        indexer = new Indexer(new IndexerIO() {});
+        collector = new Collector(new CollectorIO() {});
 
         break;
 
@@ -235,6 +237,19 @@ public class RobotContainer {
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
     autoChooser.addOption("Sim Physics Test", new PathPlannerAuto("SimPhysTest"));
 
+    autoChooser.addOption(
+        "Shooter SysId (Quasistatic Forward)",
+        shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    autoChooser.addOption(
+        "Shooter SysId (Quasistatic Reverse)",
+        shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    autoChooser.addOption(
+        "Shooter SysId (Dynamic Reverse)", shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    autoChooser.addOption(
+        "Shooter SysId (Dynamic Forward)", shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
+
+    autoChooser.addOption(
+        "Shooter Duty Cycle Max", new InstantCommand(() -> shooter.maxShooterDuty()));
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -248,7 +263,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
     // Default command, normal field-relative drive
     JoystickButton collectorIntake;
-    JoystickButton indexerIntake;
+    JoystickButton reverseIndexer;
 
     if (Constants.controlScheme == Constants.ControlScheme.OI) {
       drive.setDefaultCommand(
@@ -256,18 +271,32 @@ public class RobotContainer {
               drive,
               () -> -leftJoystick.getY(), // -X (used to be)
               () -> -leftJoystick.getX(), // -Y (used to be)
-              () -> rightJoystick.getX())); // Confirm if negitive or not
+              () -> -rightJoystick.getX())); // Confirm if negitive or not
 
       collectorIntake = new JoystickButton(buttonJoystick, Constants.collectorIntakeButtonID);
-      indexerIntake = new JoystickButton(buttonJoystick, Constants.IndexerIntakeButtonID);
+      reverseIndexer = new JoystickButton(buttonJoystick, Constants.IndexerIntakeButtonID);
 
+      Trigger aimGoal = new JoystickButton(rightJoystick, 1);
       Trigger shoot = new JoystickButton(leftJoystick, 1);
-      Trigger alignShot = new JoystickButton(rightJoystick, 1);
+      Trigger collect = new JoystickButton(rightJoystick, 2);
+      Trigger index = new JoystickButton(leftJoystick, 2);
+      reverseIndexer.whileTrue(new IndexerReverse(indexer));
 
-      alignShot.whileTrue(
-          DriveCommands.joystickDriveAimedHub(
-              drive, shooter, () -> -leftJoystick.getY(), () -> -leftJoystick.getX()));
-      shoot.whileTrue(SimpleShoot.simpleShoot(shooter));
+      // alignShot.whileTrue(
+      //     DriveCommands.joystickDriveAimedHub(
+      //         drive, shooter, () -> -leftJoystick.getY(), () -> -leftJoystick.getX()));
+
+      collect.whileTrue(new CollectorIntake(collector));
+      if (Constants.currentMode == Mode.REAL) {
+        shoot.whileTrue(SimpleShoot.simpleShoot(shooter));
+      } else {
+        shoot.whileTrue(new InstantCommand(this::shootSimProjectile));
+      }
+      index.whileTrue(new IndexerIntake(indexer));
+      aimGoal.whileTrue(
+          new DriveAimedGoal(
+              drive, () -> -leftJoystick.getY(), () -> -leftJoystick.getX(), shooter));
+
     } else {
 
       drive.setDefaultCommand(
@@ -278,11 +307,11 @@ public class RobotContainer {
               () -> -xboxController.getRightX()));
 
       collectorIntake = new JoystickButton(xboxController, 1);
-      indexerIntake = new JoystickButton(xboxController, 2);
+      reverseIndexer = new JoystickButton(xboxController, 2);
     }
 
-    collectorIntake.whileTrue(new CollectorIntake(collector));
-    indexerIntake.whileTrue(new IndexerIntake(indexer));
+    // collectorIntake.whileTrue(new CollectorIntake(collector));
+    // indexerIntake.whileTrue(new IndexerIntake(indexer));
 
     Logger.recordOutput("Control Scheme", Constants.controlScheme);
 
@@ -349,9 +378,7 @@ public class RobotContainer {
     SimulatedArena.getInstance().simulationPeriodic();
     Logger.recordOutput("FieldSimulation/RobotPosition", simulation.getSimulatedDriveTrainPose());
     Logger.recordOutput(
-        "FieldSimulation/Coral", SimulatedArena.getInstance().getGamePiecesArrayByType("Coral"));
-    Logger.recordOutput(
-        "FieldSimulation/Algae", SimulatedArena.getInstance().getGamePiecesArrayByType("Algae"));
+        "FieldSimulation/Fuel", SimulatedArena.getInstance().getGamePiecesArrayByType("Fuel"));
   }
 
   /**
@@ -378,5 +405,15 @@ public class RobotContainer {
             shooter.getForwardFlywheelVelocity().in(RadiansPerSecond)
                 * ShooterConstants.flywheelRadius.in(Meters)),
         ShooterConstants.shooterPitch);
+  }
+
+  public void setRobotPose() {
+    // if (DriverStation.getAlliance().isPresent()
+    //         && DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
+    //       drive.setPose(new Pose2d(7.6, 6.6, new Rotation2d()));
+    //     } else {
+    //       drive.setPose(new Pose2d(10, 1.5, new Rotation2d(Math.PI)));
+    //     }
+
   }
 }

@@ -4,20 +4,35 @@
 
 package frc.robot.subsystems.kitIndexer;
 
+import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.Volts;
+
+import com.ctre.phoenix6.configs.Slot0Configs;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Voltage;
 import org.littletonrobotics.junction.AutoLog;
 
-/** Add your docs here. */
 public interface IndexerIO {
   @AutoLog
   public static class IndexerIOInputs {
-    public static double indexerVelocity = 0.0;
-    public static double indexerCurrent = 0.0;
-    public static double indexerVoltage = 0.0;
-    public static double indexerTorqueCurrent = 0.0;
+    public boolean connected = false;
+    public AngularVelocity indexerVelocity = RotationsPerSecond.of(0);
+    public Voltage indexerVoltage = Volts.of(0);
+    public Current indexerCurrent = Amps.of(0);
+    public Current indexerTorqueCurrent = Amps.of(0);
+    public Angle indexerPosition = Rotations.of(0);
   }
 
   public default void updateInputs(IndexerIOInputs inputs) {}
 
   public default void intake(AngularVelocity velocity) {}
+
+  public default void setPID(Slot0Configs gains) {}
+
+  public default void dutyCycle(double percent) {}
+  ;
 }

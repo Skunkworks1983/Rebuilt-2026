@@ -4,15 +4,16 @@
 
 package frc.robot.commands;
 
-import static edu.wpi.first.units.Units.DegreesPerSecond;
-
-import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.kitIndexer.Indexer;
+import frc.robot.subsystems.kitIndexer.IndexerConstants;
+import frc.robot.util.LoggedTunableNumber;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class IndexerIntake extends Command {
-  private Indexer indexer;
+  private final Indexer indexer;
+  private final LoggedTunableNumber indexerVelocity =
+      new LoggedTunableNumber("Indexer/Duty Cycle", IndexerConstants.defaultDutyCycle);
 
   /** Creates a new IndexerIntake. */
   public IndexerIntake(Indexer indexer) {
@@ -28,13 +29,13 @@ public class IndexerIntake extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    indexer.intake(AngularVelocity.ofBaseUnits(-125, DegreesPerSecond));
+    indexer.dutyCycle(indexerVelocity.get());
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    indexer.intake(AngularVelocity.ofBaseUnits(0, DegreesPerSecond));
+    indexer.dutyCycle(0);
   }
 
   // Returns true when the command should end.

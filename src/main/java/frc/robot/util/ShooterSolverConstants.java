@@ -14,7 +14,7 @@ public class ShooterSolverConstants {
   public static final Angle defaultPitch = Degrees.of(45);
   public static final double drag = 0.05;
   public static final double maxDragMultiplier = 1.5;
-  public static final double flywheelEfficiency = 1;
+  public static final double flywheelEfficiency = 0.5;
 
   // CONSTRAINED HEIGHT SOLVER
   public static final Distance hubHeightClearance = Meters.of(1);
@@ -27,8 +27,14 @@ public class ShooterSolverConstants {
   public static final double changeRate = 0.85;
 
   // SHOT LATENCY MODEL
-  public static double defaultShotLatencySec = 0.070;
+  public static double defaultShotLatencySec = 0.10;
+  public static double velocityDragMultiplier = 0.5;
   public static final double minShotLatencySec = 0.015;
   public static final double maxShotLatencySec = 0.200;
   public static final double shotLatencyModelLearningRate = 0.15;
+  public static final double lowerFlywheelVelocityMultiplierDefault = 1.1;
+
+  public static final LoggedTunableNumber lowerFlywheelVelocityMultiplier =
+      new LoggedTunableNumber(
+          "Shooter Solver/LowerFlywheelVelocityMultiplier", lowerFlywheelVelocityMultiplierDefault);
 }
