@@ -51,14 +51,14 @@ import frc.robot.subsystems.kitCollector.CollectorTalonIO;
 import frc.robot.subsystems.kitIndexer.Indexer;
 import frc.robot.subsystems.kitIndexer.IndexerIO;
 import frc.robot.subsystems.kitIndexer.IndexerTalonIO;
-import frc.robot.subsystems.shooter.FlywheelIO;
-import frc.robot.subsystems.shooter.FlywheelIOSim;
-import frc.robot.subsystems.shooter.FlywheelIOTalonFX;
 import frc.robot.subsystems.shooter.PivotIO;
 import frc.robot.subsystems.shooter.PivotIOSim;
 import frc.robot.subsystems.shooter.PivotIOTalonFX;
-import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.Shooter.ShooterSetpoints;
+import frc.robot.subsystems.simpleShooter.FlywheelIO;
+import frc.robot.subsystems.simpleShooter.FlywheelIOSim;
+import frc.robot.subsystems.simpleShooter.FlywheelIOTalonFX;
+import frc.robot.subsystems.simpleShooter.SimpleShooter;
 import frc.robot.subsystems.shooter.ShooterConstants;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
@@ -86,7 +86,7 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final Vision vision;
-  private final Shooter shooter;
+  private final SimpleShooter shooter;
   private final Indexer indexer;
   private final Collector collector;
 
@@ -146,9 +146,9 @@ public class RobotContainer {
         vision = new Vision(
             drive, new VisionIOLimelight(VisionConstants.camera0Name, drive::getRotation));
 
-        shooter = new Shooter(
+        shooter = new SimpleShooter(
             new FlywheelIOTalonFX(ShooterConstants.upperFlywheelId),
-            new FlywheelIOTalonFX(ShooterConstants.lowerFlywheelId), new PivotIOTalonFX());
+            new FlywheelIOTalonFX(ShooterConstants.lowerFlywheelId));
 
         // This is a solution to the vision-drive cross dependency issue that hurts my
         // eys, but it
@@ -202,9 +202,9 @@ public class RobotContainer {
                 VisionConstants.camera0Name,
                 VisionConstants.robotToCamera0,
                 simulation::getSimulatedDriveTrainPose));
-        shooter = new Shooter(
+        shooter = new SimpleShooter(
             new FlywheelIOSim(ShooterConstants.upperFlywheelId),
-            new FlywheelIOSim(ShooterConstants.lowerFlywheelId), new PivotIOSim());
+            new FlywheelIOSim(ShooterConstants.lowerFlywheelId));
 
         indexer = new Indexer(new IndexerIO() {
         });
@@ -235,10 +235,9 @@ public class RobotContainer {
         }, new VisionIO() {
         });
 
-        shooter = new Shooter(new FlywheelIO() {
+        shooter = new SimpleShooter(new FlywheelIO() {
         }, new FlywheelIO() {
 
-        }, new PivotIO() {
         });
 
         collector = null;
@@ -279,12 +278,6 @@ public class RobotContainer {
     autoChooser.addOption(
         "Shooter SysId (Dynamic Forward)", shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
 
-    SmartDashboard.putData(
-        "Set Pivot Angle to Network Setpoint",
-        Commands.defer(
-            () -> new InstantCommand(() -> shooter.setShooterSetpoints(
-                new ShooterSetpoints(RotationsPerSecond.of(0), RotationsPerSecond.of(0), Degrees.of(pivotSetpoint.get())))),
-            Set.of(shooter)));
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -325,14 +318,14 @@ public class RobotContainer {
 
       collect.whileTrue(new CollectorIntake(collector));
       if (Constants.currentMode == Mode.REAL) {
-        // shoot.whileTrue(SimpleShoot.simpleShoot(shooter));
+        shoot.whileTrue(SimpleShoot.simpleShoot(shooter));
       } else {
         shoot.whileTrue(new InstantCommand(this::shootSimProjectile));
       }
       index.whileTrue(new IndexerIntake(indexer));
-      // aimGoal.whileTrue(
-      // new DriveAimedGoal(
-      // drive, () -> -leftJoystick.getY(), () -> -leftJoystick.getX(), shooter));
+      aimGoal.whileTrue(
+      new DriveAimedGoal(
+      drive, () -> -leftJoystick.getY(), () -> -leftJoystick.getX(), shooter));
 
     } else {
 
@@ -447,8 +440,8 @@ public class RobotContainer {
     SimProjectile.getProjectile(
         simulation.getSimulatedDriveTrainPose(),
         simulation.getDriveTrainSimulatedChassisSpeedsFieldRelative(),
-        shooter.getShooterForwardLinearVelocity(),
-        shooter.getPivotAngle());
+        shooter.getForwardFlywheelLinearVelocity(),
+        ShooterConstants.pivotInitialAngle);
   }
 
   public void setRobotPose() {

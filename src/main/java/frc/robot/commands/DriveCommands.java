@@ -26,7 +26,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.drive.Drive;
-import frc.robot.subsystems.simpleShooter.Shooter;
+import frc.robot.subsystems.simpleShooter.SimpleShooter;
 import frc.robot.subsystems.simpleShooter.ShooterConstants;
 import frc.robot.util.LoggedTunableNumber;
 import frc.robot.util.ShooterCalculations;
@@ -311,7 +311,7 @@ public class DriveCommands {
   }
 
   public static Command joystickDriveAimedHub(
-      Drive drive, Shooter shooter, DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
+      Drive drive, SimpleShooter shooter, DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
     PIDController angleController = new PIDController(ANGLE_KP, 0.0, ANGLE_KD);
     angleController.enableContinuousInput(-Math.PI, Math.PI);
     LoggedTunableNumber forwardFlywheelVelocity =

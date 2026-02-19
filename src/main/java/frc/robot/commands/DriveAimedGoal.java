@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.Drive;
-import frc.robot.subsystems.simpleShooter.Shooter;
+import frc.robot.subsystems.simpleShooter.SimpleShooter;
 import frc.robot.subsystems.simpleShooter.ShooterConstants;
 import frc.robot.util.LoggedTunableNumber;
 import frc.robot.util.ShooterCalculations;
@@ -23,7 +23,7 @@ public class DriveAimedGoal extends Command {
   private final DoubleSupplier xSupplier;
   private final DoubleSupplier ySupplier;
   private final PIDController yawController;
-  private final Shooter shooter;
+  private final SimpleShooter shooter;
 
   private final LoggedTunableNumber yawKP =
       new LoggedTunableNumber("Auto Aim/Yaw KP", DriveControlConstants.yawControlKp);
@@ -33,7 +33,7 @@ public class DriveAimedGoal extends Command {
       new LoggedTunableNumber("Auto Aim/Yaw Tolerance", DriveControlConstants.yawSetpointTolerance);
 
   public DriveAimedGoal(
-      Drive drive, DoubleSupplier xSupplier, DoubleSupplier ySupplier, Shooter shooter) {
+      Drive drive, DoubleSupplier xSupplier, DoubleSupplier ySupplier, SimpleShooter shooter) {
     this.drive = drive;
     this.xSupplier = xSupplier;
     this.ySupplier = ySupplier;

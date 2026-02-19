@@ -50,7 +50,8 @@ public class ShooterConstants {
 
   public static final double flywheelStatorCurrentLimitAmps = 120.0;
 
-  public static final InvertedValue flywheelMotorInverted = InvertedValue.CounterClockwise_Positive;
+  public static final InvertedValue lowerFlywheelInverted = InvertedValue.CounterClockwise_Positive;
+  public static final InvertedValue upperFlywheelInverted = InvertedValue.Clockwise_Positive;
 
   public static final MomentOfInertia flywheelInertia = KilogramSquareMeters.of(0.01);
 
@@ -70,5 +71,5 @@ public class ShooterConstants {
   public static final AngularVelocity defaultForwardFlywheelVelocity = RotationsPerSecond.of(55);
   public static final AngularVelocity defaultBackFlywheelVelocity = RotationsPerSecond.of(55);
 
-  public static Angle shooterPitch = Degrees.of(74.5);
+  public static Angle shooterPitch = Degrees.of(61.5);
 }

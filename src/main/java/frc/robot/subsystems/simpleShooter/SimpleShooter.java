@@ -23,7 +23,7 @@ import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-public class Shooter extends SubsystemBase {
+public class SimpleShooter extends SubsystemBase {
 
   // FORWARD FLYWHEEL
   private final FlywheelIO forwardFlywheel;
@@ -62,7 +62,7 @@ public class Shooter extends SubsystemBase {
   private final Alert backFlywheelDisconnectedAlert =
       new Alert("Back Flywheel disconnected", AlertType.kError);
 
-  public Shooter(FlywheelIO forwardFlywheel, FlywheelIO backFlywheel) {
+  public SimpleShooter(FlywheelIO forwardFlywheel, FlywheelIO backFlywheel) {
     this.forwardFlywheel = forwardFlywheel;
     this.backFlywheel = backFlywheel;
 
