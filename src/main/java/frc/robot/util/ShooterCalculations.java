@@ -633,7 +633,7 @@ public class ShooterCalculations {
         ? FieldConstants.redGoal
         : FieldConstants.blueGoal;
 
-    // 1) Phase delay pose prediction (same idea as MA phaseDelay)
+    // 1) Phase delay pose prediction
     double phaseDelaySec = ShooterSolverConstants.defaultShotLatencySec;
     Pose2d releasePose = odometryPose.exp(
         new Twist2d(
