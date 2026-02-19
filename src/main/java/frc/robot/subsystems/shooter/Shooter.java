@@ -262,7 +262,7 @@ public class Shooter extends SubsystemBase {
             ShooterConstants.flywheelVelocityTolerance.in(RotationsPerSecond))
         && MathUtil.isNear(
             pivotSetpoint.in(Degrees),
-            pivotInputs.pivotPosition.in(Degrees),
+            pivotInputs.pivotRawPosition.in(Degrees),
             ShooterConstants.pivotPositionTolerence.in(Degrees));
   }
 
@@ -272,7 +272,7 @@ public class Shooter extends SubsystemBase {
    * @return The pivot Angle.
    */
   public Angle getPivotAngle() {
-    return pivotInputs.pivotPosition;
+    return pivotInputs.pivotRawPosition;
   }
 
   /**
@@ -303,7 +303,7 @@ public class Shooter extends SubsystemBase {
         RotationsPerSecond);
     Logger.recordOutput("Shooter/Pitch Setpoint [Deg]", pivotSetpoint.in(Degrees), Degrees);
 
-    pivot.setPosition(pivotSetpoint);
+    pivot.setAngle(pivotSetpoint);
     upperFlywheel.setVelocity(setpoints.upperShooterVelocity());
     lowerFlywheel.setVelocity(setpoints.lowerShooterVelocity());
   }

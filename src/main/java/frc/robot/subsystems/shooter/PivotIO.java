@@ -27,7 +27,9 @@ public interface PivotIO {
     public Angle pivotAbsolutePosition = Rotations.of(0);
 
     /** The internal encoder position of the pivot where 0 equals a launch angle of 0. */
-    public Angle pivotPosition = Rotations.of(0);
+    public Angle pivotRawPosition = Rotations.of(0);
+
+    public Angle pivotConvertedPosition = Rotations.of(0);
 
     /** The voltage currently applied to the pivot motor. */
     public Voltage pivotAppliedVolts = Volts.of(0);
@@ -44,7 +46,7 @@ public interface PivotIO {
    *
    * @param angle target angle for the pivot, where 0 degrees is a launch angle of 0 degrees
    */
-  public default void setPosition(Angle angle) {}
+  public default void setAngle(Angle angle) {}
 
   /**
    * Apply an open-loop torque current command to the pivot motor.

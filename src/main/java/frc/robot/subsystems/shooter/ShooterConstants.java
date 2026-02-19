@@ -35,7 +35,7 @@ import edu.wpi.first.units.measure.Voltage;
 public class ShooterConstants {
 
   /** CAN Bus name for the shooter motors. */
-  public static final CANBus shooterCan = new CANBus("*"); // TODO: Enter canbus
+  public static final CANBus shooterCan = new CANBus("rio"); // TODO: Enter canbus
 
   public static final double disconnectedDebounceTimeSec = 0.5;
 
@@ -81,11 +81,13 @@ public class ShooterConstants {
   /** Invert configuration for the primary flywheel motor. */
   public static final InvertedValue flywheelMotorInverted = InvertedValue.Clockwise_Positive;
 
+  public static final Angle pivotInitialAngle = Degrees.of(63.5);
+
   /** Minimum physical pitch angle of the shooter. */
-  public static final Angle minShooterPitch = Degrees.of(0); // TODO: Acutal Vals
+  public static final Angle minShooterPitch = Degrees.of(63.5-32);
 
   /** Maximum physical pitch angle of the shooter. */
-  public static final Angle maxShooterPitch = Degrees.of(80);
+  public static final Angle maxShooterPitch = Degrees.of(63.5);
 
   /** Moment of inertia of the flywheel mechanism. */
   public static final MomentOfInertia flywheelInertia = KilogramSquareMeters.of(0.01);
@@ -114,13 +116,13 @@ public class ShooterConstants {
   // PIVOT CONSTANTS
 
   /** CAN ID for the primary pivot motor. */
-  public static final int pivotMotorId = 8; // TODO: SET MOTOR IDS
+  public static final int pivotMotorId = 42;
 
   /** Allowable error tolerance for the pivot position. */
   public static final Angle pivotPositionTolerence = Degrees.of(3);
 
   // PID for pivot
-  public static final double pivotkP = 90; // TODO: SET VALUES
+  public static final double pivotkP = 5;
   public static final double pivotkD = 0;
 
   // Feedforwards for pivot
@@ -128,7 +130,12 @@ public class ShooterConstants {
   public static final double pivotkV = 0;
   public static final double pivotkA = 0;
 
-  public static final InvertedValue pivotMotorInverted = InvertedValue.Clockwise_Positive;
+  public static final InvertedValue pivotMotorInverted = InvertedValue.CounterClockwise_Positive;
 
   public static final Current pivotStatorCurrentLimit = Amps.of(120);
+
+  /**
+ * This is the conversion factor from TalonFX rotor rotations to one rotation of the hood driving pinion gear. (This does not convert from rotor rotations to hood degrees)
+ */
+public static double pivotSensorToHoodRotations = 64.;
 }

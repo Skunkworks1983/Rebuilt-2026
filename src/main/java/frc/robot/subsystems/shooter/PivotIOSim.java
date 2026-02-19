@@ -26,7 +26,7 @@ public class PivotIOSim extends PivotIOTalonFX {
     pivotTalonFX.setRotorVelocity(pivotSim.getAngularVelocity());
 
     inputs.connected = true;
-    inputs.pivotPosition = pivotSim.getAngularPosition();
+    inputs.pivotRawPosition = pivotSim.getAngularPosition();
     inputs.pivotStatorCurrentAmps = pivotTalonFX.getSupplyCurrentMeasure();
     inputs.pivotTorqueCurrentAmps = pivotTalonFX.getTorqueCurrentMeasure();
   }
