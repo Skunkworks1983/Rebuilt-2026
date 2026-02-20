@@ -11,6 +11,7 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -21,7 +22,7 @@ import edu.wpi.first.units.measure.Voltage;
 
 public class CollectorTalonIO implements CollectorIO {
   private final TalonFX collectorMotor;
-  private final VelocityVoltage velocityRequest = new VelocityVoltage(0.0);
+  private final VelocityTorqueCurrentFOC velocityRequest = new VelocityTorqueCurrentFOC(0.0);
   private final DutyCycleOut dutyCycleRequest = new DutyCycleOut(0);
 
   private final StatusSignal<AngularVelocity> collectorVelocity;

@@ -621,7 +621,7 @@ public class ShooterCalculations {
         (chassisVelField.getX() * rawYaw.getCos()) + (chassisVelField.getY() * rawYaw.getSin());
 
     double adjustedDistance =
-        trueDistance - (speedTowardsTarget * ShooterSolverConstants.velocityDragMultiplier);
+        trueDistance - (speedTowardsTarget * ShooterSolverConstants.extrapolatedControllerEfficency.get());
     double dragMultiplier = 1.0 + (ShooterSolverConstants.drag * trueDistance);
 
     dragMultiplier = MathUtil.clamp(dragMultiplier, 1.0, ShooterSolverConstants.maxDragMultiplier);
@@ -667,7 +667,7 @@ public class ShooterCalculations {
     Translation2d effectiveLaunchVectorField = stationaryLaunchVectorField.minus(shooterVelField);
     Rotation2d finalYaw = effectiveLaunchVectorField.getAngle();
 
-    double requiredFlywheelSurfaceSpeed = ballExitSpeed / ShooterSolverConstants.flywheelEfficiency;
+    double requiredFlywheelSurfaceSpeed = ballExitSpeed / ShooterSolverConstants.extrapolatedControllerEfficency.get();
 
     double estFlightTime = x / Math.max(requiredFieldHorizontal, 1e-4);
     Translation2d leadShiftField = chassisVelField.times(estFlightTime);

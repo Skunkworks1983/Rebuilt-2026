@@ -12,6 +12,8 @@ import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -57,6 +59,8 @@ public class FlywheelIOTalonFX implements FlywheelIO {
     flywheelConfig.Slot0.kS = ShooterConstants.forwardFlywheelKS;
     flywheelConfig.Slot0.kV = ShooterConstants.forwardFlywheelKV;
     flywheelConfig.Slot0.kA = ShooterConstants.forwardFlywheelKA;
+
+    flywheelConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
     flywheelConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     flywheelConfig.CurrentLimits.StatorCurrentLimit =

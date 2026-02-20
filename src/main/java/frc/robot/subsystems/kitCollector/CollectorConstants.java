@@ -8,8 +8,8 @@ import edu.wpi.first.units.measure.AngularVelocity;
 public class CollectorConstants {
   public static final double kP = 0.3;
   public static final double kD = 0.0;
-  public static final double kS = 0.0;
-  public static final double kV = 0.0;
+  public static final double kS = 0.015988;
+  public static final double kV = 0.0451044;
   public static final double kA = 0.0;
 
   public static final AngularVelocity defaultCollectorVelocity = RotationsPerSecond.of(50);

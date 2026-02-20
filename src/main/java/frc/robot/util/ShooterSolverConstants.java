@@ -12,9 +12,9 @@ public class ShooterSolverConstants {
   public static final Distance minShootDistanceHub = Meters.of(0.5);
   public static double gravity = 9.80665; // m / s^2
   public static final Angle defaultPitch = Degrees.of(45);
-  public static final double drag = 0.05;
+  public static final double drag = 0.07;
   public static final double maxDragMultiplier = 1.5;
-  public static final double flywheelEfficiency = 0.4;
+  public static final double flywheelEfficiency = 0.38;
 
   // CONSTRAINED HEIGHT SOLVER
   public static final Distance hubHeightClearance = Meters.of(1);
@@ -27,8 +27,8 @@ public class ShooterSolverConstants {
   public static final double changeRate = 0.85;
 
   // SHOT LATENCY MODEL
-  public static double defaultShotLatencySec = 0.10;
-  public static double velocityDragMultiplier = 0.5;
+  public static double defaultShotLatencySec = 0.11;
+  public static double velocityDragMultiplier = 0.65;
   public static final double minShotLatencySec = 0.015;
   public static final double maxShotLatencySec = 0.200;
   public static final double shotLatencyModelLearningRate = 0.15;
@@ -37,5 +37,8 @@ public class ShooterSolverConstants {
   public static final LoggedTunableNumber lowerFlywheelVelocityMultiplier =
       new LoggedTunableNumber(
           "Shooter Solver/LowerFlywheelVelocityMultiplier", lowerFlywheelVelocityMultiplierDefault);
+
+  public static final LoggedTunableNumber extrapolatedControllerDragMultiplier = new LoggedTunableNumber("Shooter Solver/Extrapolated Solver Drag Multiplier", 0.65);
+  public static final LoggedTunableNumber extrapolatedControllerEfficency = new LoggedTunableNumber("Shooter Solver/Extrapolated Solver Efficiency", 0.38);
   public static final Angle transferShotSafetyMargin = Degrees.of(4);
 }

@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.kitCollector.Collector;
 import frc.robot.subsystems.kitCollector.CollectorConstants;
@@ -12,8 +14,8 @@ import frc.robot.util.LoggedTunableNumber;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class CollectorIntake extends Command {
   private Collector collector;
-  LoggedTunableNumber collectorDutyCycle =
-      new LoggedTunableNumber("Collector/DutyCycle", CollectorConstants.defaultDutyCycle);
+  LoggedTunableNumber collectorVelocity =
+      new LoggedTunableNumber("Collector/Velocity [Rot/s]", CollectorConstants.defaultCollectorVelocity.in(RotationsPerSecond));
 
   /** Creates a new collectorIntake. */
   public CollectorIntake(Collector collector) {
@@ -29,7 +31,7 @@ public class CollectorIntake extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    collector.setDutyCycle(collectorDutyCycle.get());
+    collector.setVelocity(RotationsPerSecond.of(collectorVelocity.get()));
   }
 
   // Called once the command ends or is interrupted.

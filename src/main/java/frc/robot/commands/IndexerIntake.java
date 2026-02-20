@@ -4,6 +4,9 @@
 
 package frc.robot.commands;
 
+import static edu.wpi.first.units.Units.Rotation;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.kitIndexer.Indexer;
 import frc.robot.subsystems.kitIndexer.IndexerConstants;
@@ -13,7 +16,7 @@ import frc.robot.util.LoggedTunableNumber;
 public class IndexerIntake extends Command {
   private final Indexer indexer;
   private final LoggedTunableNumber indexerVelocity =
-      new LoggedTunableNumber("Indexer/Duty Cycle", IndexerConstants.defaultDutyCycle);
+      new LoggedTunableNumber("Indexer/Velocity [Rot/s]", IndexerConstants.defaultIndexerVelocity.in(RotationsPerSecond));
 
   /** Creates a new IndexerIntake. */
   public IndexerIntake(Indexer indexer) {
@@ -29,7 +32,7 @@ public class IndexerIntake extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    indexer.dutyCycle(indexerVelocity.get());
+    indexer.setSpeed(RotationsPerSecond.of(indexerVelocity.get()));
   }
 
   // Called once the command ends or is interrupted.
