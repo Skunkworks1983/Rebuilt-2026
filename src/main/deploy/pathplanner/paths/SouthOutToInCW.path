@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.7342500000000003,
-        "y": 2.9524999999999992
+        "x": 6.0,
+        "y": 0.7
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.2252059162261384,
-        "y": 1.5461729441614187
+        "x": 5.188385542168675,
+        "y": 0.5272048192771094
       },
       "isLocked": false,
-      "linkedName": "Reef2"
+      "linkedName": "SouthTrenchOut"
     },
     {
       "anchor": {
-        "x": 1.1895,
-        "y": 0.9829999999999995
+        "x": 3.0,
+        "y": 1.0
       },
       "prevControl": {
-        "x": 3.0207932267102873,
-        "y": 2.506172506100547
+        "x": 3.1592296718972896,
+        "y": 0.4186447931526389
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "ShootArchBegin"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 54.56668598971446
+    "rotation": 179.21066998698655
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -121.13897243697893
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

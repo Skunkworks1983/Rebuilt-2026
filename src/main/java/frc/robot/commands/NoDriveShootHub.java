@@ -1,6 +1,5 @@
 package frc.robot.commands;
 
-import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -9,7 +8,6 @@ import frc.robot.subsystems.simpleShooter.ShooterConstants;
 import frc.robot.subsystems.simpleShooter.SimpleShooter;
 import frc.robot.util.ShooterCalculations;
 import frc.robot.util.ShooterCalculations.NoPitchShooterControls;
-import frc.robot.util.ShooterCalculations.ShooterControls;
 import org.littletonrobotics.junction.Logger;
 
 public class NoDriveShootHub extends Command {

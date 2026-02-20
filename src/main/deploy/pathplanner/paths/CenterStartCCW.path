@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.1175,
-        "y": 0.5052499999999998
+        "x": 1.9100722891566262,
+        "y": 4.067783132530121
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.900201964811923,
-        "y": 0.7557993539553702
+        "x": 2.2467531379484305,
+        "y": 3.1085454258897656
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "CenterStart"
     },
     {
       "anchor": {
-        "x": 5.3235,
-        "y": 2.972
+        "x": 3.0,
+        "y": 1.0
       },
       "prevControl": {
-        "x": 5.571463829310761,
-        "y": 2.502741109679741
+        "x": 2.6611305043384306,
+        "y": 1.9570847870653143
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Reef1"
+      "linkedName": "SouthStartCCW"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -60.10109816138549
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -0.6295986084102801
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

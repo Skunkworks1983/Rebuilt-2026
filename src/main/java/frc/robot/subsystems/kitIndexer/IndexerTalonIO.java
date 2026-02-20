@@ -31,7 +31,7 @@ public class IndexerTalonIO implements IndexerIO {
   private final StatusSignal<Angle> indexerPosition;
 
   public IndexerTalonIO() {
-    intakeMotor = new TalonFX(IndexerConstants.motorID, "rio");
+    intakeMotor = new TalonFX(IndexerConstants.motorID);
 
     var intakeConfig = new TalonFXConfiguration();
 

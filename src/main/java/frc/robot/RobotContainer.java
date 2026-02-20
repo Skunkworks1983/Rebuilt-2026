@@ -8,6 +8,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -26,6 +27,7 @@ import frc.robot.commands.DriveAimedGoal;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.IndexerIntake;
 import frc.robot.commands.IndexerReverse;
+import frc.robot.commands.NoDriveShootHub;
 import frc.robot.commands.SimpleShoot;
 import frc.robot.commands.TestPathCommands;
 import frc.robot.subsystems.drive.Drive;
@@ -217,6 +219,11 @@ public class RobotContainer {
         break;
     }
 
+    // registers commands for pathplanner
+    NamedCommands.registerCommand("Collector Intake", new CollectorIntake(collector));
+    NamedCommands.registerCommand("Indexer Intake", new IndexerIntake(indexer));
+    NamedCommands.registerCommand("No Drive Shoot Hub", new NoDriveShootHub(shooter, drive));
+
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
@@ -247,7 +254,6 @@ public class RobotContainer {
         "Shooter SysId (Dynamic Reverse)", shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
     autoChooser.addOption(
         "Shooter SysId (Dynamic Forward)", shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
-
     // Configure the button bindings
     configureButtonBindings();
   }

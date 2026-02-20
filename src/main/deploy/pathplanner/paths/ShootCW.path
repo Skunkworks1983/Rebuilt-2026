@@ -3,45 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.201209964412812,
-        "y": 7.3219335705812565
+        "x": 3.0,
+        "y": 1.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.5413264195575884,
-        "y": 6.4122897792866
+        "x": 2.379963855421687,
+        "y": 1.4232771084337343
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "ShootArchBegin"
     },
     {
       "anchor": {
-        "x": 2.234092526690392,
-        "y": 4.083416370106762
+        "x": 1.8445060240963858,
+        "y": 4.035
       },
       "prevControl": {
-        "x": 2.005265674451107,
-        "y": 4.18410535507662
+        "x": 1.8335783132530121,
+        "y": 2.603469879518072
       },
       "nextControl": {
-        "x": 6.014074443506438,
-        "y": 2.4201389239326168
+        "x": 1.8548340114835542,
+        "y": 5.387966347719054
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.860545670225386,
-        "y": 2.146761565836299
+        "x": 3.0,
+        "y": 7.0
       },
       "prevControl": {
-        "x": 5.224925334670203,
-        "y": 2.8007444538692985
+        "x": 2.3908915662650605,
+        "y": 6.526518072289157
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "StartCycleCW"
     }
   ],
   "rotationTargets": [],
@@ -49,12 +49,12 @@
   "pointTowardsZones": [
     {
       "fieldPosition": {
-        "x": 4.5,
-        "y": 3.5
+        "x": 4.63,
+        "y": 4.03
       },
       "rotationOffset": 0.0,
-      "minWaypointRelativePos": 0.4315871774824089,
-      "maxWaypointRelativePos": 1.2415949960906962,
+      "minWaypointRelativePos": 0.4,
+      "maxWaypointRelativePos": 1.7,
       "name": "Point Towards Zone"
     }
   ],
@@ -75,7 +75,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 179.21066998698655
   },
   "useDefaultConstraints": true
 }
