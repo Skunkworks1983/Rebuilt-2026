@@ -15,7 +15,9 @@ import frc.robot.util.LoggedTunableNumber;
 public class CollectorIntake extends Command {
   private Collector collector;
   LoggedTunableNumber collectorVelocity =
-      new LoggedTunableNumber("Collector/Velocity [Rot/s]", CollectorConstants.defaultCollectorVelocity.in(RotationsPerSecond));
+      new LoggedTunableNumber(
+          "Collector/Velocity [Rot/s]",
+          CollectorConstants.defaultCollectorVelocity.in(RotationsPerSecond));
 
   /** Creates a new collectorIntake. */
   public CollectorIntake(Collector collector) {

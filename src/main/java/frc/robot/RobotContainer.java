@@ -133,7 +133,6 @@ public class RobotContainer {
                 new FlywheelIOTalonFX(ShooterConstants.upperFlywheelId),
                 new FlywheelIOTalonFX(ShooterConstants.lowerFlywheelId));
 
-
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
         // implementations

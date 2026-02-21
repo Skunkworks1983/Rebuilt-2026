@@ -38,9 +38,11 @@ public class ShooterSolverConstants {
       new LoggedTunableNumber(
           "Shooter Solver/LowerFlywheelVelocityMultiplier", lowerFlywheelVelocityMultiplierDefault);
 
-  public static final LoggedTunableNumber extrapolatedControllerDragMultiplier = new LoggedTunableNumber("Shooter Solver/Extrapolated Solver Drag Multiplier", 0.65);
-  public static final LoggedTunableNumber extrapolatedControllerEfficency = new LoggedTunableNumber("Shooter Solver/Extrapolated Solver Efficiency", 0.38);
+  public static final LoggedTunableNumber extrapolatedControllerDragMultiplier =
+      new LoggedTunableNumber("Shooter Solver/Extrapolated Solver Drag Multiplier", 0.65);
+  public static final LoggedTunableNumber extrapolatedControllerEfficency =
+      new LoggedTunableNumber("Shooter Solver/Extrapolated Solver Efficiency", 0.38);
   public static final LoggedTunableNumber yawCompensationMultiplier =
-    new LoggedTunableNumber("Shooter Solver/YawCompFactor", 1.0);
+      new LoggedTunableNumber("Shooter Solver/YawCompFactor", 1.0);
   public static final Angle transferShotSafetyMargin = Degrees.of(4);
 }
