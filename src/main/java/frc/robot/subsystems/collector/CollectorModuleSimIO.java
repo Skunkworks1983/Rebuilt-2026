@@ -21,8 +21,7 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
   private DCMotorSim intakeMotorLowerSim;
   private DCMotorSim turnMotorSim;
 
-  final double minimumCollectorRadiansToCollect = 0.1;
-  final double minimumCollectorRadiansToBeDown = 1.55;
+  final double minimumCollectorRadiansToCollect = 1.55;
   final double minimumCollectorSpeedToCollect = 5;
 
   public static enum CollectorSide {
@@ -138,12 +137,23 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
     input.upperAppliedVolts = intakeMotorUpperTalonFX.getMotorVoltageMeasure();
     input.upperCurrentAmps = Current.ofBaseUnits(intakeMotorUpperSim.getCurrentDrawAmps(), Amps);
 
-    if (turnMotorSim.getAngularPositionRad() < minimumCollectorRadiansToCollect
-        && intakeMotorLowerSim.getAngularVelocityRadPerSec() > minimumCollectorSpeedToCollect) {
-
+    if (turnMotorSim.getAngularPositionRad() > minimumCollectorRadiansToCollect && intakeMotorLowerSim.getAngularVelocityRadPerSec() > minimumCollectorSpeedToCollect) {
       collectorSimulation.startIntake();
     } else {
       collectorSimulation.stopIntake();
     }
+    // limit switches
+    if (turnMotorSim.getAngularPositionRad() > minimumCollectorRadiansToCollect + 0.05) {
+      turnMotorTalonFX.setForwardLimit(true);
+    } else {
+      turnMotorTalonFX.setForwardLimit(false);
+    }
+
+    if (turnMotorSim.getAngularPositionRad() < -0.1) {
+      turnMotorTalonFX.setReverseLimit(true);
+    } else {
+      turnMotorTalonFX.setReverseLimit(false);
+    }
+
   }
 }

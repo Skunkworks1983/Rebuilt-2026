@@ -20,7 +20,8 @@ public class CollectorConstants {
     RIGHT;
   }
 
-  public static Side collectorSide = Side.LEFT;
+  public static Side collectorSide = Side.
+  LEFT;
 
   public static Translation2d collectorLeftOriginTranslation =
       new Translation2d(Inches.of(13), Inches.of(2));
@@ -37,7 +38,7 @@ public class CollectorConstants {
   public static final double turnMotorGearRatio = 0.0;
 
   // Turn PID
-  public static final double turnkP = 50;
+  public static final double turnkP = 25;
   public static final double turnkD = 0.0;
   public static final double turnkI = 0.0;
 
