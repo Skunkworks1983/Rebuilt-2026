@@ -1,0 +1,65 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.514436536180309,
+        "y": 7.429525504151838
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.843556654949279,
+        "y": 6.967407107664383
+      },
+      "isLocked": false,
+      "linkedName": "ShootArchBeginCCW"
+    },
+    {
+      "anchor": {
+        "x": 1.965112692763939,
+        "y": 5.643499406880189
+      },
+      "prevControl": {
+        "x": 1.7390936293560673,
+        "y": 5.324018303009634
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [
+    {
+      "fieldPosition": {
+        "x": 4.65,
+        "y": 4.0
+      },
+      "rotationOffset": 0.0,
+      "minWaypointRelativePos": 0.3440187646598869,
+      "maxWaypointRelativePos": 0.8412822517591925,
+      "name": "Point Towards Zone"
+    }
+  ],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -30.311213226681698
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 2.5,
+    "rotation": 0.0
+  },
+  "useDefaultConstraints": true
+}

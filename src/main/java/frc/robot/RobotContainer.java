@@ -133,10 +133,6 @@ public class RobotContainer {
                 new FlywheelIOTalonFX(ShooterConstants.upperFlywheelId),
                 new FlywheelIOTalonFX(ShooterConstants.lowerFlywheelId));
 
-        // This is a solution to the vision-drive cross dependency issue that hurts my
-        // eys, but it
-        // does work
-        drive.setResetVisionIMUCallback((pose) -> vision.resetCameraIMU(pose));
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The

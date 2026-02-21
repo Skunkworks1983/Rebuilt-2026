@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.0,
-        "y": 1.0
+        "x": 3.514436536180309,
+        "y": 0.6189561091340454
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.9754096385542166,
-        "y": 0.33050602409638496
+        "x": 4.4898461747345255,
+        "y": -0.05053786676956962
       },
       "isLocked": false,
       "linkedName": "SouthStartCCW"
