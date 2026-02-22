@@ -2,7 +2,6 @@ package frc.robot.util;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
@@ -18,7 +17,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.subsystems.simpleShooter.ShooterConstants;
@@ -364,7 +362,7 @@ public class ShooterCalculations {
         true);
   }
 
-  public static ShooterControls getShooterControlsTransfer(
+  public static ShooterControls getShooterControlsTransferInterpolated(
       ChassisSpeeds speeds, Pose2d odometryPose, ShooterInterporlations shooterInterporlations) {
     Translation2d target =
         DriverStation.getAlliance().get() == Alliance.Red
@@ -759,7 +757,7 @@ public class ShooterCalculations {
    * @return Calculated {@link ShooterControls}.
    */
   public static NoPitchShooterControls getShooterControlsTransfer(
-      ChassisSpeeds speeds, Pose2d odometryPose, LinearVelocity flywheelLinearVelocity) {
+      ChassisSpeeds speeds, Pose2d odometryPose) {
     Translation2d target =
         DriverStation.getAlliance().get() == Alliance.Red
             ? FieldConstants.redFuelTransferTarget
@@ -841,20 +839,14 @@ public class ShooterCalculations {
     // PART 2: BALLISTIC SOLVER
     // This solves the standard projectile range equation
     double distanceToTargetMeters = distanceToTarget.in(Meters);
-    double currentFlywheelLienarVelocity = flywheelLinearVelocity.in(MetersPerSecond);
-
-    double calculatedFlywheelVelocity = currentFlywheelLienarVelocity;
     double sinTwoTheta = Math.sin(2.0 * ShooterConstants.shooterPitch.in(Radians));
 
     double requiredV =
         Math.sqrt((ShooterSolverConstants.gravity * distanceToTargetMeters) / sinTwoTheta);
-    calculatedFlywheelVelocity = requiredV;
 
     return new NoPitchShooterControls(
-        RadiansPerSecond.of(
-            calculatedFlywheelVelocity / ShooterConstants.flywheelRadius.in(Meters)),
-        RadiansPerSecond.of(
-            calculatedFlywheelVelocity / ShooterConstants.flywheelRadius.in(Meters)),
+        RadiansPerSecond.of(requiredV / ShooterConstants.flywheelRadius.in(Meters)),
+        RadiansPerSecond.of(requiredV / ShooterConstants.flywheelRadius.in(Meters)),
         finalYaw,
         true);
   }

@@ -25,6 +25,7 @@ import frc.robot.Constants.Mode;
 import frc.robot.commands.CollectorIntake;
 import frc.robot.commands.DriveAimedGoal;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.DriveTransfer;
 import frc.robot.commands.IndexerIntake;
 import frc.robot.commands.IndexerReverse;
 import frc.robot.commands.NoDriveShootHub;
@@ -276,7 +277,8 @@ public class RobotContainer {
       reverseIndexer = new JoystickButton(buttonJoystick, Constants.IndexerIntakeButtonID);
 
       Trigger aimGoal = new JoystickButton(rightJoystick, 1);
-      Trigger shoot = new JoystickButton(leftJoystick, 1);
+      Trigger shoot = new JoystickButton(leftJoystick, 2);
+      Trigger aimTransfer = new JoystickButton(leftJoystick, 1);
       Trigger collect = new JoystickButton(rightJoystick, 2);
       Trigger index = new JoystickButton(leftJoystick, 2);
       reverseIndexer.whileTrue(new IndexerReverse(indexer));
@@ -286,6 +288,9 @@ public class RobotContainer {
       // drive, shooter, () -> -leftJoystick.getY(), () -> -leftJoystick.getX()));
 
       collect.whileTrue(new CollectorIntake(collector));
+      aimTransfer.whileTrue(
+          new DriveTransfer(
+              drive, () -> -leftJoystick.getY(), () -> -leftJoystick.getX(), shooter));
       if (Constants.currentMode == Mode.REAL) {
         shoot.whileTrue(SimpleShoot.simpleShoot(shooter));
       } else {

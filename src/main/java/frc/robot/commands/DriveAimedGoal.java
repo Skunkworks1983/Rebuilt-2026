@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.LinearFilter;
@@ -100,6 +101,22 @@ public class DriveAimedGoal extends Command {
     Logger.recordOutput("Auto Shoot/Target Yaw", targetYawRadians);
     Logger.recordOutput("Auto Shoot/Current Yaw", currentYawRadians);
     Logger.recordOutput("Auto Shoot/Filtered Target Yaw", targetYawRadians);
+
+    Logger.recordOutput("Auto Shoot/Yaw Error", targetYawRadians - currentYawRadians);
+    Logger.recordOutput(
+        "Auto Shoot/Upper Flywheel Error",
+        controls
+            .upperFlywheelVelocity()
+            .minus(shooter.getUpperFlywheelVelocity())
+            .in(RotationsPerSecond),
+        RotationsPerSecond);
+    Logger.recordOutput(
+        "Auto Shoot/Lower Flywheel Error",
+        controls
+            .lowerFlywheelVelocity()
+            .minus(shooter.getLowerFlywheelVelocity())
+            .in(RotationsPerSecond),
+        RotationsPerSecond);
 
     double omegaCmd = yawController.calculate(currentYawRadians, targetYawRadians);
 

@@ -25,10 +25,15 @@ import java.util.List;
 import org.littletonrobotics.junction.Logger;
 
 public class Vision extends SubsystemBase {
+  private final int rollingAverageWindowSize = 50;
+
   private final VisionConsumer consumer;
   private final VisionIO[] io;
   private final VisionIOInputsAutoLogged[] inputs;
   private final Alert[] disconnectedAlerts;
+
+  double[] ambiguities = new double[rollingAverageWindowSize];
+  int ambiguityIndex = 0;
 
   public Vision(VisionConsumer consumer, VisionIO... io) {
     this.consumer = consumer;
@@ -43,14 +48,14 @@ public class Vision extends SubsystemBase {
     // Initialize disconnected alerts
     this.disconnectedAlerts = new Alert[io.length];
     for (int i = 0; i < inputs.length; i++) {
-      disconnectedAlerts[i] = new Alert(
-          "Vision camera " + Integer.toString(i) + " is disconnected.", AlertType.kWarning);
+      disconnectedAlerts[i] =
+          new Alert(
+              "Vision camera " + Integer.toString(i) + " is disconnected.", AlertType.kWarning);
     }
   }
 
   /**
-   * Returns the X angle to the best target, which can be used for simple servoing
-   * with vision.
+   * Returns the X angle to the best target, which can be used for simple servoing with vision.
    *
    * @param cameraIndex The index of the camera to use.
    */
@@ -95,16 +100,18 @@ public class Vision extends SubsystemBase {
       // Loop over pose observations
       for (var observation : inputs[cameraIndex].poseObservations) {
         // Check whether to reject pose
-        boolean rejectPose = observation.tagCount() == 0 // Must have at least one tag
-            || (observation.tagCount() == 1
-                && observation.ambiguity() > maxAmbiguity) // Cannot be high ambiguity
-            || Math.abs(observation.pose().getZ()) > maxZError // Must have realistic Z coordinate
+        boolean rejectPose =
+            observation.tagCount() == 0 // Must have at least one tag
+                || (observation.tagCount() == 1
+                    && observation.ambiguity() > maxAmbiguity) // Cannot be high ambiguity
+                || Math.abs(observation.pose().getZ())
+                    > maxZError // Must have realistic Z coordinate
 
-            // Must be within the field boundaries
-            || observation.pose().getX() < 0.0
-            || observation.pose().getX() > aprilTagLayout.getFieldLength()
-            || observation.pose().getY() < 0.0
-            || observation.pose().getY() > aprilTagLayout.getFieldWidth();
+                // Must be within the field boundaries
+                || observation.pose().getX() < 0.0
+                || observation.pose().getX() > aprilTagLayout.getFieldLength()
+                || observation.pose().getY() < 0.0
+                || observation.pose().getY() > aprilTagLayout.getFieldWidth();
 
         // Add pose to log
         robotPoses.add(observation.pose());
@@ -114,15 +121,33 @@ public class Vision extends SubsystemBase {
           robotPosesAccepted.add(observation.pose());
         }
 
+        // if (observation.type() == PoseObservationType.MEGATAG_1) {
+        // if (ambiguityIndex == rollingAverageWindowSize - 1) {
+        //   ambiguityIndex = 0;
+        // }
+        // ambiguities[ambiguityIndex] = observation.ambiguity();
+        // ambiguityIndex++;
+        // double ambiguitiesSum = 0.0;
+        // for (double i = 0; i < rollingAverageWindowSize - 1; i++) {
+        //   ambiguitiesSum += ambiguities[ambiguityIndex];
+        // }
+        // double ambiguitiesAverage = ambiguitiesSum / rollingAverageWindowSize;
+
+        // Logger.recordOutput("Vision/Camera" + Integer.toString(cameraIndex) +
+        // "/AmbiguityRollingAverage",
+        //   ambiguitiesAverage);
+        // }
+
         // Skip if rejected
         if (rejectPose) {
           continue;
         }
 
         // Calculate standard deviations
-        double stdDevFactor = Math.pow(observation.averageTagDistance(), 2.0) / observation.tagCount();
-        double linearStdDev = linearStdDevBaseline * stdDevFactor;
-        double angularStdDev = angularStdDevBaseline * stdDevFactor;
+        double stdDevFactor =
+            Math.pow(observation.averageTagDistance(), 2.0) / observation.tagCount();
+        double linearStdDev = linearStdDevBaseline.get() * stdDevFactor;
+        double angularStdDev = angularStdDevBaseline.get() * stdDevFactor;
         if (observation.type() == PoseObservationType.MEGATAG_2) {
           linearStdDev *= linearStdDevMegatag2Factor;
           angularStdDev *= angularStdDevMegatag2Factor;
@@ -154,11 +179,12 @@ public class Vision extends SubsystemBase {
           "Vision/Camera" + Integer.toString(cameraIndex) + "/RobotPosesRejected",
           robotPosesRejected.toArray(new Pose3d[0]));
       Logger.recordOutput(
-          "Vision/Camera" + cameraIndex + "/Accepted/LinearStdDev",
+          "Vision/Camera" + Integer.toString(cameraIndex) + "/LinearStdDev",
           acceptedLinStdDev.stream().mapToDouble(d -> d).toArray());
       Logger.recordOutput(
-          "Vision/Camera" + cameraIndex + "/Accepted/AngularStdDev",
+          "Vision/Camera" + Integer.toString(cameraIndex) + "/AngularStdDev",
           acceptedAngStdDev.stream().mapToDouble(d -> d).toArray());
+
       allTagPoses.addAll(tagPoses);
       allRobotPoses.addAll(robotPoses);
       allRobotPosesAccepted.addAll(robotPosesAccepted);

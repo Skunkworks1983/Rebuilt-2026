@@ -179,4 +179,12 @@ public class SimpleShooter extends SubsystemBase {
     forwardFlywheel.maxDutyCycle();
     backFlywheel.maxDutyCycle();
   }
+
+  public AngularVelocity getUpperFlywheelVelocity() {
+    return forwardFlywheelInputs.velocity;
+  }
+
+  public AngularVelocity getLowerFlywheelVelocity() {
+    return backFlywheelInputs.velocity;
+  }
 }

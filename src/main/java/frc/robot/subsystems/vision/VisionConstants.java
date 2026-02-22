@@ -11,6 +11,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import frc.robot.util.LoggedTunableNumber;
 
 public class VisionConstants {
   // AprilTag layout
@@ -18,7 +19,7 @@ public class VisionConstants {
       AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
   // Camera names, must match names configured on coprocessor
-  public static String camera0Name = "limelight-two";
+  public static String camera0Name = "limelight-one";
 
   // Robot to camera transforms
   // (Not used by Limelight, configure in web UI instead)
@@ -33,8 +34,12 @@ public class VisionConstants {
 
   // Standard deviation baselines, for 1 meter distance and 1 tag
   // (Adjusted automatically based on distance and # of tags)
-  public static double linearStdDevBaseline = 0.02; // Meters
-  public static double angularStdDevBaseline = 0.06; // Radians
+
+  public static LoggedTunableNumber linearStdDevBaseline =
+      new LoggedTunableNumber("Vision/LinearStdDevBaseline", 0.06);
+
+  public static LoggedTunableNumber angularStdDevBaseline =
+      new LoggedTunableNumber("Vision/AngularStdDevBaseline", 0.06);
 
   // Standard deviation multipliers for each camera
   // (Adjust to trust some cameras more than others)
