@@ -839,15 +839,15 @@ public class ShooterCalculations {
     // PART 2: BALLISTIC SOLVER
     // This solves the standard projectile range equation
     double distanceToTargetMeters = distanceToTarget.in(Meters);
+
     double sinTwoTheta = Math.sin(2.0 * ShooterConstants.shooterPitch.in(Radians));
 
     double requiredV =
         Math.sqrt((ShooterSolverConstants.gravity * distanceToTargetMeters) / sinTwoTheta);
-
     return new NoPitchShooterControls(
         RadiansPerSecond.of(requiredV / ShooterConstants.flywheelRadius.in(Meters)),
         RadiansPerSecond.of(requiredV / ShooterConstants.flywheelRadius.in(Meters)),
         finalYaw,
-        true);
+        false);
   }
 }

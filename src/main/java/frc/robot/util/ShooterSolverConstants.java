@@ -8,7 +8,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 
 public class ShooterSolverConstants {
-  public static final Rotation2d hubSafetyAngle = new Rotation2d();
+  public static final Rotation2d hubSafetyAngle = new Rotation2d(Degrees.of(7));
   public static final Distance minShootDistanceHub = Meters.of(0.5);
   public static double gravity = 9.80665; // m / s^2
   public static final Angle defaultPitch = Degrees.of(45);

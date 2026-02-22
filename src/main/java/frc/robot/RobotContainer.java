@@ -24,8 +24,8 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.Mode;
 import frc.robot.commands.CollectorIntake;
 import frc.robot.commands.DriveAimedGoal;
+import frc.robot.commands.DriveAimedTransfer;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.DriveTransfer;
 import frc.robot.commands.IndexerIntake;
 import frc.robot.commands.IndexerReverse;
 import frc.robot.commands.NoDriveShootHub;
@@ -289,8 +289,8 @@ public class RobotContainer {
 
       collect.whileTrue(new CollectorIntake(collector));
       aimTransfer.whileTrue(
-          new DriveTransfer(
-              drive, () -> -leftJoystick.getY(), () -> -leftJoystick.getX(), shooter));
+          new DriveAimedTransfer(
+              drive, shooter, () -> -leftJoystick.getY(), () -> -leftJoystick.getX()));
       if (Constants.currentMode == Mode.REAL) {
         shoot.whileTrue(SimpleShoot.simpleShoot(shooter));
       } else {
