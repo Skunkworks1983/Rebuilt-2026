@@ -12,6 +12,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.geometry.Twist2d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+import edu.wpi.first.math.interpolation.InterpolatingTreeMap;
+import edu.wpi.first.math.interpolation.InverseInterpolator;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -19,6 +22,7 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.RobotState;
 import frc.robot.subsystems.shooter.ShooterConstants;
 import frc.robot.util.FieldConstants.HubCorners;
 import org.littletonrobotics.junction.Logger;
@@ -43,6 +47,42 @@ public class ShooterCalculations {
       Angle shooterPitch,
       Rotation2d driveYaw,
       boolean possibleShot) {}
+
+  // Launching Maps
+  private static final InterpolatingTreeMap<Double, Rotation2d> hoodAngleMap = new InterpolatingTreeMap<>(
+      InverseInterpolator.forDouble(), Rotation2d::interpolate);
+  private static final InterpolatingDoubleTreeMap flywheelSpeedMap = new InterpolatingDoubleTreeMap();
+  private static final InterpolatingDoubleTreeMap timeOfFlightMap = new InterpolatingDoubleTreeMap();
+
+  static {
+    hoodAngleMap.put(1.34, Rotation2d.fromDegrees(19.0));
+    hoodAngleMap.put(1.78, Rotation2d.fromDegrees(19.0));
+    hoodAngleMap.put(2.17, Rotation2d.fromDegrees(24.0));
+    hoodAngleMap.put(2.81, Rotation2d.fromDegrees(27.0));
+    hoodAngleMap.put(3.82, Rotation2d.fromDegrees(29.0));
+    hoodAngleMap.put(4.09, Rotation2d.fromDegrees(30.0));
+    hoodAngleMap.put(4.40, Rotation2d.fromDegrees(31.0));
+    hoodAngleMap.put(4.77, Rotation2d.fromDegrees(32.0));
+    hoodAngleMap.put(5.57, Rotation2d.fromDegrees(32.0));
+    hoodAngleMap.put(5.60, Rotation2d.fromDegrees(35.0));
+
+    flywheelSpeedMap.put(1.34, 210.0);
+    flywheelSpeedMap.put(1.78, 220.0);
+    flywheelSpeedMap.put(2.17, 220.0);
+    flywheelSpeedMap.put(2.81, 230.0);
+    flywheelSpeedMap.put(3.82, 250.0);
+    flywheelSpeedMap.put(4.09, 255.0);
+    flywheelSpeedMap.put(4.40, 260.0);
+    flywheelSpeedMap.put(4.77, 265.0);
+    flywheelSpeedMap.put(5.57, 275.0);
+    flywheelSpeedMap.put(5.60, 290.0);
+
+    timeOfFlightMap.put(5.68, 1.16);
+    timeOfFlightMap.put(4.55, 1.12);
+    timeOfFlightMap.put(3.15, 1.11);
+    timeOfFlightMap.put(1.88, 1.09);
+    timeOfFlightMap.put(1.38, 0.90);
+  }
 
   /**
    * Calculates shooter controls using an apex-constrained ballistic model. It forces the trajectory
@@ -363,4 +403,73 @@ public class ShooterCalculations {
     return pitchDeg >= ShooterConstants.minShooterPitch.in(Degrees)
         && pitchDeg <= ShooterConstants.maxShooterPitch.in(Degrees);
   }
+
+  public static ShooterControls getInterpolatedShooterControls(
+      Pose2d odometryPose, ChassisSpeeds robotRelativeSpeeds) {
+
+    Translation3d goal = DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red
+        ? FieldConstants.redGoal
+        : FieldConstants.blueGoal;
+
+    // 1) Phase delay pose prediction
+    double phaseDelaySec = ShooterSolverConstants.defaultShotLatencySec;
+    Pose2d releasePose = odometryPose.exp(
+        new Twist2d(
+            robotRelativeSpeeds.vxMetersPerSecond * phaseDelaySec,
+            robotRelativeSpeeds.vyMetersPerSecond * phaseDelaySec,
+            robotRelativeSpeeds.omegaRadiansPerSecond * phaseDelaySec));
+
+    // 2) Shooter position in field frame (robot center + shooter offset rotated
+    // into field)
+    Translation2d shooterOffsetField = ShooterConstants.shooterInitalPosition
+        .getTranslation()
+        .toTranslation2d()
+        .rotateBy(releasePose.getRotation());
+
+    Translation2d releaseShooterPosField = releasePose.getTranslation().plus(shooterOffsetField);
+    Translation2d targetField = goal.toTranslation2d();
+
+    // 3) Field-relative velocity (for lookahead)
+    Translation2d chassisVelField = new Translation2d(robotRelativeSpeeds.vxMetersPerSecond,
+        robotRelativeSpeeds.vyMetersPerSecond)
+        .rotateBy(releasePose.getRotation());
+
+    // include tangential velocity from omega. .
+    double omega = robotRelativeSpeeds.omegaRadiansPerSecond;
+    Translation2d tangentialVelField = new Translation2d(-omega * shooterOffsetField.getY(),
+        omega * shooterOffsetField.getX());
+
+    Translation2d shooterVelField = chassisVelField.plus(tangentialVelField);
+
+    // 4) Lookahead iteration: TOF(distance) map -> shift shooter origin ->
+    // recompute distance
+    Translation2d lookaheadShooterPos = releaseShooterPosField;
+    double dist = targetField.getDistance(lookaheadShooterPos);
+
+    double tof = timeOfFlightMap.get(dist); // initial guess
+    for (int i = 0; i < 15; i++) {
+      tof = timeOfFlightMap.get(dist);
+      Translation2d offset = shooterVelField.times(tof);
+      lookaheadShooterPos = releaseShooterPosField.plus(offset);
+      dist = targetField.getDistance(lookaheadShooterPos);
+    }
+
+    // 5) Drive yaw from lookahead shooter origin
+    Translation2d lookaheadVector = targetField.minus(lookaheadShooterPos);
+    Rotation2d driveYaw = lookaheadVector.getAngle();
+
+    // 6) Interpolated setpoints from distance
+    Rotation2d hoodAngle = hoodAngleMap.get(dist);
+    double flywheelSurfaceSpeed = flywheelSpeedMap.get(dist);
+
+    // 7) Convert flywheel surface speed -> angular velocity
+    double flywheelRadPerSec = flywheelSurfaceSpeed / ShooterConstants.flywheelRadius.in(Meters);
+
+    return new ShooterControls(
+        RadiansPerSecond.of(flywheelRadPerSec),
+        Radians.of(hoodAngle.getRadians()),
+        driveYaw,
+        true);
+  }
+
 }
