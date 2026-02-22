@@ -14,12 +14,15 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
-import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
-import frc.robot.subsystems.collector.collectorConstants.CollectorConstants.Side;
+import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstants;
+import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstants.Side;
 import org.littletonrobotics.junction.AutoLog;
 
 /**
- * Main CollectorModuleIO, Implemented by both left and righht collectors.
+ * Main CollectorModuleIO, Implemented by both left and right collectors.
+ *
+ * <ul>
+ *   Base for other collector IO's as well as sending collector data to advantage scope
  *
  * @author Liam B
  */
@@ -34,19 +37,16 @@ public interface CollectorModuleIO {
     public Current turnCurrentAmps = Amps.of(0.0);
     public double turnClosedLoopError = 0.0;
 
-    // Lower Intake Motor Inputs
-    public boolean lowerConnected = false;
-    public Angle lowerPositionRad = Degrees.of(0.0);
-    public AngularVelocity lowerVelocity = DegreesPerSecond.of(0.0);
-    public Voltage lowerAppliedVolts = Volts.of(0.0);
-    public Current lowerCurrentAmps = Amps.of(0.0);
+    // Intake Motor Inputs
+    public boolean intakeConnected = false;
+    public Angle intakePositionRad = Degrees.of(0.0);
+    public AngularVelocity intakeVelocity = DegreesPerSecond.of(0.0);
+    public Voltage intakeAppliedVolts = Volts.of(0.0);
+    public Current intakeCurrentAmps = Amps.of(0.0);
 
-    // Upper Intake Motor Inputs
-    public boolean upperConnected = false;
-    public Angle upperPositionRad = Degrees.of(0.0);
-    public AngularVelocity upperVelocity = DegreesPerSecond.of(0.0);
-    public Voltage upperAppliedVolts = Volts.of(0.0);
-    public Current upperCurrentAmps = Amps.of(0.0);
+    // Magnet Switch Inputs
+    public boolean upperTriggered = false;
+    public boolean lowerTriggered = false;
   }
 
   /**
@@ -57,17 +57,8 @@ public interface CollectorModuleIO {
   public default void updateInputs(CollectorIOInputs inputs) {}
 
   /** Gets Constants */
-  public default CollectorConstants getConstants() {
+  public default CollectorModuleConstants getConstants() {
     return null;
-  }
-
-  /**
-   * Gets the turn motors gear ratio
-   *
-   * @return -Turn motors gear ratio
-   */
-  public default double getTurnGearRatio() {
-    return 0.0;
   }
 
   /**
@@ -85,11 +76,15 @@ public interface CollectorModuleIO {
   public default void setCollectorPos(Angle angle) {}
 
   /**
-   * Sets the collectors turn motor velocity
+   * Checks to see if the collector is down
    *
-   * @param velocity -Angular Velocity
+   * <ul>
+   *   <li>This is to help ensure that we only have one collectordown at a time
+   * </ul>
    */
-  public default void setCollectorTurnMotorVelocity(AngularVelocity velocity) {}
+  public default boolean isCollectorDown() {
+    return false;
+  }
 
   /**
    * Checks to see if the collector is down
@@ -98,7 +93,7 @@ public interface CollectorModuleIO {
    *   <li>This is to help ensure that we only have one collectordown at a time
    * </ul>
    */
-  public default boolean isCollectorDown() {
+  public default boolean isCollectorUp() {
     return false;
   }
 

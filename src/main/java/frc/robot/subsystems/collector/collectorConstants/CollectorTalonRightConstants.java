@@ -7,51 +7,55 @@ package frc.robot.subsystems.collector.collectorConstants;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularVelocity;
-
 /**
  * This class is a grouping of constants with get methods
  *
  * <ul>
  *   Only to be used with The talonFX collector IO for the right collector
  */
-public class CollectorTalonRightConstants extends CollectorConstants {
-  // Collector side
-  public static Side collectorSide = Side.RIGHT; // TODO: set constants
+public class CollectorTalonRightConstants extends CollectorModuleConstants {
 
-  // Hardware ID's
-  public static final int turnMotorID = 0;
-  public static final int intakeMotorLowerID = 0;
-  public static final int intakeMotorUpperID = 0;
+  public CollectorTalonRightConstants() {
+    // Collector Side
+    collectorSide = Side.RIGHT;
 
-  // Gear ratio's
-  public static final double turnMotorGearRatio = 0.0;
+    // Hardware ID's
+    turnMotorID = 1;
+    intakeMotorLowerID = 0;
+    intakeMotorUpperID = 0;
 
-  // Turn PID
-  public static final double turnkP = 50;
-  public static final double turnkD = 0.0;
-  public static final double turnkI = 0.0;
+    // Gear ratio's
+    turnMotorGearRatio = 0.0;
 
-  // Lower intake PID
-  public static final double lowerkP = 1;
-  public static final double lowerkD = 0.0;
-  public static final double lowerkI = 0.0;
+    // Turn PID
+    turnkP = 5;
+    turnkD = 0;
+    turnkI = 0.0;
 
-  // Upper intake PID
-  public static final double upperkP = 1;
-  public static final double upperkD = 0.0;
-  public static final double upperkI = 0.0;
+    // Lower intake PID
+    lowerkP = 0.0;
+    lowerkD = 0.0;
+    lowerkI = 0.0;
 
-  // Feed forward
-  public static final double turnkS = 0.25;
-  public static final double turnkV = 0.12;
-  public static final double turnkA = 0.01;
+    // Upper intake PID
+    upperkP = 0.0;
+    upperkD = 0.0;
+    upperkI = 0.0;
 
-  // Position
-  public static final Angle CollectorUpPos = Degrees.of(0);
-  public static final Angle CollectorDownPos = Degrees.of(90);
+    // Feed forward
+    turnkS = 0.25;
+    turnkV = 0.12;
+    turnkA = 0.01;
 
-  // Collector Intake Speeds
-  public static final AngularVelocity CollectorIntakeSpeed = RotationsPerSecond.of(130);
+    // Position
+    CollectorUpPos = Degrees.of(0);
+    CollectorDownPos = Degrees.of(90);
+
+    // Collector Intake Speeds
+    CollectorIntakeSpeed = RotationsPerSecond.of(0);
+
+    // Limit Switch Constants
+    UpperLimitChannel = 13;
+    LowerLimitChannel = 14;
+  }
 }

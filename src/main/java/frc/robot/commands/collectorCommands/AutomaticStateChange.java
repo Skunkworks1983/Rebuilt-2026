@@ -28,7 +28,7 @@ public class AutomaticStateChange extends Command {
   @Override
   public void initialize() {
     currDirection = direction.getAsDouble();
-    count = 0;
+    count = 0; // Count is to give a small wait period before changing which collector is down
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -40,13 +40,13 @@ public class AutomaticStateChange extends Command {
       count++;
       if (count >= 3) {
         if (currDirection > 0.0) { // if going right
-          if (!collector.getLeftCollector().isCollectorDown()) {
+          if (collector.getLeftCollector().isCollectorUp()) {
             collector.getRightCollector().goDown();
           } else {
             collector.getLeftCollector().goUp();
           }
         } else if (currDirection < 0.0) { // if going left
-          if (!collector.getRightCollector().isCollectorDown()) {
+          if (collector.getRightCollector().isCollectorUp()) {
             collector.getLeftCollector().goDown();
           } else {
             collector.getRightCollector().goUp();

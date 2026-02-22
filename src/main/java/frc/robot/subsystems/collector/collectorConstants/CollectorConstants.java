@@ -4,63 +4,20 @@
 
 package frc.robot.subsystems.collector.collectorConstants;
 
-import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularVelocity;
 
-/** An Interface for collector constants */
+/** Add your docs here. */
 public class CollectorConstants {
-  // Collector side
-  public static enum Side {
-    LEFT,
-    RIGHT;
-  }
 
-  public static Side collectorSide = Side.
-  LEFT;
+  // X, Y pos from robot center
+  public static double inchesFromOriginX = 13;
+  public static double inchesFromOriginY = 2;
 
-  public static Translation2d collectorLeftOriginTranslation =
-      new Translation2d(Inches.of(13), Inches.of(2));
-
-  public static Translation2d collectorRightOriginTranslation =
-      new Translation2d(Inches.of(-13), Inches.of(2));
-
-  // Hardware ID's
-  public static final int turnMotorID = 42;
-  public static final int intakeMotorLowerID = 43;
-  public static final int intakeMotorUpperID = 44;
-
-  // Gear ratio's
-  public static final double turnMotorGearRatio = 0.0;
-
-  // Turn PID
-  public static final double turnkP = 25;
-  public static final double turnkD = 0.0;
-  public static final double turnkI = 0.0;
-
-  // Lower intake PID
-  public static final double lowerkP = 1;
-  public static final double lowerkD = 0.0;
-  public static final double lowerkI = 0.0;
-
-  // Upper intake PID
-  public static final double upperkP = 1;
-  public static final double upperkD = 0.0;
-  public static final double upperkI = 0.0;
-
-  // Feed forward
-  public static final double turnkS = 0.25;
-  public static final double turnkV = 0.12;
-  public static final double turnkA = 0.01;
-
-  // Position
-  public static final Angle CollectorUpPos = Degrees.of(0);
-  public static final Angle CollectorDownPos = Degrees.of(90);
-
-  // Collector Intake Speeds
-  public static final AngularVelocity CollectorIntakeSpeed = RotationsPerSecond.of(0);
+  // Collectors Sim Position on Robot
+  public static final Translation2d collectorLeftOriginTranslation =
+      new Translation2d(Inches.of(inchesFromOriginX), Inches.of(inchesFromOriginY));
+  public static final Translation2d collectorRightOriginTranslation =
+      new Translation2d(Inches.of(-inchesFromOriginX), Inches.of(inchesFromOriginY));
 }

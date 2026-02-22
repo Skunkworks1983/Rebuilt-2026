@@ -48,6 +48,7 @@ public final class Constants {
   }
 
   /** Joystick constants */
+  /** Joystick constants */
   public final class JoystickConstants { // TODO: find constants
     // Joystick ID's
     public static final int LeftJoystick = 0;

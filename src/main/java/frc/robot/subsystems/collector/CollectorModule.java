@@ -6,8 +6,8 @@ package frc.robot.subsystems.collector;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
-import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
-import frc.robot.subsystems.collector.collectorConstants.CollectorConstants.Side;
+import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstants;
+import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstants.Side;
 import org.littletonrobotics.junction.Logger;
 
 /**
@@ -38,11 +38,11 @@ public class CollectorModule {
 
   public void periodic() {
     collectorIO.updateInputs(inputs);
-    Logger.processInputs("Collector/Module/ " + hashCode() + collectorIO.getSide(), inputs);
+    Logger.processInputs("Collector/Module/ " + collectorIO.getSide(), inputs);
   }
 
   /** Gets Constants */
-  public CollectorConstants getConstants() {
+  public CollectorModuleConstants getConstants() {
     return collectorIO.getConstants();
   }
 
@@ -56,21 +56,12 @@ public class CollectorModule {
   }
 
   /**
-   * Gets the velocity of the collectors intake upper motor
+   * Gets the velocity of the collectors intake motor
    *
    * @return -Angular Velocity
    */
-  public AngularVelocity getVelocityOfIntakeLower() {
-    return inputs.lowerVelocity;
-  }
-
-  /**
-   * Gets the velocity of the collectors intake lower motor
-   *
-   * @return -Angular Velocity
-   */
-  public AngularVelocity getVelocityOfIntakeUpper() {
-    return inputs.upperVelocity;
+  public AngularVelocity getVelocityOfIntake() {
+    return inputs.intakeVelocity;
   }
 
   /**
@@ -80,15 +71,6 @@ public class CollectorModule {
    */
   public AngularVelocity getVelocityOfTurn() {
     return inputs.turnVelocity;
-  }
-
-  /**
-   * Gets the turn motors gear ratio
-   *
-   * @return -Turn motors gear ratio
-   */
-  public double getTurnGearRatio() {
-    return collectorIO.getTurnGearRatio();
   }
 
   /**
@@ -110,12 +92,14 @@ public class CollectorModule {
   }
 
   /**
-   * Sets the collectors turn motor velocity
+   * Checks to see if the collector is down
    *
-   * @param velocity -Angular Velocity
+   * <ul>
+   *   <li>This is to help ensure that we only have one collectordown at a time
+   * </ul>
    */
-  public void setCollectorTurnMotorVelocity(AngularVelocity velocity) {
-    collectorIO.setCollectorTurnMotorVelocity(velocity);
+  public boolean isCollectorDown() {
+    return collectorIO.isCollectorDown();
   }
 
   /**
@@ -125,8 +109,8 @@ public class CollectorModule {
    *   <li>This is to help ensure that we only have one collectordown at a time
    * </ul>
    */
-  public boolean isCollectorDown() {
-    return collectorIO.isCollectorDown();
+  public boolean isCollectorUp() {
+    return collectorIO.isCollectorUp();
   }
 
   // Sets collector up

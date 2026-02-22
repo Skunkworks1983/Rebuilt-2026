@@ -10,18 +10,21 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
+import edu.wpi.first.wpilibj.simulation.DIOSim;
+import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstants;
 import org.ironmaple.simulation.IntakeSimulation;
 import org.ironmaple.simulation.drivesims.AbstractDriveTrainSimulation;
 
 public class CollectorModuleSimIO extends CollectorModuleTalonIO {
   private IntakeSimulation collectorSimulation;
 
-  private DCMotorSim intakeMotorUpperSim;
-  private DCMotorSim intakeMotorLowerSim;
+  private DCMotorSim intakeMotorSim;
   private DCMotorSim turnMotorSim;
 
-  final double minimumCollectorRadiansToCollect = 1.55;
+  private DIOSim upperLimitSim;
+  private DIOSim lowerLimitSim;
+
+  private final double minimumCollectorRadiansToCollect = 1.55;
   final double minimumCollectorSpeedToCollect = 5;
 
   public static enum CollectorSide {
@@ -34,12 +37,12 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
   public CollectorModuleSimIO(
       AbstractDriveTrainSimulation driveTrain,
       CollectorSide collectorSide,
-      CollectorConstants constants) {
+      CollectorModuleConstants constants) {
 
     super(constants);
 
     this.collectorSide = collectorSide;
-    // collectorSide, 0 = left, 1 = right
+
     switch (collectorSide) {
       case Left:
         this.collectorSimulation =
@@ -67,10 +70,12 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
     LinearSystem linearSystemTurnMotor = LinearSystemId.createDCMotorSystem(1, 1);
     double[] stdevs = {0.001, 0.001};
 
-    intakeMotorLowerSim = new DCMotorSim(linearSystemIntakeMotors, DCMotor.getKrakenX60(1), stdevs);
-    intakeMotorUpperSim = new DCMotorSim(linearSystemIntakeMotors, DCMotor.getKrakenX60(1), stdevs);
+    intakeMotorSim = new DCMotorSim(linearSystemIntakeMotors, DCMotor.getKrakenX60(1), stdevs);
     turnMotorSim = new DCMotorSim(linearSystemTurnMotor, DCMotor.getKrakenX60(1), stdevs);
     turnMotorSim.setAngle(0);
+
+    upperLimitSim = new DIOSim(super.upperLimitSwitch);
+    lowerLimitSim = new DIOSim(super.lowerLimitSwitch);
   }
 
   /**
@@ -93,26 +98,20 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
   public void updateInputs(CollectorIOInputs input) {
 
     var turnMotorTalonFX = super.turnMotor.getSimState();
-    var intakeMotorLowerTalonFX = super.intakeMotorLower.getSimState();
-    var intakeMotorUpperTalonFX = super.intakeMotorUpper.getSimState();
+    var intakeMotorTalonFX = super.intakeMotor.getSimState();
 
     turnMotorTalonFX.setSupplyVoltage(RobotController.getBatteryVoltage());
-    intakeMotorLowerTalonFX.setSupplyVoltage(RobotController.getBatteryVoltage());
-    intakeMotorUpperTalonFX.setSupplyVoltage(RobotController.getBatteryVoltage());
+    intakeMotorTalonFX.setSupplyVoltage(RobotController.getBatteryVoltage());
 
     // Update simulations and input voltage for motors
     turnMotorSim.setInputVoltage(turnMotorTalonFX.getMotorVoltage());
     turnMotorSim.update(0.02);
 
-    intakeMotorLowerSim.setInputVoltage(intakeMotorLowerTalonFX.getMotorVoltage());
-    intakeMotorLowerSim.update(0.02);
-
-    intakeMotorUpperSim.setInputVoltage(intakeMotorUpperTalonFX.getMotorVoltage());
-    intakeMotorUpperSim.update(0.02);
+    intakeMotorSim.setInputVoltage(intakeMotorTalonFX.getMotorVoltage());
+    intakeMotorSim.update(0.02);
 
     turnMotorTalonFX.setRotorVelocity(turnMotorSim.getAngularVelocity());
-    intakeMotorLowerTalonFX.setRotorVelocity(intakeMotorLowerSim.getAngularVelocity());
-    intakeMotorUpperTalonFX.setRotorVelocity(intakeMotorUpperSim.getAngularVelocity());
+    intakeMotorTalonFX.setRotorVelocity(intakeMotorSim.getAngularVelocity());
 
     turnMotorTalonFX.setRawRotorPosition(turnMotorSim.getAngularPosition());
 
@@ -124,36 +123,34 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
     input.turnCurrentAmps = Current.ofBaseUnits(turnMotorSim.getCurrentDrawAmps(), Amps);
 
     // Lower Intake Motor Inputs
-    input.lowerConnected = true;
-    input.lowerPositionRad = intakeMotorLowerSim.getAngularPosition();
-    input.lowerVelocity = intakeMotorLowerSim.getAngularVelocity();
-    input.lowerAppliedVolts = intakeMotorLowerTalonFX.getMotorVoltageMeasure();
-    input.lowerCurrentAmps = Current.ofBaseUnits(intakeMotorLowerSim.getCurrentDrawAmps(), Amps);
+    input.intakeConnected = true;
+    input.intakePositionRad = intakeMotorSim.getAngularPosition();
+    input.intakeVelocity = intakeMotorSim.getAngularVelocity();
+    input.intakeAppliedVolts = intakeMotorTalonFX.getMotorVoltageMeasure();
+    input.intakeCurrentAmps = Current.ofBaseUnits(intakeMotorSim.getCurrentDrawAmps(), Amps);
 
-    // Upper Intake Motor Inputs
-    input.upperConnected = true;
-    input.upperPositionRad = intakeMotorUpperSim.getAngularPosition();
-    input.upperVelocity = intakeMotorUpperSim.getAngularVelocity();
-    input.upperAppliedVolts = intakeMotorUpperTalonFX.getMotorVoltageMeasure();
-    input.upperCurrentAmps = Current.ofBaseUnits(intakeMotorUpperSim.getCurrentDrawAmps(), Amps);
+    // limit switches inputs
+    input.upperTriggered = upperLimitSim.getValue();
+    input.lowerTriggered = lowerLimitSim.getValue();
 
-    if (turnMotorSim.getAngularPositionRad() > minimumCollectorRadiansToCollect && intakeMotorLowerSim.getAngularVelocityRadPerSec() > minimumCollectorSpeedToCollect) {
+    if (turnMotorSim.getAngularPositionRad() > minimumCollectorRadiansToCollect
+        && intakeMotorSim.getAngularVelocityRadPerSec() > minimumCollectorSpeedToCollect) {
       collectorSimulation.startIntake();
     } else {
       collectorSimulation.stopIntake();
     }
+
     // limit switches
     if (turnMotorSim.getAngularPositionRad() > minimumCollectorRadiansToCollect + 0.05) {
-      turnMotorTalonFX.setForwardLimit(true);
+      lowerLimitSim.setValue(true);
     } else {
-      turnMotorTalonFX.setForwardLimit(false);
+      lowerLimitSim.setValue(false);
     }
 
     if (turnMotorSim.getAngularPositionRad() < -0.1) {
-      turnMotorTalonFX.setReverseLimit(true);
+      upperLimitSim.setValue(true);
     } else {
-      turnMotorTalonFX.setReverseLimit(false);
+      upperLimitSim.setValue(false);
     }
-
   }
 }

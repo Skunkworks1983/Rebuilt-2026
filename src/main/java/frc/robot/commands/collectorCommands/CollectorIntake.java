@@ -4,20 +4,25 @@
 
 package frc.robot.commands.collectorCommands;
 
-import static edu.wpi.first.units.Units.DegreesPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 
-import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.collector.Collector;
+import frc.robot.subsystems.collector.CollectorModule;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class CollectorIntake extends Command {
   Collector collector;
+  CollectorModule leftCollector;
+  CollectorModule rightCollector;
+  CollectorModule lastModule;
 
   /** Creates a new CollectorIntake. */
   public CollectorIntake(Collector collector) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.collector = collector;
+    leftCollector = collector.getLeftCollector();
+    rightCollector = collector.getRightCollector();
   }
 
   // Called when the command is initially scheduled.
@@ -27,26 +32,22 @@ public class CollectorIntake extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (collector.getLeftCollector().isCollectorDown()) {
-      collector
-          .getLeftCollector()
-          .setCollectorVelocity(collector.getLeftCollector().getConstants().CollectorIntakeSpeed);
-    } else if (collector.getRightCollector().isCollectorDown()) {
-      collector
-          .getRightCollector()
-          .setCollectorVelocity(collector.getRightCollector().getConstants().CollectorIntakeSpeed);
+    if (leftCollector.isCollectorDown() && lastModule != leftCollector) {
+      rightCollector.setCollectorVelocity(RotationsPerSecond.of(0));
+      leftCollector.setCollectorVelocity(leftCollector.getConstants().CollectorIntakeSpeed);
+      lastModule = leftCollector;
+    } else if (rightCollector.isCollectorDown() && lastModule != rightCollector) {
+      leftCollector.setCollectorVelocity(RotationsPerSecond.of(0));
+      rightCollector.setCollectorVelocity(rightCollector.getConstants().CollectorIntakeSpeed);
+      lastModule = rightCollector;
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    collector
-        .getLeftCollector()
-        .setCollectorVelocity(AngularVelocity.ofBaseUnits(0, DegreesPerSecond));
-    collector
-        .getRightCollector()
-        .setCollectorVelocity(AngularVelocity.ofBaseUnits(0, DegreesPerSecond));
+    leftCollector.setCollectorVelocity(RotationsPerSecond.of(0));
+    rightCollector.setCollectorVelocity(RotationsPerSecond.of(0));
   }
 
   // Returns true when the command should end.
