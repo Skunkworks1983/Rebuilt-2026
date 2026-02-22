@@ -83,7 +83,7 @@ public class CollectorModule {
   }
 
   /**
-   * Puts the collector into a down position
+   * Sets the collectors position
    *
    * @param angle WPILib angle
    */
@@ -103,7 +103,7 @@ public class CollectorModule {
   }
 
   /**
-   * Checks to see if the collector is down
+   * Checks to see if the collector is up
    *
    * <ul>
    *   <li>This is to help ensure that we only have one collectordown at a time
@@ -123,6 +123,7 @@ public class CollectorModule {
     collectorIO.goDown();
   }
 
+  // Gets collector side
   public Side getSide() {
     return collectorIO.getSide();
   }

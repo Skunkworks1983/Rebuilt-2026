@@ -43,6 +43,8 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
 
   // Helper variables
   private Side side;
+  private boolean setUpRunning;
+  private boolean setDownRunning;
 
   // Inputs from turn motor
   private final StatusSignal<Angle> turnPosition;
@@ -79,8 +81,8 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     turnMotor = new TalonFX(constants.turnMotorID, TunerConstants.getTunerConstants().getCANBus());
     intakeMotor =
         new TalonFX(constants.intakeMotorUpperID, TunerConstants.getTunerConstants().getCANBus());
-    upperLimitSwitch = new DigitalInput(constants.UpperLimitChannel);
-    lowerLimitSwitch = new DigitalInput(constants.LowerLimitChannel);
+    upperLimitSwitch = new DigitalInput(0);
+    lowerLimitSwitch = new DigitalInput(0);
 
     // Config for turnMotor
     var turnConfig = new TalonFXConfiguration();
@@ -181,7 +183,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     inputs.lowerTriggered = lowerTriggered;
   }
 
-  /** Gets Constants */
+  /** Gets The Collector Constants */
   public CollectorModuleConstants getConstants() {
     return constants;
   }
@@ -196,7 +198,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
   }
 
   /**
-   * Sets the collectors position
+   * Sets the collectors position to the angle given
    *
    * @param angle -WPILib Angle
    */
@@ -212,7 +214,11 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
    * </ul>
    */
   public boolean isCollectorDown() {
-    return lowerLimitSwitch.get();
+    return lowerLimitSwitch.get()
+        || turnMotor
+            .getPosition()
+            .getValue()
+            .gte(constants.CollectorDownPos.minus(constants.CollectorPosTolerance));
   }
 
   /**
@@ -223,7 +229,11 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
    * </ul>
    */
   public boolean isCollectorUp() {
-    return upperLimitSwitch.get();
+    return upperLimitSwitch.get()
+        || turnMotor
+            .getPosition()
+            .getValue()
+            .lte(constants.CollectorUpPos.plus(constants.CollectorPosTolerance));
   }
 
   // Gets side i.e: left
@@ -231,13 +241,21 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     return side;
   }
 
-  // Sets collector up
+  /** Sets Collector to its up position */
   public void goUp() {
-    setCollectorPos(constants.CollectorUpPos);
+    if (setUpRunning) {
+      setCollectorPos(constants.CollectorUpPos);
+      setUpRunning = true;
+      setDownRunning = false;
+    }
   }
 
-  // Sets collector down
+  /** Sets Collector to its up position */
   public void goDown() {
-    setCollectorPos(constants.CollectorDownPos);
+    if (setDownRunning) {
+      setCollectorPos(constants.CollectorDownPos);
+      setDownRunning = true;
+      setUpRunning = false;
+    }
   }
 }

@@ -57,5 +57,8 @@ public class CollectorTalonLeftConstants extends CollectorModuleConstants {
     // Limit Switch Constants
     UpperLimitChannel = 11;
     LowerLimitChannel = 12;
+
+    // Collector Position Tolerance
+    CollectorPosTolerance = Degrees.of(10);
   }
 }

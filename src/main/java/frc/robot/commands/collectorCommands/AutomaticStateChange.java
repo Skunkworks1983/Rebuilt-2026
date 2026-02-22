@@ -4,9 +4,13 @@
 
 package frc.robot.commands.collectorCommands;
 
+import static edu.wpi.first.units.Units.MetersPerSecond;
+
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.collector.Collector;
-import java.util.function.DoubleSupplier;
+import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
+import java.util.function.Supplier;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AutomaticStateChange extends Command {
@@ -14,10 +18,10 @@ public class AutomaticStateChange extends Command {
   private double lastDirection;
   private double currDirection;
   private int count;
-  private DoubleSupplier direction;
+  private Supplier<LinearVelocity> direction;
 
   /** Creates a new AutomaticStateChange. */
-  public AutomaticStateChange(Collector collector, DoubleSupplier direction) {
+  public AutomaticStateChange(Collector collector, Supplier<LinearVelocity> direction) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.collector = collector;
     addRequirements(collector);
@@ -27,18 +31,18 @@ public class AutomaticStateChange extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    currDirection = direction.getAsDouble();
+    currDirection = direction.get().in(MetersPerSecond);
     count = 0; // Count is to give a small wait period before changing which collector is down
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    lastDirection = currDirection;
-    currDirection = direction.getAsDouble();
+    currDirection = direction.get().in(MetersPerSecond);
     if ((currDirection * lastDirection) < 0) {
       count++;
-      if (count >= 3) {
+      lastDirection = currDirection;
+      if (count >= CollectorConstants.collectorTicksForAuto) {
         if (currDirection > 0.0) { // if going right
           if (collector.getLeftCollector().isCollectorUp()) {
             collector.getRightCollector().goDown();
@@ -60,7 +64,14 @@ public class AutomaticStateChange extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    if (collector.getLeftCollector().isCollectorDown()) {
+      collector.getLeftCollector().goUp();
+    }
+    if (collector.getRightCollector().isCollectorDown()) {
+      collector.getRightCollector().goUp();
+    }
+  }
 
   // Returns true when the command should end.
   @Override

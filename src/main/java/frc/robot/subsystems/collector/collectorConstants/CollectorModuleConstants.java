@@ -60,6 +60,9 @@ public class CollectorModuleConstants {
   public int UpperLimitChannel;
   public int LowerLimitChannel;
 
+  // Collector Position Tolerance
+  public Angle CollectorPosTolerance;
+
   public CollectorModuleConstants() {
 
     // Collector Side
@@ -103,5 +106,8 @@ public class CollectorModuleConstants {
     // Limit Switch Constants
     UpperLimitChannel = 0;
     LowerLimitChannel = 0;
+
+    // Collector Position Tolerance
+    CollectorPosTolerance = Degrees.of(0);
   }
 }
