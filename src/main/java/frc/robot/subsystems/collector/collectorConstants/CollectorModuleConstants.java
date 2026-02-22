@@ -56,6 +56,10 @@ public class CollectorModuleConstants {
   // Collector Intake Speeds
   public AngularVelocity CollectorIntakeSpeed;
 
+  // Limit Switch Constants
+  public int UpperLimitChannel;
+  public int LowerLimitChannel;
+
   public CollectorModuleConstants() {
 
     // Collector Side
@@ -95,5 +99,9 @@ public class CollectorModuleConstants {
 
     // Collector Intake Speeds
     CollectorIntakeSpeed = RotationsPerSecond.of(0);
+
+    // Limit Switch Constants
+    UpperLimitChannel = 0;
+    LowerLimitChannel = 0;
   }
 }
