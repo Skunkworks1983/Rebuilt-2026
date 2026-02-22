@@ -87,7 +87,7 @@ public interface CollectorModuleIO {
   }
 
   /**
-   * Checks to see if the collector is down
+   * Checks to see if the collector is up
    *
    * <ul>
    *   <li>This is to help ensure that we only have one collectordown at a time

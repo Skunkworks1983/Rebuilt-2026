@@ -56,6 +56,9 @@ public class CollectorModuleConstants {
   // Collector Intake Speeds
   public AngularVelocity CollectorIntakeSpeed;
 
+  // Collector Position Tolerance
+  public Angle CollectorPosTolerance;
+
   public CollectorModuleConstants() {
 
     // Collector Side
@@ -95,5 +98,8 @@ public class CollectorModuleConstants {
 
     // Collector Intake Speeds
     CollectorIntakeSpeed = RotationsPerSecond.of(0);
+
+    // Collector Position Tolerance
+    CollectorPosTolerance = Degrees.of(0);
   }
 }

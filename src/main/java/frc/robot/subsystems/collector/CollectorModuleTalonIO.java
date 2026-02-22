@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems.collector;
 
-import static edu.wpi.first.units.Units.Degrees;
 import static frc.robot.util.PhoenixUtil.tryUntilOk;
 
 import com.ctre.phoenix6.BaseStatusSignal;
@@ -44,6 +43,8 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
 
   // Helper variables
   private Side side;
+  private boolean setUpRunning;
+  private boolean setDownRunning;
 
   // Inputs from turn motor
   private final StatusSignal<Angle> turnPosition;
@@ -77,14 +78,11 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     side = constants.collectorSide;
 
     // Instantiates all motors and hardware objects
-    turnMotor = 
-      new TalonFX(constants.turnMotorID, TunerConstants.getTunerConstants().getCANBus());
+    turnMotor = new TalonFX(constants.turnMotorID, TunerConstants.getTunerConstants().getCANBus());
     intakeMotor =
-      new TalonFX(constants.intakeMotorUpperID, TunerConstants.getTunerConstants().getCANBus());
-    upperLimitSwitch =
-      new DigitalInput(0);
-    lowerLimitSwitch =
-      new DigitalInput(0);
+        new TalonFX(constants.intakeMotorUpperID, TunerConstants.getTunerConstants().getCANBus());
+    upperLimitSwitch = new DigitalInput(0);
+    lowerLimitSwitch = new DigitalInput(0);
 
     // Config for turnMotor
     var turnConfig = new TalonFXConfiguration();
@@ -162,7 +160,8 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     var turnStatus =
         BaseStatusSignal.refreshAll(turnPosition, turnVelocity, turnAppliedVolts, turnCurrent);
     var upperStatus =
-        BaseStatusSignal.refreshAll(intakePosition, intakeVelocity, intakeAppliedVolts, intakeCurrent);
+        BaseStatusSignal.refreshAll(
+            intakePosition, intakeVelocity, intakeAppliedVolts, intakeCurrent);
 
     // Update turn inputs
     inputs.turnConnected = turnConnectedDebounce.calculate(turnStatus.isOK());
@@ -184,7 +183,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     inputs.lowerTriggered = lowerTriggered;
   }
 
-  /** Gets Constants */
+  /** Gets The Collector Constants */
   public CollectorModuleConstants getConstants() {
     return constants;
   }
@@ -199,7 +198,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
   }
 
   /**
-   * Sets the collectors position
+   * Sets the collectors position to the angle given
    *
    * @param angle -WPILib Angle
    */
@@ -215,7 +214,11 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
    * </ul>
    */
   public boolean isCollectorDown() {
-    return lowerLimitSwitch.get();
+    return lowerLimitSwitch.get()
+        || turnMotor
+            .getPosition()
+            .getValue()
+            .gte(constants.CollectorDownPos.minus(constants.CollectorPosTolerance));
   }
 
   /**
@@ -226,7 +229,11 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
    * </ul>
    */
   public boolean isCollectorUp() {
-    return upperLimitSwitch.get();
+    return upperLimitSwitch.get()
+        || turnMotor
+            .getPosition()
+            .getValue()
+            .lte(constants.CollectorUpPos.plus(constants.CollectorPosTolerance));
   }
 
   // Gets side i.e: left
@@ -234,13 +241,21 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     return side;
   }
 
-  // Sets collector up
+  /** Sets Collector to its up position */
   public void goUp() {
-    setCollectorPos(constants.CollectorUpPos);
+    if (setUpRunning) {
+      setCollectorPos(constants.CollectorUpPos);
+      setUpRunning = true;
+      setDownRunning = false;
+    }
   }
 
-  // Sets collector down
+  /** Sets Collector to its up position */
   public void goDown() {
-    setCollectorPos(constants.CollectorDownPos);
+    if (setDownRunning) {
+      setCollectorPos(constants.CollectorDownPos);
+      setDownRunning = true;
+      setUpRunning = false;
+    }
   }
 }

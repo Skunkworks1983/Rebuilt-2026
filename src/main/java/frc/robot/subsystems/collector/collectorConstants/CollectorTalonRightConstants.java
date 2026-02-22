@@ -53,5 +53,8 @@ public class CollectorTalonRightConstants extends CollectorModuleConstants {
 
     // Collector Intake Speeds
     CollectorIntakeSpeed = RotationsPerSecond.of(0);
+
+    // Collector Position Tolerance
+    CollectorPosTolerance = Degrees.of(10);
   }
 }
