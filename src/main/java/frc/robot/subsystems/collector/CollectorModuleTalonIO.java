@@ -39,7 +39,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
   protected final DigitalInput lowerLimitSwitch;
 
   // Constants
-  private final CollectorModuleConstants constants;
+  public final CollectorModuleConstants constants;
 
   // Helper variables
   private Side side;
@@ -77,12 +77,16 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     // Collector side
     side = constants.collectorSide;
 
+    // isRunning Variables
+    setUpRunning = false;
+    setDownRunning = false;
+
     // Instantiates all motors and hardware objects
     turnMotor = new TalonFX(constants.turnMotorID, TunerConstants.getTunerConstants().getCANBus());
     intakeMotor =
         new TalonFX(constants.intakeMotorUpperID, TunerConstants.getTunerConstants().getCANBus());
-    upperLimitSwitch = new DigitalInput(0);
-    lowerLimitSwitch = new DigitalInput(0);
+    upperLimitSwitch = new DigitalInput(constants.UpperLimitChannel);
+    lowerLimitSwitch = new DigitalInput(constants.LowerLimitChannel);
 
     // Config for turnMotor
     var turnConfig = new TalonFXConfiguration();
@@ -179,8 +183,8 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     inputs.intakeCurrentAmps = intakeCurrent.getValue();
 
     // Update sensor inputs
-    inputs.upperTriggered = upperTriggered;
-    inputs.lowerTriggered = lowerTriggered;
+    inputs.upperTriggered = upperLimitSwitch.get();
+    inputs.lowerTriggered = lowerLimitSwitch.get();
   }
 
   /** Gets The Collector Constants */
@@ -243,7 +247,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
 
   /** Sets Collector to its up position */
   public void goUp() {
-    if (setUpRunning) {
+    if (!setUpRunning) {
       setCollectorPos(constants.CollectorUpPos);
       setUpRunning = true;
       setDownRunning = false;
@@ -252,7 +256,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
 
   /** Sets Collector to its up position */
   public void goDown() {
-    if (setDownRunning) {
+    if (!setDownRunning) {
       setCollectorPos(constants.CollectorDownPos);
       setDownRunning = true;
       setUpRunning = false;

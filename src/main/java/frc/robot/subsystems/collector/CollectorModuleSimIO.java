@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.simulation.DIOSim;
 import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstants;
+import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstants.Side;
 import org.ironmaple.simulation.IntakeSimulation;
 import org.ironmaple.simulation.drivesims.AbstractDriveTrainSimulation;
 
@@ -23,6 +24,8 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
 
   private DIOSim upperLimitSim;
   private DIOSim lowerLimitSim;
+
+  private double outputInverter;
 
   private final double minimumCollectorRadiansToCollect = 1.55;
   final double minimumCollectorSpeedToCollect = 5;
@@ -76,6 +79,9 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
 
     upperLimitSim = new DIOSim(super.upperLimitSwitch);
     lowerLimitSim = new DIOSim(super.lowerLimitSwitch);
+
+    upperLimitSim.setValue(true);
+    lowerLimitSim.setValue(false);
   }
 
   /**
@@ -88,6 +94,24 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
   }
 
   double j;
+
+  /** Change upper limit switch value */
+  public boolean changeUpperLimitValue() {
+    if (turnMotorSim
+        .getAngularPosition()
+        .lte(constants.CollectorUpPos.plus(constants.CollectorPosTolerance))) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  /** Change lower limit switch value */
+  public boolean changeLowerLimitValue() {
+      return turnMotorSim
+          .getAngularPosition()
+          .gte(constants.CollectorDownPos.minus(constants.CollectorPosTolerance));
+  }
 
   /**
    * Updates our inputs for all motors
@@ -117,7 +141,8 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
 
     // Turn Motor Inputs
     input.turnConnected = true;
-    input.turnPosition = Rotation2d.fromRadians(turnMotorSim.getAngularPositionRad());
+    input.turnPosition =
+        Rotation2d.fromRadians(turnMotorSim.getAngularPositionRad());
     input.turnVelocity = turnMotorSim.getAngularVelocity();
     input.turnAppliedVolts = turnMotorTalonFX.getMotorVoltageMeasure();
     input.turnCurrentAmps = Current.ofBaseUnits(turnMotorSim.getCurrentDrawAmps(), Amps);
@@ -130,6 +155,8 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
     input.intakeCurrentAmps = Current.ofBaseUnits(intakeMotorSim.getCurrentDrawAmps(), Amps);
 
     // limit switches inputs
+    upperLimitSim.setValue(changeUpperLimitValue());
+    lowerLimitSim.setValue(changeLowerLimitValue());
     input.upperTriggered = upperLimitSim.getValue();
     input.lowerTriggered = lowerLimitSim.getValue();
 
