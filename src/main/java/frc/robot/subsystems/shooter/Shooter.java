@@ -53,16 +53,27 @@ public class Shooter extends SubsystemBase {
 
   private final SysIdRoutine sysId;
 
-  private static final LoggedTunableNumber flywheelKP =
-      new LoggedTunableNumber("Shooter/Flywheel/kP", ShooterConstants.flywheelKP);
-  private static final LoggedTunableNumber flywheelKD =
-      new LoggedTunableNumber("Shooter/Flywheel/kD", ShooterConstants.flywheelKD);
-  private static final LoggedTunableNumber flywheelKS =
-      new LoggedTunableNumber("Shooter/Flywheel/kS", ShooterConstants.flywheelKS);
-  private static final LoggedTunableNumber flywheelKV =
-      new LoggedTunableNumber("Shooter/Flywheel/kV", ShooterConstants.flywheelKV);
-  private static final LoggedTunableNumber flywheelKA =
-      new LoggedTunableNumber("Shooter/Flywheel/kA", ShooterConstants.flywheelKA);
+  private static final LoggedTunableNumber upperFlywheelKP =
+      new LoggedTunableNumber("Shooter/Upper Flywheel/kP", ShooterConstants.upperFlywheelKP);
+  private static final LoggedTunableNumber upperFlywheelKD =
+      new LoggedTunableNumber("Shooter/Upper Flywheel/kD", ShooterConstants.upperFlywheelKD);
+  private static final LoggedTunableNumber upperFlywheelKS =
+      new LoggedTunableNumber("Shooter/Upper Flywheel/kS", ShooterConstants.upperFlywheelKS);
+  private static final LoggedTunableNumber upperFlywheelKV =
+      new LoggedTunableNumber("Shooter/Upper Flywheel/kV", ShooterConstants.upperFlywheelKV);
+  private static final LoggedTunableNumber upperFlywheelKA =
+      new LoggedTunableNumber("Shooter/Upper Flywheel/kA", ShooterConstants.upperFlywheelKA);
+
+      private static final LoggedTunableNumber lowerFlywheelKP =
+      new LoggedTunableNumber("Shooter/Lower Flywheel/kP", ShooterConstants.lowerFlywheelKP);
+  private static final LoggedTunableNumber lowerFlywheelKD =
+      new LoggedTunableNumber("Shooter/Lower Flywheel/kD", ShooterConstants.lowerFlywheelKD);
+  private static final LoggedTunableNumber lowerFlywheelKS =
+      new LoggedTunableNumber("Shooter/Lower Flywheel/kS", ShooterConstants.lowerFlywheelKS);
+  private static final LoggedTunableNumber lowerFlywheelKV =
+      new LoggedTunableNumber("Shooter/Lower Flywheel/kV", ShooterConstants.lowerFlywheelKV);
+  private static final LoggedTunableNumber lowerFlywheelKA =
+      new LoggedTunableNumber("Shooter/Lower Flywheel/kA", ShooterConstants.lowerFlywheelKA);
 
   private static final LoggedTunableNumber pivotKP =
       new LoggedTunableNumber("Shooter/Pivot/kP", ShooterConstants.pivotkP);
@@ -126,18 +137,32 @@ public class Shooter extends SubsystemBase {
     pivotDisconnectedAlert.set(
         (!pivotInputs.connected) && Constants.currentMode != Constants.Mode.SIM);
 
-    if (flywheelKP.hasChanged(hashCode())
-        || flywheelKD.hasChanged(hashCode())
-        || flywheelKS.hasChanged(hashCode())
-        || flywheelKV.hasChanged(hashCode())
-        || flywheelKA.hasChanged(hashCode())) {
+    if (upperFlywheelKP.hasChanged(hashCode())
+        || upperFlywheelKD.hasChanged(hashCode())
+        || upperFlywheelKS.hasChanged(hashCode())
+        || upperFlywheelKV.hasChanged(hashCode())
+        || upperFlywheelKA.hasChanged(hashCode())) {
       Slot0Configs gains = new Slot0Configs();
-      gains.kP = flywheelKP.get();
-      gains.kD = flywheelKD.get();
-      gains.kS = flywheelKS.get();
-      gains.kV = flywheelKV.get();
-      gains.kA = flywheelKA.get();
+      gains.kP = upperFlywheelKP.get();
+      gains.kD = upperFlywheelKD.get();
+      gains.kS = upperFlywheelKS.get();
+      gains.kV = upperFlywheelKV.get();
+      gains.kA = upperFlywheelKA.get();
       upperFlywheel.setPID(gains);
+      lowerFlywheel.setPID(gains);
+    }
+
+    if (lowerFlywheelKP.hasChanged(hashCode())
+        || lowerFlywheelKD.hasChanged(hashCode())
+        || lowerFlywheelKS.hasChanged(hashCode())
+        || lowerFlywheelKV.hasChanged(hashCode())
+        || lowerFlywheelKA.hasChanged(hashCode())) {
+      Slot0Configs gains = new Slot0Configs();
+      gains.kP = lowerFlywheelKP.get();
+      gains.kD = lowerFlywheelKD.get();
+      gains.kS = lowerFlywheelKS.get();
+      gains.kV = lowerFlywheelKV.get();
+      gains.kA = lowerFlywheelKA.get();
       lowerFlywheel.setPID(gains);
     }
 

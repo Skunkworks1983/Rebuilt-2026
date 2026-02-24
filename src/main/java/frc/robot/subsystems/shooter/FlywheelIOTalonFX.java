@@ -48,13 +48,13 @@ public class FlywheelIOTalonFX implements FlywheelIO {
     flywheelConfig.Feedback.SensorToMechanismRatio = ShooterConstants.flywheelGearRatio;
     flywheelConfig.MotorOutput.Inverted = ShooterConstants.flywheelMotorInverted;
     flywheelConfig.ClosedLoopGeneral.ContinuousWrap = true;
-    flywheelConfig.Slot0.kP = ShooterConstants.flywheelKP;
+    flywheelConfig.Slot0.kP = ShooterConstants.upperFlywheelKP;
     flywheelConfig.Slot0.kI = 0.0;
-    flywheelConfig.Slot0.kD = ShooterConstants.flywheelKD;
+    flywheelConfig.Slot0.kD = ShooterConstants.upperFlywheelKD;
 
-    flywheelConfig.Slot0.kS = ShooterConstants.flywheelKS;
-    flywheelConfig.Slot0.kV = ShooterConstants.flywheelKV;
-    flywheelConfig.Slot0.kA = ShooterConstants.flywheelKA;
+    flywheelConfig.Slot0.kS = ShooterConstants.upperFlywheelKS;
+    flywheelConfig.Slot0.kV = ShooterConstants.upperFlywheelKV;
+    flywheelConfig.Slot0.kA = ShooterConstants.upperFlywheelKA;
 
     flywheelConfig.MotionMagic.MotionMagicAcceleration =
         ShooterConstants.flywheelMaxAcceleration.in(RotationsPerSecondPerSecond);

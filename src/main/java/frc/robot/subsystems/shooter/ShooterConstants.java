@@ -57,13 +57,20 @@ public class ShooterConstants {
   public static final int flywheelSecondaryMotorId = 50;
 
   // PID for flywheel
-  public static final double flywheelKP = 3.5; // TODO: Flywheel Tuning
-  public static final double flywheelKD = 0.0;
+  public static final double upperFlywheelKP = 3.5; // TODO: Flywheel Tuning
+  public static final double upperFlywheelKD = 0.0;
 
   // Feed forwards for the flywheel
-  public static final double flywheelKS = 1.0;
-  public static final double flywheelKV = 0.50;
-  public static final double flywheelKA = 0.0;
+  public static final double upperFlywheelKS = 1.0;
+  public static final double upperFlywheelKV = 0.50;
+  public static final double upperFlywheelKA = 0.0;
+
+  public static final double lowerFlywheelKP = 0;
+  public static final double lowerFlywheelKD = 0;
+
+  public static final double lowerFlywheelKS = 0;
+  public static final double lowerFlywheelKV = 0;
+  public static final double lowerFlywheelKA = 0;
 
   /** Maximum velocity of the flywheel in rotations per second. */
   public static final AngularVelocity flywheelMaxVelocityRotationsPerSec =
@@ -105,7 +112,7 @@ public class ShooterConstants {
       new Transform2d(new Translation2d(Meters.of(0), Meters.of(0)), new Rotation2d());
 
   /** Radius of the flywheel. */
-  public static final Distance flywheelRadius = Inches.of(4);
+  public static final Distance flywheelRadius = Inches.of(2);
 
   /** Simulation PID for the flywheel. */
   public static final Slot0Configs simFlywheelConfigs =
@@ -142,4 +149,6 @@ public class ShooterConstants {
 
   public static final double pivotSensorToMechanismRatio = 60 / 18;
   public static final double pivotMotorToSensorRatio = 100;
+
+  
 }
