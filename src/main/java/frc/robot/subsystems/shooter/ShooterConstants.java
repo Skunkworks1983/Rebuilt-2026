@@ -149,6 +149,4 @@ public class ShooterConstants {
 
   public static final double pivotSensorToMechanismRatio = 60 / 18;
   public static final double pivotMotorToSensorRatio = 100;
-
-  
 }

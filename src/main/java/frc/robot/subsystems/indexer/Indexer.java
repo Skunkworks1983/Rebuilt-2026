@@ -55,7 +55,6 @@ public class Indexer extends SubsystemBase {
                 (state) -> SignalLogger.writeString("Indexer/SysIdState", state.toString())),
             new SysIdRoutine.Mechanism(
                 (voltage) -> runIndexerTorqueCurrent(voltage.in(Volts)), null, this));
-
   }
 
   private void runIndexerTorqueCurrent(double torqueCurrent) {
@@ -81,7 +80,11 @@ public class Indexer extends SubsystemBase {
       gains.kA = indexerlKA.get();
       indexer.setPID(gains);
 
-      Elastic.sendNotification(new Elastic.Notification(Elastic.NotificationLevel.INFO, "Indexer PID Update", "Indexer motor PID gains have been updated."));
+      Elastic.sendNotification(
+          new Elastic.Notification(
+              Elastic.NotificationLevel.INFO,
+              "Indexer PID Update",
+              "Indexer motor PID gains have been updated."));
     }
   }
 

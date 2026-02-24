@@ -3,8 +3,6 @@ package frc.robot;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
-import java.util.Optional;
-import java.util.function.Supplier;
 
 public class HubShiftUtil {
   public enum ShiftEnum {
@@ -124,40 +122,12 @@ public class HubShiftUtil {
     boolean[] shiftSchedule = getSchedule();
     // Starting active
     if (shiftSchedule[1] == true) {
-      double[] shiftedShiftStartTimes = {
-        0.0,
-        10.0,
-        35.0,
-        60.0,
-        85.0,
-        110.0
-      };
-      double[] shiftedShiftEndTimes = {
-        10.0,
-        35.0,
-        60.0,
-        85.0,
-        110.0,
-        140.0
-      };
+      double[] shiftedShiftStartTimes = {0.0, 10.0, 35.0, 60.0, 85.0, 110.0};
+      double[] shiftedShiftEndTimes = {10.0, 35.0, 60.0, 85.0, 110.0, 140.0};
       return getShiftInfo(shiftSchedule, shiftedShiftStartTimes, shiftedShiftEndTimes);
     }
-    double[] shiftedShiftStartTimes = {
-      0.0,
-      10.0,
-      35.0,
-      60.0,
-      85.0,
-      110.0
-    };
-    double[] shiftedShiftEndTimes = {
-      10.0,
-      35.0,
-      60.0,
-      85.0,
-      110.0,
-      140.0
-    };
+    double[] shiftedShiftStartTimes = {0.0, 10.0, 35.0, 60.0, 85.0, 110.0};
+    double[] shiftedShiftEndTimes = {10.0, 35.0, 60.0, 85.0, 110.0, 140.0};
     return getShiftInfo(shiftSchedule, shiftedShiftStartTimes, shiftedShiftEndTimes);
     // }
   }
