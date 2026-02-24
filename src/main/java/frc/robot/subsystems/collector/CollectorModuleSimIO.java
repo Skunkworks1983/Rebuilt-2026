@@ -35,8 +35,7 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
   final double minimumCollectorSpeedToCollect = 5;
 
   public CollectorModuleSimIO(
-      AbstractDriveTrainSimulation driveTrain,
-      CollectorModuleConstants constants) {
+      AbstractDriveTrainSimulation driveTrain, CollectorModuleConstants constants) {
 
     super(constants);
 
