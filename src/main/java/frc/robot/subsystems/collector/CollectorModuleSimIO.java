@@ -2,11 +2,13 @@ package frc.robot.subsystems.collector;
 
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
@@ -15,6 +17,8 @@ import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstant
 import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstants.Side;
 import org.ironmaple.simulation.IntakeSimulation;
 import org.ironmaple.simulation.drivesims.AbstractDriveTrainSimulation;
+
+import com.ctre.phoenix6.sim.ChassisReference;
 
 public class CollectorModuleSimIO extends CollectorModuleTalonIO {
   private IntakeSimulation collectorSimulation;
@@ -33,6 +37,8 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
     Right
   }
 
+  private int invertTurn;
+
   public final CollectorSide collectorSide;
 
   public CollectorModuleSimIO(
@@ -43,6 +49,12 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
     super(constants);
 
     this.collectorSide = collectorSide;
+
+    if (collectorSide == CollectorSide.Left) {
+      invertTurn = -1;
+    } else {
+      invertTurn = 1;
+    }
 
     switch (collectorSide) {
       case Left:
@@ -98,7 +110,7 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
     if(collectorSide.equals(CollectorSide.Left)){
       return turnMotorSim
             .getAngularPosition()
-            .gte(constants.CollectorUpPos.plus(constants.CollectorPosTolerance).unaryMinus());
+            .lte(constants.CollectorUpPos.plus(constants.CollectorPosTolerance));
     } else {
       return turnMotorSim
             .getAngularPosition()
@@ -111,7 +123,7 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
     if(collectorSide.equals(CollectorSide.Left)){
       return turnMotorSim
             .getAngularPosition()
-            .lte(constants.CollectorDownPos.plus(constants.CollectorPosTolerance));
+            .gte(constants.CollectorDownPos.plus(constants.CollectorPosTolerance));
     } else {
       return turnMotorSim
             .getAngularPosition()
@@ -129,6 +141,10 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
 
     var turnMotorTalonFX = super.turnMotor.getSimState();
     var intakeMotorTalonFX = super.intakeMotor.getSimState();
+
+    if (collectorSide == CollectorSide.Left) {
+      turnMotorTalonFX.Orientation = ChassisReference.Clockwise_Positive;
+    }
 
     turnMotorTalonFX.setSupplyVoltage(RobotController.getBatteryVoltage());
     intakeMotorTalonFX.setSupplyVoltage(RobotController.getBatteryVoltage());
@@ -148,8 +164,8 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
     // Turn Motor Inputs
     input.turnConnected = true;
     input.turnPosition =
-        Rotation2d.fromRadians(turnMotorSim.getAngularPositionRad());
-    input.turnVelocity = turnMotorSim.getAngularVelocity();
+        Rotation2d.fromRadians(turnMotorSim.getAngularPositionRad() * invertTurn);
+    input.turnVelocity = turnMotorSim.getAngularVelocity().times(invertTurn);
     input.turnAppliedVolts = turnMotorTalonFX.getMotorVoltageMeasure();
     input.turnCurrentAmps = Current.ofBaseUnits(turnMotorSim.getCurrentDrawAmps(), Amps);
 
