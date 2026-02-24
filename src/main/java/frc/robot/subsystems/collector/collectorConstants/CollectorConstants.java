@@ -10,11 +10,10 @@ import edu.wpi.first.math.geometry.Translation2d;
 
 /** Add your docs here. */
 public class CollectorConstants {
-    
+
   // X, Y pos from robot center
   public static double inchesFromOriginX = 13;
   public static double inchesFromOriginY = 2;
-
 
   // Collectors Sim Position on Robot
   public static final Translation2d collectorLeftOriginTranslation =

@@ -22,7 +22,6 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.RobotState;
 import frc.robot.subsystems.shooter.ShooterConstants;
 import frc.robot.util.FieldConstants.HubCorners;
 import org.littletonrobotics.junction.Logger;
@@ -49,10 +48,12 @@ public class ShooterCalculations {
       boolean possibleShot) {}
 
   // Launching Maps
-  private static final InterpolatingTreeMap<Double, Rotation2d> hoodAngleMap = new InterpolatingTreeMap<>(
-      InverseInterpolator.forDouble(), Rotation2d::interpolate);
-  private static final InterpolatingDoubleTreeMap flywheelSpeedMap = new InterpolatingDoubleTreeMap();
-  private static final InterpolatingDoubleTreeMap timeOfFlightMap = new InterpolatingDoubleTreeMap();
+  private static final InterpolatingTreeMap<Double, Rotation2d> hoodAngleMap =
+      new InterpolatingTreeMap<>(InverseInterpolator.forDouble(), Rotation2d::interpolate);
+  private static final InterpolatingDoubleTreeMap flywheelSpeedMap =
+      new InterpolatingDoubleTreeMap();
+  private static final InterpolatingDoubleTreeMap timeOfFlightMap =
+      new InterpolatingDoubleTreeMap();
 
   static {
     hoodAngleMap.put(1.34, Rotation2d.fromDegrees(19.0));
@@ -407,37 +408,41 @@ public class ShooterCalculations {
   public static ShooterControls getInterpolatedShooterControls(
       Pose2d odometryPose, ChassisSpeeds robotRelativeSpeeds) {
 
-    Translation3d goal = DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red
-        ? FieldConstants.redGoal
-        : FieldConstants.blueGoal;
+    Translation3d goal =
+        DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red
+            ? FieldConstants.redGoal
+            : FieldConstants.blueGoal;
 
     // 1) Phase delay pose prediction
     double phaseDelaySec = ShooterSolverConstants.defaultShotLatencySec;
-    Pose2d releasePose = odometryPose.exp(
-        new Twist2d(
-            robotRelativeSpeeds.vxMetersPerSecond * phaseDelaySec,
-            robotRelativeSpeeds.vyMetersPerSecond * phaseDelaySec,
-            robotRelativeSpeeds.omegaRadiansPerSecond * phaseDelaySec));
+    Pose2d releasePose =
+        odometryPose.exp(
+            new Twist2d(
+                robotRelativeSpeeds.vxMetersPerSecond * phaseDelaySec,
+                robotRelativeSpeeds.vyMetersPerSecond * phaseDelaySec,
+                robotRelativeSpeeds.omegaRadiansPerSecond * phaseDelaySec));
 
     // 2) Shooter position in field frame (robot center + shooter offset rotated
     // into field)
-    Translation2d shooterOffsetField = ShooterConstants.shooterInitalPosition
-        .getTranslation()
-        .toTranslation2d()
-        .rotateBy(releasePose.getRotation());
+    Translation2d shooterOffsetField =
+        ShooterConstants.shooterInitalPosition
+            .getTranslation()
+            .toTranslation2d()
+            .rotateBy(releasePose.getRotation());
 
     Translation2d releaseShooterPosField = releasePose.getTranslation().plus(shooterOffsetField);
     Translation2d targetField = goal.toTranslation2d();
 
     // 3) Field-relative velocity (for lookahead)
-    Translation2d chassisVelField = new Translation2d(robotRelativeSpeeds.vxMetersPerSecond,
-        robotRelativeSpeeds.vyMetersPerSecond)
-        .rotateBy(releasePose.getRotation());
+    Translation2d chassisVelField =
+        new Translation2d(
+                robotRelativeSpeeds.vxMetersPerSecond, robotRelativeSpeeds.vyMetersPerSecond)
+            .rotateBy(releasePose.getRotation());
 
     // include tangential velocity from omega. .
     double omega = robotRelativeSpeeds.omegaRadiansPerSecond;
-    Translation2d tangentialVelField = new Translation2d(-omega * shooterOffsetField.getY(),
-        omega * shooterOffsetField.getX());
+    Translation2d tangentialVelField =
+        new Translation2d(-omega * shooterOffsetField.getY(), omega * shooterOffsetField.getX());
 
     Translation2d shooterVelField = chassisVelField.plus(tangentialVelField);
 
@@ -466,10 +471,6 @@ public class ShooterCalculations {
     double flywheelRadPerSec = flywheelSurfaceSpeed / ShooterConstants.flywheelRadius.in(Meters);
 
     return new ShooterControls(
-        RadiansPerSecond.of(flywheelRadPerSec),
-        Radians.of(hoodAngle.getRadians()),
-        driveYaw,
-        true);
+        RadiansPerSecond.of(flywheelRadPerSec), Radians.of(hoodAngle.getRadians()), driveYaw, true);
   }
-
 }

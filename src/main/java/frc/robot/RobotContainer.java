@@ -208,10 +208,8 @@ public class RobotContainer {
 
         collector =
             new Collector(
-                new CollectorModuleSimIO(
-                    simulation, new CollectorTalonLeftConstants()),
-                new CollectorModuleSimIO(
-                    simulation, new CollectorTalonRightConstants()));
+                new CollectorModuleSimIO(simulation, new CollectorTalonLeftConstants()),
+                new CollectorModuleSimIO(simulation, new CollectorTalonRightConstants()));
 
         indexer = new Indexer(new IndexerIOSim(IndexerConstants.indexerMotorID));
 
@@ -234,10 +232,8 @@ public class RobotContainer {
 
         collector =
             new Collector(
-                new CollectorModuleSimIO(
-                    simulation, new CollectorTalonLeftConstants()),
-                new CollectorModuleSimIO(
-                    simulation, new CollectorTalonRightConstants()));
+                new CollectorModuleSimIO(simulation, new CollectorTalonLeftConstants()),
+                new CollectorModuleSimIO(simulation, new CollectorTalonRightConstants()));
 
         indexer = new Indexer(new IndexerIO() {});
         break;
