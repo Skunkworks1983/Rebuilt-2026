@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.util.Elastic;
 import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
 
@@ -54,6 +55,7 @@ public class Indexer extends SubsystemBase {
                 (state) -> SignalLogger.writeString("Indexer/SysIdState", state.toString())),
             new SysIdRoutine.Mechanism(
                 (voltage) -> runIndexerTorqueCurrent(voltage.in(Volts)), null, this));
+
   }
 
   private void runIndexerTorqueCurrent(double torqueCurrent) {
@@ -78,6 +80,8 @@ public class Indexer extends SubsystemBase {
       gains.kV = indexerlKV.get();
       gains.kA = indexerlKA.get();
       indexer.setPID(gains);
+
+      Elastic.sendNotification(new Elastic.Notification(Elastic.NotificationLevel.INFO, "Indexer PID Update", "Indexer motor PID gains have been updated."));
     }
   }
 
