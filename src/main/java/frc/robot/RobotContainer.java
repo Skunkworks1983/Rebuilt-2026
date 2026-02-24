@@ -308,7 +308,7 @@ public class RobotContainer {
               DriveAimedShoot.TargetType.GOAL));
       shootButton.onTrue(new InstantCommand(this::launchSimFuel));
 
-      runIndexer = new JoystickButton(buttonJoystick, IndexerConstants.runIndexerButtonID);
+      runIndexer = new JoystickButton(buttonJoystick, IndexerConstants.runIndexerButtonId);
 
     } else {
       drive.setDefaultCommand(
@@ -336,7 +336,7 @@ public class RobotContainer {
               () -> -xboxController.getLeftX(),
               DriveAimedShoot.TargetType.TRANSFER));
       shootButton.onTrue(new InstantCommand(this::launchSimFuel));
-      runIndexer = new JoystickButton(xboxController, IndexerConstants.runIndexerButtonID);
+      runIndexer = new JoystickButton(xboxController, IndexerConstants.runIndexerButtonId);
     }
 
     runIndexer.whileTrue(new IndexerCommand(indexer));
