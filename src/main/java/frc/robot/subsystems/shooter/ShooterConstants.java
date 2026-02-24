@@ -139,4 +139,8 @@ public class ShooterConstants {
   public static final InvertedValue pivotMotorInverted = InvertedValue.Clockwise_Positive;
 
   public static final Current pivotStatorCurrentLimit = Amps.of(120);
+
+  public static final double pivotSensorToMechanismRatio = 60/18;
+  public static final double pivotMotorToSensorRatio = 100;
+
 }
