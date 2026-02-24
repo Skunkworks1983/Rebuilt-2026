@@ -25,8 +25,6 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
   private DIOSim upperLimitSim;
   private DIOSim lowerLimitSim;
 
-  private double outputInverter;
-
   private final double minimumCollectorRadiansToCollect = 1.55;
   final double minimumCollectorSpeedToCollect = 5;
 
@@ -97,20 +95,28 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
 
   /** Change upper limit switch value */
   public boolean changeUpperLimitValue() {
-    if (turnMotorSim
-        .getAngularPosition()
-        .lte(constants.CollectorUpPos.plus(constants.CollectorPosTolerance))) {
-      return true;
+    if(collectorSide.equals(CollectorSide.Left)){
+      return turnMotorSim
+            .getAngularPosition()
+            .lte(constants.CollectorUpPos.plus(constants.CollectorPosTolerance));
     } else {
-      return false;
+      return turnMotorSim
+            .getAngularPosition()
+            .lte(constants.CollectorUpPos.plus(constants.CollectorPosTolerance));
     }
   }
 
   /** Change lower limit switch value */
   public boolean changeLowerLimitValue() {
+    if(collectorSide.equals(CollectorSide.Left)){
       return turnMotorSim
-          .getAngularPosition()
-          .gte(constants.CollectorDownPos.minus(constants.CollectorPosTolerance));
+            .getAngularPosition()
+            .gte(constants.CollectorDownPos.minus(constants.CollectorPosTolerance));
+    } else {
+      return turnMotorSim
+            .getAngularPosition()
+            .gte(constants.CollectorDownPos.minus(constants.CollectorPosTolerance));
+    }
   }
 
   /**

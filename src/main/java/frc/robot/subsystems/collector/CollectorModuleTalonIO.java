@@ -59,10 +59,6 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
   private final StatusSignal<Voltage> intakeAppliedVolts;
   private final StatusSignal<Current> intakeCurrent;
 
-  // Inputs from magnet sensors
-  private final boolean upperTriggered;
-  private final boolean lowerTriggered;
-
   // Connection debouncers
   private final Debouncer driveConnectedDebounce =
       new Debouncer(0.5, Debouncer.DebounceType.kFalling);
@@ -134,10 +130,6 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     intakeVelocity = intakeMotor.getVelocity();
     intakeAppliedVolts = intakeMotor.getMotorVoltage();
     intakeCurrent = intakeMotor.getStatorCurrent();
-
-    // Create limit switch status signals
-    upperTriggered = upperLimitSwitch.get();
-    lowerTriggered = lowerLimitSwitch.get();
 
     // Configure periodic frames
     BaseStatusSignal.setUpdateFrequencyForAll(50.0, turnPosition, intakePosition);
@@ -218,11 +210,19 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
    * </ul>
    */
   public boolean isCollectorDown() {
-    return lowerLimitSwitch.get()
+//    if(side.equals(Side.LEFT)){
+      return lowerLimitSwitch.get()
         || turnMotor
             .getPosition()
             .getValue()
-            .gte(constants.CollectorDownPos.minus(constants.CollectorPosTolerance));
+            .gte(constants.CollectorDownPos.plus(constants.CollectorPosTolerance));
+    // } else {
+    //   return lowerLimitSwitch.get()
+    //     || turnMotor
+    //         .getPosition()
+    //         .getValue()
+    //         .gte(constants.CollectorDownPos.plus(constants.CollectorPosTolerance));
+    // }
   }
 
   /**
@@ -233,11 +233,19 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
    * </ul>
    */
   public boolean isCollectorUp() {
-    return upperLimitSwitch.get()
+   // if(side.equals(Side.LEFT)){
+      return upperLimitSwitch.get()
         || turnMotor
             .getPosition()
             .getValue()
-            .lte(constants.CollectorUpPos.plus(constants.CollectorPosTolerance));
+            .lte(constants.CollectorUpPos.minus(constants.CollectorPosTolerance));
+  //   } else {
+  //     return upperLimitSwitch.get()
+  //       || turnMotor
+  //           .getPosition()
+  //           .getValue()
+  //           .lte(constants.CollectorUpPos.minus(constants.CollectorPosTolerance));
+  //   }
   }
 
   // Gets side i.e: left

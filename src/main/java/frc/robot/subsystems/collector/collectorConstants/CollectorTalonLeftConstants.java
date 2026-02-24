@@ -20,7 +20,7 @@ public class CollectorTalonLeftConstants extends CollectorModuleConstants {
     collectorSide = Side.LEFT;
 
     // Hardware ID's
-    turnMotorID = 2;
+    turnMotorID = 59;
     intakeMotorLowerID = 0;
     intakeMotorUpperID = 0;
 
@@ -55,8 +55,8 @@ public class CollectorTalonLeftConstants extends CollectorModuleConstants {
     CollectorIntakeSpeed = RotationsPerSecond.of(0);
 
     // Limit Switch Constants
-    UpperLimitChannel = 11;
-    LowerLimitChannel = 12;
+    UpperLimitChannel = 24;
+    LowerLimitChannel = 23;
 
     // Collector Position Tolerance
     CollectorPosTolerance = Degrees.of(10);
