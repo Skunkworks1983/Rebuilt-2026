@@ -21,8 +21,7 @@ public class CollectorTalonLeftConstants extends CollectorModuleConstants {
 
     // Hardware ID's
     turnMotorID = 59;
-    intakeMotorLowerID = 0;
-    intakeMotorUpperID = 0;
+    intakeMotorID = 50;
 
     // Gear ratio's
     turnMotorGearRatio = 0.0;

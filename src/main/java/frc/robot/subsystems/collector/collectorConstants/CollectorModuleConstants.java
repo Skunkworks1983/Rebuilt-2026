@@ -23,8 +23,7 @@ public class CollectorModuleConstants {
 
   // Hardware ID's
   public int turnMotorID;
-  public int intakeMotorLowerID;
-  public int intakeMotorUpperID;
+  public int intakeMotorID;
 
   // Gear ratio's
   public double turnMotorGearRatio;
@@ -70,8 +69,7 @@ public class CollectorModuleConstants {
 
     // Hardware ID's
     turnMotorID = 0;
-    intakeMotorLowerID = 0;
-    intakeMotorUpperID = 0;
+    intakeMotorID = 0;
 
     // Gear ratio's
     turnMotorGearRatio = 0.0;

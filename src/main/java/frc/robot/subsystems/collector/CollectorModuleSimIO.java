@@ -98,7 +98,7 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
     if(collectorSide.equals(CollectorSide.Left)){
       return turnMotorSim
             .getAngularPosition()
-            .lte(constants.CollectorUpPos.plus(constants.CollectorPosTolerance));
+            .gte(constants.CollectorUpPos.plus(constants.CollectorPosTolerance).unaryMinus());
     } else {
       return turnMotorSim
             .getAngularPosition()
@@ -111,11 +111,11 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
     if(collectorSide.equals(CollectorSide.Left)){
       return turnMotorSim
             .getAngularPosition()
-            .gte(constants.CollectorDownPos.minus(constants.CollectorPosTolerance));
+            .lte(constants.CollectorDownPos.plus(constants.CollectorPosTolerance));
     } else {
       return turnMotorSim
             .getAngularPosition()
-            .gte(constants.CollectorDownPos.minus(constants.CollectorPosTolerance));
+            .gte(constants.CollectorDownPos.plus(constants.CollectorPosTolerance));
     }
   }
 
@@ -166,24 +166,11 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
     input.upperTriggered = upperLimitSim.getValue();
     input.lowerTriggered = lowerLimitSim.getValue();
 
-    if (turnMotorSim.getAngularPositionRad() > minimumCollectorRadiansToCollect
-        && intakeMotorSim.getAngularVelocityRadPerSec() > minimumCollectorSpeedToCollect) {
-      collectorSimulation.startIntake();
-    } else {
-      collectorSimulation.stopIntake();
-    }
-
-    // limit switches
-    if (turnMotorSim.getAngularPositionRad() > minimumCollectorRadiansToCollect + 0.05) {
-      lowerLimitSim.setValue(true);
-    } else {
-      lowerLimitSim.setValue(false);
-    }
-
-    if (turnMotorSim.getAngularPositionRad() < -0.1) {
-      upperLimitSim.setValue(true);
-    } else {
-      upperLimitSim.setValue(false);
-    }
+    // if (turnMotorSim.getAngularPositionRad() > minimumCollectorRadiansToCollect
+    //     && intakeMotorSim.getAngularVelocityRadPerSec() > minimumCollectorSpeedToCollect) {
+    //   collectorSimulation.startIntake();
+    // } else {
+    //   collectorSimulation.stopIntake();
+    // }
   }
 }

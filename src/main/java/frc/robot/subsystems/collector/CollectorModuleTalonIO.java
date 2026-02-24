@@ -80,7 +80,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     // Instantiates all motors and hardware objects
     turnMotor = new TalonFX(constants.turnMotorID, TunerConstants.getTunerConstants().getCANBus());
     intakeMotor =
-        new TalonFX(constants.intakeMotorUpperID, TunerConstants.getTunerConstants().getCANBus());
+        new TalonFX(constants.intakeMotorID, TunerConstants.getTunerConstants().getCANBus());
     upperLimitSwitch = new DigitalInput(constants.UpperLimitChannel);
     lowerLimitSwitch = new DigitalInput(constants.LowerLimitChannel);
 
@@ -210,19 +210,19 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
    * </ul>
    */
   public boolean isCollectorDown() {
-//    if(side.equals(Side.LEFT)){
+   if(side.equals(Side.LEFT)){
       return lowerLimitSwitch.get()
         || turnMotor
             .getPosition()
             .getValue()
-            .gte(constants.CollectorDownPos.plus(constants.CollectorPosTolerance));
-    // } else {
-    //   return lowerLimitSwitch.get()
-    //     || turnMotor
-    //         .getPosition()
-    //         .getValue()
-    //         .gte(constants.CollectorDownPos.plus(constants.CollectorPosTolerance));
-    // }
+            .gte(constants.CollectorDownPos.minus(constants.CollectorPosTolerance));
+    } else {
+      return lowerLimitSwitch.get()
+        || turnMotor
+            .getPosition()
+            .getValue()
+            .gte(constants.CollectorDownPos.minus(constants.CollectorPosTolerance));
+    }
   }
 
   /**
@@ -233,19 +233,19 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
    * </ul>
    */
   public boolean isCollectorUp() {
-   // if(side.equals(Side.LEFT)){
+   if(side.equals(Side.LEFT)){
       return upperLimitSwitch.get()
         || turnMotor
             .getPosition()
             .getValue()
-            .lte(constants.CollectorUpPos.minus(constants.CollectorPosTolerance));
-  //   } else {
-  //     return upperLimitSwitch.get()
-  //       || turnMotor
-  //           .getPosition()
-  //           .getValue()
-  //           .lte(constants.CollectorUpPos.minus(constants.CollectorPosTolerance));
-  //   }
+            .lte(constants.CollectorUpPos.plus(constants.CollectorPosTolerance));
+    } else {
+      return upperLimitSwitch.get()
+        || turnMotor
+            .getPosition()
+            .getValue()
+            .lte(constants.CollectorUpPos.plus(constants.CollectorPosTolerance));
+    }
   }
 
   // Gets side i.e: left
