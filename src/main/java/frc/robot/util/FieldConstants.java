@@ -117,6 +117,7 @@ public class FieldConstants {
   public static final AllianceZone redAllianceZone =
       new AllianceZone(
           new Translation2d(
-              Inches.of(FIELD_LENGTH_INCHES.in(Inches) - ALLIANCE_ZONE_LENGTH_INCHES.in(Inches)), Inches.of(0.0)),
+              Inches.of(FIELD_LENGTH_INCHES.in(Inches) - ALLIANCE_ZONE_LENGTH_INCHES.in(Inches)),
+              Inches.of(0.0)),
           new Translation2d(FIELD_LENGTH_INCHES, FIELD_WIDTH_INCHES));
 }
