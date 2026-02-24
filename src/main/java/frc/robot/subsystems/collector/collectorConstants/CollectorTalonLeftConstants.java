@@ -27,7 +27,7 @@ public class CollectorTalonLeftConstants extends CollectorModuleConstants {
     turnMotorGearRatio = 0.0;
 
     // Turn PID
-    turnkP = 5;
+    turnkP = .5;
     turnkD = 0;
     turnkI = 0.0;
 

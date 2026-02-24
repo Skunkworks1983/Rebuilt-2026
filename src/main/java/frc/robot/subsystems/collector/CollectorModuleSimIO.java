@@ -29,35 +29,21 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
   private DIOSim upperLimitSim;
   private DIOSim lowerLimitSim;
 
+  public Side side;
+
   private final double minimumCollectorRadiansToCollect = 1.55;
   final double minimumCollectorSpeedToCollect = 5;
 
-  public static enum CollectorSide {
-    Left,
-    Right
-  }
-
-  private int invertTurn;
-
-  public final CollectorSide collectorSide;
-
   public CollectorModuleSimIO(
       AbstractDriveTrainSimulation driveTrain,
-      CollectorSide collectorSide,
       CollectorModuleConstants constants) {
 
     super(constants);
 
-    this.collectorSide = collectorSide;
+    this.side = constants.collectorSide;
 
-    if (collectorSide == CollectorSide.Left) {
-      invertTurn = -1;
-    } else {
-      invertTurn = 1;
-    }
-
-    switch (collectorSide) {
-      case Left:
+    switch (side) {
+      case LEFT:
         this.collectorSimulation =
             IntakeSimulation.OverTheBumperIntake(
                 "Fuel",
@@ -67,7 +53,7 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
                 IntakeSimulation.IntakeSide.LEFT,
                 1);
         break;
-      case Right:
+      case RIGHT:
         this.collectorSimulation =
             IntakeSimulation.OverTheBumperIntake(
                 "Fuel",
@@ -107,7 +93,7 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
 
   /** Change upper limit switch value */
   public boolean changeUpperLimitValue() {
-    if(collectorSide.equals(CollectorSide.Left)){
+    if(side.equals(Side.LEFT)){
       return turnMotorSim
             .getAngularPosition()
             .lte(constants.CollectorUpPos.plus(constants.CollectorPosTolerance));
@@ -120,7 +106,7 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
 
   /** Change lower limit switch value */
   public boolean changeLowerLimitValue() {
-    if(collectorSide.equals(CollectorSide.Left)){
+    if(side.equals(Side.LEFT)){
       return turnMotorSim
             .getAngularPosition()
             .gte(constants.CollectorDownPos.plus(constants.CollectorPosTolerance));
@@ -142,7 +128,7 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
     var turnMotorTalonFX = super.turnMotor.getSimState();
     var intakeMotorTalonFX = super.intakeMotor.getSimState();
 
-    if (collectorSide == CollectorSide.Left) {
+    if (side.equals(constants.collectorSide)) {
       turnMotorTalonFX.Orientation = ChassisReference.Clockwise_Positive;
     }
 
@@ -164,8 +150,8 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
     // Turn Motor Inputs
     input.turnConnected = true;
     input.turnPosition =
-        Rotation2d.fromRadians(turnMotorSim.getAngularPositionRad() * invertTurn);
-    input.turnVelocity = turnMotorSim.getAngularVelocity().times(invertTurn);
+        Rotation2d.fromRadians(turnMotorSim.getAngularPositionRad());
+    input.turnVelocity = turnMotorSim.getAngularVelocity();
     input.turnAppliedVolts = turnMotorTalonFX.getMotorVoltageMeasure();
     input.turnCurrentAmps = Current.ofBaseUnits(turnMotorSim.getCurrentDrawAmps(), Amps);
 

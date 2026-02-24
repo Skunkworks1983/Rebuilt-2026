@@ -37,7 +37,6 @@ import frc.robot.commands.collectorCommands.LeftCollectorDownState;
 import frc.robot.commands.collectorCommands.RightCollectorDownState;
 import frc.robot.subsystems.collector.Collector;
 import frc.robot.subsystems.collector.CollectorModuleSimIO;
-import frc.robot.subsystems.collector.CollectorModuleSimIO.CollectorSide;
 import frc.robot.subsystems.collector.CollectorModuleTalonIO;
 import frc.robot.subsystems.collector.collectorConstants.CollectorTalonLeftConstants;
 import frc.robot.subsystems.collector.collectorConstants.CollectorTalonRightConstants;
@@ -210,9 +209,9 @@ public class RobotContainer {
         collector =
             new Collector(
                 new CollectorModuleSimIO(
-                    simulation, CollectorSide.Left, new CollectorTalonLeftConstants()),
+                    simulation, new CollectorTalonLeftConstants()),
                 new CollectorModuleSimIO(
-                    simulation, CollectorSide.Right, new CollectorTalonRightConstants()));
+                    simulation, new CollectorTalonRightConstants()));
 
         indexer = new Indexer(new IndexerIOSim(IndexerConstants.indexerMotorID));
 
@@ -236,9 +235,9 @@ public class RobotContainer {
         collector =
             new Collector(
                 new CollectorModuleSimIO(
-                    simulation, CollectorSide.Left, new CollectorTalonLeftConstants()),
+                    simulation, new CollectorTalonLeftConstants()),
                 new CollectorModuleSimIO(
-                    simulation, CollectorSide.Right, new CollectorTalonRightConstants()));
+                    simulation, new CollectorTalonRightConstants()));
 
         indexer = new Indexer(new IndexerIO() {});
         break;
@@ -373,17 +372,17 @@ public class RobotContainer {
 
     // Right Collector Down
     new JoystickButton(buttonJoystick, Constants.JoystickConstants.CollectorRightDownID)
-        // .and(manualModeSwitch)
+        .and(manualModeSwitch)
         .onTrue(new RightCollectorDownState(collector));
 
     // Left Collector Down
     new JoystickButton(buttonJoystick, Constants.JoystickConstants.CollectorLeftDownID)
-        // .and(manualModeSwitch)
+        .and(manualModeSwitch)
         .onTrue(new LeftCollectorDownState(collector));
 
     // Both Collectors Up
     new JoystickButton(leftJoystick, Constants.JoystickConstants.CollectorBothUpID)
-        // .and(manualModeSwitch)
+        .and(manualModeSwitch)
         .onTrue(new BothCollectorsUpState(collector));
 
     // Lock to 0° when A button is held
