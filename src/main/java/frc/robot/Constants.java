@@ -19,7 +19,7 @@ public final class Constants {
   public static final Mode simMode = Mode.SIM;
   public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
   public static final ControlScheme controlScheme = ControlScheme.OI;
-  public static final RobotHardware robotHardware = RobotHardware.Swerveles;
+  public static final RobotHardware robotHardware = RobotHardware.Rebuilt;
   public static final TunerConstants tunerConstants = TunerConstants.getTunerConstants();
 
   public static final boolean tuningMode = false;
@@ -51,16 +51,16 @@ public final class Constants {
   /** Joystick constants */
   public final class JoystickConstants { // TODO: find constants
     // Joystick ID's
-    public static final int LeftJoystick = 1;
-    public static final int RightJoystick = 2;
-    public static final int ButtonJoystick = 3;
+    public static final int LeftJoystick = 0;
+    public static final int RightJoystick = 1;
+    public static final int ButtonJoystick = 2;
 
     // Collector button joystick ID's
     public static final int CollectorManualModeID = 6;
     public static final int CollectorAutoModeID = 5;
     public static final int CollectorIntakeID = 7;
-    public static final int CollectorRightDownID = 1;
-    public static final int CollectorLeftDownID = 2;
+    public static final int CollectorRightDownID = 24;
+    public static final int CollectorLeftDownID = 17;
     public static final int CollectorBothUpID = 12;
   }
 }

@@ -6,8 +6,10 @@ package frc.robot.subsystems.collector.collectorConstants;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
 
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
 
 /** An Interface for collector constants */
@@ -52,6 +54,9 @@ public class CollectorModuleConstants {
   public double turnkS;
   public double turnkV;
   public double turnkA;
+
+  public AngularVelocity pivotMaxVelocity = RotationsPerSecond.of(0);
+  public AngularAcceleration pivotMaxAcceleration = RotationsPerSecondPerSecond.of(0);
 
   // Position
   public Angle CollectorUpPos;
