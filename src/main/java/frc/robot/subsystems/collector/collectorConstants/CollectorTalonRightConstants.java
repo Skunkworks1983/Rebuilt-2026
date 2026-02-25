@@ -15,7 +15,7 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
  */
 public class CollectorTalonRightConstants extends CollectorModuleConstants {
 
-  public CollectorTalonRightConstants() {
+  public CollectorTalonRightConstants() { // TODO: make constants
     // Collector Side
     collectorSide = Side.RIGHT;
 

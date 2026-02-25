@@ -164,11 +164,11 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
     input.upperTriggered = upperLimitSim.getValue();
     input.lowerTriggered = lowerLimitSim.getValue();
 
-    // if (turnMotorSim.getAngularPositionRad() > minimumCollectorRadiansToCollect
-    //     && intakeMotorSim.getAngularVelocityRadPerSec() > minimumCollectorSpeedToCollect) {
-    //   collectorSimulation.startIntake();
-    // } else {
-    //   collectorSimulation.stopIntake();
-    // }
+    if (turnMotorSim.getAngularPositionRad() > minimumCollectorRadiansToCollect
+        && intakeMotorSim.getAngularVelocityRadPerSec() > minimumCollectorSpeedToCollect) {
+      collectorSimulation.startIntake();
+    } else {
+      collectorSimulation.stopIntake();
+    }
   }
 }
