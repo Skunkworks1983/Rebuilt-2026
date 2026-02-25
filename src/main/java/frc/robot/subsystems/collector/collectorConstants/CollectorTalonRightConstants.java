@@ -31,11 +31,6 @@ public class CollectorTalonRightConstants extends CollectorModuleConstants {
     turnkD = 0;
     turnkI = 0.0;
 
-    // Lower intake PID
-    lowerkP = 0.0;
-    lowerkD = 0.0;
-    lowerkI = 0.0;
-
     // Upper intake PID
     upperkP = 0.0;
     upperkD = 0.0;
