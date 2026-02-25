@@ -40,7 +40,7 @@ public class AutomaticStateChange extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    currDirection = direction.get().in(MetersPerSecond);
+    currDirection = direction.get().in(MetersPerSecond); // Known broken, will change
     if ((currDirection * lastDirection) < 0) {
       count++;
       lastDirection = currDirection;
