@@ -1,0 +1,261 @@
+package frc.robot.subsystems.shooter;
+
+import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.Volts;
+
+import com.ctre.phoenix6.SignalLogger;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.wpilibj.Alert;
+import edu.wpi.first.wpilibj.Alert.AlertType;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants;
+import frc.robot.util.LoggedTunableNumber;
+import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
+
+/**
+ * Subsystem responsible for the shooter mechanism, including the flywheel and pivot. Handles
+ * pivoting, spinning up the flywheel, and sysid characterization the mechanism.
+ *
+ * @author Eddy Walsh
+ */
+public class Shooter extends SubsystemBase {
+  /**
+   * Data record representing the calculated control outputs for the shooter subsystem.
+   *
+   * @param shooterVelocity Target flywheel angular velocity.
+   * @param shooterPitch Target pivot angle.
+   */
+  public record ShooterSetpoints(AngularVelocity shooterVelocity, Angle shooterPitch) {}
+
+  private final FlywheelIO upperFlywheel;
+  private final FlywheelIO lowerFlywheel;
+
+  private final PivotIO pivot;
+  private final FlywheelIOInputsAutoLogged upperFlywheelInputs = new FlywheelIOInputsAutoLogged();
+  private final FlywheelIOInputsAutoLogged lowerFlywheelInputs = new FlywheelIOInputsAutoLogged();
+  private final PivotIOInputsAutoLogged pivotInputs = new PivotIOInputsAutoLogged();
+
+  private AngularVelocity flywheelSetpoint = RadiansPerSecond.of(0.);
+  private Angle pivotSetpoint = Radians.of(0.);
+
+  private final SysIdRoutine sysId;
+
+  private static final LoggedTunableNumber flywheelKP =
+      new LoggedTunableNumber("Shooter/Flywheel/kP", ShooterConstants.flywheelKP);
+  private static final LoggedTunableNumber flywheelKD =
+      new LoggedTunableNumber("Shooter/Flywheel/kD", ShooterConstants.flywheelKD);
+  private static final LoggedTunableNumber flywheelKS =
+      new LoggedTunableNumber("Shooter/Flywheel/kS", ShooterConstants.flywheelKS);
+  private static final LoggedTunableNumber flywheelKV =
+      new LoggedTunableNumber("Shooter/Flywheel/kV", ShooterConstants.flywheelKV);
+  private static final LoggedTunableNumber flywheelKA =
+      new LoggedTunableNumber("Shooter/Flywheel/kA", ShooterConstants.flywheelKA);
+
+  private static final LoggedTunableNumber pivotKP =
+      new LoggedTunableNumber("Shooter/Pivot/kP", ShooterConstants.pivotkP);
+  private static final LoggedTunableNumber pivotKD =
+      new LoggedTunableNumber("Shooter/Pivot/kD", ShooterConstants.pivotkD);
+  private static final LoggedTunableNumber pivotKS =
+      new LoggedTunableNumber("Shooter/Pivot/kS", ShooterConstants.pivotkS);
+  private static final LoggedTunableNumber pivotKV =
+      new LoggedTunableNumber("Shooter/Pivot/kV", ShooterConstants.pivotkV);
+  private static final LoggedTunableNumber pivotKA =
+      new LoggedTunableNumber("Shooter/Pivot/kA", ShooterConstants.pivotkA);
+
+  private final Alert upperFlywheelDisconnectedAlert =
+      new Alert("Forward Flywheel disconnected", AlertType.kError);
+  private final Alert lowerFlywheelDisconnectedAlert =
+      new Alert("Back Flywheel disconnected", AlertType.kError);
+  private final Alert pivotDisconnectedAlert = new Alert("Pivot disconnected", AlertType.kError);
+
+  /**
+   * Constructs a new Shooter instance.
+   *
+   * @param forwardFlywheel The IO implementation for the forward (launch) flywheel.
+   * @param forwardFlywheel The IO implementation for the back flywheel.
+   * @param pivot The IO implementation for the pivot.
+   */
+  public Shooter(FlywheelIO forwardFlywheel, FlywheelIO backFlywheel, PivotIO pivot) {
+    this.upperFlywheel = forwardFlywheel;
+    this.lowerFlywheel = backFlywheel;
+    this.pivot = pivot;
+
+    // Allows for system identification of the flywheel via auto routines (finds
+    // torque current
+    // required to overcome static friction, current for one unit of velocity, and
+    // current for one
+    // unit of acceleration)
+    sysId =
+        new SysIdRoutine(
+            new SysIdRoutine.Config(
+                ShooterConstants.sysIdRampRate,
+                ShooterConstants.sysIdStepSize,
+                null,
+                (state) -> SignalLogger.writeString("Shooter/SysIdState", state.toString())),
+            new SysIdRoutine.Mechanism(
+                (voltage) -> runFlywheelTorqueCurrent(voltage.in(Volts)), null, this));
+  }
+
+  @Override
+  public void periodic() {
+    upperFlywheel.updateInputs(upperFlywheelInputs);
+    lowerFlywheel.updateInputs(lowerFlywheelInputs);
+    pivot.updateInputs(pivotInputs);
+
+    Logger.processInputs("Shooter/Flywheel/Lower Flywheel", lowerFlywheelInputs);
+    Logger.processInputs("Shooter/Flywheel/Upper Flywheel", upperFlywheelInputs);
+    Logger.processInputs("Shooter/Pivot", pivotInputs);
+
+    upperFlywheelDisconnectedAlert.set(!upperFlywheelInputs.connected);
+
+    lowerFlywheelDisconnectedAlert.set(!lowerFlywheelInputs.connected);
+
+    pivotDisconnectedAlert.set(
+        (!pivotInputs.connected) && Constants.currentMode != Constants.Mode.SIM);
+
+    if (flywheelKP.hasChanged(hashCode())
+        || flywheelKD.hasChanged(hashCode())
+        || flywheelKS.hasChanged(hashCode())
+        || flywheelKV.hasChanged(hashCode())
+        || flywheelKA.hasChanged(hashCode())) {
+      Slot0Configs gains = new Slot0Configs();
+      gains.kP = flywheelKP.get();
+      gains.kD = flywheelKD.get();
+      gains.kS = flywheelKS.get();
+      gains.kV = flywheelKV.get();
+      gains.kA = flywheelKA.get();
+      upperFlywheel.setPID(gains);
+      lowerFlywheel.setPID(gains);
+    }
+
+    if (pivotKP.hasChanged(hashCode())
+        || pivotKD.hasChanged(hashCode())
+        || pivotKS.hasChanged(hashCode())
+        || pivotKV.hasChanged(hashCode())
+        || pivotKA.hasChanged(hashCode())) {
+      Slot0Configs gains = new Slot0Configs();
+      gains.kP = pivotKP.get();
+      gains.kD = pivotKD.get();
+      gains.kS = pivotKS.get();
+      gains.kV = pivotKV.get();
+      gains.kA = pivotKA.get();
+      pivot.setPID(gains);
+    }
+  }
+
+  /**
+   * Gets the linear velocity of the flywheel at its effective radius.
+   *
+   * @return The linear velocity of the flywheel
+   */
+  public LinearVelocity getShooterForwardLinearVelocity() {
+    return MetersPerSecond.of(
+        upperFlywheelInputs.angularVelocity.in(RadiansPerSecond)
+            * ShooterConstants.flywheelRadius.in(Meters));
+  }
+
+  /**
+   * Sets the flywheel to an open loop torque current
+   *
+   * @param output The output torque current to apply.
+   */
+  private void runFlywheelTorqueCurrent(double output) {
+    upperFlywheel.setOpenLoopTorqueCurrent(Amps.of(output));
+  }
+
+  /** Returns a command to run a quasistatic test in the specified direction. */
+  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+    return run(() -> runFlywheelTorqueCurrent(0.0))
+        .withTimeout(1.0)
+        .andThen(sysId.quasistatic(direction));
+  }
+
+  /** Returns a command to run a dynamic test in the specified direction. */
+  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+    return run(() -> runFlywheelTorqueCurrent(0.0))
+        .withTimeout(1.0)
+        .andThen(sysId.dynamic(direction));
+  }
+
+  /**
+   * Sets the flywheel angular velocity manually.
+   *
+   * @param velocity The angular velocity to set.
+   */
+  public void setManualVelocity(AngularVelocity velocity) {
+    upperFlywheel.setVelocity(velocity);
+    lowerFlywheel.setVelocity(velocity);
+  }
+
+  /**
+   * Checks if the shooter is ready to shoot (flywheel and pivot at setpoint).
+   *
+   * @return True if the shooter is ready.
+   */
+  @AutoLogOutput(key = "Shooter/canShoot")
+  public boolean canShoot() {
+    return MathUtil.isNear(
+            flywheelSetpoint.in(RotationsPerSecond),
+            upperFlywheelInputs.angularVelocity.in(RotationsPerSecond),
+            ShooterConstants.flywheelVelocityTolerance.in(RotationsPerSecond))
+        && MathUtil.isNear(
+            flywheelSetpoint.in(RotationsPerSecond),
+            lowerFlywheelInputs.angularVelocity.in(RotationsPerSecond),
+            ShooterConstants.flywheelVelocityTolerance.in(RotationsPerSecond))
+        && MathUtil.isNear(
+            pivotSetpoint.in(Degrees),
+            pivotInputs.pivotPosition.in(Degrees),
+            ShooterConstants.pivotPositionTolerence.in(Degrees));
+  }
+
+  /**
+   * Gets the current pivot angle.
+   *
+   * @return The pivot Angle.
+   */
+  public Angle getPivotAngle() {
+    return pivotInputs.pivotPosition;
+  }
+
+  /**
+   * Gets the current flywheel velocity.
+   *
+   * @return The flywheel AngularVelocity.
+   */
+  public AngularVelocity getFlywheelVelocity() {
+    return upperFlywheelInputs.angularVelocity;
+  }
+
+  /**
+   * Sets the shooter setpoints based on the calculated controls.
+   *
+   * @param setpoints The calculated shooter controls containing pitch and velocity.
+   */
+  public void setShooterSetpoints(ShooterSetpoints setpoints) {
+    flywheelSetpoint = setpoints.shooterVelocity();
+    pivotSetpoint = setpoints.shooterPitch();
+
+    Logger.recordOutput(
+        "Shooter/Velocity Setpoint [Rot/s]",
+        flywheelSetpoint.in(RotationsPerSecond),
+        RotationsPerSecond);
+    Logger.recordOutput("Shooter/Pitch Setpoint [Deg]", pivotSetpoint.in(Degrees), Degrees);
+
+    pivot.setPosition(pivotSetpoint);
+    upperFlywheel.setVelocity(flywheelSetpoint);
+    lowerFlywheel.setVelocity(flywheelSetpoint);
+  }
+}
