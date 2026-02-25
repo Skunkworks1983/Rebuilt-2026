@@ -16,6 +16,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
@@ -23,7 +24,6 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
-import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstants;
 import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstants.Side;
 
@@ -81,8 +81,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
 
     // Instantiates all motors and hardware objects
     turnMotor = new TalonFX(constants.turnMotorID, "rio");
-    intakeMotor =
-        new TalonFX(constants.intakeMotorID, "rio");
+    intakeMotor = new TalonFX(constants.intakeMotorID, "rio");
     upperLimitSwitch = new DigitalInput(constants.UpperLimitChannel);
     lowerLimitSwitch = new DigitalInput(constants.LowerLimitChannel);
     turnMotor.setPosition(Degrees.of(0));

@@ -216,8 +216,8 @@ public class Drive extends SubsystemBase implements VisionConsumer {
     }
     odometryLock.unlock();
 
-    // Stop moving when disabled DriverStation.isDisabled()
-    if (true) {
+    // Stop moving when disabled
+    if (DriverStation.isDisabled()) {
       for (var module : modules) {
         module.stop();
       }
