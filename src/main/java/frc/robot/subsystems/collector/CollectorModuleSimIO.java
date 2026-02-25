@@ -127,10 +127,6 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
     var turnMotorTalonFX = super.turnMotor.getSimState();
     var intakeMotorTalonFX = super.intakeMotor.getSimState();
 
-    if (side.equals(constants.collectorSide)) {
-      turnMotorTalonFX.Orientation = ChassisReference.Clockwise_Positive;
-    }
-
     turnMotorTalonFX.setSupplyVoltage(RobotController.getBatteryVoltage());
     intakeMotorTalonFX.setSupplyVoltage(RobotController.getBatteryVoltage());
 
