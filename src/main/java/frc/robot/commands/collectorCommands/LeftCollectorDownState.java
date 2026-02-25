@@ -4,6 +4,8 @@
 
 package frc.robot.commands.collectorCommands;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.collector.Collector;
 
@@ -20,7 +22,9 @@ public class LeftCollectorDownState extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    Logger.recordOutput("Commands/Collector/LeftCollectorDownState", true);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -34,7 +38,9 @@ public class LeftCollectorDownState extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    Logger.recordOutput("Commands/Collector/LeftCollectorDownState", false);
+  }
 
   // Returns true when the command should end.
   @Override

@@ -6,6 +6,8 @@ package frc.robot.commands.collectorCommands;
 
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.collector.Collector;
 import frc.robot.subsystems.collector.CollectorModule;
@@ -27,7 +29,9 @@ public class CollectorIntake extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    Logger.recordOutput("Commands/Collector/CollectorIntake", true);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -48,6 +52,7 @@ public class CollectorIntake extends Command {
   public void end(boolean interrupted) {
     leftCollector.setCollectorVelocity(RotationsPerSecond.of(0));
     rightCollector.setCollectorVelocity(RotationsPerSecond.of(0));
+    Logger.recordOutput("Commands/Collector/CollectorIntake", false);
   }
 
   // Returns true when the command should end.

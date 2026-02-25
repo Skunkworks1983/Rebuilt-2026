@@ -12,6 +12,8 @@ import frc.robot.subsystems.collector.Collector;
 import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
 import java.util.function.Supplier;
 
+import org.littletonrobotics.junction.Logger;
+
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AutomaticStateChange extends Command {
   private Collector collector;
@@ -33,6 +35,7 @@ public class AutomaticStateChange extends Command {
   public void initialize() {
     currDirection = direction.get().in(MetersPerSecond);
     count = 0; // Count is to give a small wait period before changing which collector is down
+    Logger.recordOutput("Commands/Collector/AutomaticStateChange", true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -71,6 +74,7 @@ public class AutomaticStateChange extends Command {
     if (collector.getRightCollector().isCollectorDown()) {
       collector.getRightCollector().goUp();
     }
+    Logger.recordOutput("Commands/Collector/AutomaticStateChange", false);
   }
 
   // Returns true when the command should end.
