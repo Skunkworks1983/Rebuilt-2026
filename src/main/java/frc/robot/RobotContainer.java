@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.commands.DriveAimedAutoShoot;
 import frc.robot.commands.DriveAimedShoot;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.IndexerCommand;
@@ -300,12 +301,11 @@ public class RobotContainer {
       Trigger shootButton = new JoystickButton(rightJoystick, 1);
 
       shootGoalButton.whileTrue(
-          new DriveAimedShoot(
+          new DriveAimedAutoShoot(
               drive,
               shooter,
               () -> -leftJoystick.getY(),
-              () -> -leftJoystick.getX(),
-              DriveAimedShoot.TargetType.GOAL));
+              () -> -leftJoystick.getX()));
       shootButton.onTrue(new InstantCommand(this::launchSimFuel));
 
       runIndexer = new JoystickButton(buttonJoystick, IndexerConstants.runIndexerButtonId);
