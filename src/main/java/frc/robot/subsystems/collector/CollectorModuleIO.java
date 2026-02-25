@@ -9,6 +9,8 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -110,4 +112,9 @@ public interface CollectorModuleIO {
 
   // Sets collector down
   public default void goDown() {}
+
+  public default void setPivotGains(Slot0Configs slotConfigs) {}
+
+  public default void setMotionConstraints(MotionMagicConfigs motionMagicConfigs) {}
+  ;
 }

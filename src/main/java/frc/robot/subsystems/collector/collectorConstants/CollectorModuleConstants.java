@@ -6,8 +6,10 @@ package frc.robot.subsystems.collector.collectorConstants;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
 
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
 
 /** An Interface for collector constants */
@@ -33,11 +35,6 @@ public class CollectorModuleConstants {
   public double turnkD;
   public double turnkI;
 
-  // Lower intake PID
-  public double lowerkP;
-  public double lowerkD;
-  public double lowerkI;
-
   // Upper intake PID
   public double upperkP;
   public double upperkD;
@@ -47,6 +44,9 @@ public class CollectorModuleConstants {
   public double turnkS;
   public double turnkV;
   public double turnkA;
+
+  public AngularVelocity pivotMaxVelocity = RotationsPerSecond.of(0);
+  public AngularAcceleration pivotMaxAcceleration = RotationsPerSecondPerSecond.of(0);
 
   // Position
   public Angle CollectorUpPos;
@@ -78,11 +78,6 @@ public class CollectorModuleConstants {
     turnkP = 1;
     turnkD = 0.0;
     turnkI = 0.0;
-
-    // Lower intake PID
-    lowerkP = 0.0;
-    lowerkD = 0.0;
-    lowerkI = 0.0;
 
     // Upper intake PID
     upperkP = 0.0;
