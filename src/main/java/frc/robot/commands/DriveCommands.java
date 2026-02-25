@@ -44,35 +44,36 @@ public class DriveCommands {
       DoubleSupplier omegaSupplier) {
     return Commands.run(
         () -> {
+          
           // Get linear velocity
-          Translation2d linearVelocity =
-              DriveUtils.getLinearVelocityFromJoysticks(
-                  xSupplier.getAsDouble(), ySupplier.getAsDouble());
+          // Translation2d linearVelocity =
+          //     DriveUtils.getLinearVelocityFromJoysticks(
+          //         xSupplier.getAsDouble(), ySupplier.getAsDouble());
 
-          // Apply rotation deadband
-          double omega =
-              MathUtil.applyDeadband(
-                  omegaSupplier.getAsDouble(), DriveControlConstants.YAW_CONTROL_DEADBAND);
+          // // Apply rotation deadband
+          // double omega =
+          //     MathUtil.applyDeadband(
+          //         omegaSupplier.getAsDouble(), DriveControlConstants.YAW_CONTROL_DEADBAND);
 
-          // Square rotation value for more precise control
-          omega = Math.copySign(omega * omega, omega);
+          // // Square rotation value for more precise control
+          // omega = Math.copySign(omega * omega, omega);
 
-          // Convert to field relative speeds & send command
-          ChassisSpeeds speeds =
-              new ChassisSpeeds(
-                  linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
-                  linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
-                  omega * drive.getMaxAngularSpeedRadPerSec());
-          boolean isFlipped =
-              DriverStation.getAlliance().isPresent()
-                  && DriverStation.getAlliance().get() == Alliance.Red;
-          drive.runVelocity(
-              ChassisSpeeds.fromFieldRelativeSpeeds(
-                  speeds,
-                  isFlipped
-                      ? drive.getRotation().plus(new Rotation2d(Math.PI))
-                      : drive.getRotation()));
-          Logger.recordOutput("Drive/Commanded", speeds);
+          // // Convert to field relative speeds & send command
+          // ChassisSpeeds speeds =
+          //     new ChassisSpeeds(
+          //         linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
+          //         linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
+          //         omega * drive.getMaxAngularSpeedRadPerSec());
+          // boolean isFlipped =
+          //     DriverStation.getAlliance().isPresent()
+          //         && DriverStation.getAlliance().get() == Alliance.Red;
+          // drive.runVelocity(
+          //     ChassisSpeeds.fromFieldRelativeSpeeds(
+          //         speeds,
+          //         isFlipped
+          //             ? drive.getRotation().plus(new Rotation2d(Math.PI))
+          //             : drive.getRotation()));
+          // Logger.recordOutput("Drive/Commanded", speeds);
         },
         drive);
   }

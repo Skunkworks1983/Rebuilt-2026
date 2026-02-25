@@ -47,6 +47,9 @@ public interface CollectorModuleIO {
     // Magnet Switch Inputs
     public boolean upperTriggered = false;
     public boolean lowerTriggered = false;
+
+    //
+    public boolean goingDown = false;
   }
 
   /**

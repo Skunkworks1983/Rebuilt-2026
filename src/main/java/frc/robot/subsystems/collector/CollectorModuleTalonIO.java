@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.collector;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static frc.robot.util.PhoenixUtil.tryUntilOk;
 
 import com.ctre.phoenix6.BaseStatusSignal;
@@ -78,14 +79,17 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     setDownRunning = false;
 
     // Instantiates all motors and hardware objects
-    turnMotor = new TalonFX(constants.turnMotorID, TunerConstants.getTunerConstants().getCANBus());
+    turnMotor = new TalonFX(constants.turnMotorID, "rio");
     intakeMotor =
-        new TalonFX(constants.intakeMotorID, TunerConstants.getTunerConstants().getCANBus());
+        new TalonFX(constants.intakeMotorID, "rio");
     upperLimitSwitch = new DigitalInput(constants.UpperLimitChannel);
     lowerLimitSwitch = new DigitalInput(constants.LowerLimitChannel);
+    turnMotor.setPosition(Degrees.of(0));
 
     // Config for turnMotor
     var turnConfig = new TalonFXConfiguration();
+    turnConfig.Feedback.SensorToMechanismRatio = constants.turnMotorGearRatio;
+    turnConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
     // Pid Configs for Turn Motor
     var turnSlot0Configs = turnConfig.Slot0;
@@ -98,8 +102,8 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
 
     // Motion Magic Configs for Turn Motor
     var turnMotionMagicConfig = turnConfig.MotionMagic;
-    turnMotionMagicConfig.MotionMagicCruiseVelocity = 80;
-    turnMotionMagicConfig.MotionMagicAcceleration = 160;
+    turnMotionMagicConfig.MotionMagicCruiseVelocity = .1;
+    turnMotionMagicConfig.MotionMagicAcceleration = .1;
 
     // Applying Turn Motor Configs
     tryUntilOk(5, () -> turnMotor.getConfigurator().apply(turnConfig, 0.25));
@@ -153,6 +157,8 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     var upperStatus =
         BaseStatusSignal.refreshAll(
             intakePosition, intakeVelocity, intakeAppliedVolts, intakeCurrent);
+
+    inputs.goingDown = setDownRunning;
 
     // Update turn inputs
     inputs.turnConnected = turnConnectedDebounce.calculate(turnStatus.isOK());

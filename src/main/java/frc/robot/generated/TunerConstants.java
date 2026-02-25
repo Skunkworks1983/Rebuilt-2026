@@ -23,9 +23,12 @@ public interface TunerConstants {
     if (Constants.robotHardware == RobotHardware.Swerveles) {
       return new TunerConstantsSwervles();
     }
+    if (Constants.robotHardware == RobotHardware.Rebuilt) {
+      return new TunerConstantsRebuilt();
+    }
 
     // TODO: Replace with rebuilt constants
-    return new TunerConstantsSwervles();
+    return new TunerConstantsRebuilt();
   }
 
   public SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>

@@ -24,10 +24,10 @@ public class CollectorTalonLeftConstants extends CollectorModuleConstants {
     intakeMotorID = 50;
 
     // Gear ratio's
-    turnMotorGearRatio = 0.0;
+    turnMotorGearRatio = 39.375;
 
     // Turn PID
-    turnkP = 5;
+    turnkP = .1;
     turnkD = 0;
     turnkI = 0.0;
 

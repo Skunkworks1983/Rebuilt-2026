@@ -29,11 +29,11 @@ public class LeftCollectorDownState extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (collector.getRightCollector().isCollectorUp()) {
-      collector.getLeftCollector().goDown();
-    } else {
+    //if (collector.getRightCollector().isCollectorUp()) {
+    //  collector.getLeftCollector().goDown();
+    //} else {
       collector.getRightCollector().goUp();
-    }
+    //}
   }
 
   // Called once the command ends or is interrupted.
@@ -45,7 +45,7 @@ public class LeftCollectorDownState extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return collector.getLeftCollector().isCollectorDown()
-        && collector.getRightCollector().isCollectorUp();
+    return false;//collector.getLeftCollector().isCollectorDown()
+        //&& collector.getRightCollector().isCollectorUp();
   }
 }
