@@ -67,12 +67,8 @@ public class AutomaticStateChange extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    if (collector.getLeftCollector().isCollectorDown()) {
       collector.getLeftCollector().goUp();
-    }
-    if (collector.getRightCollector().isCollectorDown()) {
       collector.getRightCollector().goUp();
-    }
     Logger.recordOutput("Commands/Collector/AutomaticStateChange", false);
   }
 
