@@ -26,22 +26,27 @@ public class CollectorTalonLeftConstants extends CollectorModuleConstants {
     // Gear ratio's
     turnMotorGearRatio = 0.0;
 
-    // Turn PID
-    turnkP = 5;
-    turnkD = 0;
+    // Real Turn PID
+    turnkP = 0.0;
+    turnkD = 0.0;
     turnkI = 0.0;
 
-    // Lower intake PID
-    lowerkP = 0.0;
-    lowerkD = 0.0;
-    lowerkI = 0.0;
+    // Real intake PID
+    intakekP = 0.0;
+    intakekD = 0.0;
+    intakekI = 0.0;
 
-    // Upper intake PID
-    upperkP = 0.0;
-    upperkD = 0.0;
-    upperkI = 0.0;
+    // Sim Turn PID
+    SimTurnkP = 13.5;
+    SimTurnkD = 12.5;
+    SimTurnkI = 0.4;
 
-    // Feed forward
+    // Sim intake PID
+    SimIntakekP = 0.0;
+    SimIntakekD = 0.0;
+    SimIntakekI = 0.0;
+
+    // feed forward
     turnkS = 0.25;
     turnkV = 0.12;
     turnkA = 0.01;

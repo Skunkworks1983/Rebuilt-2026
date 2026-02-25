@@ -21,6 +21,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstants;
 import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstants.Side;
@@ -89,9 +90,17 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
 
     // Pid Configs for Turn Motor
     var turnSlot0Configs = turnConfig.Slot0;
-    turnSlot0Configs.kP = constants.turnkP;
-    turnSlot0Configs.kD = constants.turnkD;
-    turnSlot0Configs.kI = constants.turnkI;
+
+    if (RobotBase.isSimulation() == false) {
+      turnSlot0Configs.kP = constants.turnkP;
+      turnSlot0Configs.kD = constants.turnkD;
+      turnSlot0Configs.kI = constants.turnkI;
+    } else if (RobotBase.isSimulation() == true) {
+      turnSlot0Configs.kP = constants.SimTurnkP;
+      turnSlot0Configs.kD = constants.SimTurnkD;
+      turnSlot0Configs.kI = constants.SimTurnkI;
+    }
+
     turnSlot0Configs.kS = constants.turnkS;
     turnSlot0Configs.kV = constants.turnkV;
     turnSlot0Configs.kA = constants.turnkA;
@@ -106,9 +115,16 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
 
     // PID config for intakeMotor
     var intakeConfig = new TalonFXConfiguration();
-    intakeConfig.Slot0.kP = constants.upperkP;
-    intakeConfig.Slot0.kD = constants.upperkP;
-    intakeConfig.Slot0.kI = constants.upperkI;
+
+    if (RobotBase.isSimulation() == false) {
+      intakeConfig.Slot0.kP = constants.intakekP;
+      intakeConfig.Slot0.kD = constants.intakekP;
+      intakeConfig.Slot0.kI = constants.intakekI;
+    } else if (RobotBase.isSimulation() == true) {
+      intakeConfig.Slot0.kP = constants.SimIntakekP;
+      intakeConfig.Slot0.kD = constants.SimIntakekP;
+      intakeConfig.Slot0.kI = constants.SimIntakekI;
+    }
 
     // Applying Intake Configs
     tryUntilOk(5, () -> intakeMotor.getConfigurator().apply(intakeConfig, 0.25));
