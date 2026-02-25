@@ -22,12 +22,8 @@ public class BothCollectorsUpState extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (collector.getLeftCollector().isCollectorDown()) {
-      collector.getLeftCollector().goUp();
-    }
-    if (collector.getRightCollector().isCollectorDown()) {
-      collector.getRightCollector().goUp();
-    }
+    collector.getLeftCollector().goUp();
+    collector.getRightCollector().goUp();
     Logger.recordOutput("Commands/Collector/BothCollectorsUpState", true);
   }
 
