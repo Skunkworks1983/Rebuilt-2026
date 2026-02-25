@@ -101,11 +101,6 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     turnMotionMagicConfig.MotionMagicCruiseVelocity = 80;
     turnMotionMagicConfig.MotionMagicAcceleration = 160;
 
-    // Inverts left motor
-    if (side.equals(Side.LEFT)) {
-      turnConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-    }
-
     // Applying Turn Motor Configs
     tryUntilOk(5, () -> turnMotor.getConfigurator().apply(turnConfig, 0.25));
 
