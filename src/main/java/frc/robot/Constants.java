@@ -51,13 +51,13 @@ public final class Constants {
   /** Joystick constants */
   public final class JoystickConstants { // TODO: find constants
     // Joystick ID's
-    public static final int LeftJoystick = 5;
-    public static final int RightJoystick = 4;
-    public static final int ButtonJoystick = 2;
+    public static final int LeftJoystick = 1;
+    public static final int RightJoystick = 2;
+    public static final int ButtonJoystick = 3;
 
     // Collector button joystick ID's
-    public static final int CollectorManualModeID = 9;
-    public static final int CollectorAutoModeID = 10;
+    public static final int CollectorManualModeID = 6;
+    public static final int CollectorAutoModeID = 5;
     public static final int CollectorIntakeID = 7;
     public static final int CollectorRightDownID = 1;
     public static final int CollectorLeftDownID = 2;
