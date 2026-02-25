@@ -91,11 +91,11 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     // Pid Configs for Turn Motor
     var turnSlot0Configs = turnConfig.Slot0;
 
-    if (RobotBase.isSimulation() == false) {
+    if (!RobotBase.isSimulation()) {
       turnSlot0Configs.kP = constants.turnkP;
       turnSlot0Configs.kD = constants.turnkD;
       turnSlot0Configs.kI = constants.turnkI;
-    } else if (RobotBase.isSimulation() == true) {
+    } else if (RobotBase.isSimulation()) {
       turnSlot0Configs.kP = constants.SimTurnkP;
       turnSlot0Configs.kD = constants.SimTurnkD;
       turnSlot0Configs.kI = constants.SimTurnkI;
@@ -116,11 +116,11 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     // PID config for intakeMotor
     var intakeConfig = new TalonFXConfiguration();
 
-    if (RobotBase.isSimulation() == false) {
+    if (!RobotBase.isSimulation()) {
       intakeConfig.Slot0.kP = constants.intakekP;
       intakeConfig.Slot0.kD = constants.intakekP;
       intakeConfig.Slot0.kI = constants.intakekI;
-    } else if (RobotBase.isSimulation() == true) {
+    } else if (RobotBase.isSimulation()) {
       intakeConfig.Slot0.kP = constants.SimIntakekP;
       intakeConfig.Slot0.kD = constants.SimIntakekP;
       intakeConfig.Slot0.kI = constants.SimIntakekI;
