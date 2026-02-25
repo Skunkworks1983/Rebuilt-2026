@@ -120,7 +120,7 @@ public class RobotContainer {
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
-        // ModuleIOTalonFX is intended for modules with TalonFX drive, TalonFX turn, and
+        // ModuleIOTalonFX is intended for modules  ith TalonFX drive, TalonFX turn, and
         // a CANcoder
         drive =
             new Drive(

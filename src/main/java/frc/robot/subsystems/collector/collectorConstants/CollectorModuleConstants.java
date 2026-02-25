@@ -23,8 +23,7 @@ public class CollectorModuleConstants {
 
   // Hardware ID's
   public int turnMotorID;
-  public int intakeMotorLowerID;
-  public int intakeMotorUpperID;
+  public int intakeMotorID;
 
   // Gear ratio's
   public double turnMotorGearRatio;
@@ -56,6 +55,10 @@ public class CollectorModuleConstants {
   // Collector Intake Speeds
   public AngularVelocity CollectorIntakeSpeed;
 
+  // Limit Switch Constants
+  public int UpperLimitChannel;
+  public int LowerLimitChannel;
+
   // Collector Position Tolerance
   public Angle CollectorPosTolerance;
 
@@ -66,8 +69,7 @@ public class CollectorModuleConstants {
 
     // Hardware ID's
     turnMotorID = 0;
-    intakeMotorLowerID = 0;
-    intakeMotorUpperID = 0;
+    intakeMotorID = 0;
 
     // Gear ratio's
     turnMotorGearRatio = 0.0;
@@ -98,6 +100,10 @@ public class CollectorModuleConstants {
 
     // Collector Intake Speeds
     CollectorIntakeSpeed = RotationsPerSecond.of(0);
+
+    // Limit Switch Constants
+    UpperLimitChannel = 0;
+    LowerLimitChannel = 0;
 
     // Collector Position Tolerance
     CollectorPosTolerance = Degrees.of(0);
