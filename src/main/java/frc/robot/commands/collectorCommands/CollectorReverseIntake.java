@@ -34,11 +34,13 @@ public class CollectorReverseIntake extends Command {
   public void execute() {
     if (leftCollector.isCollectorDown() && lastModule != leftCollector) {
       rightCollector.setCollectorVelocity(RotationsPerSecond.of(0));
-      leftCollector.setCollectorVelocity(leftCollector.getConstants().CollectorIntakeSpeed.unaryMinus());
+      leftCollector.setCollectorVelocity(
+          leftCollector.getConstants().CollectorIntakeSpeed.unaryMinus());
       lastModule = leftCollector;
     } else if (rightCollector.isCollectorDown() && lastModule != rightCollector) {
       leftCollector.setCollectorVelocity(RotationsPerSecond.of(0));
-      rightCollector.setCollectorVelocity(rightCollector.getConstants().CollectorIntakeSpeed.unaryMinus());
+      rightCollector.setCollectorVelocity(
+          rightCollector.getConstants().CollectorIntakeSpeed.unaryMinus());
       lastModule = rightCollector;
     }
   }

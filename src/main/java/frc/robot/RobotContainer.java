@@ -210,10 +210,8 @@ public class RobotContainer {
 
         collector =
             new Collector(
-                new CollectorModuleSimIO(
-                    simulation, new CollectorTalonLeftConstants()),
-                new CollectorModuleSimIO(
-                    simulation, new CollectorTalonRightConstants()));
+                new CollectorModuleSimIO(simulation, new CollectorTalonLeftConstants()),
+                new CollectorModuleSimIO(simulation, new CollectorTalonRightConstants()));
 
         indexer = new Indexer(new IndexerIOSim(IndexerConstants.indexerMotorID));
 
@@ -236,10 +234,8 @@ public class RobotContainer {
 
         collector =
             new Collector(
-                new CollectorModuleSimIO(
-                    simulation, new CollectorTalonLeftConstants()),
-                new CollectorModuleSimIO(
-                    simulation, new CollectorTalonRightConstants()));
+                new CollectorModuleSimIO(simulation, new CollectorTalonLeftConstants()),
+                new CollectorModuleSimIO(simulation, new CollectorTalonRightConstants()));
 
         indexer = new Indexer(new IndexerIO() {});
         break;
@@ -316,7 +312,8 @@ public class RobotContainer {
       shootButton.onTrue(new InstantCommand(this::launchSimFuel));
 
       runIndexer = new JoystickButton(buttonJoystick, Constants.OIConstants.ShooterIndexID);
-      runIndexerReverse = new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID);
+      runIndexerReverse =
+          new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID);
 
     } else {
       drive.setDefaultCommand(
@@ -345,7 +342,8 @@ public class RobotContainer {
               DriveAimedShoot.TargetType.TRANSFER));
       shootButton.onTrue(new InstantCommand(this::launchSimFuel));
       runIndexer = new JoystickButton(xboxController, Constants.OIConstants.ShooterIndexID);
-      runIndexerReverse = new JoystickButton(xboxController, Constants.OIConstants.CollectorReverseIntakeID);
+      runIndexerReverse =
+          new JoystickButton(xboxController, Constants.OIConstants.CollectorReverseIntakeID);
     }
 
     runIndexer.whileTrue(new IndexerCommand(indexer));
@@ -373,10 +371,11 @@ public class RobotContainer {
         .onTrue(new BothCollectorsUpState(collector));
 
     // Collector Intake Button
+
     new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorIntakeID)
         .whileTrue(new CollectorIntake(collector));
 
-    //Coolector Reverse Intake Button
+    // Coolector Reverse Intake Button
     new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID)
         .whileTrue(new CollectorReverseIntake(collector));
 
@@ -389,7 +388,6 @@ public class RobotContainer {
     new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorLeftDownID)
         .and(manualModeSwitch)
         .onTrue(new LeftCollectorDownState(collector));
-
 
     // Lock to 0° when A button is held
     // controller

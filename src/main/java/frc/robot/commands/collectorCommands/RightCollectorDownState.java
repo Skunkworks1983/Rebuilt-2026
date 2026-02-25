@@ -31,12 +31,12 @@ public class RightCollectorDownState extends Command {
   @Override
   public void execute() {
     if (collector.getLeftCollector().isCollectorUp()) {
-      if(!setDown) {
+      if (!setDown) {
         collector.getRightCollector().goDown();
       }
       setDown = true;
     } else if (collector.getLeftCollector().isCollectorDown()) {
-      if(!setUp) {
+      if (!setUp) {
         collector.getLeftCollector().goUp();
       }
       setUp = true;

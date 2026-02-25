@@ -63,13 +63,12 @@ public final class Constants {
     public static final int CollectorLeftDownID = 12;
     public static final int CollectorReverseIntakeID = 24;
 
-    //Shooter button joystick ID's
+    // Shooter button joystick ID's
     public static final int ShooterShootHubID = 1;
     public static final int ShooterShootTransferID = 6;
     public static final int ShooterIndexID = 18;
     public static final int ShooterFlywheelSwitchID = 3;
-    public static final int ShooterHoldToAimID = 1; //Jotstick trigger
+    public static final int ShooterHoldToAimID = 1; // Jotstick trigger
     public static final int ShooterReverseIndexID = 17;
-
   }
 }

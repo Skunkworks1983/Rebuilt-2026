@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstants;
 import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstants.Side;
-import java.util.Map;
 import org.ironmaple.simulation.IntakeSimulation;
 import org.ironmaple.simulation.IntakeSimulation.IntakeSide;
 import org.ironmaple.simulation.drivesims.AbstractDriveTrainSimulation;
@@ -31,8 +30,7 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
   final Side collectorSide;
 
   public CollectorModuleSimIO(
-      AbstractDriveTrainSimulation driveTrain,
-      CollectorModuleConstants constants) {
+      AbstractDriveTrainSimulation driveTrain, CollectorModuleConstants constants) {
 
     super(constants);
 
@@ -41,27 +39,16 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
     switch (collectorSide) {
       case LEFT:
         this.collectorSimulation =
-        IntakeSimulation.OverTheBumperIntake(
-            "Fuel",
-            driveTrain,
-            Meters.of(0.7),
-            Meters.of(0.2),
-            IntakeSide.LEFT,
-            1);
+            IntakeSimulation.OverTheBumperIntake(
+                "Fuel", driveTrain, Meters.of(0.7), Meters.of(0.2), IntakeSide.LEFT, 1);
         break;
 
       case RIGHT:
+        this.collectorSimulation =
+            IntakeSimulation.OverTheBumperIntake(
+                "Fuel", driveTrain, Meters.of(0.7), Meters.of(0.2), IntakeSide.RIGHT, 1);
+        break;
 
-      this.collectorSimulation =
-        IntakeSimulation.OverTheBumperIntake(
-            "Fuel",
-            driveTrain,
-            Meters.of(0.7),
-            Meters.of(0.2),
-            IntakeSide.RIGHT,
-            1);
-      break;
-    
       default:
         break;
     }
