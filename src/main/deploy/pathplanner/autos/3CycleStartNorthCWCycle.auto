@@ -7,73 +7,73 @@
         {
           "type": "path",
           "data": {
-            "pathName": "StartSouthThroughTunnelCCW"
+            "pathName": "ThroughNorthTrenchCW"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "CollectCCW"
+            "pathName": "CollectCW"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "ThroughNorthTunnelCCW"
+            "pathName": "ThroughSouthTrenchCW"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "CCW Shoot"
+            "pathName": "ShootCW"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "StartSouthThroughTunnelCCW"
+            "pathName": "ThroughNorthTrenchCW"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "CollectCCW"
+            "pathName": "CollectCW"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "ThroughNorthTunnelCCW"
+            "pathName": "ThroughSouthTrenchCW"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "CCW Shoot"
+            "pathName": "ShootCW"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "StartSouthThroughTunnelCCW"
+            "pathName": "ThroughNorthTrenchCW"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "CollectCCW"
+            "pathName": "CollectCW"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "ThroughNorthTunnelCCW"
+            "pathName": "ThroughSouthTrenchCW"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "CCW Shoot"
+            "pathName": "ShootCW"
           }
         }
       ]

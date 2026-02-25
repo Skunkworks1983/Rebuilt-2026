@@ -7,79 +7,79 @@
         {
           "type": "path",
           "data": {
-            "pathName": "CentreStartCW"
+            "pathName": "CenterStartCCW"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "StartNorthThroughTunnelCW"
+            "pathName": "ThroughSouthTrenchCCW"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "CollectCW"
+            "pathName": "CollectCCW"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "SouthOutToInCW"
+            "pathName": "ThroughNorthTunnelCCW"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "ShootCW"
+            "pathName": "Shoot CCW"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "StartNorthThroughTunnelCW"
+            "pathName": "ThroughSouthTrenchCCW"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "CollectCW"
+            "pathName": "CollectCCW"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "SouthOutToInCW"
+            "pathName": "ThroughNorthTunnelCCW"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "ShootCW"
+            "pathName": "Shoot CCW"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "StartNorthThroughTunnelCW"
+            "pathName": "ThroughSouthTrenchCCW"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "CollectCW"
+            "pathName": "CollectCCW"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "SouthOutToInCW"
+            "pathName": "ThroughNorthTunnelCCW"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "ShootCW"
+            "pathName": "Shoot CCW"
           }
         }
       ]

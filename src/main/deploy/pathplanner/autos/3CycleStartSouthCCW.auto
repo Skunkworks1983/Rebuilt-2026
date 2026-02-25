@@ -7,13 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "CenterStartCCW"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "StartSouthThroughTunnelCCW"
+            "pathName": "ThroughSouthTrenchCCW"
           }
         },
         {
@@ -31,37 +25,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "CCW Shoot"
+            "pathName": "Shoot CCW"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "StartSouthThroughTunnelCCW"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "CollectCCW"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "ThroughNorthTunnelCCW"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "CCW Shoot"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "StartSouthThroughTunnelCCW"
+            "pathName": "ThroughSouthTrenchCCW"
           }
         },
         {
@@ -79,7 +49,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "CCW Shoot"
+            "pathName": "Shoot CCW"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ThroughSouthTrenchCCW"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CollectCCW"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ThroughNorthTunnelCCW"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Shoot CCW"
           }
         }
       ]

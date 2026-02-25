@@ -9,7 +9,9 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
+import com.fasterxml.jackson.databind.util.Named;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.events.EventTrigger;
 import com.pathplanner.lib.events.PointTowardsZoneTrigger;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -238,6 +240,31 @@ public class RobotContainer {
         indexer = new Indexer(new IndexerIO() {});
         break;
     }
+
+    // registers commands for pathplanner
+    NamedCommands.registerCommand(
+        "Collector Intake", 
+        new CollectorIntake(collector));
+
+    NamedCommands.registerCommand(
+        "Left Collector Down", 
+        new LeftCollectorDownState(collector));
+
+    NamedCommands.registerCommand(
+        "Right Collector Down", 
+        new RightCollectorDownState(collector));
+
+    NamedCommands.registerCommand(
+        "Both Collector Up", 
+        new BothCollectorsUpState(collector));
+
+    NamedCommands.registerCommand(
+        "Non-Driving Shooter Command",
+        new NoYawShootHub(shooter, drive));
+
+    NamedCommands.registerCommand(
+        "Run Indexer", 
+        new IndexerCommand(indexer));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
