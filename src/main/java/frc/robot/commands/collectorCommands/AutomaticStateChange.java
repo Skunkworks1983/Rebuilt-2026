@@ -50,14 +50,16 @@ public class AutomaticStateChange extends Command {
     isGoingRight = debouncer.calculate(currDirection < 0); // Might need to swap < to >
     Logger.recordOutput("TEST/AutoCollector/isGoingRight", isGoingRight);
     if(isGoingRight && !wasGoingRight) {
-      collector.getRightCollector().goUp();
       if(collector.getRightCollector().isCollectorUp()) {
         collector.getLeftCollector().goDown();
-      } 
+      } else {
+        collector.getRightCollector().goUp();
+      }
     } else if(!isGoingRight && wasGoingRight) {
-      collector.getLeftCollector().goUp();
       if(collector.getLeftCollector().isCollectorUp()) {
         collector.getRightCollector().goDown();
+      } else {
+        collector.getLeftCollector().goUp();
       }
     }
     wasGoingRight = isGoingRight;
