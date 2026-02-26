@@ -103,7 +103,6 @@ public class Robot extends LoggedRobot {
   @Override
   public void disabledInit() {
     if (Constants.currentMode == Mode.SIM) {
-      robotContainer.resetSimulationField();
     }
   }
 
@@ -111,14 +110,12 @@ public class Robot extends LoggedRobot {
   @Override
   public void disabledPeriodic() {
     if (Constants.currentMode == Mode.SIM) {
-      robotContainer.resetSimRobotPose();
     }
   }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    autonomousCommand = robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
     if (autonomousCommand != null) {
@@ -168,6 +165,5 @@ public class Robot extends LoggedRobot {
   /** This function is called periodically whilst in simulation. */
   @Override
   public void simulationPeriodic() {
-    robotContainer.updateSimulation();
   }
 }

@@ -11,11 +11,14 @@ import com.ctre.phoenix6.Orchestra;
 import com.ctre.phoenix6.configs.AudioConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.pathplanner.lib.auto.AutoBuilder;
+
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -40,343 +43,119 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
+ * This class is where the bulk of the robot should be declared. Since
+ * Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in
+ * the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of
+ * the robot (including
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  // Subsystems
-  private Drive drive;
-  private Vision vision;
+  private enum Songs {
+    RickRoll,
+    Megalovania
+  }
 
-  // Controller
-  private final Joystick leftJoystick;
-  private final Joystick rightJoystick;
+  private static final String DRIVEBASE_CANBUS = "drivebase_2026";
+  private static final String RIO_CANBUS = "rio";
 
-    Orchestra m_orchestra = new Orchestra();
+  
 
+  private static final int FRONT_LEFT_DRIVE_ID = 8;
+  private static final int FRONT_LEFT_STEER_ID = 10;
+  private static final int FRONT_RIGHT_DRIVE_ID = 11;
+  private static final int FRONT_RIGHT_STEER_ID = 13;
+  private static final int BACK_LEFT_DRIVE_ID = 14;
+  private static final int BACK_LEFT_STEER_ID = 16;
+  private static final int BACK_RIGHT_DRIVE_ID = 19;
+  private static final int BACK_RIGHT_STEER_ID = 17;
+
+  private static final int FORWARD_SHOOT_ID = 23;
+  private static final int BACK_SHOOT_ID = 21;
+  private static final int INDEXER_ID = 45;
+  private static final int COLLECTOR_ID = 46;
+
+  Orchestra m_orchestra = new Orchestra();
+  private final Notifier orchestraReplayNotifier = new Notifier(() -> m_orchestra.play());
+
+  LoggedDashboardChooser<Songs> songChooser = new LoggedDashboardChooser<>("Song Chooser");
+
+  private final TalonFX flDrive = new TalonFX(FRONT_LEFT_DRIVE_ID, DRIVEBASE_CANBUS);
+  private final TalonFX flSteer = new TalonFX(FRONT_LEFT_STEER_ID, DRIVEBASE_CANBUS);
+  private final TalonFX frDrive = new TalonFX(FRONT_RIGHT_DRIVE_ID, DRIVEBASE_CANBUS);
+  private final TalonFX frSteer = new TalonFX(FRONT_RIGHT_STEER_ID, DRIVEBASE_CANBUS);
+  private final TalonFX blDrive = new TalonFX(BACK_LEFT_DRIVE_ID, DRIVEBASE_CANBUS);
+  private final TalonFX blSteer = new TalonFX(BACK_LEFT_STEER_ID, DRIVEBASE_CANBUS);
+  private final TalonFX brDrive = new TalonFX(BACK_RIGHT_DRIVE_ID, DRIVEBASE_CANBUS);
+  private final TalonFX brSteer = new TalonFX(BACK_RIGHT_STEER_ID, DRIVEBASE_CANBUS);
+
+  private final TalonFX forwardShoot = new TalonFX(FORWARD_SHOOT_ID, RIO_CANBUS);
+  private final TalonFX backShoot = new TalonFX(BACK_SHOOT_ID, RIO_CANBUS);
+  private final TalonFX indexer = new TalonFX(INDEXER_ID, RIO_CANBUS);
+  private final TalonFX collector = new TalonFX(COLLECTOR_ID, RIO_CANBUS);
 
   /**
-   * Xbox Controller for simulation.
-   *
-   * <p>Only used when {@link Constants#controlScheme} is set to {@link
-   * Constants.ControlScheme#XBOX}
+   * The container for the robot. Contains subsystems, OI devices, and commands.
    */
-  private final XboxController xboxController;
-
-  // Dashboard inputs
-
-  // Sim
-  private SwerveDriveSimulation simulation = null;
-
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    if (Constants.controlScheme == Constants.ControlScheme.OI) {
-      leftJoystick = new Joystick(0);
-      rightJoystick = new Joystick(1);
-      xboxController = null;
-    } else {
-      xboxController = new XboxController(0);
-      leftJoystick = null;
-      rightJoystick = null;
-    }
-    switch (Constants.currentMode) {
-      case REAL:
-        // Real robot, instantiate hardware IO implementations
-        // ModuleIOTalonFX is intended for modules with TalonFX drive, TalonFX turn, and
-        // a CANcoder
-       drive =
-            new Drive(
-                new GyroIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {},
-                (pose) -> {},
-                (pose) -> {});
-
-        vision =
-            new Vision(
-                drive, new VisionIOLimelight(VisionConstants.camera0Name, drive::getRotation));
-
-        // This is a solution to the vision-drive cross dependency issue that hurts my
-        // eys, but it
-        // does work
-        drive.setResetVisionIMUCallback((pose) -> vision.resetCameraIMU(pose));
-
-        // The ModuleIOTalonFXS implementation provides an example implementation for
-        // TalonFXS controller connected to a CANdi with a PWM encoder. The
-        // implementations
-        // of ModuleIOTalonFX, ModuleIOTalonFXS, and ModuleIOSpark (from the Spark
-        // swerve
-        // template) can be freely intermixed to support alternative hardware
-        // arrangements.
-        // Please see the AdvantageKit template documentation for more information:
-        // https://docs.advantagekit.org/getting-started/template-projects/talonfx-swerve-template#custom-module-implementations
-        //
-        // drive =
-        // new Drive(
-        // new GyroIOPigeon2(),
-        // new ModuleIOTalonFXS(TunerConstants.FrontLeft),
-        // new ModuleIOTalonFXS(TunerConstants.FrontRight),
-        // new ModuleIOTalonFXS(TunerConstants.BackLeft),
-        // new ModuleIOTalonFXS(TunerConstants.BackRight));
-        break;
-
-      case SIM:
-        // Sim robot, instantiate physics sim IO implementations
-        simulation =
-            new SwerveDriveSimulation(Drive.mapleSimConfig, new Pose2d(3, 3, new Rotation2d()));
-
-        SimulatedArena.getInstance().addDriveTrainSimulation(simulation);
-        drive =
-            new Drive(
-                new GyroIOSim(simulation.getGyroSimulation()),
-                new ModuleIOTalonFXSim(
-                    Constants.tunerConstants.getFrontLeft(), simulation.getModules()[0]),
-                new ModuleIOTalonFXSim(
-                    Constants.tunerConstants.getFrontRight(), simulation.getModules()[1]),
-                new ModuleIOTalonFXSim(
-                    Constants.tunerConstants.getBackLeft(), simulation.getModules()[2]),
-                new ModuleIOTalonFXSim(
-                    Constants.tunerConstants.getBackRight(), simulation.getModules()[3]),
-                simulation::setSimulationWorldPose,
-                (pose) -> {});
-
-        vision =
-            new Vision(
-                drive,
-                new VisionIOPhotonVisionSim(
-                    VisionConstants.camera0Name,
-                    VisionConstants.robotToCamera0,
-                    simulation::getSimulatedDriveTrainPose),
-                new VisionIOPhotonVisionSim(
-                    VisionConstants.camera1Name,
-                    VisionConstants.robotToCamera1,
-                    simulation::getSimulatedDriveTrainPose));
-        break;
-      case MUSIC:
-        break;
-      default:
-        // Replayed robot, disable IO implementations
-        drive =
-            new Drive(
-                new GyroIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {},
-                new ModuleIO() {},
-                (pose) -> {},
-                (pose) -> {});
-
-        vision = new Vision(drive, new VisionIO() {}, new VisionIO() {});
-        break;
-    }
-
-    // Set up auto routines
-    // autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
-
-    // Set up SysId routines
-    // autoChooser.addOption(
-    // "Drive Wheel Radius Characterization",
-    // DriveCommands.wheelRadiusCharacterization(drive));
-    // autoChooser.addOption(
-    // "Drive Simple FF Characterization",
-    // DriveCommands.feedforwardCharacterization(drive));
-    // autoChooser.addOption(
-    // "Drive SysId (Quasistatic Forward)",
-    // drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    // autoChooser.addOption(
-    // "Drive SysId (Quasistatic Reverse)",
-    // drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    // autoChooser.addOption(
-    // "Drive SysId (Dynamic Forward)",
-    // drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    // autoChooser.addOption(
-    // "Drive SysId (Dynamic Reverse)",
-    // drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-    // autoChooser.addOption("Sim Physics Test", new
-    // PathPlannerAuto("SimPhysTest"));
-
-    // Configure the button bindings
     Command crazyCommand = new InstantCommand(this::playMusic).ignoringDisable(true);
-
+    songChooser.addOption("Rick Roll", Songs.RickRoll);
+    songChooser.addOption("Megalovania", Songs.Megalovania);
     SmartDashboard.putData("Do Thing!", crazyCommand);
   }
 
   public void playMusic() {
-    int kFrontLeftDriveMotorId = 17;
-    int kFrontLeftSteerMotorId = 16;
-    int kFrontRightDriveMotorId = 20;
-    int kFrontRightSteerMotorId = 19;
-    int kBackLeftDriveMotorId = 11;
-    int kBackLeftSteerMotorId = 10;
-    int kBackRightDriveMotorId = 14;
-    int kBackRightSteerMotorId = 13;
-
     AudioConfigs config = new AudioConfigs().withAllowMusicDurDisable(true);
 
-    TalonFX flDrive = new TalonFX(kFrontLeftDriveMotorId, "Drivebase 2025");
     flDrive.getConfigurator().apply(config);
-
-    TalonFX flSteer = new TalonFX(kFrontLeftSteerMotorId, "Drivebase 2025");
     flSteer.getConfigurator().apply(config);
-
-    TalonFX frDrive = new TalonFX(kFrontRightDriveMotorId, "Drivebase 2025");
     frDrive.getConfigurator().apply(config);
-
-    TalonFX frSteer = new TalonFX(kFrontRightSteerMotorId, "Drivebase 2025");
     frSteer.getConfigurator().apply(config);
-
-    TalonFX blDrive = new TalonFX(kBackLeftDriveMotorId, "Drivebase 2025");
     blDrive.getConfigurator().apply(config);
-
-    TalonFX blSteer = new TalonFX(kBackLeftSteerMotorId, "Drivebase 2025");
     blSteer.getConfigurator().apply(config);
-
-    TalonFX brDrive = new TalonFX(kBackRightDriveMotorId, "Drivebase 2025");
     brDrive.getConfigurator().apply(config);
-
-    TalonFX brSteer = new TalonFX(kBackRightSteerMotorId, "Drivebase 2025");
     brSteer.getConfigurator().apply(config);
 
-     TalonFX forwardShoot = new TalonFX(43, "rio");
     forwardShoot.getConfigurator().apply(config);
-     TalonFX backShoot = new TalonFX(44, "rio");
     backShoot.getConfigurator().apply(config);
-     TalonFX indexer = new TalonFX(45, "rio");
     indexer.getConfigurator().apply(config);
-     TalonFX collector = new TalonFX(46, "rio");
     collector.getConfigurator().apply(config);
 
-    m_orchestra.addInstrument(forwardShoot, 1);
-    m_orchestra.addInstrument(backShoot, 1);
-    m_orchestra.addInstrument(indexer, 1);
-    m_orchestra.addInstrument(collector, 1);
-    m_orchestra.addInstrument(flDrive);
-    m_orchestra.addInstrument(flSteer);
-    m_orchestra.addInstrument(frDrive);
-    m_orchestra.addInstrument(frSteer);
-    m_orchestra.addInstrument(blDrive);
-    m_orchestra.addInstrument(blSteer);
-    m_orchestra.addInstrument(brDrive);
-    m_orchestra.addInstrument(brSteer);
-    
+    // Melody Track (0)
+    m_orchestra.addInstrument(forwardShoot, 0);
+    m_orchestra.addInstrument(backShoot, 0);
+    m_orchestra.addInstrument(collector, 0);
+    m_orchestra.addInstrument(indexer, 0);
+    m_orchestra.addInstrument(flDrive, 0);
+    m_orchestra.addInstrument(frDrive, 0);
+    m_orchestra.addInstrument(blDrive, 0);
+    m_orchestra.addInstrument(blSteer, 0);
+    m_orchestra.addInstrument(brDrive, 0);
+    m_orchestra.addInstrument(brSteer, 0);
 
+    // Bass track (1)
+    m_orchestra.addInstrument(flSteer, 1);
+    m_orchestra.addInstrument(frSteer, 1);
+    m_orchestra.addInstrument(blSteer, 1);
+    m_orchestra.addInstrument(brSteer, 1);
 
-    var status = m_orchestra.loadMusic("notification.chrp");
+    switch (songChooser.get()) {
+      case RickRoll:
+        m_orchestra.loadMusic("rickroll.chrp");
+        break;
+      case Megalovania:
+        m_orchestra.loadMusic("megalovania.chrp");
+        break;
+      default:
+        m_orchestra.loadMusic("megalovania.chrp");
+        break;
+    }
 
     m_orchestra.play();
+
+    orchestraReplayNotifier.stop();
+    orchestraReplayNotifier.startPeriodic(120.0);
   }
 
-  /**
-   * Use this method to define your button->command mappings. Buttons can be created by
-   * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
-   * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
-   */
-  private void configureButtonBindings() {
-    // Default command, normal field-relative drive
-    if (Constants.controlScheme == Constants.ControlScheme.OI) {
-      drive.setDefaultCommand(
-          DriveCommands.joystickDrive(
-              drive,
-              () -> -leftJoystick.getY(), // -X (used to be)
-              () -> -leftJoystick.getX(), // -Y (used to be)
-              () -> rightJoystick.getX())); // Confirm if negitive or not
-    } else {
-
-      drive.setDefaultCommand(
-          DriveCommands.joystickDrive(
-              drive,
-              () -> -xboxController.getLeftY(),
-              () -> -xboxController.getLeftX(),
-              () -> -xboxController.getRightX()));
-    }
-    Logger.recordOutput("Control Scheme", Constants.controlScheme);
-
-    TestPathCommands.publishTestPaths(drive);
-
-    // Lock to 0° when A button is held
-    // controller
-    // .a()
-    // .whileTrue(
-    // DriveCommands.joystickDriveAtAngle(
-    // drive,
-    // () -> controller.getLeftY(), //- (used to be)
-    // () -> -controller.getLeftX(),
-    // () -> Rotation2d.kZero));
-
-    // Switch to X pattern when X button is pressed
-    // controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
-
-    // Reset gyro to 0° when B button is pressed
-    // controller
-    // .b()
-    // .onTrue(
-    // Commands.runOnce(
-    // () ->
-    // drive.setPose(
-    // new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
-    // drive)
-    // .ignoringDisable(true));
-  }
-
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-    return null;
-  }
-
-  /**
-   * This is called at robot initialization during sim
-   *
-   * <p>It temporarily positions the robot (See {@link #resetSimRobotPose} for actual initial robot
-   * positioning) and resets the {@link SimulatedArena} to standard field state
-   */
-  public void resetSimulationField() {
-    if (Constants.currentMode != Constants.Mode.SIM) return;
-
-    simulation.setSimulationWorldPose(new Pose2d(12, 1, new Rotation2d()));
-
-    SimulatedArena.getInstance().resetFieldForAuto();
-  }
-
-  /**
-   * This method is called during the periodic cycle during sim. The simulation state is updated and
-   * game pieces positions are logged for AdvantageScope visualization
-   *
-   * @see <a href= "https://shenzhen-robotics-alliance.github.io/maple-sim/reefscape/">MapleSim
-   *     docs</a> for information on how to display game pieces in AdvantageScope
-   */
-  public void updateSimulation() {
-    if (Constants.currentMode != Constants.Mode.SIM) return;
-
-    SimulatedArena.getInstance().simulationPeriodic();
-    Logger.recordOutput("FieldSimulation/RobotPosition", simulation.getSimulatedDriveTrainPose());
-    Logger.recordOutput(
-        "FieldSimulation/Coral", SimulatedArena.getInstance().getGamePiecesArrayByType("Coral"));
-    Logger.recordOutput(
-        "FieldSimulation/Algae", SimulatedArena.getInstance().getGamePiecesArrayByType("Algae"));
-  }
-
-  /**
-   * This method is called periodically during disabled so that if the alliance is changed it is
-   * registered
-   *
-   * <p>This method sets the {@link #simulation} world pose to mirrored positions based on alliance
-   * color
-   */
-  public void resetSimRobotPose() {
-    if (DriverStation.getAlliance().isPresent()
-        && DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
-      simulation.setSimulationWorldPose(new Pose2d(7.6, 6.6, new Rotation2d(Math.PI)));
-    } else {
-      simulation.setSimulationWorldPose(new Pose2d(10, 1.5, new Rotation2d()));
-    }
-  }
 }
