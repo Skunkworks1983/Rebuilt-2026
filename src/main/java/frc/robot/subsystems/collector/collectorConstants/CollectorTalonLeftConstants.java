@@ -5,6 +5,7 @@
 package frc.robot.subsystems.collector.collectorConstants;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 /**
@@ -27,7 +28,7 @@ public class CollectorTalonLeftConstants extends CollectorModuleConstants {
     turnMotorGearRatio = 39.375;
 
     // Real Turn PID
-    turnkP = 0.0;
+    turnkP = 6;
     turnkD = 0.0;
     turnkI = 0.0;
 
@@ -52,8 +53,8 @@ public class CollectorTalonLeftConstants extends CollectorModuleConstants {
     turnkA = 0.01;
 
     // Position
-    CollectorUpPos = Degrees.of(0);
-    CollectorDownPos = Degrees.of(90);
+    CollectorUpPos = Rotations.of(0);
+    CollectorDownPos = Rotations.of(.25);
 
     // Collector Intake Speeds
     CollectorIntakeSpeed = RotationsPerSecond.of(0);
@@ -63,6 +64,6 @@ public class CollectorTalonLeftConstants extends CollectorModuleConstants {
     LowerLimitChannel = 23;
 
     // Collector Position Tolerance
-    CollectorPosTolerance = Degrees.of(10);
+    CollectorPosTolerance = Degrees.of(3);
   }
 }

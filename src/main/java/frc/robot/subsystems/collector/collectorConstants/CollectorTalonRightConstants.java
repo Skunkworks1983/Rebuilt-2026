@@ -28,7 +28,7 @@ public class CollectorTalonRightConstants extends CollectorModuleConstants {
     turnMotorGearRatio = 39.375;
 
     // Real Turn PID
-    turnkP = 0.0;
+    turnkP = 6;
     turnkD = 0.0;
     turnkI = 0.0;
 
@@ -54,7 +54,7 @@ public class CollectorTalonRightConstants extends CollectorModuleConstants {
 
     // Position
     CollectorUpPos = Rotations.of(0);
-    CollectorDownPos = Rotations.of(.15);
+    CollectorDownPos = Rotations.of(.25);
 
     // Collector Intake Speeds
     CollectorIntakeSpeed = RotationsPerSecond.of(0);
@@ -64,6 +64,6 @@ public class CollectorTalonRightConstants extends CollectorModuleConstants {
     LowerLimitChannel = 21;
 
     // Collector Position Tolerance
-    CollectorPosTolerance = Degrees.of(10);
+    CollectorPosTolerance = Degrees.of(3);
   }
 }
