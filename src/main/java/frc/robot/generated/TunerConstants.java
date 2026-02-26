@@ -25,7 +25,7 @@ public interface TunerConstants {
     }
 
     // TODO: Replace with rebuilt constants
-    return new TunerConstantsSwervles();
+    return new TunerConstantsRebuilt();
   }
 
   public SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>
