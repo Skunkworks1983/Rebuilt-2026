@@ -32,7 +32,7 @@ public class TunerConstantsRebuilt implements TunerConstants {
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
     // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
 
-    private static final Slot0Configs driveGains = new Slot0Configs().withKP(0.1).withKI(0).withKD(0).withKS(0)
+    private static final Slot0Configs driveGains = new Slot0Configs().withKP(8).withKI(0).withKD(0).withKS(0)
             .withKV(.8); // KV : .124
 
     // The closed-loop output type to use for the steer motors;
@@ -40,7 +40,7 @@ public class TunerConstantsRebuilt implements TunerConstants {
     private static final ClosedLoopOutputType kSteerClosedLoopOutput = ClosedLoopOutputType.Voltage;
     // The closed-loop output type to use for the drive motors;
     // This affects the PID/FF gains for the drive motors
-    private static final ClosedLoopOutputType kDriveClosedLoopOutput = ClosedLoopOutputType.Voltage;
+    private static final ClosedLoopOutputType kDriveClosedLoopOutput = ClosedLoopOutputType.TorqueCurrentFOC;
 
     // The type of motor used for the drive motor
     private static final DriveMotorArrangement kDriveMotorType = DriveMotorArrangement.TalonFX_Integrated;

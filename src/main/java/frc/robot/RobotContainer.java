@@ -36,6 +36,7 @@ import frc.robot.commands.collectorCommands.CollectorIntake;
 import frc.robot.commands.collectorCommands.LeftCollectorDownState;
 import frc.robot.commands.collectorCommands.RightCollectorDownState;
 import frc.robot.subsystems.collector.Collector;
+import frc.robot.subsystems.collector.CollectorModuleIO;
 import frc.robot.subsystems.collector.CollectorModuleSimIO;
 import frc.robot.subsystems.collector.CollectorModuleTalonIO;
 import frc.robot.subsystems.collector.collectorConstants.CollectorTalonLeftConstants;
@@ -80,7 +81,6 @@ public class RobotContainer {
   private final Drive drive;
   private final Vision vision;
   private final Shooter shooter;
-  private final Collector collector;
   private final Indexer indexer;
 
   // Controller
@@ -142,12 +142,13 @@ public class RobotContainer {
         // eys, but it does work
         drive.setResetVisionIMUCallback((pose) -> vision.resetCameraIMU(pose));
 
-        indexer = new Indexer(new IndexerIOTalonFX(IndexerConstants.indexerMotorID));
+        indexer = new Indexer(new IndexerIO() {});
 
-        collector =
-            new Collector(
-                new CollectorModuleTalonIO(new CollectorTalonLeftConstants()),
-                new CollectorModuleTalonIO(new CollectorTalonRightConstants()));
+        // collector =
+        //     new Collector(
+        //        new CollectorModuleIO(){}, new CollectorModuleIO() {
+                
+        //        });
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
@@ -206,10 +207,10 @@ public class RobotContainer {
                     VisionConstants.robotToCamera1,
                     simulation::getSimulatedDriveTrainPose));
 
-        collector =
-            new Collector(
-                new CollectorModuleSimIO(simulation, new CollectorTalonLeftConstants()),
-                new CollectorModuleSimIO(simulation, new CollectorTalonRightConstants()));
+        // collector =
+            // new Collector(
+                // new CollectorModuleSimIO(simulation, new CollectorTalonLeftConstants()),
+                // new CollectorModuleSimIO(simulation, new CollectorTalonRightConstants()));
 
         indexer = new Indexer(new IndexerIOSim(IndexerConstants.indexerMotorID));
 
@@ -230,10 +231,10 @@ public class RobotContainer {
 
         vision = new Vision(drive, new VisionIO() {}, new VisionIO() {});
 
-        collector =
-            new Collector(
-                new CollectorModuleSimIO(simulation, new CollectorTalonLeftConstants()),
-                new CollectorModuleSimIO(simulation, new CollectorTalonRightConstants()));
+        // collector =
+        //     new Collector(
+        //         new CollectorModuleSimIO(simulation, new CollectorTalonLeftConstants()),
+        //         new CollectorModuleSimIO(simulation, new CollectorTalonRightConstants()));
 
         indexer = new Indexer(new IndexerIO() {});
         break;
@@ -349,37 +350,37 @@ public class RobotContainer {
         "Shooter/Set Manual Velocity",
         new InstantCommand(() -> shooter.setManualVelocity(RotationsPerSecond.of(25))));
 
-    // State Buttons
-    JoystickButton manualModeSwitch =
-        new JoystickButton(buttonJoystick, Constants.JoystickConstants.CollectorManualModeID);
-    JoystickButton autoModeSwitch =
-        new JoystickButton(buttonJoystick, Constants.JoystickConstants.CollectorAutoModeID);
+    // // State Buttons
+    // JoystickButton manualModeSwitch =
+    //     new JoystickButton(buttonJoystick, Constants.JoystickConstants.CollectorManualModeID);
+    // JoystickButton autoModeSwitch =
+    //     new JoystickButton(buttonJoystick, Constants.JoystickConstants.CollectorAutoModeID);
 
-    autoModeSwitch.onTrue(new AutomaticStateChange(collector, () -> drive.getDirection()));
+    // autoModeSwitch.onTrue(new AutomaticStateChange(collector, () -> drive.getDirection()));
 
-    manualModeSwitch
-        .negate()
-        .and(autoModeSwitch.negate())
-        .onTrue(new BothCollectorsUpState(collector));
+    // manualModeSwitch
+    //     .negate()
+    //     .and(autoModeSwitch.negate())
+    //     .onTrue(new BothCollectorsUpState(collector));
 
-    // Collector Intake Button
-    new JoystickButton(buttonJoystick, Constants.JoystickConstants.CollectorIntakeID)
-        .whileTrue(new CollectorIntake(collector));
+    // // Collector Intake Button
+    // new JoystickButton(buttonJoystick, Constants.JoystickConstants.CollectorIntakeID)
+    //     .whileTrue(new CollectorIntake(collector));
 
-    // Right Collector Down
-    new JoystickButton(buttonJoystick, Constants.JoystickConstants.CollectorRightDownID)
-        .and(manualModeSwitch)
-        .onTrue(new RightCollectorDownState(collector));
+    // // Right Collector Down
+    // new JoystickButton(buttonJoystick, Constants.JoystickConstants.CollectorRightDownID)
+    //     .and(manualModeSwitch)
+    //     .onTrue(new RightCollectorDownState(collector));
 
-    // Left Collector Down
-    new JoystickButton(buttonJoystick, Constants.JoystickConstants.CollectorLeftDownID)
-        .and(manualModeSwitch)
-        .onTrue(new LeftCollectorDownState(collector));
+    // // Left Collector Down
+    // new JoystickButton(buttonJoystick, Constants.JoystickConstants.CollectorLeftDownID)
+    //     .and(manualModeSwitch)
+    //     .onTrue(new LeftCollectorDownState(collector));
 
-    // Both Collectors Up
-    new JoystickButton(leftJoystick, Constants.JoystickConstants.CollectorBothUpID)
-        .and(manualModeSwitch)
-        .onTrue(new BothCollectorsUpState(collector));
+    // // Both Collectors Up
+    // new JoystickButton(leftJoystick, Constants.JoystickConstants.CollectorBothUpID)
+    //     .and(manualModeSwitch)
+    //     .onTrue(new BothCollectorsUpState(collector));
 
     // Lock to 0° when A button is held
     // controller
