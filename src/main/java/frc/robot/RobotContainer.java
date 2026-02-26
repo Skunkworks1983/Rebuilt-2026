@@ -30,17 +30,6 @@ import frc.robot.commands.DriveCommands;
 import frc.robot.commands.IndexerCommand;
 import frc.robot.commands.Shooter.NoYawShootHub;
 import frc.robot.commands.TestPathCommands;
-import frc.robot.commands.collectorCommands.AutomaticStateChange;
-import frc.robot.commands.collectorCommands.BothCollectorsUpState;
-import frc.robot.commands.collectorCommands.CollectorIntake;
-import frc.robot.commands.collectorCommands.LeftCollectorDownState;
-import frc.robot.commands.collectorCommands.RightCollectorDownState;
-import frc.robot.subsystems.collector.Collector;
-import frc.robot.subsystems.collector.CollectorModuleIO;
-import frc.robot.subsystems.collector.CollectorModuleSimIO;
-import frc.robot.subsystems.collector.CollectorModuleTalonIO;
-import frc.robot.subsystems.collector.collectorConstants.CollectorTalonLeftConstants;
-import frc.robot.subsystems.collector.collectorConstants.CollectorTalonRightConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -52,7 +41,6 @@ import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.IndexerConstants;
 import frc.robot.subsystems.indexer.IndexerIO;
 import frc.robot.subsystems.indexer.IndexerIOSim;
-import frc.robot.subsystems.indexer.IndexerIOTalonFX;
 import frc.robot.subsystems.shooter.FlywheelIO;
 import frc.robot.subsystems.shooter.FlywheelIOSim;
 import frc.robot.subsystems.shooter.PivotIO;
@@ -147,7 +135,7 @@ public class RobotContainer {
         // collector =
         //     new Collector(
         //        new CollectorModuleIO(){}, new CollectorModuleIO() {
-                
+
         //        });
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
@@ -208,9 +196,9 @@ public class RobotContainer {
                     simulation::getSimulatedDriveTrainPose));
 
         // collector =
-            // new Collector(
-                // new CollectorModuleSimIO(simulation, new CollectorTalonLeftConstants()),
-                // new CollectorModuleSimIO(simulation, new CollectorTalonRightConstants()));
+        // new Collector(
+        // new CollectorModuleSimIO(simulation, new CollectorTalonLeftConstants()),
+        // new CollectorModuleSimIO(simulation, new CollectorTalonRightConstants()));
 
         indexer = new Indexer(new IndexerIOSim(IndexerConstants.indexerMotorID));
 
