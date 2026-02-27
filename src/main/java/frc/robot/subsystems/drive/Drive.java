@@ -17,7 +17,10 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.pathfinding.Pathfinding;
+import com.pathplanner.lib.util.DriveFeedforwards;
 import com.pathplanner.lib.util.PathPlannerLogging;
+import com.pathplanner.lib.util.swerve.SwerveSetpoint;
+import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
@@ -86,9 +89,10 @@ public class Drive extends SubsystemBase implements VisionConsumer {
                   tunerConstants.getBackRight().LocationY)));
 
   // PathPlanner config constants
-  private static final double ROBOT_MASS_KG = 74.088;
+  private static final double ROBOT_MASS_KG = 74.088; // With bumpers and battery
   private static final double ROBOT_MOI = 6.883;
   private static final double WHEEL_COF = 1.2;
+  private static final AngularVelocity MAX_MODULE_OMEGA_RAD_PER_SEC = RadiansPerSecond.of(18.0);
   private static final RobotConfig PP_CONFIG =
       new RobotConfig(
           ROBOT_MASS_KG,
@@ -102,6 +106,9 @@ public class Drive extends SubsystemBase implements VisionConsumer {
               tunerConstants.getFrontLeft().SlipCurrent,
               1),
           getModuleTranslations());
+  private final SwerveSetpointGenerator setpointGenerator =
+      new SwerveSetpointGenerator(PP_CONFIG, MAX_MODULE_OMEGA_RAD_PER_SEC);
+  private SwerveSetpoint previousSetpoint;
 
   static final Lock odometryLock = new ReentrantLock();
   private final GyroIO gyroIO;
@@ -203,6 +210,11 @@ public class Drive extends SubsystemBase implements VisionConsumer {
                 (state) -> Logger.recordOutput("Drive/SysIdState", state.toString())),
             new SysIdRoutine.Mechanism(
                 (voltage) -> runCharacterization(voltage.in(Volts)), null, this));
+    ChassisSpeeds currentSpeeds = getChassisSpeeds();
+    SwerveModuleState[] currentStates = getModuleStates();
+    previousSetpoint =
+        new SwerveSetpoint(
+            currentSpeeds, currentStates, DriveFeedforwards.zeros(PP_CONFIG.numModules));
   }
 
   @Override
@@ -272,22 +284,17 @@ public class Drive extends SubsystemBase implements VisionConsumer {
    * @param speeds Speeds in meters/sec
    */
   public void runVelocity(ChassisSpeeds speeds) {
-    // Calculate module setpoints
-    ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(speeds, 0.02);
-    SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(discreteSpeeds);
-    SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, tunerConstants.getSpeedAt12Volts());
+    previousSetpoint =
+        setpointGenerator.generateSetpoint(previousSetpoint, speeds, Seconds.of(0.02));
 
-    // Log unoptimized setpoints and setpoint speeds
+    var setpointStates = previousSetpoint.moduleStates();
+
     Logger.recordOutput("SwerveStates/Setpoints", setpointStates);
-    Logger.recordOutput("SwerveChassisSpeeds/Setpoints", discreteSpeeds);
+    Logger.recordOutput("SwerveChassisSpeeds/Setpoints", previousSetpoint.robotRelativeSpeeds());
 
-    // Send setpoints to modules
     for (int i = 0; i < 4; i++) {
       modules[i].runSetpoint(setpointStates[i]);
     }
-
-    // Log optimized setpoints (runSetpoint mutates each state)
-    Logger.recordOutput("SwerveStates/SetpointsOptimized", setpointStates);
   }
 
   /** Runs the drive in a straight line with the specified drive output. */

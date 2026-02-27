@@ -20,9 +20,7 @@ import java.nio.ByteBuffer;
 
 /// @cond FLATBUFFERS_INTERNAL
 
-/**
- * All vector access objects derive from this class, and add their own accessors.
- */
+/** All vector access objects derive from this class, and add their own accessors. */
 public class BaseVector {
   /** Used to hold the vector data position. */
   private int vector;
@@ -56,10 +54,10 @@ public class BaseVector {
    * Re-init the internal state with an external buffer {@code ByteBuffer}, an offset within and
    * element size.
    *
-   * This method exists primarily to allow recycling vector instances without risking memory leaks
-   * due to {@code ByteBuffer} references.
+   * <p>This method exists primarily to allow recycling vector instances without risking memory
+   * leaks due to {@code ByteBuffer} references.
    */
-  protected void __reset(int _vector, int _element_size, ByteBuffer _bb) { 
+  protected void __reset(int _vector, int _element_size, ByteBuffer _bb) {
     bb = _bb;
     if (bb != null) {
       vector = _vector;
@@ -75,8 +73,8 @@ public class BaseVector {
   /**
    * Resets the internal state with a null {@code ByteBuffer} and a zero position.
    *
-   * This method exists primarily to allow recycling vector instances without risking memory leaks
-   * due to {@code ByteBuffer} references. The instance will be unusable until it is assigned
+   * <p>This method exists primarily to allow recycling vector instances without risking memory
+   * leaks due to {@code ByteBuffer} references. The instance will be unusable until it is assigned
    * again to a {@code ByteBuffer}.
    */
   public void reset() {

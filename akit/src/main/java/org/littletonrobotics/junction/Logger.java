@@ -1,4 +1,4 @@
-// Copyright (c) 2021-2025 Littleton Robotics
+// Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
 //
 // Use of this source code is governed by a BSD
@@ -16,6 +16,7 @@ import edu.wpi.first.util.struct.StructSerializable;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.util.Color;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,7 +38,7 @@ import us.hebi.quickbuf.ProtoMessage;
 
 /** Central class for recording and replaying log data. */
 public class Logger {
-  private static final int receiverQueueCapcity = 500; // 10s at 50Hz
+  private static final int receiverQueueCapacity = 500; // 10s at 50Hz
 
   private static boolean running = false;
   private static long cycleCount = 0;
@@ -52,7 +53,7 @@ public class Logger {
 
   private static LogReplaySource replaySource;
   private static final BlockingQueue<LogTable> receiverQueue =
-      new ArrayBlockingQueue<LogTable>(receiverQueueCapcity);
+      new ArrayBlockingQueue<LogTable>(receiverQueueCapacity);
   private static final ReceiverThread receiverThread = new ReceiverThread(receiverQueue);
   private static boolean receiverQueueFault = false;
 
@@ -157,6 +158,17 @@ public class Logger {
         if (!isValid) {
           DriverStation.reportError(
               "The main robot class must inherit from LoggedRobot when using AdvantageKit. For more details, check the AdvantageKit installation documentation: https://docs.advantagekit.org/getting-started/installation\n\n*** EXITING DUE TO INVALID ADVANTAGEKIT INSTALLATION, SEE ABOVE. ***",
+              false);
+          System.exit(1);
+        }
+      }
+
+      // In replay, check that HAL sim extensions are not loaded
+      if (replaySource != null) {
+        String halSimEnv = System.getenv("HALSIM_EXTENSIONS");
+        if (halSimEnv != null && halSimEnv.length() > 0) {
+          DriverStation.reportError(
+              "All HAL simulation extensions must be disabled when running AdvantageKit replay, including the simulation GUI and DriverStation connection. Check the configuration in \"build.gradle\" and ensure that all checkboxes are disabled in the VSCode simulation popup.\n\n*** EXITING DUE TO INVALID SIMULATION CONFIGURATION, SEE ABOVE. ***",
               false);
           System.exit(1);
         }
@@ -1384,6 +1396,25 @@ public class Logger {
   public static void recordOutput(String key, LoggedMechanism2d value) {
     if (running) {
       value.logOutput(outputTable.getSubtable(key));
+    }
+  }
+
+  /**
+   * Records a single output field for easy access when viewing the log. On the simulator, use this
+   * method to record extra data based on the original inputs.
+   *
+   * <p>This method is <b>not thread-safe</b> and should only be called from the main thread. Check
+   * the <a href=
+   * "https://docs.advantagekit.org/getting-started/common-issues/multithreading">documentation</a>
+   * for details.
+   *
+   * @param key The name of the field to record. It will be stored under "/RealOutputs" or
+   *     "/ReplayOutputs"
+   * @param value The value of the field.
+   */
+  public static void recordOutput(String key, Color value) {
+    if (running) {
+      outputTable.put(key, value);
     }
   }
 }
