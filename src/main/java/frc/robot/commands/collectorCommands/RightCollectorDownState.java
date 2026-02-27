@@ -12,7 +12,16 @@ import org.littletonrobotics.junction.Logger;
 public class RightCollectorDownState extends Command {
   private Collector collector;
 
-  /** Creates a new RightCollectorDownState. */
+  /**Creates a new RightCollectorDownState.
+   * <h2> Implementation </h2>
+   * 
+   * <ol>
+   *  <li> Ensures Left Collector is up
+   *  <li> Sends Right Collector down
+   * </ol>
+   * 
+   * @param collector The collector subsystem
+   */
   public RightCollectorDownState(Collector collector) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.collector = collector;

@@ -17,6 +17,14 @@ import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstant
 import org.ironmaple.simulation.IntakeSimulation;
 import org.ironmaple.simulation.drivesims.AbstractDriveTrainSimulation;
 
+import com.ctre.phoenix6.sim.ChassisReference;
+
+/**
+ * The collector sim class
+ * <ul> Uses ModuleTalonIo Class for methods
+ * @author Liam B
+ * @author Arlo
+ */
 public class CollectorModuleSimIO extends CollectorModuleTalonIO {
   private IntakeSimulation collectorSimulation;
 
@@ -31,6 +39,11 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
   private final double minimumCollectorRadiansToCollect = 1.55;
   final double minimumCollectorSpeedToCollect = 5;
 
+  /** 
+   * The Collector Sim Constructor
+   * @param driveTrain DriveTrain Simulation (AbstractDriveTrainSimulation)
+   * @param constants Collector Constants, left <h7> OR </h7> right (CollectorModuleConstants) 
+   */
   public CollectorModuleSimIO(
       AbstractDriveTrainSimulation driveTrain, CollectorModuleConstants constants) {
 
@@ -88,29 +101,17 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
   double j;
 
   /** Change upper limit switch value */
-  public boolean changeUpperLimitValue() {
-    if (side.equals(Side.LEFT)) {
-      return turnMotorSim
-          .getAngularPosition()
-          .lte(constants.CollectorUpPos.plus(constants.CollectorPosTolerance));
-    } else {
-      return turnMotorSim
-          .getAngularPosition()
-          .lte(constants.CollectorUpPos.plus(constants.CollectorPosTolerance));
-    }
+  public boolean isUpperLimitTrue() {
+    return turnMotorSim
+        .getAngularPosition()
+        .lte(constants.CollectorUpPos.plus(constants.CollectorPosTolerance));
   }
 
   /** Change lower limit switch value */
-  public boolean changeLowerLimitValue() {
-    if (side.equals(Side.LEFT)) {
-      return turnMotorSim
-          .getAngularPosition()
-          .gte(constants.CollectorDownPos.plus(constants.CollectorPosTolerance));
-    } else {
-      return turnMotorSim
-          .getAngularPosition()
-          .gte(constants.CollectorDownPos.plus(constants.CollectorPosTolerance));
-    }
+  public boolean isLowerLimitTrue() {
+    return turnMotorSim
+        .getAngularPosition()
+        .gte(constants.CollectorDownPos.plus(constants.CollectorPosTolerance));
   }
 
   /**
@@ -154,8 +155,8 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
     input.intakeCurrentAmps = Current.ofBaseUnits(intakeMotorSim.getCurrentDrawAmps(), Amps);
 
     // limit switches inputs
-    upperLimitSim.setValue(changeUpperLimitValue());
-    lowerLimitSim.setValue(changeLowerLimitValue());
+    upperLimitSim.setValue(isUpperLimitTrue());
+    lowerLimitSim.setValue(isLowerLimitTrue());
     input.upperTriggered = upperLimitSim.getValue();
     input.lowerTriggered = lowerLimitSim.getValue();
 

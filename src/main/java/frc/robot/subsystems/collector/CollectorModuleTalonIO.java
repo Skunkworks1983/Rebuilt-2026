@@ -25,7 +25,6 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotBase;
-import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstants;
 import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstants.Side;
 
@@ -69,7 +68,9 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
   private final Debouncer turnConnectedDebounce =
       new Debouncer(0.5, Debouncer.DebounceType.kFalling);
 
-  /** Instanciates, configures, and sets up the IO inputs for motors */
+  /** Instanciates, configures, and sets up the IO inputs for motors 
+   * @param constants left <h7> OR </h7> right constants
+  */
   public CollectorModuleTalonIO(CollectorModuleConstants constants) {
     // Constants
     this.constants = constants;
@@ -91,12 +92,11 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     // Config for turnMotor
     var turnConfig = new TalonFXConfiguration();
     turnConfig.Feedback.SensorToMechanismRatio = constants.turnMotorGearRatio;
-    turnConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
     // Pid Configs for Turn Motor
     var turnSlot0Configs = turnConfig.Slot0;
 
-    if (!RobotBase.isSimulation()) {
+    if (RobotBase.isReal()) {
       turnSlot0Configs.kP = constants.turnkP;
       turnSlot0Configs.kD = constants.turnkD;
       turnSlot0Configs.kI = constants.turnkI;
@@ -104,6 +104,10 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
       turnSlot0Configs.kP = constants.SimTurnkP;
       turnSlot0Configs.kD = constants.SimTurnkD;
       turnSlot0Configs.kI = constants.SimTurnkI;
+    } else {
+      turnSlot0Configs.kP = constants.turnkP;
+      turnSlot0Configs.kD = constants.turnkD;
+      turnSlot0Configs.kI = constants.turnkI;
     }
 
     turnSlot0Configs.kS = constants.turnkS;
@@ -121,7 +125,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     // PID config for intakeMotor
     var intakeConfig = new TalonFXConfiguration();
 
-    if (!RobotBase.isSimulation()) {
+    if (RobotBase.isReal()) {
       intakeConfig.Slot0.kP = constants.intakekP;
       intakeConfig.Slot0.kD = constants.intakekP;
       intakeConfig.Slot0.kI = constants.intakekI;
@@ -165,7 +169,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
   /**
    * Updates our inputs for all motors
    *
-   * @param
+   * @param inputs
    */
   public void updateInputs(CollectorIOInputs inputs) {
     // Refresh all signals
@@ -226,21 +230,15 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
    * <ul>
    *   <li>This is to help ensure that we only have one collectordown at a time
    * </ul>
+   * 
+   * @return whether or not collector is down
    */
   public boolean isCollectorDown() {
-    if (side.equals(Side.LEFT)) {
-      return lowerLimitSwitch.get()
-          || turnMotor
-              .getPosition()
-              .getValue()
-              .gte(constants.CollectorDownPos.minus(constants.CollectorPosTolerance));
-    } else {
-      return lowerLimitSwitch.get()
-          || turnMotor
-              .getPosition()
-              .getValue()
-              .gte(constants.CollectorDownPos.minus(constants.CollectorPosTolerance));
-    }
+    return lowerLimitSwitch.get()
+        || turnMotor
+            .getPosition()
+            .getValue()
+            .gte(constants.CollectorDownPos.minus(constants.CollectorPosTolerance));
   }
 
   /**
@@ -249,21 +247,15 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
    * <ul>
    *   <li>This is to help ensure that we only have one collectordown at a time
    * </ul>
+   * 
+   * @return whether or not collector is up
    */
   public boolean isCollectorUp() {
-    if (side.equals(Side.LEFT)) {
-      return upperLimitSwitch.get()
-          || turnMotor
-              .getPosition()
-              .getValue()
-              .lte(constants.CollectorUpPos.plus(constants.CollectorPosTolerance));
-    } else {
-      return upperLimitSwitch.get()
-          || turnMotor
-              .getPosition()
-              .getValue()
-              .lte(constants.CollectorUpPos.plus(constants.CollectorPosTolerance));
-    }
+    return upperLimitSwitch.get()
+        || turnMotor
+            .getPosition()
+            .getValue()
+            .lte(constants.CollectorUpPos.plus(constants.CollectorPosTolerance));
   }
 
   // Gets side i.e: left
