@@ -68,7 +68,9 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
   private final Debouncer turnConnectedDebounce =
       new Debouncer(0.5, Debouncer.DebounceType.kFalling);
 
-  /** Instanciates, configures, and sets up the IO inputs for motors */
+  /** Instanciates, configures, and sets up the IO inputs for motors 
+   * @param constants left <h7> OR </h7> right constants
+  */
   public CollectorModuleTalonIO(CollectorModuleConstants constants) {
     // Constants
     this.constants = constants;
@@ -167,7 +169,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
   /**
    * Updates our inputs for all motors
    *
-   * @param
+   * @param inputs
    */
   public void updateInputs(CollectorIOInputs inputs) {
     // Refresh all signals
@@ -228,6 +230,8 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
    * <ul>
    *   <li>This is to help ensure that we only have one collectordown at a time
    * </ul>
+   * 
+   * @return whether or not collector is down
    */
   public boolean isCollectorDown() {
     return lowerLimitSwitch.get()
@@ -243,6 +247,8 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
    * <ul>
    *   <li>This is to help ensure that we only have one collectordown at a time
    * </ul>
+   * 
+   * @return whether or not collector is up
    */
   public boolean isCollectorUp() {
     return upperLimitSwitch.get()

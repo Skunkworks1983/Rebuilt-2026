@@ -6,6 +6,7 @@ package frc.robot.commands.collectorCommands;
 
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.collector.Collector;
 import frc.robot.subsystems.collector.CollectorModule;
@@ -18,7 +19,16 @@ public class CollectorIntake extends Command {
   CollectorModule rightCollector;
   CollectorModule lastModule;
 
-  /** Creates a new CollectorIntake. */
+  /**Creates a new CollectorIntake.
+   * <h2> Implementation </h2>
+   * 
+   * <ol>
+   *  <li> Uses the collectorModule's isCollectorUp && isCollectorDown commands to decide which collector is down
+   *  <li> Starts the collector intake for the down collector
+   * </ol>
+   * 
+   * @param collector The collector subsystem WARNING: Not Required!!
+   */
   public CollectorIntake(Collector collector) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.collector = collector;
@@ -26,7 +36,7 @@ public class CollectorIntake extends Command {
     rightCollector = collector.getRightCollector();
   }
 
-  // Called when the command is initially scheduled.
+  //Called when the command is initially scheduled.
   @Override
   public void initialize() {
     Logger.recordOutput("Commands/Collector/CollectorIntake", true);

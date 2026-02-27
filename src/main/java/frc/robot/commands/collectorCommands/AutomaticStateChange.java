@@ -15,7 +15,9 @@ import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
+/**
+ * The Automatic State for the collector
+*/
 public class AutomaticStateChange extends Command {
   private Collector collector;
   private double currDirection;
@@ -24,7 +26,19 @@ public class AutomaticStateChange extends Command {
   private boolean isGoingRight;
   private boolean wasGoingRight;
 
-  /** Creates a new AutomaticStateChange. */
+  /**Creates a new AutomaticStateChange.
+   * <h2> Implementation </h2>
+   * 
+   * <ol>
+   *  <li> Uses a debounced current direction {@link LinearVelocity} to decide (using +/-) what direction its going
+   *  <li> Using whether it is going right and whether it WAS going right it changes which collector it wants up or down
+   *  <li> Sets the collector it wants up, up, and then waits for it to be FULLY up before sending the collector it wants down, down
+   *  <li> ON END, both collector will go UP
+   * </ol>
+   * 
+   * @param collector The collector subsystem
+   * @param direction The {@link LinearVelocity} of the robot (+ = left, - = right)
+   */
   public AutomaticStateChange(Collector collector, Supplier<LinearVelocity> direction) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.collector = collector;
@@ -47,7 +61,7 @@ public class AutomaticStateChange extends Command {
   public void execute() {
     currDirection = direction.get().in(MetersPerSecond);
     Logger.recordOutput("TEST/AutoCollector/currDirection", currDirection);
-    isGoingRight = debouncer.calculate(currDirection < 0); // Might need to swap < to >
+    isGoingRight = debouncer.calculate(currDirection < 0);
     Logger.recordOutput("TEST/AutoCollector/isGoingRight", isGoingRight);
     if(isGoingRight && !wasGoingRight) {
       if(collector.getRightCollector().isCollectorUp()) {

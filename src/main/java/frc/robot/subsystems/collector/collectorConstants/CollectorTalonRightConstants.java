@@ -9,7 +9,7 @@ import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 /**
- * This class is a grouping of constants with get methods
+ * This class is a grouping of constants
  *
  * <ul>
  *   Only to be used with The talonFX collector IO for the right collector
