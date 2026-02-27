@@ -357,12 +357,22 @@ public class RobotContainer {
 
     Timer timer = new Timer();
 
+    // if the index button is hed and more than a second elapses before the beam break is broken the indexer will reverse for 1 second before attempting to intake again
     if (runIndexer.getAsBoolean() == true) {
       timer.start();
+
+      if (shooter.getBeamBreak() == true) {
+        timer.reset();
+      }
+
       if (timer.get() > 1) {
         runIndexer.whileTrue(new IndexerReverseCommand(indexer));
       } else {
         runIndexer.whileTrue(new IndexerCommand(indexer));
+      }
+
+      if (timer.get() > 2) {
+        timer.reset();
       }
     }
 
