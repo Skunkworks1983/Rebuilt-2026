@@ -32,8 +32,15 @@ public class TunerConstantsRebuilt implements TunerConstants {
           .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
   // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
 
+  // Drive Torque Current gain velocity units Amps per RPS Errors
+  // Torque current means KS KV KA are in amps not volts, and do not work the same as voltage
+  // mode!!!
+  // kS is Amps to overcome static friction, kV accounts for speed dependent TORQUE LOSS (NOT MOTOR
+  // EMF), should be near 0
+  // kA models inertial torque
+  // E.g. kP 12 means 12 Amp per RPS of error, KS 3 means 3 Amps to overcome static friction
   private static final Slot0Configs driveGains =
-      new Slot0Configs().withKP(8).withKI(0).withKD(0).withKS(0.2).withKV(0.125).withKA(0.8); // KV : .124
+      new Slot0Configs().withKP(12).withKI(0).withKD(0).withKS(1.5).withKV(0.020817).withKA(0.70898).withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);; // KV : .124
 
   // The closed-loop output type to use for the steer motors;
   // This affects the PID/FF gains for the steer motors
