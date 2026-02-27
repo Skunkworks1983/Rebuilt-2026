@@ -17,6 +17,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -54,6 +55,7 @@ import frc.robot.subsystems.indexer.IndexerConstants;
 import frc.robot.subsystems.indexer.IndexerIO;
 import frc.robot.subsystems.indexer.IndexerIOSim;
 import frc.robot.subsystems.indexer.IndexerIOTalonFX;
+import frc.robot.subsystems.shooter.BeamBreakIO;
 import frc.robot.subsystems.shooter.FlywheelIO;
 import frc.robot.subsystems.shooter.FlywheelIOSim;
 import frc.robot.subsystems.shooter.PivotIO;
@@ -134,7 +136,9 @@ public class RobotContainer {
                 (pose) -> {},
                 (pose) -> {});
 
-        shooter = new Shooter(new FlywheelIO() {}, new FlywheelIO() {}, new PivotIO() {});
+        shooter =
+            new Shooter(
+                new FlywheelIO() {}, new FlywheelIO() {}, new PivotIO() {}, new BeamBreakIO() {});
 
         vision =
             new Vision(
@@ -194,7 +198,8 @@ public class RobotContainer {
             new Shooter(
                 new FlywheelIOSim(ShooterConstants.flywheelMotorOneId),
                 new FlywheelIOSim(ShooterConstants.flywheelSecondaryMotorId),
-                new PivotIOSim());
+                new PivotIOSim(),
+                null);
 
         vision =
             new Vision(
@@ -228,7 +233,9 @@ public class RobotContainer {
                 new ModuleIO() {},
                 (pose) -> {},
                 (pose) -> {});
-        shooter = new Shooter(new FlywheelIO() {}, new FlywheelIO() {}, new PivotIO() {});
+        shooter =
+            new Shooter(
+                new FlywheelIO() {}, new FlywheelIO() {}, new PivotIO() {}, new BeamBreakIO() {});
 
         vision = new Vision(drive, new VisionIO() {}, new VisionIO() {});
 
@@ -346,8 +353,19 @@ public class RobotContainer {
           new JoystickButton(xboxController, Constants.OIConstants.CollectorReverseIntakeID);
     }
 
-    runIndexer.whileTrue(new IndexerCommand(indexer));
     runIndexerReverse.whileTrue(new IndexerReverseCommand(indexer));
+
+    Timer timer = new Timer();
+
+    if (runIndexer.getAsBoolean() == true) {
+      timer.start();
+      if (timer.get() > 1) {
+        runIndexer.whileTrue(new IndexerReverseCommand(indexer));
+      } else {
+        runIndexer.whileTrue(new IndexerCommand(indexer));
+      }
+    }
+
     Logger.recordOutput("Control Scheme", Constants.controlScheme);
 
     TestPathCommands.publishTestPaths(drive);
