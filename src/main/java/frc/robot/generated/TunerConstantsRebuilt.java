@@ -40,7 +40,15 @@ public class TunerConstantsRebuilt implements TunerConstants {
   // kA models inertial torque
   // E.g. kP 12 means 12 Amp per RPS of error, KS 3 means 3 Amps to overcome static friction
   private static final Slot0Configs driveGains =
-      new Slot0Configs().withKP(12).withKI(0).withKD(0).withKS(1.5).withKV(0.020817).withKA(0.70898).withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);; // KV : .124
+      new Slot0Configs()
+          .withKP(12)
+          .withKI(0)
+          .withKD(0)
+          .withKS(1.5)
+          .withKV(0.020817)
+          .withKA(0.70898)
+          .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
+  ; // KV : .124
 
   // The closed-loop output type to use for the steer motors;
   // This affects the PID/FF gains for the steer motors

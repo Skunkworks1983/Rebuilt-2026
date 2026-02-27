@@ -92,8 +92,7 @@ public class Drive extends SubsystemBase implements VisionConsumer {
   private static final double ROBOT_MASS_KG = 74.088; // With bumpers and battery
   private static final double ROBOT_MOI = 6.883;
   private static final double WHEEL_COF = 1.2;
-  private static final AngularVelocity MAX_MODULE_OMEGA_RAD_PER_SEC =
-      RadiansPerSecond.of(18.0);
+  private static final AngularVelocity MAX_MODULE_OMEGA_RAD_PER_SEC = RadiansPerSecond.of(18.0);
   private static final RobotConfig PP_CONFIG =
       new RobotConfig(
           ROBOT_MASS_KG,
