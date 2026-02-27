@@ -42,7 +42,8 @@ public class ShooterCalculations {
    * @param possibleShot Whether the shot is physically possible given the constraints.
    */
   public record ShooterControls(
-      AngularVelocity shooterVelocity,
+      AngularVelocity upperFlywheelVelocity,
+      AngularVelocity lowerFlywheelVelocity,
       Angle shooterPitch,
       Rotation2d driveYaw,
       boolean possibleShot) {}
@@ -89,7 +90,7 @@ public class ShooterCalculations {
    * Calculates shooter controls using an apex-constrained ballistic model. It forces the trajectory
    * to peak a certain height above the Hub, meaning that it must enter with a downward trajectory
    *
-   * <h2>Implementation Details </h2>
+   * <h2>Implementation Details</h2>
    *
    * <ol>
    *   <li>Predicts the robot pose at ball release by extrapolating the current chassis speeds
@@ -224,6 +225,9 @@ public class ShooterCalculations {
 
     return new ShooterControls(
         RadiansPerSecond.of(flywheelSurfaceSpeed / ShooterConstants.flywheelRadius.in(Meters)),
+        RadiansPerSecond.of(
+            (flywheelSurfaceSpeed / ShooterConstants.flywheelRadius.in(Meters))
+                * ShooterSolverConstants.lowerFlywheelVelocityMultiplier.get()),
         Radians.of(finalPitch),
         finalDriveYaw,
         true);
@@ -394,6 +398,9 @@ public class ShooterCalculations {
     return new ShooterControls(
         RadiansPerSecond.of(
             calculatedFlywheelVelocity / ShooterConstants.flywheelRadius.in(Meters)),
+        RadiansPerSecond.of(
+            (calculatedFlywheelVelocity / ShooterConstants.flywheelRadius.in(Meters))
+                * ShooterSolverConstants.lowerFlywheelVelocityMultiplier.get()),
         calculatedPitch,
         finalYaw,
         true);
@@ -471,6 +478,10 @@ public class ShooterCalculations {
     double flywheelRadPerSec = flywheelSurfaceSpeed / ShooterConstants.flywheelRadius.in(Meters);
 
     return new ShooterControls(
-        RadiansPerSecond.of(flywheelRadPerSec), Radians.of(hoodAngle.getRadians()), driveYaw, true);
+        RadiansPerSecond.of(flywheelRadPerSec),
+        RadiansPerSecond.of(flywheelRadPerSec),
+        Radians.of(hoodAngle.getRadians()),
+        driveYaw,
+        true);
   }
 }

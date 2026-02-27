@@ -39,7 +39,10 @@ public class Shooter extends SubsystemBase {
    * @param shooterVelocity Target flywheel angular velocity.
    * @param shooterPitch Target pivot angle.
    */
-  public record ShooterSetpoints(AngularVelocity shooterVelocity, Angle shooterPitch) {}
+  public record ShooterSetpoints(
+      AngularVelocity upperFlywheelVelocity,
+      AngularVelocity lowerFlywheelVelocity,
+      Angle shooterPitch) {}
 
   private final FlywheelIO upperFlywheel;
   private final FlywheelIO lowerFlywheel;
@@ -305,17 +308,14 @@ public class Shooter extends SubsystemBase {
    * @param setpoints The calculated shooter controls containing pitch and velocity.
    */
   public void setShooterSetpoints(ShooterSetpoints setpoints) {
-    flywheelSetpoint = setpoints.shooterVelocity();
-    pivotSetpoint = setpoints.shooterPitch();
+    AngularVelocity upperFlywheelSetpoint = setpoints.upperFlywheelVelocity();
+    AngularVelocity lowerFlywheelSetpoint = setpoints.lowerFlywheelVelocity();
+    Angle pivotSetpoint = setpoints.shooterPitch();
 
-    Logger.recordOutput(
-        "Shooter/Velocity Setpoint [Rot/s]",
-        flywheelSetpoint.in(RotationsPerSecond),
-        RotationsPerSecond);
-    Logger.recordOutput("Shooter/Pitch Setpoint [Deg]", pivotSetpoint.in(Degrees), Degrees);
+    Logger.recordOutput("Shooter/Setpoints", setpoints);
 
     pivot.setPosition(pivotSetpoint);
-    upperFlywheel.setVelocity(flywheelSetpoint);
-    lowerFlywheel.setVelocity(flywheelSetpoint);
+    upperFlywheel.setVelocity(upperFlywheelSetpoint);
+    lowerFlywheel.setVelocity(lowerFlywheelSetpoint);
   }
 }

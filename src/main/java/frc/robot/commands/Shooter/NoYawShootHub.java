@@ -43,7 +43,10 @@ public class NoYawShootHub extends Command {
             drive.getPose(), drive.getChassisSpeeds());
 
     shooter.setShooterSetpoints(
-        new ShooterSetpoints(controls.shooterVelocity(), controls.shooterPitch()));
+        new ShooterSetpoints(
+            controls.upperFlywheelVelocity(),
+            controls.lowerFlywheelVelocity(),
+            controls.shooterPitch()));
   }
 
   @Override
@@ -53,7 +56,8 @@ public class NoYawShootHub extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    shooter.setShooterSetpoints(new ShooterSetpoints(RadiansPerSecond.of(0), Degrees.of(0)));
+    shooter.setShooterSetpoints(
+        new ShooterSetpoints(RadiansPerSecond.of(0), RadiansPerSecond.of(0), Degrees.of(0)));
     Logger.recordOutput("Commands/Auto Shoot/Drive Aimed Goal No Yaw", false);
   }
 }

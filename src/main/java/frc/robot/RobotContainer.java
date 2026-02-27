@@ -291,10 +291,7 @@ public class RobotContainer {
 
       shootGoalButton.whileTrue(
           new DriveAimedAutoShoot(
-              drive,
-              shooter,
-              () -> -leftJoystick.getY(),
-              () -> -leftJoystick.getX()));
+              drive, shooter, () -> -leftJoystick.getY(), () -> -leftJoystick.getX()));
       shootButton.onTrue(new InstantCommand(this::launchSimFuel));
 
       runIndexer = new JoystickButton(buttonJoystick, IndexerConstants.runIndexerButtonId);
