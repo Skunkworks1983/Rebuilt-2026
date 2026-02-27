@@ -20,4 +20,7 @@ public class CollectorConstants {
       new Translation2d(Inches.of(inchesFromOriginX), Inches.of(inchesFromOriginY));
   public static final Translation2d collectorRightOriginTranslation =
       new Translation2d(Inches.of(-inchesFromOriginX), Inches.of(inchesFromOriginY));
+
+  // Collector tick number for auto state change
+  public static final double collectorTicksForAuto = 0.0;
 }

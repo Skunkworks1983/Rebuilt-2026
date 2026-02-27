@@ -9,6 +9,8 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -37,19 +39,19 @@ public interface CollectorModuleIO {
     public Current turnCurrentAmps = Amps.of(0.0);
     public double turnClosedLoopError = 0.0;
 
-    // Lower Intake Motor Inputs
-    public boolean lowerConnected = false;
-    public Angle lowerPositionRad = Degrees.of(0.0);
-    public AngularVelocity lowerVelocity = DegreesPerSecond.of(0.0);
-    public Voltage lowerAppliedVolts = Volts.of(0.0);
-    public Current lowerCurrentAmps = Amps.of(0.0);
+    // Intake Motor Inputs
+    public boolean intakeConnected = false;
+    public Angle intakePositionRad = Degrees.of(0.0);
+    public AngularVelocity intakeVelocity = DegreesPerSecond.of(0.0);
+    public Voltage intakeAppliedVolts = Volts.of(0.0);
+    public Current intakeCurrentAmps = Amps.of(0.0);
 
-    // Upper Intake Motor Inputs
-    public boolean upperConnected = false;
-    public Angle upperPositionRad = Degrees.of(0.0);
-    public AngularVelocity upperVelocity = DegreesPerSecond.of(0.0);
-    public Voltage upperAppliedVolts = Volts.of(0.0);
-    public Current upperCurrentAmps = Amps.of(0.0);
+    // Magnet Switch Inputs
+    public boolean upperTriggered = false;
+    public boolean lowerTriggered = false;
+
+    //
+    public boolean goingDown = false;
   }
 
   /**
@@ -90,7 +92,7 @@ public interface CollectorModuleIO {
   }
 
   /**
-   * Checks to see if the collector is down
+   * Checks to see if the collector is up
    *
    * <ul>
    *   <li>This is to help ensure that we only have one collectordown at a time
@@ -110,4 +112,9 @@ public interface CollectorModuleIO {
 
   // Sets collector down
   public default void goDown() {}
+
+  public default void setPivotGains(Slot0Configs slotConfigs) {}
+
+  public default void setMotionConstraints(MotionMagicConfigs motionMagicConfigs) {}
+  ;
 }

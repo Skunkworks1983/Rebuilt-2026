@@ -5,53 +5,65 @@
 package frc.robot.subsystems.collector.collectorConstants;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 /**
- * This class is a grouping of constants with get methods
+ * This class is a grouping of constants
  *
  * <ul>
  *   Only to be used with The talonFX collector IO for the left collector
  */
 public class CollectorTalonLeftConstants extends CollectorModuleConstants {
 
-  public CollectorTalonLeftConstants() {
+  public CollectorTalonLeftConstants() { // TODO: make constants
     // Collector Side
     collectorSide = Side.LEFT;
 
     // Hardware ID's
-    turnMotorID = 2;
-    intakeMotorLowerID = 0;
-    intakeMotorUpperID = 0;
+    turnMotorID = 59;
+    intakeMotorID = 50;
 
     // Gear ratio's
-    turnMotorGearRatio = 0.0;
+    turnMotorGearRatio = 39.375;
 
-    // Turn PID
-    turnkP = 5;
-    turnkD = 0;
+    // Real Turn PID
+    turnkP = 6;
+    turnkD = 0.0;
     turnkI = 0.0;
 
-    // Lower intake PID
-    lowerkP = 0.0;
-    lowerkD = 0.0;
-    lowerkI = 0.0;
+    // Real intake PID
+    intakekP = 0.0;
+    intakekD = 0.0;
+    intakekI = 0.0;
 
-    // Upper intake PID
-    upperkP = 0.0;
-    upperkD = 0.0;
-    upperkI = 0.0;
+    // Sim Turn PID
+    SimTurnkP = 13.5;
+    SimTurnkD = 12.5;
+    SimTurnkI = 0.4;
 
-    // Feed forward
+    // Sim intake PID
+    SimIntakekP = 0.0;
+    SimIntakekD = 0.0;
+    SimIntakekI = 0.0;
+
+    // feed forward
     turnkS = 0.25;
     turnkV = 0.12;
     turnkA = 0.01;
 
     // Position
-    CollectorUpPos = Degrees.of(0);
-    CollectorDownPos = Degrees.of(90);
+    CollectorUpPos = Rotations.of(0);
+    CollectorDownPos = Rotations.of(.25);
 
     // Collector Intake Speeds
     CollectorIntakeSpeed = RotationsPerSecond.of(0);
+
+    // Limit Switch Constants
+    UpperLimitChannel = 24;
+    LowerLimitChannel = 23;
+
+    // Collector Position Tolerance
+    CollectorPosTolerance = Degrees.of(3);
   }
 }
