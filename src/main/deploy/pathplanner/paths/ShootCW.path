@@ -58,7 +58,14 @@
       "name": "Point Towards Zone"
     }
   ],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Begin Indexing CW",
+      "waypointRelativePos": 0.44834571235651555,
+      "endWaypointRelativePos": 1.6475354490209364,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 4.0,

@@ -70,7 +70,14 @@
     }
   ],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "begin collecting CCW",
+      "waypointRelativePos": 0.15,
+      "endWaypointRelativePos": 1.9014179608372743,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 4.0,

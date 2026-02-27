@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.8226506024096383,
-        "y": 6.111265060240965
+        "x": 1.7359771754636228,
+        "y": 6.357489300998574
       },
       "isLocked": false,
       "linkedName": "ShootArchBeginCCW"
     },
     {
       "anchor": {
-        "x": 1.9647108433734939,
-        "y": 4.045927710843373
+        "x": 1.8912410841654772,
+        "y": 3.937960057061342
       },
       "prevControl": {
-        "x": 1.9155580088698876,
-        "y": 5.618818414958785
+        "x": 1.863671932472141,
+        "y": 4.76140068750332
       },
       "nextControl": {
-        "x": 2.0084216867469875,
-        "y": 2.647180722891566
+        "x": 1.9212805974253637,
+        "y": 3.0407342007115497
       },
       "isLocked": false,
       "linkedName": null
@@ -36,8 +36,8 @@
         "y": 1.0
       },
       "prevControl": {
-        "x": 2.1723373493975906,
-        "y": 1.6964698795180722
+        "x": 2.124136947218259,
+        "y": 1.6607560627674751
       },
       "nextControl": null,
       "isLocked": false,
@@ -53,12 +53,19 @@
         "y": 4.04
       },
       "rotationOffset": 0.0,
-      "minWaypointRelativePos": 0.36724565756823924,
-      "maxWaypointRelativePos": 1.7607940446650074,
+      "minWaypointRelativePos": 0.25,
+      "maxWaypointRelativePos": 1.75,
       "name": "Point Towards Zone"
     }
   ],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Begin collecting CCW",
+      "waypointRelativePos": 0.35,
+      "endWaypointRelativePos": 1.7,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 4.0,
