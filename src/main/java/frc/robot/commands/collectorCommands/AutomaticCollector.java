@@ -11,6 +11,7 @@ import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.collector.Collector;
+import frc.robot.subsystems.collector.CollectorModule;
 import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
@@ -18,13 +19,17 @@ import org.littletonrobotics.junction.Logger;
 /**
  * The Automatic State for the collector
 */
-public class AutomaticStateChange extends Command {
+public class AutomaticCollector extends Command {
   private Collector collector;
+  private CollectorModule leftCollector;
+  private CollectorModule rightCollector;
+  private CollectorModule lastModule;
   private double currDirection;
   private Supplier<LinearVelocity> direction;
   private Debouncer debouncer;
   private boolean isGoingRight;
   private boolean wasGoingRight;
+  private boolean shouldAgitate;
 
   /**Creates a new AutomaticStateChange.
    * <h2> Implementation </h2>
@@ -39,14 +44,17 @@ public class AutomaticStateChange extends Command {
    * @param collector The collector subsystem
    * @param direction The {@link LinearVelocity} of the robot (+ = left, - = right)
    */
-  public AutomaticStateChange(Collector collector, Supplier<LinearVelocity> direction) {
+  public AutomaticCollector(Collector collector, Supplier<LinearVelocity> direction, boolean shouldAgitate) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.collector = collector;
+    leftCollector = collector.getLeftCollector();
+    rightCollector = collector.getRightCollector();
     addRequirements(collector);
     this.direction = direction;
     debouncer = new Debouncer(0.06, DebounceType.kBoth);
     isGoingRight = false;
     wasGoingRight = true;
+    this.shouldAgitate = shouldAgitate;
   }
 
   // Called when the command is initially scheduled.
@@ -64,26 +72,41 @@ public class AutomaticStateChange extends Command {
     isGoingRight = debouncer.calculate(currDirection < 0);
     Logger.recordOutput("TEST/AutoCollector/isGoingRight", isGoingRight);
     if(isGoingRight && !wasGoingRight) {
-      if(collector.getRightCollector().isCollectorUp()) {
-        collector.getLeftCollector().goDown();
+      if(rightCollector.isCollectorUp()) {
+        leftCollector.goDown();
       } else {
-        collector.getRightCollector().goUp();
+        rightCollector.goUp();
       }
     } else if(!isGoingRight && wasGoingRight) {
-      if(collector.getLeftCollector().isCollectorUp()) {
-        collector.getRightCollector().goDown();
+      if(leftCollector.isCollectorUp()) {
+        rightCollector.goDown();
       } else {
-        collector.getLeftCollector().goUp();
+        leftCollector.goUp();
       }
     }
+    
+    if (leftCollector.isCollectorDown() && lastModule != leftCollector) {
+      if(shouldAgitate) {
+        rightCollector.setCollectorVelocity(rightCollector.getConstants().CollectorAgitateSpeed);
+      }
+      leftCollector.setCollectorVelocity(leftCollector.getConstants().CollectorIntakeSpeed);
+      lastModule = leftCollector;
+    } else if (rightCollector.isCollectorDown() && lastModule != rightCollector) {
+      if(shouldAgitate) {
+        leftCollector.setCollectorVelocity(leftCollector.getConstants().CollectorAgitateSpeed);
+      }
+      rightCollector.setCollectorVelocity(rightCollector.getConstants().CollectorIntakeSpeed);
+      lastModule = rightCollector;
+    }
+
     wasGoingRight = isGoingRight;
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    collector.getLeftCollector().goUp();
-    collector.getRightCollector().goUp();
+    leftCollector.goUp();
+    rightCollector.goUp();
     Logger.recordOutput("Commands/Collector/AutomaticStateChange", false);
   }
 

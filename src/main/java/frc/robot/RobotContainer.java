@@ -30,7 +30,8 @@ import frc.robot.commands.DriveCommands;
 import frc.robot.commands.IndexerCommand;
 import frc.robot.commands.Shooter.NoYawShootHub;
 import frc.robot.commands.TestPathCommands;
-import frc.robot.commands.collectorCommands.AutomaticStateChange;
+import frc.robot.commands.collectorCommands.Agitate;
+import frc.robot.commands.collectorCommands.AutomaticCollector;
 import frc.robot.commands.collectorCommands.BothCollectorsUpState;
 import frc.robot.commands.collectorCommands.CollectorIntake;
 import frc.robot.commands.collectorCommands.LeftCollectorDownState;
@@ -355,16 +356,38 @@ public class RobotContainer {
         new JoystickButton(buttonJoystick, Constants.JoystickConstants.CollectorManualModeID);
     JoystickButton autoModeSwitch =
         new JoystickButton(buttonJoystick, Constants.JoystickConstants.CollectorAutoModeID);
-
-    autoModeSwitch.whileTrue(new AutomaticStateChange(collector, drive::getDirection));
+    JoystickButton intakeButton = 
+        new JoystickButton(buttonJoystick, Constants.JoystickConstants.CollectorIntakeID);
 
     manualModeSwitch
         .negate()
         .and(autoModeSwitch.negate())
+        .and(shootGoalButton.negate())
         .onTrue(new BothCollectorsUpState(collector));
 
+    manualModeSwitch
+        .negate()
+        .and(autoModeSwitch.negate())
+        .and(shootGoalButton)
+        .onTrue(new BothCollectorsUpState(collector)
+        .alongWith(new Agitate(collector, false)));
+
+    manualModeSwitch
+        .onFalse(new BothCollectorsUpState(collector));
+
+    autoModeSwitch
+        .and(intakeButton)
+        .and(shootGoalButton)
+        .whileTrue(new AutomaticCollector(collector, drive::getDirection, true));
+
+    autoModeSwitch
+        .and(intakeButton)
+        .and(shootGoalButton.negate())
+        .whileTrue(new AutomaticCollector(collector, drive::getDirection, false));
+
     // Collector Intake Button
-    new JoystickButton(buttonJoystick, Constants.JoystickConstants.CollectorIntakeID)
+    intakeButton
+        .and(manualModeSwitch)
         .whileTrue(new CollectorIntake(collector));
 
     // Right Collector Down

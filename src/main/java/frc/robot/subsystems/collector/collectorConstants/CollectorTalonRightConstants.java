@@ -58,6 +58,7 @@ public class CollectorTalonRightConstants extends CollectorModuleConstants {
 
     // Collector Intake Speeds
     CollectorIntakeSpeed = RotationsPerSecond.of(0);
+    CollectorAgitateSpeed = RotationsPerSecond.of(0);
 
     // Limit Switch Constants
     UpperLimitChannel = 22;
