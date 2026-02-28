@@ -297,9 +297,11 @@ public class RobotContainer {
         shoot.whileTrue(new InstantCommand(this::shootSimProjectile));
       }
       index.whileTrue(new IndexerIntake(indexer));
-      aimGoal.whileTrue(
-          new DriveAimedGoal(
-              drive, () -> -leftJoystick.getY(), () -> -leftJoystick.getX(), shooter));
+
+      aimGoal.whileTrue(SimpleShoot.simpleShoot(shooter));
+      // aimGoal.whileTrue(
+      //     new DriveAimedGoal(
+      //         drive, () -> -leftJoystick.getY(), () -> -leftJoystick.getX(), shooter));
 
     } else {
 
