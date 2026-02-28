@@ -58,48 +58,105 @@ public class RobotContainer {
     Charlie_Kirk
   }
 
-  private static final String DRIVEBASE_CANBUS = "drivebase_2026";
+  private enum Hardware{
+    kitbot,
+    actual
+  }
+
+  public static final Hardware CURRENT_HARDWARE = Hardware.kitbot;
+  
+  private final String DRIVEBASE_CANBUS;
   private static final String RIO_CANBUS = "rio";
 
-  
+  private final int frontLeftDriveId;
+  private final int frontLeftSteerId;
+  private final int frontRightDriveId;
+  private final int frontRightSteerId;
+  private final int backLeftDriveId;
+  private final int backLeftSteerId;
+  private final int backRightDriveId;
+  private final int backRightSteerId;
 
-  private static final int FRONT_LEFT_DRIVE_ID = 8;
-  private static final int FRONT_LEFT_STEER_ID = 10;
-  private static final int FRONT_RIGHT_DRIVE_ID = 11;
-  private static final int FRONT_RIGHT_STEER_ID = 13;
-  private static final int BACK_LEFT_DRIVE_ID = 14;
-  private static final int BACK_LEFT_STEER_ID = 16;
-  private static final int BACK_RIGHT_DRIVE_ID = 19;
-  private static final int BACK_RIGHT_STEER_ID = 17;
-
-  private static final int FORWARD_SHOOT_ID = 23;
-  private static final int BACK_SHOOT_ID = 21;
-  private static final int INDEXER_ID = 45;
-  private static final int COLLECTOR_ID = 46;
+  private final int forwardShootId;
+  private final int backShootId;
+  private final int indexerId;
+  private final int collectorId;
+  private final int pivotMotorId;
 
   Orchestra m_orchestra = new Orchestra();
   private final Notifier orchestraReplayNotifier = new Notifier(() -> m_orchestra.play());
 
   LoggedDashboardChooser<Songs> songChooser = new LoggedDashboardChooser<>("Song Chooser");
 
-  private final TalonFX flDrive = new TalonFX(FRONT_LEFT_DRIVE_ID, DRIVEBASE_CANBUS);
-  private final TalonFX flSteer = new TalonFX(FRONT_LEFT_STEER_ID, DRIVEBASE_CANBUS);
-  private final TalonFX frDrive = new TalonFX(FRONT_RIGHT_DRIVE_ID, DRIVEBASE_CANBUS);
-  private final TalonFX frSteer = new TalonFX(FRONT_RIGHT_STEER_ID, DRIVEBASE_CANBUS);
-  private final TalonFX blDrive = new TalonFX(BACK_LEFT_DRIVE_ID, DRIVEBASE_CANBUS);
-  private final TalonFX blSteer = new TalonFX(BACK_LEFT_STEER_ID, DRIVEBASE_CANBUS);
-  private final TalonFX brDrive = new TalonFX(BACK_RIGHT_DRIVE_ID, DRIVEBASE_CANBUS);
-  private final TalonFX brSteer = new TalonFX(BACK_RIGHT_STEER_ID, DRIVEBASE_CANBUS);
+  private final TalonFX flDrive;
+  private final TalonFX flSteer;
+  private final TalonFX frDrive;
+  private final TalonFX frSteer;
+  private final TalonFX blDrive;
+  private final TalonFX blSteer;
+  private final TalonFX brDrive;
+  private final TalonFX brSteer;
 
-  private final TalonFX forwardShoot = new TalonFX(FORWARD_SHOOT_ID, RIO_CANBUS);
-  private final TalonFX backShoot = new TalonFX(BACK_SHOOT_ID, RIO_CANBUS);
-  private final TalonFX indexer = new TalonFX(INDEXER_ID, RIO_CANBUS);
-  private final TalonFX collector = new TalonFX(COLLECTOR_ID, RIO_CANBUS);
+  private final TalonFX forwardShoot;
+  private final TalonFX backShoot;
+  private final TalonFX indexer;
+  private final TalonFX collector;
+  private final TalonFX pivotMotor;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    if (CURRENT_HARDWARE == Hardware.actual) {
+      frontLeftDriveId = 8;
+      frontLeftSteerId = 10;
+      frontRightDriveId = 11;
+      frontRightSteerId = 13;
+      backLeftDriveId = 14;
+      backLeftSteerId = 16;
+      backRightDriveId = 19;
+      backRightSteerId = 17;
+
+      forwardShootId = 23;
+      backShootId = 21;
+      indexerId = 45;
+      collectorId = 46;
+      pivotMotorId = 47;
+
+      DRIVEBASE_CANBUS = "drivebase_2026";
+    } else {
+      frontLeftDriveId = 10;
+      frontLeftSteerId = 11;
+      frontRightDriveId = 13;
+      frontRightSteerId = 14;
+      backLeftDriveId = 16;
+      backLeftSteerId = 17;
+      backRightDriveId = 20;
+      backRightSteerId = 19;
+
+      forwardShootId = 42;
+      backShootId = 43;
+      indexerId = 44;
+      collectorId = 45;
+      pivotMotorId=46;
+      DRIVEBASE_CANBUS = "Drivebase 2025";
+    }
+
+    flDrive = new TalonFX(frontLeftDriveId, DRIVEBASE_CANBUS);
+    flSteer = new TalonFX(frontLeftSteerId, DRIVEBASE_CANBUS);
+    frDrive = new TalonFX(frontRightDriveId, DRIVEBASE_CANBUS);
+    frSteer = new TalonFX(frontRightSteerId, DRIVEBASE_CANBUS);
+    blDrive = new TalonFX(backLeftDriveId, DRIVEBASE_CANBUS);
+    blSteer = new TalonFX(backLeftSteerId, DRIVEBASE_CANBUS);
+    brDrive = new TalonFX(backRightDriveId, DRIVEBASE_CANBUS);
+    brSteer = new TalonFX(backRightSteerId, DRIVEBASE_CANBUS);
+
+    forwardShoot = new TalonFX(forwardShootId, RIO_CANBUS);
+    backShoot = new TalonFX(backShootId, RIO_CANBUS);
+    indexer = new TalonFX(indexerId, RIO_CANBUS);
+    collector = new TalonFX(collectorId, RIO_CANBUS);
+    pivotMotor = new TalonFX(pivotMotorId, RIO_CANBUS);
+
     Command crazyCommand = new InstantCommand(this::playMusic).ignoringDisable(true);
     songChooser.addOption("Rick Roll", Songs.RickRoll);
     songChooser.addOption("Megalovania", Songs.Megalovania);
@@ -135,6 +192,7 @@ public class RobotContainer {
     m_orchestra.addInstrument(blSteer, 0);
     m_orchestra.addInstrument(brDrive, 0);
     m_orchestra.addInstrument(brSteer, 0);
+    m_orchestra.addInstrument(pivotMotor, 0);
 
     // Bass track (1)
     m_orchestra.addInstrument(flSteer, 1);
