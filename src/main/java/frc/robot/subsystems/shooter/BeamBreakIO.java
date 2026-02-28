@@ -6,7 +6,7 @@ package frc.robot.subsystems.shooter;
 
 import org.littletonrobotics.junction.AutoLog;
 
-/** The current beam break is most likely a stand in for now until a real one can be made*/
+/** The current beam break is most likely a stand in for now until a real one can be made */
 public interface BeamBreakIO {
   @AutoLog
   public static class BeamBreakIOInputs {

@@ -11,13 +11,10 @@ import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.collector.Collector;
-import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 
-/**
- * The Automatic State for the collector
-*/
+/** The Automatic State for the collector */
 public class AutomaticStateChange extends Command {
   private Collector collector;
   private double currDirection;
@@ -26,16 +23,21 @@ public class AutomaticStateChange extends Command {
   private boolean isGoingRight;
   private boolean wasGoingRight;
 
-  /**Creates a new AutomaticStateChange.
-   * <h2> Implementation </h2>
-   * 
+  /**
+   * Creates a new AutomaticStateChange.
+   *
+   * <h2>Implementation </h2>
+   *
    * <ol>
-   *  <li> Uses a debounced current direction {@link LinearVelocity} to decide (using +/-) what direction its going
-   *  <li> Using whether it is going right and whether it WAS going right it changes which collector it wants up or down
-   *  <li> Sets the collector it wants up, up, and then waits for it to be FULLY up before sending the collector it wants down, down
-   *  <li> ON END, both collector will go UP
+   *   <li>Uses a debounced current direction {@link LinearVelocity} to decide (using +/-) what
+   *       direction its going
+   *   <li>Using whether it is going right and whether it WAS going right it changes which collector
+   *       it wants up or down
+   *   <li>Sets the collector it wants up, up, and then waits for it to be FULLY up before sending
+   *       the collector it wants down, down
+   *   <li>ON END, both collector will go UP
    * </ol>
-   * 
+   *
    * @param collector The collector subsystem
    * @param direction The {@link LinearVelocity} of the robot (+ = left, - = right)
    */
@@ -63,14 +65,14 @@ public class AutomaticStateChange extends Command {
     Logger.recordOutput("TEST/AutoCollector/currDirection", currDirection);
     isGoingRight = debouncer.calculate(currDirection < 0);
     Logger.recordOutput("TEST/AutoCollector/isGoingRight", isGoingRight);
-    if(isGoingRight && !wasGoingRight) {
-      if(collector.getRightCollector().isCollectorUp()) {
+    if (isGoingRight && !wasGoingRight) {
+      if (collector.getRightCollector().isCollectorUp()) {
         collector.getLeftCollector().goDown();
       } else {
         collector.getRightCollector().goUp();
       }
-    } else if(!isGoingRight && wasGoingRight) {
-      if(collector.getLeftCollector().isCollectorUp()) {
+    } else if (!isGoingRight && wasGoingRight) {
+      if (collector.getLeftCollector().isCollectorUp()) {
         collector.getRightCollector().goDown();
       } else {
         collector.getLeftCollector().goUp();

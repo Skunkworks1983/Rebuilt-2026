@@ -17,7 +17,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -28,18 +27,17 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveAimedShoot;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.IndexerCommand;
-import frc.robot.commands.IndexerReverseCommand;
 import frc.robot.commands.Shooter.NoYawShootHub;
 import frc.robot.commands.TestPathCommands;
 import frc.robot.commands.collectorCommands.AutomaticStateChange;
 import frc.robot.commands.collectorCommands.BothCollectorsUpState;
+import frc.robot.commands.collectorCommands.CollectorExpel;
 import frc.robot.commands.collectorCommands.CollectorIntake;
-import frc.robot.commands.collectorCommands.CollectorReverseIntake;
 import frc.robot.commands.collectorCommands.LeftCollectorDownState;
 import frc.robot.commands.collectorCommands.RightCollectorDownState;
+import frc.robot.commands.indexerCommands.IndexerAutoUnjam;
+import frc.robot.commands.indexerCommands.IndexerReverseCommand;
 import frc.robot.subsystems.collector.Collector;
-import frc.robot.subsystems.collector.CollectorModuleIO;
 import frc.robot.subsystems.collector.CollectorModuleSimIO;
 import frc.robot.subsystems.collector.CollectorModuleTalonIO;
 import frc.robot.subsystems.collector.collectorConstants.CollectorTalonLeftConstants;
@@ -69,6 +67,7 @@ import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import frc.robot.util.sim.SimProjectile;
+import java.util.function.BooleanSupplier;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
@@ -242,10 +241,8 @@ public class RobotContainer {
 
         collector =
             new Collector(
-                new CollectorModuleSimIO(
-                    simulation, new CollectorTalonLeftConstants()),
-                new CollectorModuleSimIO(
-                    simulation, new CollectorTalonRightConstants()));
+                new CollectorModuleSimIO(simulation, new CollectorTalonLeftConstants()),
+                new CollectorModuleSimIO(simulation, new CollectorTalonRightConstants()));
 
         indexer = new Indexer(new IndexerIO() {});
         break;
@@ -356,28 +353,12 @@ public class RobotContainer {
           new JoystickButton(xboxController, Constants.OIConstants.CollectorReverseIntakeID);
     }
 
+    BooleanSupplier beamBroken = () -> shooter.getBeamBreak();
+
+    runIndexer.whileTrue(new IndexerAutoUnjam(indexer, beamBroken));
     runIndexerReverse.whileTrue(new IndexerReverseCommand(indexer));
-
-    Timer timer = new Timer();
-
-    // if the index button is hed and more than a second elapses before the beam break is broken the indexer will reverse for 1 second before attempting to intake again
-    if (runIndexer.getAsBoolean() == true) {
-      timer.start();
-
-      if (shooter.getBeamBreak() == true) {
-        timer.reset();
-      }
-
-      if (timer.get() > 1) {
-        runIndexer.whileTrue(new IndexerReverseCommand(indexer));
-      } else {
-        runIndexer.whileTrue(new IndexerCommand(indexer));
-      }
-
-      if (timer.get() > 2) {
-        timer.reset();
-      }
-    }
+    // if the index button is hed and more than a second elapses before the beam break is broken the
+    // indexer will reverse for 1 second before attempting to intake again
 
     Logger.recordOutput("Control Scheme", Constants.controlScheme);
 
@@ -408,7 +389,7 @@ public class RobotContainer {
 
     // Coolector Reverse Intake Button
     new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID)
-        .whileTrue(new CollectorReverseIntake(collector));
+        .whileTrue(new CollectorExpel(collector));
 
     // Right Collector Down
     new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorRightDownID)

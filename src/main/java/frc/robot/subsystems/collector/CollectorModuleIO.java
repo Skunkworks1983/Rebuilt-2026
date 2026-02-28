@@ -81,6 +81,13 @@ public interface CollectorModuleIO {
   public default void setCollectorPos(Angle angle) {}
 
   /**
+   * Sets the duty cycle of the intake motors
+   *
+   * @param dutyCycle double between -1.0 and 1.0
+   */
+  public default void setCollectorDutyCycle(double dutyCycle) {}
+
+  /**
    * Checks to see if the collector is down
    *
    * <ul>

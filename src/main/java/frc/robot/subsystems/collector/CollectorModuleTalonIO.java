@@ -16,7 +16,6 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.InvertedValue;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
@@ -68,9 +67,11 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
   private final Debouncer turnConnectedDebounce =
       new Debouncer(0.5, Debouncer.DebounceType.kFalling);
 
-  /** Instanciates, configures, and sets up the IO inputs for motors 
+  /**
+   * Instanciates, configures, and sets up the IO inputs for motors
+   *
    * @param constants left <h7> OR </h7> right constants
-  */
+   */
   public CollectorModuleTalonIO(CollectorModuleConstants constants) {
     // Constants
     this.constants = constants;
@@ -225,12 +226,21 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
   }
 
   /**
+   * Sets the duty cycle of the intake motors
+   *
+   * @param dutyCycle double between -1.0 and 1.0
+   */
+  public void setCollectorDutyCycle(double dutyCycle) {
+    intakeMotor.set(dutyCycle);
+  }
+
+  /**
    * Checks to see if the collector is down
    *
    * <ul>
    *   <li>This is to help ensure that we only have one collectordown at a time
    * </ul>
-   * 
+   *
    * @return whether or not collector is down
    */
   public boolean isCollectorDown() {
@@ -247,7 +257,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
    * <ul>
    *   <li>This is to help ensure that we only have one collectordown at a time
    * </ul>
-   * 
+   *
    * @return whether or not collector is up
    */
   public boolean isCollectorUp() {
