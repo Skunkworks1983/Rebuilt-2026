@@ -25,11 +25,12 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.commands.DriveAimedAutoShoot;
 import frc.robot.commands.DriveAimedShoot;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.IndexerCommand;
 import frc.robot.commands.Shooter.NoYawShootHub;
+import frc.robot.commands.Shooter.ShootPresetSetpoints;
+import frc.robot.commands.Shooter.ShootPresetSetpoints.TargetType;
 import frc.robot.commands.TestPathCommands;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -289,10 +290,13 @@ public class RobotContainer {
       shootGoalButton = new JoystickButton(leftJoystick, 1);
       Trigger shootButton = new JoystickButton(rightJoystick, 1);
 
-      shootGoalButton.whileTrue(
-          new DriveAimedAutoShoot(
-              drive, shooter, () -> -leftJoystick.getY(), () -> -leftJoystick.getX()));
-      shootButton.onTrue(new InstantCommand(this::launchSimFuel));
+      //   shootGoalButton.whileTrue(
+      //       new DriveAimedAutoShoot(
+      //           drive, shooter, () -> -leftJoystick.getY(), () -> -leftJoystick.getX()));
+
+      shootGoalButton.whileTrue(new ShootPresetSetpoints(shooter, TargetType.GOAL));
+      //   shootButton.onTrue(new InstantCommand(this::launchSimFuel));
+      shootButton.onTrue(new ShootPresetSetpoints(shooter, TargetType.TRANSFER));
 
       runIndexer = new JoystickButton(buttonJoystick, IndexerConstants.runIndexerButtonId);
 
