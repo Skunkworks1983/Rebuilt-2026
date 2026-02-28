@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
+import frc.robot.util.Elastic;
 import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -38,7 +39,10 @@ public class Shooter extends SubsystemBase {
    * @param shooterVelocity Target flywheel angular velocity.
    * @param shooterPitch Target pivot angle.
    */
-  public record ShooterSetpoints(AngularVelocity shooterVelocity, Angle shooterPitch) {}
+  public record ShooterSetpoints(
+      AngularVelocity upperFlywheelVelocity,
+      AngularVelocity lowerFlywheelVelocity,
+      Angle shooterPitch) {}
 
   private final FlywheelIO upperFlywheel;
   private final FlywheelIO lowerFlywheel;
@@ -53,16 +57,27 @@ public class Shooter extends SubsystemBase {
 
   private final SysIdRoutine sysId;
 
-  private static final LoggedTunableNumber flywheelKP =
-      new LoggedTunableNumber("Shooter/Flywheel/kP", ShooterConstants.flywheelKP);
-  private static final LoggedTunableNumber flywheelKD =
-      new LoggedTunableNumber("Shooter/Flywheel/kD", ShooterConstants.flywheelKD);
-  private static final LoggedTunableNumber flywheelKS =
-      new LoggedTunableNumber("Shooter/Flywheel/kS", ShooterConstants.flywheelKS);
-  private static final LoggedTunableNumber flywheelKV =
-      new LoggedTunableNumber("Shooter/Flywheel/kV", ShooterConstants.flywheelKV);
-  private static final LoggedTunableNumber flywheelKA =
-      new LoggedTunableNumber("Shooter/Flywheel/kA", ShooterConstants.flywheelKA);
+  private static final LoggedTunableNumber upperFlywheelKP =
+      new LoggedTunableNumber("Shooter/Upper Flywheel/kP", ShooterConstants.upperFlywheelKP);
+  private static final LoggedTunableNumber upperFlywheelKD =
+      new LoggedTunableNumber("Shooter/Upper Flywheel/kD", ShooterConstants.upperFlywheelKD);
+  private static final LoggedTunableNumber upperFlywheelKS =
+      new LoggedTunableNumber("Shooter/Upper Flywheel/kS", ShooterConstants.upperFlywheelKS);
+  private static final LoggedTunableNumber upperFlywheelKV =
+      new LoggedTunableNumber("Shooter/Upper Flywheel/kV", ShooterConstants.upperFlywheelKV);
+  private static final LoggedTunableNumber upperFlywheelKA =
+      new LoggedTunableNumber("Shooter/Upper Flywheel/kA", ShooterConstants.upperFlywheelKA);
+
+  private static final LoggedTunableNumber lowerFlywheelKP =
+      new LoggedTunableNumber("Shooter/Lower Flywheel/kP", ShooterConstants.lowerFlywheelKP);
+  private static final LoggedTunableNumber lowerFlywheelKD =
+      new LoggedTunableNumber("Shooter/Lower Flywheel/kD", ShooterConstants.lowerFlywheelKD);
+  private static final LoggedTunableNumber lowerFlywheelKS =
+      new LoggedTunableNumber("Shooter/Lower Flywheel/kS", ShooterConstants.lowerFlywheelKS);
+  private static final LoggedTunableNumber lowerFlywheelKV =
+      new LoggedTunableNumber("Shooter/Lower Flywheel/kV", ShooterConstants.lowerFlywheelKV);
+  private static final LoggedTunableNumber lowerFlywheelKA =
+      new LoggedTunableNumber("Shooter/Lower Flywheel/kA", ShooterConstants.lowerFlywheelKA);
 
   private static final LoggedTunableNumber pivotKP =
       new LoggedTunableNumber("Shooter/Pivot/kP", ShooterConstants.pivotkP);
@@ -107,6 +122,23 @@ public class Shooter extends SubsystemBase {
                 (state) -> SignalLogger.writeString("Shooter/SysIdState", state.toString())),
             new SysIdRoutine.Mechanism(
                 (voltage) -> runFlywheelTorqueCurrent(voltage.in(Volts)), null, this));
+
+    // This ensures upper flywheel gets upper PID and lower flywheel gets lower PID
+    // (the io defaults to upper)
+    upperFlywheel.setPID(
+        new Slot0Configs()
+            .withKP(ShooterConstants.upperFlywheelKP)
+            .withKD(ShooterConstants.upperFlywheelKD)
+            .withKS(ShooterConstants.upperFlywheelKS)
+            .withKV(ShooterConstants.upperFlywheelKV)
+            .withKA(ShooterConstants.upperFlywheelKA));
+    lowerFlywheel.setPID(
+        new Slot0Configs()
+            .withKP(ShooterConstants.lowerFlywheelKP)
+            .withKD(ShooterConstants.lowerFlywheelKD)
+            .withKS(ShooterConstants.lowerFlywheelKS)
+            .withKV(ShooterConstants.lowerFlywheelKV)
+            .withKA(ShooterConstants.lowerFlywheelKA));
   }
 
   @Override
@@ -126,19 +158,44 @@ public class Shooter extends SubsystemBase {
     pivotDisconnectedAlert.set(
         (!pivotInputs.connected) && Constants.currentMode != Constants.Mode.SIM);
 
-    if (flywheelKP.hasChanged(hashCode())
-        || flywheelKD.hasChanged(hashCode())
-        || flywheelKS.hasChanged(hashCode())
-        || flywheelKV.hasChanged(hashCode())
-        || flywheelKA.hasChanged(hashCode())) {
+    if (upperFlywheelKP.hasChanged(hashCode())
+        || upperFlywheelKD.hasChanged(hashCode())
+        || upperFlywheelKS.hasChanged(hashCode())
+        || upperFlywheelKV.hasChanged(hashCode())
+        || upperFlywheelKA.hasChanged(hashCode())) {
       Slot0Configs gains = new Slot0Configs();
-      gains.kP = flywheelKP.get();
-      gains.kD = flywheelKD.get();
-      gains.kS = flywheelKS.get();
-      gains.kV = flywheelKV.get();
-      gains.kA = flywheelKA.get();
+      gains.kP = upperFlywheelKP.get();
+      gains.kD = upperFlywheelKD.get();
+      gains.kS = upperFlywheelKS.get();
+      gains.kV = upperFlywheelKV.get();
+      gains.kA = upperFlywheelKA.get();
       upperFlywheel.setPID(gains);
+
+      Elastic.sendNotification(
+          new Elastic.Notification(
+              Elastic.NotificationLevel.INFO,
+              "Shooter PID Update",
+              "Upper flywheel PID gains have been updated."));
+    }
+
+    if (lowerFlywheelKP.hasChanged(hashCode())
+        || lowerFlywheelKD.hasChanged(hashCode())
+        || lowerFlywheelKS.hasChanged(hashCode())
+        || lowerFlywheelKV.hasChanged(hashCode())
+        || lowerFlywheelKA.hasChanged(hashCode())) {
+      Slot0Configs gains = new Slot0Configs();
+      gains.kP = lowerFlywheelKP.get();
+      gains.kD = lowerFlywheelKD.get();
+      gains.kS = lowerFlywheelKS.get();
+      gains.kV = lowerFlywheelKV.get();
+      gains.kA = lowerFlywheelKA.get();
       lowerFlywheel.setPID(gains);
+
+      Elastic.sendNotification(
+          new Elastic.Notification(
+              Elastic.NotificationLevel.INFO,
+              "Shooter PID Update",
+              "Lower flywheel PID gains have been updated."));
     }
 
     if (pivotKP.hasChanged(hashCode())
@@ -153,6 +210,12 @@ public class Shooter extends SubsystemBase {
       gains.kV = pivotKV.get();
       gains.kA = pivotKA.get();
       pivot.setPID(gains);
+
+      Elastic.sendNotification(
+          new Elastic.Notification(
+              Elastic.NotificationLevel.INFO,
+              "Shooter PID Update",
+              "Pivot PID gains have been updated."));
     }
   }
 
@@ -245,17 +308,14 @@ public class Shooter extends SubsystemBase {
    * @param setpoints The calculated shooter controls containing pitch and velocity.
    */
   public void setShooterSetpoints(ShooterSetpoints setpoints) {
-    flywheelSetpoint = setpoints.shooterVelocity();
-    pivotSetpoint = setpoints.shooterPitch();
+    AngularVelocity upperFlywheelSetpoint = setpoints.upperFlywheelVelocity();
+    AngularVelocity lowerFlywheelSetpoint = setpoints.lowerFlywheelVelocity();
+    Angle pivotSetpoint = setpoints.shooterPitch();
 
-    Logger.recordOutput(
-        "Shooter/Velocity Setpoint [Rot/s]",
-        flywheelSetpoint.in(RotationsPerSecond),
-        RotationsPerSecond);
-    Logger.recordOutput("Shooter/Pitch Setpoint [Deg]", pivotSetpoint.in(Degrees), Degrees);
+    Logger.recordOutput("Shooter/Setpoints", setpoints);
 
     pivot.setPosition(pivotSetpoint);
-    upperFlywheel.setVelocity(flywheelSetpoint);
-    lowerFlywheel.setVelocity(flywheelSetpoint);
+    upperFlywheel.setVelocity(upperFlywheelSetpoint);
+    lowerFlywheel.setVelocity(lowerFlywheelSetpoint);
   }
 }

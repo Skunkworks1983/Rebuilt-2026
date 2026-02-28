@@ -29,12 +29,18 @@ public class ShooterSolverConstants {
   /** Maximum multiplier to apply for drag compensation. */
   public static final double maxDragMultiplier = 1.5;
 
-  /** Efficiency factor for the flywheel (1 is 100%, 0.1 is 10%). */
-  public static final double flywheelEfficiency = 1;
+  /**
+   * Efficiency factor for the flywheel (1 is 100%, 0.1 is 10%). This should at a maximum be 0.5 as
+   * half the velocity is converted to spin
+   */
+  public static final double flywheelEfficiency = 0.45;
 
   // CONSTRAINED HEIGHT SOLVER
   /** Vertical clearance required above the hub for specialized constrained shots. */
   public static final Distance hubHeightClearance = Meters.of(0.5);
+
+  public static final LoggedTunableNumber lowerFlywheelVelocityMultiplier =
+      new LoggedTunableNumber("Lower Flywheel Velocity Multiplier", 1.15);
 
   // ITERATIVE SOLVER
   /** Maximum iterations for the numerical solver loop. */

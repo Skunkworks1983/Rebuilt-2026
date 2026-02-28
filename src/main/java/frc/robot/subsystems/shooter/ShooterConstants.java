@@ -17,7 +17,10 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.units.VoltageUnit;
 import edu.wpi.first.units.measure.Angle;
@@ -54,13 +57,20 @@ public class ShooterConstants {
   public static final int flywheelSecondaryMotorId = 50;
 
   // PID for flywheel
-  public static final double flywheelKP = 3.5; // TODO: Flywheel Tuning
-  public static final double flywheelKD = 0.0;
+  public static final double upperFlywheelKP = 3.5; // TODO: Flywheel Tuning
+  public static final double upperFlywheelKD = 0.0;
 
   // Feed forwards for the flywheel
-  public static final double flywheelKS = 1.0;
-  public static final double flywheelKV = 0.50;
-  public static final double flywheelKA = 0.0;
+  public static final double upperFlywheelKS = 1.0;
+  public static final double upperFlywheelKV = 0.50;
+  public static final double upperFlywheelKA = 0.0;
+
+  public static final double lowerFlywheelKP = 0;
+  public static final double lowerFlywheelKD = 0;
+
+  public static final double lowerFlywheelKS = 0;
+  public static final double lowerFlywheelKV = 0;
+  public static final double lowerFlywheelKA = 0;
 
   /** Maximum velocity of the flywheel in rotations per second. */
   public static final AngularVelocity flywheelMaxVelocityRotationsPerSec =
@@ -98,8 +108,11 @@ public class ShooterConstants {
           new Translation3d(Meters.of(0), Meters.of(0), Meters.of(0.5)),
           new Rotation3d(Degrees.of(0), Degrees.of(-40), Degrees.of(0)));
 
+  public static final Transform2d shooterTransform =
+      new Transform2d(new Translation2d(Meters.of(0), Meters.of(0)), new Rotation2d());
+
   /** Radius of the flywheel. */
-  public static final Distance flywheelRadius = Inches.of(4);
+  public static final Distance flywheelRadius = Inches.of(2);
 
   /** Simulation PID for the flywheel. */
   public static final Slot0Configs simFlywheelConfigs =
@@ -133,4 +146,17 @@ public class ShooterConstants {
   public static final InvertedValue pivotMotorInverted = InvertedValue.Clockwise_Positive;
 
   public static final Current pivotStatorCurrentLimit = Amps.of(120);
+
+  public static final double pivotSensorToMechanismRatio = 60 / 18;
+  public static final double pivotMotorToSensorRatio = 100;
+
+  public static final AngularVelocity defaultUpperFlywheelVelocityGoal = RotationsPerSecond.of(50);
+  public static final AngularVelocity defaultLowerFlywheelVelocityGoal =
+      defaultUpperFlywheelVelocityGoal.times(1.15);
+  public static final Angle defaultPitchGoal = Degrees.of(70);
+
+  public static final AngularVelocity defaultVelocityTransfer = RotationsPerSecond.of(60);
+  public static final AngularVelocity defaultLowerFlywheelVelocityTransfer =
+      defaultVelocityTransfer.times(1.15);
+  public static final Angle defaultPitchTransfer = Degrees.of(50);
 }

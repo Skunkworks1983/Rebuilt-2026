@@ -146,7 +146,7 @@ public class Robot extends LoggedRobot {
       autonomousCommand.cancel();
     }
 
-    MatchHelpers.teleopInit();
+    HubShiftUtil.initialize();
   }
 
   /** This function is called periodically during operator control. */

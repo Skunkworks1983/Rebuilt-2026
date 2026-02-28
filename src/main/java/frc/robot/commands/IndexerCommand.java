@@ -4,15 +4,23 @@
 
 package frc.robot.commands;
 
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.IndexerConstants;
+import frc.robot.util.LoggedTunableNumber;
+import org.littletonrobotics.junction.Logger;
 
 /** Command that runs the indexer */
 public class IndexerCommand extends Command {
-
   Indexer indexer;
+
+  private LoggedTunableNumber indexerAngularVelocity =
+      new LoggedTunableNumber(
+          "Indexer/AngularVelocity [Rot/s]",
+          IndexerConstants.indexerAngularVelocity.in(Units.RotationsPerSecond));
 
   public IndexerCommand(Indexer indexer) {
     this.indexer = indexer;
@@ -20,25 +28,15 @@ public class IndexerCommand extends Command {
   }
 
   @Override
-  public void initialize() {}
-
-  @Override
-  public void execute() {
-    // checks the drive mode and runs the indexer at the defined velocity or duty cycle
-    if (IndexerConstants.indexerDriveMode.equals(IndexerConstants.IndexerDriveMode.DutyCycle)) {
-      indexer.setIndexerDutyCycle(IndexerConstants.indexerDutyCycleValue);
-    } else {
-      indexer.setIndexerVelocity(IndexerConstants.indexerAngularVelocity);
-    }
+  public void initialize() {
+    indexer.setIndexerVelocity(RotationsPerSecond.of(indexerAngularVelocity.get()));
+    Logger.recordOutput("Index/Command is Running", true);
   }
 
   @Override
   public void end(boolean interrupted) {
-    if (IndexerConstants.indexerDriveMode.equals(IndexerConstants.IndexerDriveMode.DutyCycle)) {
-      indexer.setIndexerDutyCycle(0);
-    } else {
-      indexer.setIndexerVelocity(Units.RadiansPerSecond.of(0));
-    }
+    indexer.setIndexerDutyCycle(0);
+    Logger.recordOutput("Index/Command is Running", false);
   }
 
   @Override
