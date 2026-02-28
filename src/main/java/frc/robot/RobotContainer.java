@@ -39,6 +39,7 @@ import frc.robot.commands.collectorCommands.CollectorReverseIntake;
 import frc.robot.commands.collectorCommands.LeftCollectorDownState;
 import frc.robot.commands.collectorCommands.RightCollectorDownState;
 import frc.robot.subsystems.collector.Collector;
+import frc.robot.subsystems.collector.CollectorModuleIO;
 import frc.robot.subsystems.collector.CollectorModuleSimIO;
 import frc.robot.subsystems.collector.CollectorModuleTalonIO;
 import frc.robot.subsystems.collector.collectorConstants.CollectorTalonLeftConstants;
@@ -241,8 +242,10 @@ public class RobotContainer {
 
         collector =
             new Collector(
-                new CollectorModuleSimIO(simulation, new CollectorTalonLeftConstants()),
-                new CollectorModuleSimIO(simulation, new CollectorTalonRightConstants()));
+                new CollectorModuleSimIO(
+                    simulation, new CollectorTalonLeftConstants()),
+                new CollectorModuleSimIO(
+                    simulation, new CollectorTalonRightConstants()));
 
         indexer = new Indexer(new IndexerIO() {});
         break;
@@ -391,7 +394,7 @@ public class RobotContainer {
     JoystickButton autoModeSwitch =
         new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorAutoModeID);
 
-    autoModeSwitch.onTrue(new AutomaticStateChange(collector, () -> drive.getDirection()));
+    autoModeSwitch.whileTrue(new AutomaticStateChange(collector, drive::getDirection));
 
     manualModeSwitch
         .negate()

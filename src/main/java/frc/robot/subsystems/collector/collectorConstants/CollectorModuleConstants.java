@@ -6,8 +6,10 @@ package frc.robot.subsystems.collector.collectorConstants;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
 
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
 
 /** An Interface for collector constants */
@@ -23,31 +25,39 @@ public class CollectorModuleConstants {
 
   // Hardware ID's
   public int turnMotorID;
-  public int intakeMotorLowerID;
-  public int intakeMotorUpperID;
+  public int intakeMotorID;
 
   // Gear ratio's
   public double turnMotorGearRatio;
 
-  // Turn PID
+  // Real Turn PID
   public double turnkP;
   public double turnkD;
   public double turnkI;
 
-  // Lower intake PID
-  public double lowerkP;
-  public double lowerkD;
-  public double lowerkI;
+  // Real intake PID
+  public double intakekP;
+  public double intakekD;
+  public double intakekI;
 
-  // Upper intake PID
-  public double upperkP;
-  public double upperkD;
-  public double upperkI;
+  // Sim Turn PID
+  public double SimTurnkP;
+  public double SimTurnkD;
+  public double SimTurnkI;
+
+  // Sim intake PID
+  public double SimIntakekP;
+  public double SimIntakekD;
+  public double SimIntakekI;
 
   // Feed forward
   public double turnkS;
   public double turnkV;
   public double turnkA;
+
+  // Max Velocity and Acceleration
+  public AngularVelocity pivotMaxVelocity;
+  public AngularAcceleration pivotMaxAcceleration;
 
   // Position
   public Angle CollectorUpPos;
@@ -56,6 +66,13 @@ public class CollectorModuleConstants {
   // Collector Intake Speeds
   public AngularVelocity CollectorIntakeSpeed;
 
+  // Limit Switch Constants
+  public int UpperLimitChannel;
+  public int LowerLimitChannel;
+
+  // Collector Position Tolerance
+  public Angle CollectorPosTolerance;
+
   public CollectorModuleConstants() {
 
     // Collector Side
@@ -63,31 +80,39 @@ public class CollectorModuleConstants {
 
     // Hardware ID's
     turnMotorID = 0;
-    intakeMotorLowerID = 0;
-    intakeMotorUpperID = 0;
+    intakeMotorID = 0;
 
     // Gear ratio's
     turnMotorGearRatio = 0.0;
 
-    // Turn PID
-    turnkP = 1;
+    // Real Turn PID
+    turnkP = 0.0;
     turnkD = 0.0;
     turnkI = 0.0;
 
-    // Lower intake PID
-    lowerkP = 0.0;
-    lowerkD = 0.0;
-    lowerkI = 0.0;
+    // Real intake PID
+    intakekP = 0.0;
+    intakekD = 0.0;
+    intakekI = 0.0;
 
-    // Upper intake PID
-    upperkP = 0.0;
-    upperkD = 0.0;
-    upperkI = 0.0;
+    // Sim Turn PID
+    SimTurnkP = 0.0;
+    SimTurnkD = 0.0;
+    SimTurnkI = 0.0;
+
+    // Sim intake PID
+    SimIntakekP = 0.0;
+    SimIntakekD = 0.0;
+    SimIntakekI = 0.0;
 
     // Feed forward
     turnkS = 0.25;
     turnkV = 0.12;
     turnkA = 0.01;
+
+    // Max Velocity and Acceleration
+    pivotMaxVelocity = RotationsPerSecond.of(80);
+    pivotMaxAcceleration = RotationsPerSecondPerSecond.of(160);
 
     // Position
     CollectorUpPos = Degrees.of(0);
@@ -95,5 +120,12 @@ public class CollectorModuleConstants {
 
     // Collector Intake Speeds
     CollectorIntakeSpeed = RotationsPerSecond.of(0);
+
+    // Limit Switch Constants
+    UpperLimitChannel = 0;
+    LowerLimitChannel = 0;
+
+    // Collector Position Tolerance
+    CollectorPosTolerance = Degrees.of(0);
   }
 }
