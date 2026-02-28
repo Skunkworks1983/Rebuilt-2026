@@ -54,7 +54,8 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   private enum Songs {
     RickRoll,
-    Megalovania
+    Megalovania,
+    Charlie_Kirk
   }
 
   private static final String DRIVEBASE_CANBUS = "drivebase_2026";
@@ -102,6 +103,7 @@ public class RobotContainer {
     Command crazyCommand = new InstantCommand(this::playMusic).ignoringDisable(true);
     songChooser.addOption("Rick Roll", Songs.RickRoll);
     songChooser.addOption("Megalovania", Songs.Megalovania);
+    songChooser.addOption("We are Charlie Kirk", Songs.Charlie_Kirk);
     SmartDashboard.putData("Do Thing!", crazyCommand);
   }
 
@@ -146,6 +148,9 @@ public class RobotContainer {
         break;
       case Megalovania:
         m_orchestra.loadMusic("megalovania.chrp");
+        break;
+      case Charlie_Kirk:
+        m_orchestra.loadMusic("kirk.chrp");
         break;
       default:
         m_orchestra.loadMusic("megalovania.chrp");
