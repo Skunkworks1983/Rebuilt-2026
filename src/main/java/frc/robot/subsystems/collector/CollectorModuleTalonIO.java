@@ -16,7 +16,6 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.InvertedValue;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
@@ -25,6 +24,7 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotBase;
+import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
 import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstants;
 import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstants.Side;
 
@@ -68,9 +68,11 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
   private final Debouncer turnConnectedDebounce =
       new Debouncer(0.5, Debouncer.DebounceType.kFalling);
 
-  /** Instanciates, configures, and sets up the IO inputs for motors 
+  /**
+   * Instanciates, configures, and sets up the IO inputs for motors
+   *
    * @param constants left <h7> OR </h7> right constants
-  */
+   */
   public CollectorModuleTalonIO(CollectorModuleConstants constants) {
     // Constants
     this.constants = constants;
@@ -83,8 +85,8 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     setDownRunning = false;
 
     // Instantiates all motors and hardware objects
-    turnMotor = new TalonFX(constants.turnMotorID, "rio");
-    intakeMotor = new TalonFX(constants.intakeMotorID, "rio");
+    turnMotor = new TalonFX(constants.turnMotorID, CollectorConstants.collectorCan);
+    intakeMotor = new TalonFX(constants.intakeMotorID, CollectorConstants.collectorCan);
     upperLimitSwitch = new DigitalInput(constants.UpperLimitChannel);
     lowerLimitSwitch = new DigitalInput(constants.LowerLimitChannel);
     turnMotor.setPosition(Degrees.of(0));
@@ -230,7 +232,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
    * <ul>
    *   <li>This is to help ensure that we only have one collectordown at a time
    * </ul>
-   * 
+   *
    * @return whether or not collector is down
    */
   public boolean isCollectorDown() {
@@ -247,7 +249,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
    * <ul>
    *   <li>This is to help ensure that we only have one collectordown at a time
    * </ul>
-   * 
+   *
    * @return whether or not collector is up
    */
   public boolean isCollectorUp() {
