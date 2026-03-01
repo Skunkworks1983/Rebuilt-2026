@@ -359,12 +359,14 @@ public class RobotContainer {
     JoystickButton intakeButton = 
         new JoystickButton(buttonJoystick, Constants.JoystickConstants.CollectorIntakeID);
 
+    // When were in both collectors up state and not agitating
     manualModeSwitch
         .negate()
         .and(autoModeSwitch.negate())
         .and(shootGoalButton.negate())
         .onTrue(new BothCollectorsUpState(collector));
 
+    // When were in both collectors up state and shooting
     manualModeSwitch
         .negate()
         .and(autoModeSwitch.negate())
@@ -372,18 +374,25 @@ public class RobotContainer {
         .onTrue(new BothCollectorsUpState(collector)
         .alongWith(new Agitate(collector, false)));
 
+    // When were leaving manualmode makes both go up
     manualModeSwitch
         .onFalse(new BothCollectorsUpState(collector));
 
+    // When in automode and intaking AND shooting
     autoModeSwitch
         .and(intakeButton)
         .and(shootGoalButton)
-        .whileTrue(new AutomaticCollector(collector, drive::getDirection, true));
+        .whileTrue(new AutomaticCollector(collector, drive::getDirection, true, true));
 
+    // When in automode and intaking and NOT shooting
     autoModeSwitch
         .and(intakeButton)
         .and(shootGoalButton.negate())
-        .whileTrue(new AutomaticCollector(collector, drive::getDirection, false));
+        .whileTrue(new AutomaticCollector(collector, drive::getDirection, false, true));
+
+    // When in automode and going to manual and dont wanna stow
+
+    // When in automode and intaking and dont wanna stow
 
     // Collector Intake Button
     intakeButton

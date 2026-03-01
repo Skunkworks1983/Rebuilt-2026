@@ -5,6 +5,7 @@
 package frc.robot.commands.collectorCommands;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
@@ -30,6 +31,7 @@ public class AutomaticCollector extends Command {
   private boolean isGoingRight;
   private boolean wasGoingRight;
   private boolean shouldAgitate;
+  private boolean shouldStow;
 
   /**Creates a new AutomaticStateChange.
    * <h2> Implementation </h2>
@@ -43,8 +45,10 @@ public class AutomaticCollector extends Command {
    * 
    * @param collector The collector subsystem
    * @param direction The {@link LinearVelocity} of the robot (+ = left, - = right)
+   * @param shouldAgitate Whether we should be agitating
+   * @param shouldStow Whether we should stow on end
    */
-  public AutomaticCollector(Collector collector, Supplier<LinearVelocity> direction, boolean shouldAgitate) {
+  public AutomaticCollector(Collector collector, Supplier<LinearVelocity> direction, boolean shouldAgitate, boolean shouldStow) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.collector = collector;
     leftCollector = collector.getLeftCollector();
@@ -55,6 +59,7 @@ public class AutomaticCollector extends Command {
     isGoingRight = false;
     wasGoingRight = true;
     this.shouldAgitate = shouldAgitate;
+    this.shouldStow = shouldStow;
   }
 
   // Called when the command is initially scheduled.
@@ -105,8 +110,12 @@ public class AutomaticCollector extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    leftCollector.goUp();
-    rightCollector.goUp();
+    if(shouldStow) {
+      leftCollector.goUp();
+      rightCollector.goUp();
+    }
+    leftCollector.setCollectorVelocity(RotationsPerSecond.of(0));
+    rightCollector.setCollectorVelocity(RotationsPerSecond.of(0));
     Logger.recordOutput("Commands/Collector/AutomaticStateChange", false);
   }
 
