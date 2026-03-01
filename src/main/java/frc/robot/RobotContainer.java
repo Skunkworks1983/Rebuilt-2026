@@ -56,7 +56,9 @@ public class RobotContainer {
     RickRoll,
     Megalovania,
     Charlie_Kirk,
-    Journey
+    Journey,
+    Diamonds,
+    Mario
   }
 
   private enum Hardware{
@@ -64,7 +66,7 @@ public class RobotContainer {
     actual
   }
 
-  public static final Hardware CURRENT_HARDWARE = Hardware.kitbot;
+  public static final Hardware CURRENT_HARDWARE = Hardware.actual;
   
   private final String DRIVEBASE_CANBUS;
   private static final String RIO_CANBUS = "rio";
@@ -113,10 +115,10 @@ public class RobotContainer {
       frontLeftSteerId = 10;
       frontRightDriveId = 11;
       frontRightSteerId = 13;
-      backLeftDriveId = 14;
-      backLeftSteerId = 16;
+      backLeftDriveId = 16;
+      backLeftSteerId = 17;
       backRightDriveId = 19;
-      backRightSteerId = 17;
+      backRightSteerId = 20;
 
       forwardShootId = 23;
       backShootId = 21;
@@ -162,7 +164,9 @@ public class RobotContainer {
     songChooser.addOption("Rick Roll", Songs.RickRoll);
     songChooser.addOption("Megalovania", Songs.Megalovania);
     songChooser.addOption("We are Charlie Kirk", Songs.Charlie_Kirk);
+    songChooser.addOption("Diamonds", Songs.Diamonds);
     songChooser.addOption("Journey", Songs.Journey);
+    songChooser.addOption("Mario", Songs.Mario);
     SmartDashboard.putData("Do Thing!", crazyCommand);
   }
 
@@ -191,8 +195,8 @@ public class RobotContainer {
     m_orchestra.addInstrument(flDrive, 0);
     m_orchestra.addInstrument(frDrive, 0);
     m_orchestra.addInstrument(blDrive, 0);
-    m_orchestra.addInstrument(blSteer, 1);
-    m_orchestra.addInstrument(brDrive, 1);
+    m_orchestra.addInstrument(blSteer, 0);
+    m_orchestra.addInstrument(brDrive, 0);
     m_orchestra.addInstrument(brSteer, 1);
     m_orchestra.addInstrument(pivotMotor, 1);
 
@@ -214,6 +218,12 @@ public class RobotContainer {
         break;
       case Journey:
         m_orchestra.loadMusic("journey.chrp");
+        break;
+      case Diamonds:
+        m_orchestra.loadMusic("diamonds.chrp");
+        break;
+      case Mario:
+        m_orchestra.loadMusic("mario.chrp");
         break;
       default:
         m_orchestra.loadMusic("megalovania.chrp");
