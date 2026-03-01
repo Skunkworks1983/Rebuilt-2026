@@ -6,6 +6,7 @@ package frc.robot.commands.indexerCommands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.indexer.Indexer;
 import java.util.function.BooleanSupplier;
 
@@ -13,27 +14,37 @@ public class IndexerAutoUnjam extends Command {
   Indexer indexer;
   Timer timer;
   BooleanSupplier beamBroken;
+  IndexerReverseCommand indexerReverseCommand;
+  IndexerCommand indexerCommand;
 
   public IndexerAutoUnjam(Indexer indexer, BooleanSupplier beamBroken) {
     this.indexer = indexer;
     this.beamBroken = beamBroken;
+    timer = new Timer();
+    indexerReverseCommand = new IndexerReverseCommand(indexer);
+    indexerCommand = new IndexerCommand(indexer);
+
   }
 
   @Override
-  public void initialize() {}
+  public void initialize() {
+    timer.start();
+
+  }
 
   @Override
   public void execute() {
-    timer.start();
 
     if (beamBroken.getAsBoolean() == true) {
       timer.reset();
     }
 
     if (timer.get() > 1) {
-      new IndexerReverseCommand(indexer);
+      CommandScheduler.getInstance().cancel(indexerCommand);
+      CommandScheduler.getInstance().schedule(indexerReverseCommand);
     } else {
-      new IndexerCommand(indexer);
+      CommandScheduler.getInstance().cancel(indexerReverseCommand);
+      CommandScheduler.getInstance().schedule(indexerCommand);
     }
 
     if (timer.get() > 2) {
@@ -42,7 +53,8 @@ public class IndexerAutoUnjam extends Command {
   }
 
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+  }
 
   @Override
   public boolean isFinished() {
