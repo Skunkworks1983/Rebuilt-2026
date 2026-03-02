@@ -48,7 +48,6 @@ public final class Constants {
   }
 
   /** OI constants */
-  /** OI constants */
   public final class OIConstants {
     // Joystick ID's
     public static final int LeftJoystick = 0;
@@ -67,7 +66,7 @@ public final class Constants {
     // Shooter button joystick ID's
     public static final int ShooterShootHubID = 1;
     public static final int ShooterShootTransferID = 6;
-    
+
     public static final int ShooterIndexID = 18;
     public static final int ShooterFlywheelSwitchID = 3;
     public static final int ShooterHoldToAimID = 1; // Jotstick trigger
