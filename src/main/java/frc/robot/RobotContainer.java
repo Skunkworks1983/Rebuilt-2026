@@ -372,8 +372,9 @@ public class RobotContainer {
             autoModeSwitch.getAsBoolean(), 
             !autoModeSwitch.negate().and(manualModeSwitch.negate()).getAsBoolean(), 
             manualModeSwitch.getAsBoolean(), 
-            intakeButton, shootGoalButton, manualAgitation, leftDownManual, rightDownManual));
-
+            intakeButton, shootGoalButton, manualAgitation, 
+            leftDownManual, rightDownManual, drive::getDirection));
+    
     // Lock to 0° when A button is held
     // controller
     // .a()

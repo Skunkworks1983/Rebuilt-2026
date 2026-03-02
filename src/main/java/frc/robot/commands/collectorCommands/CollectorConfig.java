@@ -48,7 +48,7 @@ public class CollectorConfig extends Command {
    *  and Move, Intake, and Agitate the collector pivot and intake motors.
    * 
    *  <p>
-   *  <h2> Implementation </h2>
+   *  <h1> Implementation </h1>
    * 
    *  <ol>
    *    <li> Checks which mode its in based on a 3-position switch
@@ -131,7 +131,7 @@ public class CollectorConfig extends Command {
   public void initialize() {
     Logger.recordOutput("Commands/Collector/CollectorConfig", true);
     if((previousModeSwitch.equals(previouseSwitch.automatic) && currSwitch.equals(previouseSwitch.manual)) /*add an || intaking and going up and leaving auto here */) {
-      // IDK what happens her ig
+      // IDK what happens here ig
     } else {
       leftCollector.goUp();
       rightCollector.goUp();
