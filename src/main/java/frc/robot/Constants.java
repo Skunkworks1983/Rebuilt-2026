@@ -58,6 +58,7 @@ public final class Constants {
     // Collector button joystick ID's
     public static final int CollectorManualModeID = 4;
     public static final int CollectorAutoModeID = 2;
+
     public static final int CollectorIntakeID = 23;
     public static final int CollectorRightDownID = 11;
     public static final int CollectorLeftDownID = 12;
@@ -66,6 +67,7 @@ public final class Constants {
     // Shooter button joystick ID's
     public static final int ShooterShootHubID = 1;
     public static final int ShooterShootTransferID = 6;
+    
     public static final int ShooterIndexID = 18;
     public static final int ShooterFlywheelSwitchID = 3;
     public static final int ShooterHoldToAimID = 1; // Jotstick trigger

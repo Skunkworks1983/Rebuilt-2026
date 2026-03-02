@@ -29,7 +29,6 @@ public class IndexerAutoUnjam extends Command {
   @Override
   public void initialize() {
     timer.start();
-
   }
 
   @Override
@@ -37,6 +36,7 @@ public class IndexerAutoUnjam extends Command {
 
     if (beamBroken.getAsBoolean() == true) {
       timer.reset();
+      return;
     }
 
     if (timer.get() > 1) {
@@ -54,6 +54,8 @@ public class IndexerAutoUnjam extends Command {
 
   @Override
   public void end(boolean interrupted) {
+    CommandScheduler.getInstance().cancel(indexerCommand);
+    CommandScheduler.getInstance().cancel(indexerReverseCommand);
   }
 
   @Override
