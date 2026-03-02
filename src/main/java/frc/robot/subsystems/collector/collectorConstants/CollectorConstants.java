@@ -23,4 +23,14 @@ public class CollectorConstants {
 
   // Collector tick number for auto state change
   public static final double collectorTicksForAuto = 0.0;
+
+  // Collector previouse Switch
+  public static enum previouseSwitch {
+    automatic,
+    manual, 
+    bothUp,
+    none
+  }
+
+  public static previouseSwitch preSwitch = previouseSwitch.none;
 }

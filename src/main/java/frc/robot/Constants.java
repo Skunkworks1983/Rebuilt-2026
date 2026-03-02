@@ -59,6 +59,7 @@ public final class Constants {
     public static final int CollectorManualModeID = 6;
     public static final int CollectorAutoModeID = 5;
     public static final int CollectorIntakeID = 7;
+        public static final int CollectorManualAgitation = 23;
     public static final int CollectorRightDownID = 24;
     public static final int CollectorLeftDownID = 17;
     public static final int CollectorBothUpID = 12;

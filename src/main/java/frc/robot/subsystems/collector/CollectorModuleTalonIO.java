@@ -5,6 +5,7 @@
 package frc.robot.subsystems.collector;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static frc.robot.util.PhoenixUtil.tryUntilOk;
 
 import com.ctre.phoenix6.BaseStatusSignal;
@@ -251,6 +252,10 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
    * @return whether or not collector is up
    */
   public boolean isCollectorUp() {
+    if(upperLimitSwitch.get() || turnMotor.getPosition().getValue().lte(constants.CollectorUpPos.plus(constants.CollectorPosTolerance))) {
+      setCollectorVelocity(RotationsPerSecond.of(0));
+    }
+
     return upperLimitSwitch.get()
         || turnMotor
             .getPosition()
@@ -267,6 +272,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
   public void goUp() {
     if (!setUpRunning) {
       setCollectorPos(constants.CollectorUpPos);
+      setCollectorVelocity(constants.CollectorIntakeSpeed); // To stop balls getting stuck under
       setUpRunning = true;
       setDownRunning = false;
     }

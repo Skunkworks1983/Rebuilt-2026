@@ -33,6 +33,7 @@ import frc.robot.commands.TestPathCommands;
 import frc.robot.commands.collectorCommands.Agitate;
 import frc.robot.commands.collectorCommands.AutomaticCollector;
 import frc.robot.commands.collectorCommands.BothCollectorsUpState;
+import frc.robot.commands.collectorCommands.CollectorConfig;
 import frc.robot.commands.collectorCommands.CollectorIntake;
 import frc.robot.commands.collectorCommands.LeftCollectorDownState;
 import frc.robot.commands.collectorCommands.RightCollectorDownState;
@@ -358,61 +359,20 @@ public class RobotContainer {
         new JoystickButton(buttonJoystick, Constants.JoystickConstants.CollectorAutoModeID);
     JoystickButton intakeButton = 
         new JoystickButton(buttonJoystick, Constants.JoystickConstants.CollectorIntakeID);
+    JoystickButton manualAgitation =
+        new JoystickButton(buttonJoystick, Constants.JoystickConstants.CollectorManualAgitation);
+    JoystickButton leftDownManual =
+        new JoystickButton(buttonJoystick, Constants.JoystickConstants.CollectorLeftDownID);
+    JoystickButton rightDownManual =
+        new JoystickButton(buttonJoystick, Constants.JoystickConstants.CollectorRightDownID);
 
-    // When were in both collectors up state and not agitating
-    manualModeSwitch
-        .negate()
-        .and(autoModeSwitch.negate())
-        .and(shootGoalButton.negate())
-        .onTrue(new BothCollectorsUpState(collector));
-
-    // When were in both collectors up state and shooting
-    manualModeSwitch
-        .negate()
-        .and(autoModeSwitch.negate())
-        .and(shootGoalButton)
-        .onTrue(new BothCollectorsUpState(collector)
-        .alongWith(new Agitate(collector, false)));
-
-    // When were leaving manualmode makes both go up
-    manualModeSwitch
-        .onFalse(new BothCollectorsUpState(collector));
-
-    // When in automode and intaking AND shooting
-    autoModeSwitch
-        .and(intakeButton)
-        .and(shootGoalButton)
-        .whileTrue(new AutomaticCollector(collector, drive::getDirection, true, true));
-
-    // When in automode and intaking and NOT shooting
-    autoModeSwitch
-        .and(intakeButton)
-        .and(shootGoalButton.negate())
-        .whileTrue(new AutomaticCollector(collector, drive::getDirection, false, true));
-
-    // When in automode and going to manual and dont wanna stow
-
-    // When in automode and intaking and dont wanna stow
-
-    // Collector Intake Button
-    intakeButton
-        .and(manualModeSwitch)
-        .whileTrue(new CollectorIntake(collector));
-
-    // Right Collector Down
-    new JoystickButton(buttonJoystick, Constants.JoystickConstants.CollectorRightDownID)
-        .and(manualModeSwitch)
-        .onTrue(new RightCollectorDownState(collector));
-
-    // Left Collector Down
-    new JoystickButton(buttonJoystick, Constants.JoystickConstants.CollectorLeftDownID)
-        .and(manualModeSwitch)
-        .onTrue(new LeftCollectorDownState(collector));
-
-    // Both Collectors Up
-    new JoystickButton(leftJoystick, Constants.JoystickConstants.CollectorBothUpID)
-        .and(manualModeSwitch)
-        .onTrue(new BothCollectorsUpState(collector));
+    manualModeSwitch.or(autoModeSwitch)
+        .onChange(
+            new CollectorConfig(collector,
+            autoModeSwitch.getAsBoolean(), 
+            !autoModeSwitch.negate().and(manualModeSwitch.negate()).getAsBoolean(), 
+            manualModeSwitch.getAsBoolean(), 
+            intakeButton, shootGoalButton, manualAgitation, leftDownManual, rightDownManual));
 
     // Lock to 0° when A button is held
     // controller
