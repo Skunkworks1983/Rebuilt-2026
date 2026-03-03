@@ -16,6 +16,9 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.ForwardLimitTypeValue;
+import com.ctre.phoenix6.signals.ReverseLimitTypeValue;
+
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularAcceleration;
@@ -68,6 +71,8 @@ public class PivotIOTalonFX implements PivotIO {
 
     pivotConfig.HardwareLimitSwitch.ForwardLimitSource = ShooterConstants.pivotForwardLimitSource;
     pivotConfig.HardwareLimitSwitch.ReverseLimitSource = ShooterConstants.pivotReverseLimitSource;
+    pivotConfig.HardwareLimitSwitch.ForwardLimitType = ForwardLimitTypeValue.NormallyOpen;
+    pivotConfig.HardwareLimitSwitch.ReverseLimitType = ReverseLimitTypeValue.NormallyOpen;
     pivotConfig.HardwareLimitSwitch.ReverseLimitRemoteSensorID = ShooterConstants.shooterCandiId;
 
     tryUntilOk(5, () -> pivotMotor.getConfigurator().apply(pivotConfig, 0.25));

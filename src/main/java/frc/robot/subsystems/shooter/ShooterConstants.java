@@ -41,7 +41,7 @@ import edu.wpi.first.units.measure.Voltage;
 public class ShooterConstants {
 
   /** CAN Bus name for the shooter motors. */
-  public static final CANBus shooterCan = new CANBus("*"); // TODO: Enter canbus
+  public static final CANBus shooterCan = new CANBus("peripherals_2026");
 
   public static final double disconnectedDebounceTimeSec = 0.5;
 
@@ -51,10 +51,10 @@ public class ShooterConstants {
   // FLYWHEEL CONSTANTS
 
   /** CAN ID for the primary flywheel motor. */
-  public static final int upperFlywheelMotorID = 49; // TODO: Motor IDS
+  public static final int upperFlywheelMotorID = 26; // TODO: Motor IDS
 
   /** CAN ID for the secondary flywheel motor. */
-  public static final int lowerFlywheelMotorID = 50;
+  public static final int lowerFlywheelMotorID = 25;
 
   // PID for flywheel
   public static final double upperFlywheelKP = 3.5; // TODO: Flywheel Tuning
@@ -102,11 +102,14 @@ public class ShooterConstants {
   /** Moment of inertia of the flywheel mechanism. */
   public static final MomentOfInertia flywheelInertia = KilogramSquareMeters.of(0.01);
 
-  /** Initial pose of the shooter on the robot. */
+  // This isn't used in the code, but I want to keep it for reference when setting magnet offset
+  public static final Angle pivotStartAngle = Degrees.of(83);
+
+  /** Initial pose of the shooter on the robot in WPILIb robot coordinate system. */
   public static final Pose3d shooterInitalPosition =
       new Pose3d(
-          new Translation3d(Meters.of(0), Meters.of(0), Meters.of(0.5)),
-          new Rotation3d(Degrees.of(0), Degrees.of(-40), Degrees.of(0)));
+          new Translation3d(Inches.of(-4.483162), Meters.of(0), Inches.of(21.311)),
+          new Rotation3d(Degrees.of(0), pivotStartAngle, Degrees.of(0)));
 
   /** Radius of the flywheel. */
   public static final Distance flywheelRadius = Inches.of(2);
@@ -126,7 +129,7 @@ public class ShooterConstants {
   // PIVOT CONSTANTS
 
   /** CAN ID for the primary pivot motor. */
-  public static final int pivotMotorId = 8; // TODO: SET MOTOR IDS
+  public static final int pivotMotorId = 27;
 
   /** Allowable error tolerance for the pivot position. */
   public static final Angle pivotPositionTolerence = Degrees.of(3);
@@ -158,20 +161,19 @@ public class ShooterConstants {
   public static final Angle defaultPitchTransfer = Degrees.of(50);
 
   // SENSOR CONSTANTS
-  public static final int pivotEncoderId = 0;
+  public static final int pivotEncoderId = 43;
   public static final double pivotEncoderOffset = 0;
   public static final SensorDirectionValue pivotEncoderDirection =
       SensorDirectionValue.Clockwise_Positive;
 
   public static final int beamBreakSensorChannel = 0;
 
-  public static final int shooterCandiId = 0;
+  public static final int shooterCandiId = 7;
 
   public static final ReverseLimitSourceValue pivotReverseLimitSource =
       ReverseLimitSourceValue.RemoteCANdiS1;
   public static final ForwardLimitSourceValue pivotForwardLimitSource =
       ForwardLimitSourceValue.RemoteCANdiS2;
 
-  // This isn't used in the code, but I want to keep it for reference when setting magnet offset
-  public static final Angle pivotStartAngle = Degrees.of(83);
+  
 }

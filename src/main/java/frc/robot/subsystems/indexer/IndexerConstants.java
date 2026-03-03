@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.signals.InvertedValue;
 import edu.wpi.first.units.VoltageUnit;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -13,10 +14,11 @@ import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.units.measure.Voltage;
 
 public class IndexerConstants {
+  public static CANBus indexerCanBus = new CANBus("rio");
   public static final double disconnectedDebounceTimeSec = 0.5;
 
   /** CAN ID for the indexer. */
-  public static final int indexerMotorID = 43; // TODO: Motor IDS
+  public static final int indexerMotorID = 28; 
 
   public static final int runIndexerButtonId = 4;
 
