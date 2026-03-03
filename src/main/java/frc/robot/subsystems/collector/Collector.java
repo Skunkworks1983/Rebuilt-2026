@@ -49,11 +49,10 @@ public class Collector extends SubsystemBase {
   /**
    * Collector subsystem.
    *
-   * <ul>
-   *   <li>Takes in two collector module IOs and assigns them to the collector modules.
-   * </ul>
+   * <p><hl>
+   * <li>Takes in two collector module IOs and assigns them to the collector modules. </hl>
    *
-   * <p><img src="https://media.giphy.com/media/jVFgWDtkY5v2M/giphy.gif" alt="Our Collector">
+   *     <p><img src="https://media.giphy.com/media/jVFgWDtkY5v2M/giphy.gif" alt="Our Collector">
    *
    * @param leftIO left collector
    * @param rightIO right collector
@@ -76,7 +75,10 @@ public class Collector extends SubsystemBase {
     leftCollector.periodic();
     rightCollector.periodic();
     collectorLigamentLeft.setAngle(
-        getLeftCollector().getPosition().plus(leftCollector.getConstants().CollectorDownPos));
+        getLeftCollector()
+            .getPosition()
+            .minus(leftCollector.getConstants().CollectorDownPos)
+            .unaryMinus());
     collectorLigamentRight.setAngle(
         getRightCollector().getPosition().plus(rightCollector.getConstants().CollectorDownPos));
   }

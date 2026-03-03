@@ -4,10 +4,16 @@
 
 package frc.robot.subsystems.collector;
 
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
+
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstants;
 import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstants.Side;
+import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
 
 /**
@@ -23,6 +29,14 @@ public class CollectorModule {
   private final CollectorModuleIO collectorIO;
   private final CollectorIOInputsAutoLogged inputs = new CollectorIOInputsAutoLogged();
 
+  private final LoggedTunableNumber collectorPivotKP;
+  private final LoggedTunableNumber collectorPivotKD;
+  private final LoggedTunableNumber collectorPivotKS;
+  private final LoggedTunableNumber collectorPivotKV;
+  private final LoggedTunableNumber collectorPivotKA;
+  private final LoggedTunableNumber collectorPivotCruiseVelocity;
+  private final LoggedTunableNumber collectorPivotMaxAcceleration;
+
   /**
    * This is the collector module subsystem
    *
@@ -34,11 +48,52 @@ public class CollectorModule {
    */
   public CollectorModule(CollectorModuleIO collectorIO) {
     this.collectorIO = collectorIO;
+    collectorPivotKP =
+        new LoggedTunableNumber("Collector/Pivot/kP", collectorIO.getConstants().turnkP);
+    collectorPivotKD =
+        new LoggedTunableNumber("Collector/Pivot/kD", collectorIO.getConstants().turnkD);
+    collectorPivotKS =
+        new LoggedTunableNumber("Collector/Pivot/kS", collectorIO.getConstants().turnkS);
+    collectorPivotKV =
+        new LoggedTunableNumber("Collector/Pivot/kV", collectorIO.getConstants().turnkV);
+    collectorPivotKA =
+        new LoggedTunableNumber("Collector/Pivot/kA", collectorIO.getConstants().turnkA);
+
+    collectorPivotCruiseVelocity =
+        new LoggedTunableNumber(
+            "Collector/Pivot/CruiseVelocity [Rot/s]",
+            collectorIO.getConstants().pivotMaxVelocity.in(RotationsPerSecond));
+    collectorPivotMaxAcceleration =
+        new LoggedTunableNumber(
+            "Collector/Pivot/MaxAcceleration [Rot/s/s]",
+            collectorIO.getConstants().pivotMaxAcceleration.in(RotationsPerSecondPerSecond));
   }
 
   public void periodic() {
     collectorIO.updateInputs(inputs);
     Logger.processInputs("Collector/Module/ " + collectorIO.getSide(), inputs);
+
+    if (collectorPivotKP.hasChanged(hashCode())
+        || collectorPivotKD.hasChanged(hashCode())
+        || collectorPivotKS.hasChanged(hashCode())
+        || collectorPivotKV.hasChanged(hashCode())
+        || collectorPivotKA.hasChanged(hashCode())) {
+      Slot0Configs gains = new Slot0Configs();
+      gains.kP = collectorPivotKP.get();
+      gains.kD = collectorPivotKD.get();
+      gains.kS = collectorPivotKS.get();
+      gains.kV = collectorPivotKV.get();
+      gains.kA = collectorPivotKA.get();
+      collectorIO.setPivotGains(gains);
+    }
+
+    if (collectorPivotCruiseVelocity.hasChanged(hashCode())
+        || collectorPivotMaxAcceleration.hasChanged(hashCode())) {
+      MotionMagicConfigs motionMagicConfigs = new MotionMagicConfigs();
+      motionMagicConfigs.MotionMagicCruiseVelocity = collectorPivotCruiseVelocity.get();
+      motionMagicConfigs.MotionMagicAcceleration = collectorPivotMaxAcceleration.get();
+      collectorIO.setMotionConstraints(motionMagicConfigs);
+    }
   }
 
   /** Gets Constants */
@@ -56,21 +111,12 @@ public class CollectorModule {
   }
 
   /**
-   * Gets the velocity of the collectors intake upper motor
+   * Gets the velocity of the collectors intake motor
    *
    * @return -Angular Velocity
    */
-  public AngularVelocity getVelocityOfIntakeLower() {
-    return inputs.lowerVelocity;
-  }
-
-  /**
-   * Gets the velocity of the collectors intake lower motor
-   *
-   * @return -Angular Velocity
-   */
-  public AngularVelocity getVelocityOfIntakeUpper() {
-    return inputs.upperVelocity;
+  public AngularVelocity getVelocityOfIntake() {
+    return inputs.intakeVelocity;
   }
 
   /**
@@ -92,12 +138,21 @@ public class CollectorModule {
   }
 
   /**
-   * Puts the collector into a down position
+   * Sets the collectors position
    *
    * @param angle WPILib angle
    */
   public void setCollectorPos(Angle angle) {
     collectorIO.setCollectorPos(angle);
+  }
+
+  /**
+   * Sets the duty cycle of the intake motors
+   *
+   * @param dutyCycle double between -1.0 and 1.0
+   */
+  public void setCollectorDutyCycle(double dutyCycle) {
+    collectorIO.setCollectorDutyCycle(dutyCycle);
   }
 
   /**
@@ -112,7 +167,7 @@ public class CollectorModule {
   }
 
   /**
-   * Checks to see if the collector is down
+   * Checks to see if the collector is up
    *
    * <ul>
    *   <li>This is to help ensure that we only have one collectordown at a time
@@ -132,6 +187,7 @@ public class CollectorModule {
     collectorIO.goDown();
   }
 
+  // Gets collector side
   public Side getSide() {
     return collectorIO.getSide();
   }
