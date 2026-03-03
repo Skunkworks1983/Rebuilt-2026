@@ -83,8 +83,8 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     setDownRunning = false;
 
     // Instantiates all motors and hardware objects
-    turnMotor = new TalonFX(constants.turnMotorID, "rio");
-    intakeMotor = new TalonFX(constants.intakeMotorID, "rio");
+    turnMotor = new TalonFX(constants.turnMotorID, "peripherals_2026");
+    intakeMotor = new TalonFX(constants.intakeMotorID, "peripherals_2026");
     upperLimitSwitch = new DigitalInput(constants.UpperLimitChannel);
     lowerLimitSwitch = new DigitalInput(constants.LowerLimitChannel);
     turnMotor.setPosition(Degrees.of(0));
