@@ -35,7 +35,7 @@ public class IndexerIOTalonFX implements IndexerIO {
 
   public IndexerIOTalonFX(int motorID) {
 
-    indexerMotor = new TalonFX(motorID, "peripherals_2026");
+    indexerMotor = new TalonFX(motorID, "rio");
 
     // assigns values to the statussignals
     indexerPosition = indexerMotor.getPosition();
