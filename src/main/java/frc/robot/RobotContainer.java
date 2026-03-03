@@ -54,8 +54,10 @@ import frc.robot.subsystems.indexer.IndexerIOSim;
 import frc.robot.subsystems.shooter.BeamBreakIO;
 import frc.robot.subsystems.shooter.FlywheelIO;
 import frc.robot.subsystems.shooter.FlywheelIOSim;
+import frc.robot.subsystems.shooter.FlywheelIOTalonFX;
 import frc.robot.subsystems.shooter.PivotIO;
 import frc.robot.subsystems.shooter.PivotIOSim;
+import frc.robot.subsystems.shooter.PivotIOTalonFX;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterConstants;
 import frc.robot.subsystems.vision.Vision;
@@ -135,7 +137,9 @@ public class RobotContainer {
 
         shooter =
             new Shooter(
-                new FlywheelIO() {}, new FlywheelIO() {}, new PivotIO() {}, new BeamBreakIO() {});
+                new FlywheelIOTalonFX(ShooterConstants.upperFlywheelId),
+                new FlywheelIOTalonFX(ShooterConstants.lowerFlywheelId),
+                new PivotIOTalonFX());
 
         vision =
             new Vision(
@@ -147,7 +151,11 @@ public class RobotContainer {
 
         indexer = new Indexer(new IndexerIO() {});
 
-        collector = new Collector(new CollectorModuleIO() {}, new CollectorModuleIO() {});
+        collector =
+        new Collector(
+        new CollectorModuleIO(){}, new CollectorModuleIO() {
+
+        });
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
@@ -190,10 +198,9 @@ public class RobotContainer {
 
         shooter =
             new Shooter(
-                new FlywheelIOSim(ShooterConstants.flywheelMotorOneId),
-                new FlywheelIOSim(ShooterConstants.flywheelSecondaryMotorId),
-                new PivotIOSim(),
-                null);
+                new FlywheelIOSim(ShooterConstants.upperFlywheelId),
+                new FlywheelIOSim(ShooterConstants.lowerFlywheelId),
+                new PivotIOSim());
 
         vision =
             new Vision(
@@ -227,9 +234,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 (pose) -> {},
                 (pose) -> {});
-        shooter =
-            new Shooter(
-                new FlywheelIO() {}, new FlywheelIO() {}, new PivotIO() {}, new BeamBreakIO() {});
+        shooter = new Shooter(new FlywheelIO() {}, new FlywheelIO() {}, new PivotIO() {});
 
         vision = new Vision(drive, new VisionIO() {}, new VisionIO() {});
 
@@ -344,8 +349,8 @@ public class RobotContainer {
 
     BooleanSupplier beamBroken = () -> shooter.getBeamBreak();
 
-    runIndexer.whileTrue(new IndexerAutoUnjam(indexer, beamBroken));
-    runIndexerReverse.whileTrue(new IndexerReverseCommand(indexer));
+    // runIndexer.whileTrue(new IndexerAutoUnjam(indexer, beamBroken));
+    // runIndexerReverse.whileTrue(new IndexerReverseCommand(indexer));
     // if the index button is hed and more than a second elapses before the beam break is broken the
     // indexer will reverse for 1 second before attempting to intake again
 
@@ -364,7 +369,7 @@ public class RobotContainer {
     JoystickButton autoModeSwitch =
         new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorAutoModeID);
 
-    // autoModeSwitch.onTrue(new AutomaticStateChange(collector, () -> drive.getDirection()));
+    // autoModeSwitch.whileTrue(new AutomaticStateChange(collector, drive::getDirection));
 
     // manualModeSwitch
     //     .negate()
