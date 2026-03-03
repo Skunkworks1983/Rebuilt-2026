@@ -37,7 +37,7 @@
       },
       "prevControl": {
         "x": 2.124136947218259,
-        "y": 1.6607560627674751
+        "y": 1.660756062767475
       },
       "nextControl": null,
       "isLocked": false,
@@ -63,7 +63,12 @@
       "name": "Begin collecting CCW",
       "waypointRelativePos": 0.35,
       "endWaypointRelativePos": 1.7,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Run Indexer"
+        }
+      }
     }
   ],
   "globalConstraints": {

@@ -9,11 +9,12 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
-import com.fasterxml.jackson.databind.util.Named;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.events.EventTrigger;
 import com.pathplanner.lib.events.PointTowardsZoneTrigger;
+import com.pathplanner.lib.path.EventMarker;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -31,6 +32,7 @@ import frc.robot.commands.DriveAimedShoot;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.Shooter.NoYawShootHub;
 import frc.robot.commands.TestPathCommands;
+import frc.robot.commands.DriveAimedShoot.TargetType;
 import frc.robot.commands.collectorCommands.AutomaticStateChange;
 import frc.robot.commands.collectorCommands.BothCollectorsUpState;
 import frc.robot.commands.collectorCommands.CollectorExpel;
@@ -38,6 +40,7 @@ import frc.robot.commands.collectorCommands.CollectorIntake;
 import frc.robot.commands.collectorCommands.LeftCollectorDownState;
 import frc.robot.commands.collectorCommands.RightCollectorDownState;
 import frc.robot.commands.indexerCommands.IndexerAutoUnjam;
+import frc.robot.commands.indexerCommands.IndexerCommand;
 import frc.robot.commands.indexerCommands.IndexerReverseCommand;
 import frc.robot.subsystems.collector.Collector;
 import frc.robot.subsystems.collector.CollectorModuleSimIO;
@@ -70,6 +73,8 @@ import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import frc.robot.util.sim.SimProjectile;
 import java.util.function.BooleanSupplier;
+
+import org.ironmaple.simulation.Goal;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
@@ -251,29 +256,24 @@ public class RobotContainer {
     }
 
     // registers commands for pathplanner
-    NamedCommands.registerCommand(
-        "Collector Intake", 
-        new CollectorIntake(collector));
+    NamedCommands.registerCommand("Collector Intake", new CollectorIntake(collector));
+
+    NamedCommands.registerCommand("Left Collector Down", new LeftCollectorDownState(collector));
+
+    NamedCommands.registerCommand("Right Collector Down", new RightCollectorDownState(collector));
+
+    NamedCommands.registerCommand("Both Collector Up", new BothCollectorsUpState(collector));
+
+    NamedCommands.registerCommand("Non-Driving Shooter Command", new NoYawShootHub(shooter, drive));
 
     NamedCommands.registerCommand(
-        "Left Collector Down", 
-        new LeftCollectorDownState(collector));
+        "Rotationaly Assisted Shoot", 
+        new DriveAimedShoot(drive, shooter,
+            () -> drive.getPose().getX(), 
+            () -> drive.getPose().getY(), 
+            TargetType.GOAL));
 
-    NamedCommands.registerCommand(
-        "Right Collector Down", 
-        new RightCollectorDownState(collector));
-
-    NamedCommands.registerCommand(
-        "Both Collector Up", 
-        new BothCollectorsUpState(collector));
-
-    NamedCommands.registerCommand(
-        "Non-Driving Shooter Command",
-        new NoYawShootHub(shooter, drive));
-
-    NamedCommands.registerCommand(
-        "Run Indexer", 
-        new IndexerCommand(indexer));
+    NamedCommands.registerCommand("Run Indexer", new IndexerCommand(indexer));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());

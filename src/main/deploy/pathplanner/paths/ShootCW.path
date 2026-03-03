@@ -63,7 +63,12 @@
       "name": "Begin Indexing CW",
       "waypointRelativePos": 0.44834571235651555,
       "endWaypointRelativePos": 1.6475354490209364,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Run Indexer"
+        }
+      }
     }
   ],
   "globalConstraints": {
