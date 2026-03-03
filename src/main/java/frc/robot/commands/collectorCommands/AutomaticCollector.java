@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.collector.Collector;
 import frc.robot.subsystems.collector.CollectorModule;
 import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
+
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 
@@ -31,7 +33,7 @@ public class AutomaticCollector extends Command {
   private boolean isGoingRight;
   private boolean wasGoingRight;
   private boolean shouldAgitate;
-  private boolean shouldStow;
+  private BooleanSupplier shouldStow;
 
   /**Creates a new AutomaticStateChange.
    * <h2> Implementation </h2>
@@ -48,7 +50,7 @@ public class AutomaticCollector extends Command {
    * @param shouldAgitate Whether we should be agitating
    * @param shouldStow Whether we should stow on end
    */
-  public AutomaticCollector(Collector collector, Supplier<LinearVelocity> direction, boolean shouldAgitate, boolean shouldStow) {
+  public AutomaticCollector(Collector collector, Supplier<LinearVelocity> direction, boolean shouldAgitate, BooleanSupplier shouldStow) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.collector = collector;
     leftCollector = collector.getLeftCollector();
@@ -110,7 +112,7 @@ public class AutomaticCollector extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    if(shouldStow) {
+    if(shouldStow.getAsBoolean()) {
       leftCollector.goUp();
       rightCollector.goUp();
     }

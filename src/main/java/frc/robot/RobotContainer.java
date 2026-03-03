@@ -382,17 +382,15 @@ public class RobotContainer {
     autoModeSwitch
         .and(intakeButton)
         .and(shootGoalButton)
-        .whileTrue(new AutomaticCollector(collector, drive::getDirection, true, true));
+        .whileTrue(new AutomaticCollector(collector, drive::getDirection,
+             true, () -> {return autoModeSwitch.getAsBoolean();}));
 
     // When in automode and intaking and NOT shooting
     autoModeSwitch
         .and(intakeButton)
         .and(shootGoalButton.negate())
-        .whileTrue(new AutomaticCollector(collector, drive::getDirection, false, true));
-
-    // When in automode and going to manual and dont wanna stow
-
-    // When in automode and intaking and dont wanna stow
+        .whileTrue(new AutomaticCollector(collector, drive::getDirection, 
+            false, () -> {return autoModeSwitch.getAsBoolean();}));
 
     // Collector Intake Button
     intakeButton
