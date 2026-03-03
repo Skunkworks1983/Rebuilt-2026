@@ -328,6 +328,11 @@ public class Shooter extends SubsystemBase {
     lowerFlywheel.setVelocity(lowerFlywheelSetpoint);
   }
 
+  public void stopFlywheels() {
+    upperFlywheel.setOpenLoopTorqueCurrent(Amps.of(0.0));
+    lowerFlywheel.setOpenLoopTorqueCurrent(Amps.of(0.0));
+  }
+
   public boolean getBeamBreak() {
     return beamBreakInputs.beamBroken;
   }

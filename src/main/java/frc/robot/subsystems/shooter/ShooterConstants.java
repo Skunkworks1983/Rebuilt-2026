@@ -20,10 +20,7 @@ import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.ReverseLimitSourceValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.units.VoltageUnit;
 import edu.wpi.first.units.measure.Angle;
@@ -110,9 +107,6 @@ public class ShooterConstants {
       new Pose3d(
           new Translation3d(Meters.of(0), Meters.of(0), Meters.of(0.5)),
           new Rotation3d(Degrees.of(0), Degrees.of(-40), Degrees.of(0)));
-
-  public static final Transform2d shooterTransform =
-      new Transform2d(new Translation2d(Meters.of(0), Meters.of(0)), new Rotation2d());
 
   /** Radius of the flywheel. */
   public static final Distance flywheelRadius = Inches.of(2);

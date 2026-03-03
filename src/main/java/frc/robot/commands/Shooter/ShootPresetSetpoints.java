@@ -65,9 +65,7 @@ public class ShootPresetSetpoints extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    shooter.setShooterSetpoints(
-        new Shooter.ShooterSetpoints(
-            RotationsPerSecond.of(0), RotationsPerSecond.of(0), Degrees.of(0)));
+    shooter.stopFlywheels();
   }
 
   @Override

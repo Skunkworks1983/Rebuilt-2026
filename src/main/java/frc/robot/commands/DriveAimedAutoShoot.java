@@ -16,6 +16,7 @@ import java.util.function.DoubleSupplier;
 
 public class DriveAimedAutoShoot extends Command {
   private final Drive drive;
+  private final Shooter shooter;
   private final DriveAimedShoot goalCommand;
   private final DriveAimedShoot transferCommand;
 
@@ -26,6 +27,7 @@ public class DriveAimedAutoShoot extends Command {
   public DriveAimedAutoShoot(
       Drive drive, Shooter shooter, DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
     this.drive = drive;
+    this.shooter = shooter;
     goalCommand = new DriveAimedShoot(drive, shooter, xSupplier, ySupplier, TargetType.GOAL);
     transferCommand =
         new DriveAimedShoot(drive, shooter, xSupplier, ySupplier, TargetType.TRANSFER);
@@ -48,6 +50,8 @@ public class DriveAimedAutoShoot extends Command {
     }
     CommandScheduler.getInstance().cancel(goalCommand);
     CommandScheduler.getInstance().cancel(transferCommand);
+
+    shooter.stopFlywheels();
   }
 
   @Override
