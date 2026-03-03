@@ -76,12 +76,9 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
- * This class is where the bulk of the robot should be declared. Since
- * Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in
- * the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of
- * the robot (including
+ * This class is where the bulk of the robot should be declared. Since Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
@@ -92,218 +89,204 @@ public class RobotContainer {
   private final Indexer indexer;
   private final Collector collector;
 
-    // Controller
-    private final Joystick leftJoystick;
-    private final Joystick rightJoystick;
-    private final Joystick buttonJoystick;
+  // Controller
+  private final Joystick leftJoystick;
+  private final Joystick rightJoystick;
+  private final Joystick buttonJoystick;
 
-    /**
-     * Xbox Controller for simulation.
-     *
-     * <p>
-     * Only used when {@link Constants#controlScheme} is set to {@link
-     * Constants.ControlScheme#XBOX}
-     */
-    private final XboxController xboxController;
+  /**
+   * Xbox Controller for simulation.
+   *
+   * <p>Only used when {@link Constants#controlScheme} is set to {@link
+   * Constants.ControlScheme#XBOX}
+   */
+  private final XboxController xboxController;
 
-    // Dashboard inputs
-    private final LoggedDashboardChooser<Command> autoChooser;
+  // Dashboard inputs
+  private final LoggedDashboardChooser<Command> autoChooser;
 
-    // Sim
-    private SwerveDriveSimulation simulation = null;
-    private Pose2d robotSimStartPosBlue = new Pose2d(7.485, 7.064, new Rotation2d(Math.PI));
-    private Pose2d robotSimStartPosRed = new Pose2d(10, 1.5, new Rotation2d());
+  // Sim
+  private SwerveDriveSimulation simulation = null;
+  private Pose2d robotSimStartPosBlue = new Pose2d(7.485, 7.064, new Rotation2d(Math.PI));
+  private Pose2d robotSimStartPosRed = new Pose2d(10, 1.5, new Rotation2d());
 
-    /**
-     * The container for the robot. Contains subsystems, OI devices, and commands.
-     */
-    public RobotContainer() {
-        if (Constants.controlScheme == Constants.ControlScheme.OI) {
-            leftJoystick = new Joystick(Constants.OIConstants.LeftJoystick);
-            rightJoystick = new Joystick(Constants.OIConstants.RightJoystick);
-            buttonJoystick = new Joystick(Constants.OIConstants.ButtonJoystick);
-            xboxController = null;
-        } else {
-            xboxController = new XboxController(0);
-            leftJoystick = null;
-            rightJoystick = null;
-            buttonJoystick = null;
-        }
-        switch (Constants.currentMode) {
-            case REAL:
-                // Real robot, instantiate hardware IO implementations
-                // ModuleIOTalonFX is intended for modules with TalonFX drive, TalonFX turn, and
-                // a CANcoder
-                drive = new Drive(
-                        new GyroIOPigeon2(),
-                        new ModuleIOTalonFX(Constants.tunerConstants.getFrontLeft()),
-                        new ModuleIOTalonFX(Constants.tunerConstants.getFrontRight()),
-                        new ModuleIOTalonFX(Constants.tunerConstants.getBackLeft()),
-                        new ModuleIOTalonFX(Constants.tunerConstants.getBackRight()),
-                        (pose) -> {
-                        },
-                        (pose) -> {
-                        });
+  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  public RobotContainer() {
+    if (Constants.controlScheme == Constants.ControlScheme.OI) {
+      leftJoystick = new Joystick(Constants.OIConstants.LeftJoystick);
+      rightJoystick = new Joystick(Constants.OIConstants.RightJoystick);
+      buttonJoystick = new Joystick(Constants.OIConstants.ButtonJoystick);
+      xboxController = null;
+    } else {
+      xboxController = new XboxController(0);
+      leftJoystick = null;
+      rightJoystick = null;
+      buttonJoystick = null;
+    }
+    switch (Constants.currentMode) {
+      case REAL:
+        // Real robot, instantiate hardware IO implementations
+        // ModuleIOTalonFX is intended for modules with TalonFX drive, TalonFX turn, and
+        // a CANcoder
+        drive =
+            new Drive(
+                new GyroIOPigeon2(),
+                new ModuleIOTalonFX(Constants.tunerConstants.getFrontLeft()),
+                new ModuleIOTalonFX(Constants.tunerConstants.getFrontRight()),
+                new ModuleIOTalonFX(Constants.tunerConstants.getBackLeft()),
+                new ModuleIOTalonFX(Constants.tunerConstants.getBackRight()),
+                (pose) -> {},
+                (pose) -> {});
 
-                shooter = new Shooter(new FlywheelIOTalonFX(ShooterConstants.flywheelMotorOneId),
-                        new FlywheelIOTalonFX(ShooterConstants.flywheelSecondaryMotorId),
-                        new PivotIOTalonFX(), new BeambreakIOSensor(0));
+        shooter =
+            new Shooter(
+                new FlywheelIOTalonFX(ShooterConstants.flywheelMotorOneId),
+                new FlywheelIOTalonFX(ShooterConstants.flywheelSecondaryMotorId),
+                new PivotIOTalonFX(),
+                new BeambreakIOSensor(0));
 
-                vision = new Vision(
-                        drive, new VisionIOLimelight(VisionConstants.camera0Name, drive::getRotation));
+        vision =
+            new Vision(
+                drive, new VisionIOLimelight(VisionConstants.camera0Name, drive::getRotation));
 
-                // This is a solution to the vision-drive cross dependency issue that hurts my
-                // eys, but it does work
-                drive.setResetVisionIMUCallback((pose) -> vision.resetCameraIMU(pose));
+        // This is a solution to the vision-drive cross dependency issue that hurts my
+        // eys, but it does work
+        drive.setResetVisionIMUCallback((pose) -> vision.resetCameraIMU(pose));
 
-                indexer = new Indexer(new IndexerIO() {
-                });
+        indexer = new Indexer(new IndexerIO() {});
 
-                collector =
-                new Collector(
-                new CollectorModuleIO(){}, new CollectorModuleIO() {
+        collector = new Collector(new CollectorModuleIO() {}, new CollectorModuleIO() {});
 
-                });
+        // The ModuleIOTalonFXS implementation provides an example implementation for
+        // TalonFXS controller connected to a CANdi with a PWM encoder. The
+        // implementations
+        // of ModuleIOTalonFX, ModuleIOTalonFXS, and ModuleIOSpark (from the Spark
+        // swerve
+        // template) can be freely intermixed to support alternative hardware
+        // arrangements.
+        // Please see the AdvantageKit template documentation for more information:
+        // https://docs.advantagekit.org/getting-started/template-projects/talonfx-swerve-template#custom-module-implementations
+        //
+        // drive =
+        // new Drive(
+        // new GyroIOPigeon2(),
+        // new ModuleIOTalonFXS(TunerConstants.FrontLeft),
+        // new ModuleIOTalonFXS(TunerConstants.FrontRight),
+        // new ModuleIOTalonFXS(TunerConstants.BackLeft),
+        // new ModuleIOTalonFXS(TunerConstants.BackRight));
+        break;
 
-                // The ModuleIOTalonFXS implementation provides an example implementation for
-                // TalonFXS controller connected to a CANdi with a PWM encoder. The
-                // implementations
-                // of ModuleIOTalonFX, ModuleIOTalonFXS, and ModuleIOSpark (from the Spark
-                // swerve
-                // template) can be freely intermixed to support alternative hardware
-                // arrangements.
-                // Please see the AdvantageKit template documentation for more information:
-                // https://docs.advantagekit.org/getting-started/template-projects/talonfx-swerve-template#custom-module-implementations
-                //
-                // drive =
-                // new Drive(
-                // new GyroIOPigeon2(),
-                // new ModuleIOTalonFXS(TunerConstants.FrontLeft),
-                // new ModuleIOTalonFXS(TunerConstants.FrontRight),
-                // new ModuleIOTalonFXS(TunerConstants.BackLeft),
-                // new ModuleIOTalonFXS(TunerConstants.BackRight));
-                break;
+      case SIM:
+        // Sim robot, instantiate physics sim IO implementations
+        simulation =
+            new SwerveDriveSimulation(Drive.mapleSimConfig, new Pose2d(3, 3, new Rotation2d()));
 
-            case SIM:
-                // Sim robot, instantiate physics sim IO implementations
-                simulation = new SwerveDriveSimulation(Drive.mapleSimConfig, new Pose2d(3, 3, new Rotation2d()));
+        SimulatedArena.getInstance().addDriveTrainSimulation(simulation);
+        drive =
+            new Drive(
+                new GyroIOSim(simulation.getGyroSimulation()),
+                new ModuleIOTalonFXSim(
+                    Constants.tunerConstants.getFrontLeft(), simulation.getModules()[0]),
+                new ModuleIOTalonFXSim(
+                    Constants.tunerConstants.getFrontRight(), simulation.getModules()[1]),
+                new ModuleIOTalonFXSim(
+                    Constants.tunerConstants.getBackLeft(), simulation.getModules()[2]),
+                new ModuleIOTalonFXSim(
+                    Constants.tunerConstants.getBackRight(), simulation.getModules()[3]),
+                simulation::setSimulationWorldPose,
+                (pose) -> {});
 
-                SimulatedArena.getInstance().addDriveTrainSimulation(simulation);
-                drive = new Drive(
-                        new GyroIOSim(simulation.getGyroSimulation()),
-                        new ModuleIOTalonFXSim(
-                                Constants.tunerConstants.getFrontLeft(), simulation.getModules()[0]),
-                        new ModuleIOTalonFXSim(
-                                Constants.tunerConstants.getFrontRight(), simulation.getModules()[1]),
-                        new ModuleIOTalonFXSim(
-                                Constants.tunerConstants.getBackLeft(), simulation.getModules()[2]),
-                        new ModuleIOTalonFXSim(
-                                Constants.tunerConstants.getBackRight(), simulation.getModules()[3]),
-                        simulation::setSimulationWorldPose,
-                        (pose) -> {
-                        });
+        shooter =
+            new Shooter(
+                new FlywheelIOSim(ShooterConstants.flywheelMotorOneId),
+                new FlywheelIOSim(ShooterConstants.flywheelSecondaryMotorId),
+                new PivotIOSim(),
+                new BeamBreakIO() {});
 
-                shooter = new Shooter(
-                        new FlywheelIOSim(ShooterConstants.flywheelMotorOneId),
-                        new FlywheelIOSim(ShooterConstants.flywheelSecondaryMotorId),
-                        new PivotIOSim(),
-                        new BeamBreakIO() {});
+        vision =
+            new Vision(
+                drive,
+                new VisionIOPhotonVisionSim(
+                    VisionConstants.camera0Name,
+                    VisionConstants.robotToCamera0,
+                    simulation::getSimulatedDriveTrainPose),
+                new VisionIOPhotonVisionSim(
+                    VisionConstants.camera1Name,
+                    VisionConstants.robotToCamera1,
+                    simulation::getSimulatedDriveTrainPose));
 
-                vision = new Vision(
-                        drive,
-                        new VisionIOPhotonVisionSim(
-                                VisionConstants.camera0Name,
-                                VisionConstants.robotToCamera0,
-                                simulation::getSimulatedDriveTrainPose),
-                        new VisionIOPhotonVisionSim(
-                                VisionConstants.camera1Name,
-                                VisionConstants.robotToCamera1,
-                                simulation::getSimulatedDriveTrainPose));
-
-                // collector =
-                // new Collector(
-                // new CollectorModuleSimIO(simulation, new CollectorTalonLeftConstants()),
-                // new CollectorModuleSimIO(simulation, new CollectorTalonRightConstants()));
-
-                indexer = new Indexer(new IndexerIOSim(IndexerConstants.indexerMotorID));
-
-                break;
-
-            default:
-                // Replayed robot, disable IO implementations
-                drive = new Drive(
-                        new GyroIO() {
-                        },
-                        new ModuleIO() {
-                        },
-                        new ModuleIO() {
-                        },
-                        new ModuleIO() {
-                        },
-                        new ModuleIO() {
-                        },
-                        (pose) -> {
-                        },
-                        (pose) -> {
-                        });
-                shooter = new Shooter(
-                        new FlywheelIO() {
-                        }, new FlywheelIO() {
-                        }, new PivotIO() {
-                        }, new BeamBreakIO() {
-                        });
-
-                vision = new Vision(drive, new VisionIO() {
-                }, new VisionIO() {
-                });
-
-                collector =
-                new Collector(
+        collector =
+            new Collector(
                 new CollectorModuleSimIO(simulation, new CollectorTalonLeftConstants()),
                 new CollectorModuleSimIO(simulation, new CollectorTalonRightConstants()));
 
-                indexer = new Indexer(new IndexerIO() {
-                });
-                break;
-        }
+        indexer = new Indexer(new IndexerIOSim(IndexerConstants.indexerMotorID));
 
-        // Set up auto routines
-        autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
-        new EventTrigger("FIRE")
-                .onTrue(Commands.print("LEBRON!").andThen(new InstantCommand(this::launchSimFuel)));
-        new PointTowardsZoneTrigger("Aim Hub").whileTrue(new NoYawShootHub(shooter, drive));
+        break;
 
-        // Set up SysId routines
-        autoChooser.addOption(
-                "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
-        autoChooser.addOption(
-                "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
+      default:
+        // Replayed robot, disable IO implementations
+        drive =
+            new Drive(
+                new GyroIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                (pose) -> {},
+                (pose) -> {});
+        shooter =
+            new Shooter(
+                new FlywheelIO() {}, new FlywheelIO() {}, new PivotIO() {}, new BeamBreakIO() {});
 
-        autoChooser.addOption(
-                "Drive SysId (Quasistatic Forward)",
-                drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-        autoChooser.addOption(
-                "Drive SysId (Quasistatic Reverse)",
-                drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-        autoChooser.addOption(
-                "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-        autoChooser.addOption(
-                "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+        vision = new Vision(drive, new VisionIO() {}, new VisionIO() {});
 
-        autoChooser.addOption(
-                "Shooter SysId (Quasistatic Forward)",
-                shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-        autoChooser.addOption(
-                "Shooter SysId (Quasistatic Reverse)",
-                shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-        autoChooser.addOption(
-                "Shooter SysId (Dynamic Forward)", shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
-        autoChooser.addOption(
-                "Shooter SysId (Dynamic Reverse)", shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+        collector =
+            new Collector(
+                new CollectorModuleSimIO(simulation, new CollectorTalonLeftConstants()),
+                new CollectorModuleSimIO(simulation, new CollectorTalonRightConstants()));
 
-        // Configure the button bindings
-        configureButtonBindings();
+        indexer = new Indexer(new IndexerIO() {});
+        break;
     }
+
+    // Set up auto routines
+    autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
+    new EventTrigger("FIRE")
+        .onTrue(Commands.print("LEBRON!").andThen(new InstantCommand(this::launchSimFuel)));
+    new PointTowardsZoneTrigger("Aim Hub").whileTrue(new NoYawShootHub(shooter, drive));
+
+    // Set up SysId routines
+    autoChooser.addOption(
+        "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
+    autoChooser.addOption(
+        "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
+
+    autoChooser.addOption(
+        "Drive SysId (Quasistatic Forward)",
+        drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    autoChooser.addOption(
+        "Drive SysId (Quasistatic Reverse)",
+        drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    autoChooser.addOption(
+        "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    autoChooser.addOption(
+        "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+
+    autoChooser.addOption(
+        "Shooter SysId (Quasistatic Forward)",
+        shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    autoChooser.addOption(
+        "Shooter SysId (Quasistatic Reverse)",
+        shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    autoChooser.addOption(
+        "Shooter SysId (Dynamic Forward)", shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    autoChooser.addOption(
+        "Shooter SysId (Dynamic Reverse)", shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+
+    // Configure the button bindings
+    configureButtonBindings();
+  }
 
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
@@ -332,7 +315,7 @@ public class RobotContainer {
           new DriveAimedAutoShoot(
               drive, shooter, () -> -leftJoystick.getY(), () -> -leftJoystick.getX()));
       shootButton.onTrue(new InstantCommand(this::launchSimFuel));
-runIndexer = new JoystickButton(buttonJoystick, IndexerConstants.runIndexerButtonId);
+      runIndexer = new JoystickButton(buttonJoystick, IndexerConstants.runIndexerButtonId);
       runIndexer = new JoystickButton(buttonJoystick, Constants.OIConstants.ShooterIndexID);
       runIndexerReverse =
           new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID);
@@ -441,81 +424,69 @@ runIndexer = new JoystickButton(buttonJoystick, IndexerConstants.runIndexerButto
     // .ignoringDisable(true));
   }
 
-    /**
-     * Use this to pass the autonomous command to the main {@link Robot} class.
-     *
-     * @return the command to run in autonomous
-     */
-    public Command getAutonomousCommand() {
-        return autoChooser.get();
+  /**
+   * Use this to pass the autonomous command to the main {@link Robot} class.
+   *
+   * @return the command to run in autonomous
+   */
+  public Command getAutonomousCommand() {
+    return autoChooser.get();
+  }
+
+  /**
+   * This is called at robot initialization during sim
+   *
+   * <p>It temporarily positions the robot (See {@link #resetSimRobotPose} for actual initial robot
+   * positioning) and resets the {@link SimulatedArena} to standard field state
+   */
+  public void resetSimulationField() {
+    if (Constants.currentMode != Constants.Mode.SIM) return;
+
+    simulation.setSimulationWorldPose(new Pose2d(12, 1, new Rotation2d()));
+
+    SimulatedArena.getInstance().resetFieldForAuto();
+  }
+
+  /**
+   * This method is called during the periodic cycle during sim. The simulation state is updated and
+   * game pieces positions are logged for AdvantageScope visualization
+   *
+   * @see <a href= "https://shenzhen-robotics-alliance.github.io/maple-sim/reefscape/">MapleSim
+   *     docs</a> for information on how to display game pieces in AdvantageScope
+   */
+  public void updateSimulation() {
+    if (Constants.currentMode != Constants.Mode.SIM) return;
+
+    SimulatedArena.getInstance().simulationPeriodic();
+    Logger.recordOutput("FieldSimulation/RobotPosition", simulation.getSimulatedDriveTrainPose());
+    Logger.recordOutput(
+        "FieldSimulation/Fuel", SimulatedArena.getInstance().getGamePiecesArrayByType("Fuel"));
+  }
+
+  /**
+   * This method is called periodically during disabled so that if the alliance is changed it is
+   * registered
+   *
+   * <p>This method sets the {@link #simulation} world pose to mirrored positions based on alliance
+   * color
+   */
+  public void resetSimRobotPose() {
+    if (DriverStation.getAlliance().isPresent()
+        && DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
+      simulation.setSimulationWorldPose(robotSimStartPosBlue);
+    } else {
+      simulation.setSimulationWorldPose(robotSimStartPosRed);
     }
+  }
 
-    /**
-     * This is called at robot initialization during sim
-     *
-     * <p>
-     * It temporarily positions the robot (See {@link #resetSimRobotPose} for actual
-     * initial robot
-     * positioning) and resets the {@link SimulatedArena} to standard field state
-     */
-    public void resetSimulationField() {
-        if (Constants.currentMode != Constants.Mode.SIM)
-            return;
-
-        simulation.setSimulationWorldPose(new Pose2d(12, 1, new Rotation2d()));
-
-        SimulatedArena.getInstance().resetFieldForAuto();
-    }
-
-    /**
-     * This method is called during the periodic cycle during sim. The simulation
-     * state is updated and
-     * game pieces positions are logged for AdvantageScope visualization
-     *
-     * @see <a href=
-     *      "https://shenzhen-robotics-alliance.github.io/maple-sim/reefscape/">MapleSim
-     *      docs</a> for information on how to display game pieces in AdvantageScope
-     */
-    public void updateSimulation() {
-        if (Constants.currentMode != Constants.Mode.SIM)
-            return;
-
-        SimulatedArena.getInstance().simulationPeriodic();
-        Logger.recordOutput("FieldSimulation/RobotPosition", simulation.getSimulatedDriveTrainPose());
-        Logger.recordOutput(
-                "FieldSimulation/Fuel", SimulatedArena.getInstance().getGamePiecesArrayByType("Fuel"));
-    }
-
-    /**
-     * This method is called periodically during disabled so that if the alliance is
-     * changed it is
-     * registered
-     *
-     * <p>
-     * This method sets the {@link #simulation} world pose to mirrored positions
-     * based on alliance
-     * color
-     */
-    public void resetSimRobotPose() {
-        if (DriverStation.getAlliance().isPresent()
-                && DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
-            simulation.setSimulationWorldPose(robotSimStartPosBlue);
-        } else {
-            simulation.setSimulationWorldPose(robotSimStartPosRed);
-        }
-    }
-
-    /**
-     * Creates a new simulated fuel and launches it from the current robot position
-     * and speeds
-     */
-    public void launchSimFuel() {
-        SimulatedArena.getInstance()
-                .addGamePieceProjectile(
-                        SimProjectile.getProjectile(
-                                simulation.getSimulatedDriveTrainPose(),
-                                simulation.getDriveTrainSimulatedChassisSpeedsFieldRelative(),
-                                shooter.getShooterForwardLinearVelocity(),
-                                shooter.getPivotAngle()));
-    }
+  /** Creates a new simulated fuel and launches it from the current robot position and speeds */
+  public void launchSimFuel() {
+    SimulatedArena.getInstance()
+        .addGamePieceProjectile(
+            SimProjectile.getProjectile(
+                simulation.getSimulatedDriveTrainPose(),
+                simulation.getDriveTrainSimulatedChassisSpeedsFieldRelative(),
+                shooter.getShooterForwardLinearVelocity(),
+                shooter.getPivotAngle()));
+  }
 }
