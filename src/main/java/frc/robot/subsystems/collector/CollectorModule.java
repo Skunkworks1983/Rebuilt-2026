@@ -147,6 +147,15 @@ public class CollectorModule {
   }
 
   /**
+   * Sets the duty cycle of the intake motors
+   *
+   * @param dutyCycle double between -1.0 and 1.0
+   */
+  public void setCollectorDutyCycle(double dutyCycle) {
+    collectorIO.setCollectorDutyCycle(dutyCycle);
+  }
+
+  /**
    * Checks to see if the collector is down
    *
    * <ul>

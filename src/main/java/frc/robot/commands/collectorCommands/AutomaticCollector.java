@@ -35,16 +35,21 @@ public class AutomaticCollector extends Command {
   private boolean shouldAgitate;
   private BooleanSupplier shouldStow;
 
-  /**Creates a new AutomaticStateChange.
-   * <h2> Implementation </h2>
-   * 
+  /**
+   * Creates a new AutomaticStateChange.
+   *
+   * <h2>Implementation </h2>
+   *
    * <ol>
-   *  <li> Uses a debounced current direction {@link LinearVelocity} to decide (using +/-) what direction its going
-   *  <li> Using whether it is going right and whether it WAS going right it changes which collector it wants up or down
-   *  <li> Sets the collector it wants up, up, and then waits for it to be FULLY up before sending the collector it wants down, down
-   *  <li> ON END, both collector will go UP
+   *   <li>Uses a debounced current direction {@link LinearVelocity} to decide (using +/-) what
+   *       direction its going
+   *   <li>Using whether it is going right and whether it WAS going right it changes which collector
+   *       it wants up or down
+   *   <li>Sets the collector it wants up, up, and then waits for it to be FULLY up before sending
+   *       the collector it wants down, down
+   *   <li>ON END, both collector will go UP
    * </ol>
-   * 
+   *
    * @param collector The collector subsystem
    * @param direction The {@link LinearVelocity} of the robot (+ = left, - = right)
    * @param shouldAgitate Whether we should be agitating
