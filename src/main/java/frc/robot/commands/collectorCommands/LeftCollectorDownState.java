@@ -4,7 +4,6 @@
 
 package frc.robot.commands.collectorCommands;
 
-import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.collector.Collector;
 import org.littletonrobotics.junction.Logger;
@@ -13,14 +12,16 @@ import org.littletonrobotics.junction.Logger;
 public class LeftCollectorDownState extends Command {
   private Collector collector;
 
-  /**Creates a new LeftCollectorDownState.
-   * <h2> Implementation </h2>
-   * 
+  /**
+   * Creates a new LeftCollectorDownState.
+   *
+   * <h2>Implementation </h2>
+   *
    * <ol>
-   *  <li> Ensures Right Collector is up
-   *  <li> Sends Left Collector down
+   *   <li>Ensures Right Collector is up
+   *   <li>Sends Left Collector down
    * </ol>
-   * 
+   *
    * @param collector The collector subsystem
    */
   public LeftCollectorDownState(Collector collector) {
