@@ -94,7 +94,6 @@ public class CollectorConfig extends Command {
   public CollectorConfig(Collector collector, boolean automaticSwitch, boolean bothUpSwitch, boolean manualSwitch, 
       BooleanSupplier intake, BooleanSupplier shooting, BooleanSupplier manualAgitation, 
       BooleanSupplier leftDownManual, BooleanSupplier rightDownManual, Supplier<LinearVelocity> direction) {
-    // Use addRequirements() here to declare subsystem dependencies.
     this.collector = collector;
     addRequirements(collector);
 
@@ -130,7 +129,10 @@ public class CollectorConfig extends Command {
   @Override
   public void initialize() {
     Logger.recordOutput("Commands/Collector/CollectorConfig", true);
-    if((previousModeSwitch.equals(previouseSwitch.automatic) && currSwitch.equals(previouseSwitch.manual)) /*add an || intaking and going up and leaving auto here */) {
+    // Stop collectors from going up when command starts if were leaving auto and going to manual or if intaking and leaving auto
+    if((previousModeSwitch.equals(previouseSwitch.automatic) && currSwitch.equals(previouseSwitch.manual)) 
+      || (intake.getAsBoolean() && previousModeSwitch.equals(previouseSwitch.automatic) 
+      && currSwitch.equals(previouseSwitch.automatic))) {
       // IDK what happens here ig
     } else {
       leftCollector.goUp();
