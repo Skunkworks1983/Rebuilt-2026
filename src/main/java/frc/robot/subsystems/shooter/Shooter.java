@@ -49,6 +49,8 @@ public class Shooter extends SubsystemBase {
 
   private final PivotIO pivot;
 
+  private final BeamBreakIO beamBreak;
+
   private final FlywheelIOInputsAutoLogged upperFlywheelInputs = new FlywheelIOInputsAutoLogged();
   private final FlywheelIOInputsAutoLogged lowerFlywheelInputs = new FlywheelIOInputsAutoLogged();
   private final PivotIOInputsAutoLogged pivotInputs = new PivotIOInputsAutoLogged();
@@ -106,10 +108,12 @@ public class Shooter extends SubsystemBase {
    * @param pivot The IO implementation for the pivot.
    * @param beamBreak The IO implementation for the beam break sensor.
    */
-  public Shooter(FlywheelIO forwardFlywheel, FlywheelIO backFlywheel, PivotIO pivot) {
+  public Shooter(
+      FlywheelIO forwardFlywheel, FlywheelIO backFlywheel, PivotIO pivot, BeamBreakIO beamBreak) {
     this.upperFlywheel = forwardFlywheel;
     this.lowerFlywheel = backFlywheel;
     this.pivot = pivot;
+    this.beamBreak = beamBreak;
 
     // Allows for system identification of the flywheel via auto routines (finds
     // torque current
@@ -149,10 +153,12 @@ public class Shooter extends SubsystemBase {
     upperFlywheel.updateInputs(upperFlywheelInputs);
     lowerFlywheel.updateInputs(lowerFlywheelInputs);
     pivot.updateInputs(pivotInputs);
+    beamBreak.updateInputs(beamBreakInputs);
 
     Logger.processInputs("Shooter/Flywheel/Lower Flywheel", lowerFlywheelInputs);
     Logger.processInputs("Shooter/Flywheel/Upper Flywheel", upperFlywheelInputs);
     Logger.processInputs("Shooter/Pivot", pivotInputs);
+    Logger.processInputs("Shooter/BeamBreak", beamBreakInputs);
 
     upperFlywheelDisconnectedAlert.set(!upperFlywheelInputs.connected);
 

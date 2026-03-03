@@ -51,10 +51,10 @@ public class ShooterConstants {
   // FLYWHEEL CONSTANTS
 
   /** CAN ID for the primary flywheel motor. */
-  public static final int upperFlywheelId = 49; // TODO: Motor IDS
+  public static final int flywheelMotorOneId = 49; // TODO: Motor IDS
 
   /** CAN ID for the secondary flywheel motor. */
-  public static final int lowerFlywheelId = 50;
+  public static final int flywheelSecondaryMotorId = 50;
 
   // PID for flywheel
   public static final double upperFlywheelKP = 3.5; // TODO: Flywheel Tuning
