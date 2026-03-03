@@ -122,7 +122,7 @@ public class ShooterConstants {
   public static final Angle pivotPositionTolerence = Degrees.of(3);
 
   // PID for pivot
-  //public static final double pivotkP = 90; // TODO: SET VALUES
+  // public static final double pivotkP = 90; // TODO: SET VALUES
   public static final double pivotkP = 9; // TODO: SET VALUES
   public static final double pivotkD = 0;
 
