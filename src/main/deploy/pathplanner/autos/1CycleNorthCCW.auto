@@ -21,7 +21,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "ThroughSouthTrenchCCW"
+                        "pathName": "ThroughNorthTrenchCW"
                       }
                     },
                     {
@@ -37,13 +37,13 @@
                           {
                             "type": "path",
                             "data": {
-                              "pathName": "CollectCCW"
+                              "pathName": "CollectCW"
                             }
                           },
                           {
                             "type": "named",
                             "data": {
-                              "name": "Right Collector Down"
+                              "name": "Collector Intake"
                             }
                           }
                         ]
@@ -58,7 +58,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "ThroughNorthTunnelCCW"
+                        "pathName": "ThroughSouthTrenchCW"
                       }
                     },
                     {
@@ -68,13 +68,13 @@
                           {
                             "type": "path",
                             "data": {
-                              "pathName": "Shoot CCW"
+                              "pathName": "ShootCW"
                             }
                           },
                           {
                             "type": "named",
                             "data": {
-                              "name": "Rotationaly Assisted Shoot"
+                              "name": "Auto Stop Drive and shoot"
                             }
                           }
                         ]

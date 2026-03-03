@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.commands.AutoStopDriveAimedShoot;
 import frc.robot.commands.DriveAimedShoot;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.Shooter.NoYawShootHub;
@@ -72,6 +73,8 @@ import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import frc.robot.util.sim.SimProjectile;
+
+import java.lang.annotation.Target;
 import java.util.function.BooleanSupplier;
 
 import org.ironmaple.simulation.Goal;
@@ -265,6 +268,13 @@ public class RobotContainer {
     NamedCommands.registerCommand("Both Collector Up", new BothCollectorsUpState(collector));
 
     NamedCommands.registerCommand("Non-Driving Shooter Command", new NoYawShootHub(shooter, drive));
+
+    NamedCommands.registerCommand(
+        "Auto Stop Drive and shoot", 
+        new AutoStopDriveAimedShoot(drive, shooter, 
+            () -> drive.getPose().getX(), 
+            () -> drive.getPose().getY(), 
+            AutoStopDriveAimedShoot.TargetType.GOAL));
 
     NamedCommands.registerCommand(
         "Rotationaly Assisted Shoot", 

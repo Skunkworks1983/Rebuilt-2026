@@ -74,76 +74,7 @@
                           {
                             "type": "named",
                             "data": {
-                              "name": "Rotationaly Assisted Shoot"
-                            }
-                          }
-                        ]
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "ThroughSouthTrenchCCW"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Left Collector Down"
-                      }
-                    },
-                    {
-                      "type": "deadline",
-                      "data": {
-                        "commands": [
-                          {
-                            "type": "path",
-                            "data": {
-                              "pathName": "CollectCCW"
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "Right Collector Down"
-                            }
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Both Collector Up"
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "ThroughNorthTunnelCCW"
-                      }
-                    },
-                    {
-                      "type": "deadline",
-                      "data": {
-                        "commands": [
-                          {
-                            "type": "path",
-                            "data": {
-                              "pathName": "Shoot CCW"
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "Rotationaly Assisted Shoot"
+                              "name": "Auto Stop Drive and shoot"
                             }
                           }
                         ]

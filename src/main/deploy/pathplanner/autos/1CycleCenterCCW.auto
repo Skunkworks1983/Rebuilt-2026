@@ -80,7 +80,7 @@
                           {
                             "type": "named",
                             "data": {
-                              "name": "Rotationaly Assisted Shoot"
+                              "name": "Auto Stop Drive and shoot"
                             }
                           }
                         ]

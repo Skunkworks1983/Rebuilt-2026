@@ -29,6 +29,7 @@ import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.MomentOfInertia;
 import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.units.measure.Voltage;
+import frc.robot.util.LoggedTunableNumber;
 
 /**
  * Constants used by the Shooter subsystem (flywheel and pivot)
@@ -133,4 +134,7 @@ public class ShooterConstants {
   public static final InvertedValue pivotMotorInverted = InvertedValue.Clockwise_Positive;
 
   public static final Current pivotStatorCurrentLimit = Amps.of(120);
+
+  public static LoggedTunableNumber autoStopShooterDriveCommandInterval = 
+    new LoggedTunableNumber("Shppter/Command/Auto End Interval", 1);
 }
