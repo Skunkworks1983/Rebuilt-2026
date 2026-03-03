@@ -376,7 +376,7 @@ public class RobotContainer {
     JoystickButton autoModeSwitch =
         new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorAutoModeID);
     JoystickButton intakeButton = 
-        new JoystickButton(buttonJoystick, Constants.JoystickConstants.CollectorIntakeID);
+        new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorIntakeID);
 
     // When were in both collectors up state and not agitating
     manualModeSwitch
