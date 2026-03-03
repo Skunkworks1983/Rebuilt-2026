@@ -23,6 +23,9 @@ public interface TunerConstants {
     if (Constants.robotHardware == RobotHardware.Swerveles) {
       return new TunerConstantsSwervles();
     }
+    if (Constants.robotHardware == RobotHardware.Rebuilt) {
+      return new TunerConstantsRebuilt();
+    }
 
     // TODO: Replace with rebuilt constants
     return new TunerConstantsRebuilt();

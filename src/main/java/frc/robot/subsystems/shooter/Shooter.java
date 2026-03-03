@@ -48,9 +48,13 @@ public class Shooter extends SubsystemBase {
   private final FlywheelIO lowerFlywheel;
 
   private final PivotIO pivot;
+
+  private final BeamBreakIO beamBreak;
+
   private final FlywheelIOInputsAutoLogged upperFlywheelInputs = new FlywheelIOInputsAutoLogged();
   private final FlywheelIOInputsAutoLogged lowerFlywheelInputs = new FlywheelIOInputsAutoLogged();
   private final PivotIOInputsAutoLogged pivotInputs = new PivotIOInputsAutoLogged();
+  private final BeamBreakIOInputsAutoLogged beamBreakInputs = new BeamBreakIOInputsAutoLogged();
 
   private AngularVelocity flywheelSetpoint = RadiansPerSecond.of(0.);
   private Angle pivotSetpoint = Radians.of(0.);
@@ -102,11 +106,14 @@ public class Shooter extends SubsystemBase {
    * @param forwardFlywheel The IO implementation for the forward (launch) flywheel.
    * @param forwardFlywheel The IO implementation for the back flywheel.
    * @param pivot The IO implementation for the pivot.
+   * @param beamBreak The IO implementation for the beam break sensor.
    */
-  public Shooter(FlywheelIO forwardFlywheel, FlywheelIO backFlywheel, PivotIO pivot) {
+  public Shooter(
+      FlywheelIO forwardFlywheel, FlywheelIO backFlywheel, PivotIO pivot, BeamBreakIO beamBreak) {
     this.upperFlywheel = forwardFlywheel;
     this.lowerFlywheel = backFlywheel;
     this.pivot = pivot;
+    this.beamBreak = beamBreak;
 
     // Allows for system identification of the flywheel via auto routines (finds
     // torque current
@@ -146,10 +153,12 @@ public class Shooter extends SubsystemBase {
     upperFlywheel.updateInputs(upperFlywheelInputs);
     lowerFlywheel.updateInputs(lowerFlywheelInputs);
     pivot.updateInputs(pivotInputs);
+    beamBreak.updateInputs(beamBreakInputs);
 
     Logger.processInputs("Shooter/Flywheel/Lower Flywheel", lowerFlywheelInputs);
     Logger.processInputs("Shooter/Flywheel/Upper Flywheel", upperFlywheelInputs);
     Logger.processInputs("Shooter/Pivot", pivotInputs);
+    Logger.processInputs("Shooter/BeamBreak", beamBreakInputs);
 
     upperFlywheelDisconnectedAlert.set(!upperFlywheelInputs.connected);
 
@@ -317,5 +326,9 @@ public class Shooter extends SubsystemBase {
     pivot.setPosition(pivotSetpoint);
     upperFlywheel.setVelocity(upperFlywheelSetpoint);
     lowerFlywheel.setVelocity(lowerFlywheelSetpoint);
+  }
+
+  public boolean getBeamBreak() {
+    return beamBreakInputs.beamBroken;
   }
 }

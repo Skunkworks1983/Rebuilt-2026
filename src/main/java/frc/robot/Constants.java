@@ -47,20 +47,29 @@ public final class Constants {
     Rebuilt
   }
 
-  /** Joystick constants */
-  /** Joystick constants */
-  public final class JoystickConstants { // TODO: find constants
+  /** OI constants */
+  public final class OIConstants {
     // Joystick ID's
     public static final int LeftJoystick = 0;
     public static final int RightJoystick = 1;
     public static final int ButtonJoystick = 2;
 
     // Collector button joystick ID's
-    public static final int CollectorManualModeID = 6;
-    public static final int CollectorAutoModeID = 1;
-    public static final int CollectorIntakeID = 2;
-    public static final int CollectorRightDownID = 3;
-    public static final int CollectorLeftDownID = 4;
-    public static final int CollectorBothUpID = 5;
+    public static final int CollectorManualModeID = 4;
+    public static final int CollectorAutoModeID = 2;
+
+    public static final int CollectorIntakeID = 23;
+    public static final int CollectorRightDownID = 11;
+    public static final int CollectorLeftDownID = 12;
+    public static final int CollectorReverseIntakeID = 24;
+
+    // Shooter button joystick ID's
+    public static final int ShooterShootHubID = 1;
+    public static final int ShooterShootTransferID = 6;
+
+    public static final int ShooterIndexID = 18;
+    public static final int ShooterFlywheelSwitchID = 3;
+    public static final int ShooterHoldToAimID = 1; // Jotstick trigger
+    public static final int ShooterReverseIndexID = 17;
   }
 }

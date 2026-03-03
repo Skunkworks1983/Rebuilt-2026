@@ -9,19 +9,21 @@ import static frc.robot.util.PhoenixUtil.tryUntilOk;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.InvertedValue;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
-import frc.robot.generated.TunerConstants;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstants;
 import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstants.Side;
 
@@ -34,15 +36,17 @@ import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstant
 public class CollectorModuleTalonIO implements CollectorModuleIO {
   // Motors and Hardware objects
   protected final TalonFX turnMotor;
-  protected final TalonFX intakeMotorLower;
-  protected final TalonFX intakeMotorUpper;
+  protected final TalonFX intakeMotor;
+  protected final DigitalInput upperLimitSwitch;
+  protected final DigitalInput lowerLimitSwitch;
 
   // Constants
-  private final CollectorModuleConstants constants;
+  public final CollectorModuleConstants constants;
 
   // Helper variables
-  private boolean isDown;
   private Side side;
+  private boolean setUpRunning;
+  private boolean setDownRunning;
 
   // Inputs from turn motor
   private final StatusSignal<Angle> turnPosition;
@@ -51,17 +55,11 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
   private final StatusSignal<Current> turnCurrent;
   private final StatusSignal<Double> turnError;
 
-  // Inputs from lower intake motor
-  private final StatusSignal<Angle> lowerPosition;
-  private final StatusSignal<AngularVelocity> lowerVelocity;
-  private final StatusSignal<Voltage> lowerAppliedVolts;
-  private final StatusSignal<Current> lowerCurrent;
-
-  // Inputs from upper intake motor
-  private final StatusSignal<Angle> upperPosition;
-  private final StatusSignal<AngularVelocity> upperVelocity;
-  private final StatusSignal<Voltage> upperAppliedVolts;
-  private final StatusSignal<Current> upperCurrent;
+  // Inputs from intake motor
+  private final StatusSignal<Angle> intakePosition;
+  private final StatusSignal<AngularVelocity> intakeVelocity;
+  private final StatusSignal<Voltage> intakeAppliedVolts;
+  private final StatusSignal<Current> intakeCurrent;
 
   // Connection debouncers
   private final Debouncer driveConnectedDebounce =
@@ -69,66 +67,77 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
   private final Debouncer turnConnectedDebounce =
       new Debouncer(0.5, Debouncer.DebounceType.kFalling);
 
-  /** Instanciates, configures, and sets up the IO inputs for motors */
+  /**
+   * Instanciates, configures, and sets up the IO inputs for motors
+   *
+   * @param constants left <h7> OR </h7> right constants
+   */
   public CollectorModuleTalonIO(CollectorModuleConstants constants) {
     // Constants
     this.constants = constants;
 
-    // Helper variables
-    isDown = false;
-
     // Collector side
     side = constants.collectorSide;
 
+    // isRunning Variables
+    setUpRunning = false;
+    setDownRunning = false;
+
     // Instantiates all motors and hardware objects
-    turnMotor = new TalonFX(constants.turnMotorID, TunerConstants.getTunerConstants().getCANBus());
-    intakeMotorLower =
-        new TalonFX(constants.intakeMotorLowerID, TunerConstants.getTunerConstants().getCANBus());
-    intakeMotorUpper =
-        new TalonFX(constants.intakeMotorUpperID, TunerConstants.getTunerConstants().getCANBus());
+    turnMotor = new TalonFX(constants.turnMotorID, "rio");
+    intakeMotor = new TalonFX(constants.intakeMotorID, "rio");
+    upperLimitSwitch = new DigitalInput(constants.UpperLimitChannel);
+    lowerLimitSwitch = new DigitalInput(constants.LowerLimitChannel);
+    turnMotor.setPosition(Degrees.of(0));
 
     // Config for turnMotor
     var turnConfig = new TalonFXConfiguration();
+    turnConfig.Feedback.SensorToMechanismRatio = constants.turnMotorGearRatio;
 
     // Pid Configs for Turn Motor
     var turnSlot0Configs = turnConfig.Slot0;
-    turnSlot0Configs.kP = constants.turnkP;
-    turnSlot0Configs.kD = constants.turnkD;
-    turnSlot0Configs.kI = constants.turnkI;
+
+    if (RobotBase.isReal()) {
+      turnSlot0Configs.kP = constants.turnkP;
+      turnSlot0Configs.kD = constants.turnkD;
+      turnSlot0Configs.kI = constants.turnkI;
+    } else if (RobotBase.isSimulation()) {
+      turnSlot0Configs.kP = constants.SimTurnkP;
+      turnSlot0Configs.kD = constants.SimTurnkD;
+      turnSlot0Configs.kI = constants.SimTurnkI;
+    } else {
+      turnSlot0Configs.kP = constants.turnkP;
+      turnSlot0Configs.kD = constants.turnkD;
+      turnSlot0Configs.kI = constants.turnkI;
+    }
+
     turnSlot0Configs.kS = constants.turnkS;
     turnSlot0Configs.kV = constants.turnkV;
     turnSlot0Configs.kA = constants.turnkA;
 
     // Motion Magic Configs for Turn Motor
     var turnMotionMagicConfig = turnConfig.MotionMagic;
-    turnMotionMagicConfig.MotionMagicCruiseVelocity = 80;
-    turnMotionMagicConfig.MotionMagicAcceleration = 160;
-
-    // Inverts left motor
-    if (side.equals(Side.LEFT)) {
-      turnConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-    }
+    turnMotionMagicConfig.MotionMagicCruiseVelocity = .1;
+    turnMotionMagicConfig.MotionMagicAcceleration = .1;
 
     // Applying Turn Motor Configs
     tryUntilOk(5, () -> turnMotor.getConfigurator().apply(turnConfig, 0.25));
 
-    // PID config for intakeMotorLower
-    var lowerConfig = new TalonFXConfiguration();
-    lowerConfig.Slot0.kP = constants.lowerkP;
-    lowerConfig.Slot0.kD = constants.lowerkD;
-    lowerConfig.Slot0.kI = constants.lowerkI;
+    // PID config for intakeMotor
+    var intakeConfig = new TalonFXConfiguration();
 
-    // Applying Lower Intake Configs
-    tryUntilOk(5, () -> intakeMotorLower.getConfigurator().apply(lowerConfig, 0.25));
+    if (RobotBase.isReal()) {
+      intakeConfig.Slot0.kP = constants.intakekP;
+      intakeConfig.Slot0.kD = constants.intakekP;
+      intakeConfig.Slot0.kI = constants.intakekI;
+    } else if (RobotBase.isSimulation()) {
+      intakeConfig.Slot0.kP = constants.SimIntakekP;
+      intakeConfig.Slot0.kD = constants.SimIntakekP;
+      intakeConfig.Slot0.kI = constants.SimIntakekI;
+    }
 
-    // PID config for intakeMotorUpper
-    var upperConfig = new TalonFXConfiguration();
-    upperConfig.Slot0.kP = constants.upperkP;
-    upperConfig.Slot0.kD = constants.upperkP;
-    upperConfig.Slot0.kI = constants.upperkI;
-
-    // Applying Upper Intake Configs
-    tryUntilOk(5, () -> intakeMotorUpper.getConfigurator().apply(upperConfig, 0.25));
+    // Applying Intake Configs
+    tryUntilOk(5, () -> intakeMotor.getConfigurator().apply(intakeConfig, 0.25));
 
     // Create turn status signals
     turnPosition = turnMotor.getPosition();
@@ -137,49 +146,41 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     turnCurrent = turnMotor.getStatorCurrent();
     turnError = turnMotor.getClosedLoopError();
 
-    // Create drive status signals
-    lowerPosition = intakeMotorLower.getPosition();
-    lowerVelocity = intakeMotorLower.getVelocity();
-    lowerAppliedVolts = intakeMotorLower.getMotorVoltage();
-    lowerCurrent = intakeMotorLower.getStatorCurrent();
-
-    // Create drive status signals
-    upperPosition = intakeMotorUpper.getPosition();
-    upperVelocity = intakeMotorUpper.getVelocity();
-    upperAppliedVolts = intakeMotorUpper.getMotorVoltage();
-    upperCurrent = intakeMotorUpper.getStatorCurrent();
+    // Create intake status signals
+    intakePosition = intakeMotor.getPosition();
+    intakeVelocity = intakeMotor.getVelocity();
+    intakeAppliedVolts = intakeMotor.getMotorVoltage();
+    intakeCurrent = intakeMotor.getStatorCurrent();
 
     // Configure periodic frames
-    BaseStatusSignal.setUpdateFrequencyForAll(50.0, turnPosition, lowerPosition, upperPosition);
+    BaseStatusSignal.setUpdateFrequencyForAll(50.0, turnPosition, intakePosition);
     BaseStatusSignal.setUpdateFrequencyForAll(
         50.0,
-        upperVelocity,
-        upperAppliedVolts,
-        upperCurrent,
-        lowerVelocity,
-        lowerAppliedVolts,
-        lowerCurrent,
+        intakeVelocity,
+        intakeAppliedVolts,
+        intakeCurrent,
         turnVelocity,
         turnAppliedVolts,
         turnCurrent,
         turnError);
-    ParentDevice.optimizeBusUtilizationForAll(turnMotor, intakeMotorLower, intakeMotorUpper);
+    ParentDevice.optimizeBusUtilizationForAll(turnMotor, intakeMotor);
   }
 
   @Override
   /**
    * Updates our inputs for all motors
    *
-   * @param
+   * @param inputs
    */
   public void updateInputs(CollectorIOInputs inputs) {
     // Refresh all signals
     var turnStatus =
         BaseStatusSignal.refreshAll(turnPosition, turnVelocity, turnAppliedVolts, turnCurrent);
-    var lowerStatus =
-        BaseStatusSignal.refreshAll(lowerPosition, lowerVelocity, lowerAppliedVolts, lowerCurrent);
     var upperStatus =
-        BaseStatusSignal.refreshAll(upperPosition, upperVelocity, upperAppliedVolts, upperCurrent);
+        BaseStatusSignal.refreshAll(
+            intakePosition, intakeVelocity, intakeAppliedVolts, intakeCurrent);
+
+    inputs.goingDown = setDownRunning;
 
     // Update turn inputs
     inputs.turnConnected = turnConnectedDebounce.calculate(turnStatus.isOK());
@@ -189,22 +190,19 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     inputs.turnCurrentAmps = turnCurrent.getValue();
     inputs.turnClosedLoopError = turnError.getValueAsDouble();
 
-    // Update lower intake inputs
-    inputs.lowerConnected = driveConnectedDebounce.calculate(lowerStatus.isOK());
-    inputs.lowerPositionRad = lowerPosition.getValue();
-    inputs.lowerVelocity = lowerVelocity.getValue();
-    inputs.lowerAppliedVolts = lowerAppliedVolts.getValue();
-    inputs.lowerCurrentAmps = lowerCurrent.getValue();
+    // Update intake inputs
+    inputs.intakeConnected = driveConnectedDebounce.calculate(upperStatus.isOK());
+    inputs.intakePositionRad = intakePosition.getValue();
+    inputs.intakeVelocity = intakeVelocity.getValue();
+    inputs.intakeAppliedVolts = intakeAppliedVolts.getValue();
+    inputs.intakeCurrentAmps = intakeCurrent.getValue();
 
-    // Update upper intake inputs
-    inputs.upperConnected = driveConnectedDebounce.calculate(upperStatus.isOK());
-    inputs.upperPositionRad = upperPosition.getValue();
-    inputs.upperVelocity = upperVelocity.getValue();
-    inputs.upperAppliedVolts = upperAppliedVolts.getValue();
-    inputs.upperCurrentAmps = upperCurrent.getValue();
+    // Update sensor inputs
+    inputs.upperTriggered = upperLimitSwitch.get();
+    inputs.lowerTriggered = lowerLimitSwitch.get();
   }
 
-  /** Gets Constants */
+  /** Gets The Collector Constants */
   public CollectorModuleConstants getConstants() {
     return constants;
   }
@@ -215,12 +213,11 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
    * @param velocity -Angular Velocity
    */
   public void setCollectorVelocity(AngularVelocity velocity) {
-    intakeMotorLower.setControl(new VelocityVoltage(velocity));
-    intakeMotorUpper.setControl(new VelocityVoltage(velocity));
+    intakeMotor.setControl(new VelocityVoltage(velocity));
   }
 
   /**
-   * Sets the collectors position
+   * Sets the collectors position to the angle given
    *
    * @param angle -WPILib Angle
    */
@@ -229,14 +226,29 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
   }
 
   /**
+   * Sets the duty cycle of the intake motors
+   *
+   * @param dutyCycle double between -1.0 and 1.0
+   */
+  public void setCollectorDutyCycle(double dutyCycle) {
+    intakeMotor.set(dutyCycle);
+  }
+
+  /**
    * Checks to see if the collector is down
    *
    * <ul>
    *   <li>This is to help ensure that we only have one collectordown at a time
    * </ul>
+   *
+   * @return whether or not collector is down
    */
   public boolean isCollectorDown() {
-    return turnMotor.getPosition().getValue().gte(constants.CollectorDownPos.minus(Degrees.of(10)));
+    return lowerLimitSwitch.get()
+        || turnMotor
+            .getPosition()
+            .getValue()
+            .gte(constants.CollectorDownPos.minus(constants.CollectorPosTolerance));
   }
 
   /**
@@ -245,9 +257,15 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
    * <ul>
    *   <li>This is to help ensure that we only have one collectordown at a time
    * </ul>
+   *
+   * @return whether or not collector is up
    */
   public boolean isCollectorUp() {
-    return turnMotor.getPosition().getValue().lte(constants.CollectorUpPos.plus(Degrees.of(10)));
+    return upperLimitSwitch.get()
+        || turnMotor
+            .getPosition()
+            .getValue()
+            .lte(constants.CollectorUpPos.plus(constants.CollectorPosTolerance));
   }
 
   // Gets side i.e: left
@@ -255,13 +273,31 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     return side;
   }
 
-  // Sets collector up
+  /** Sets Collector to its up position */
   public void goUp() {
-    setCollectorPos(constants.CollectorUpPos);
+    if (!setUpRunning) {
+      setCollectorPos(constants.CollectorUpPos);
+      setUpRunning = true;
+      setDownRunning = false;
+    }
   }
 
-  // Sets collector down
+  /** Sets Collector to its up position */
   public void goDown() {
-    setCollectorPos(constants.CollectorDownPos);
+    if (!setDownRunning) {
+      setCollectorPos(constants.CollectorDownPos);
+      setDownRunning = true;
+      setUpRunning = false;
+    }
+  }
+
+  @Override
+  public void setPivotGains(Slot0Configs slotConfigs) {
+    tryUntilOk(5, () -> turnMotor.getConfigurator().apply(slotConfigs, 0.25));
+  }
+
+  @Override
+  public void setMotionConstraints(MotionMagicConfigs motionMagicConfigs) {
+    tryUntilOk(5, () -> turnMotor.getConfigurator().apply(motionMagicConfigs, 0.25));
   }
 }
