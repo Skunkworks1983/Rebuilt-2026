@@ -28,11 +28,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveAimedShoot;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.Shooter.NoYawShootHub;
-import frc.robot.commands.Shooter.ShootPresetSetpoints;
-import frc.robot.commands.Shooter.ShootPresetSetpoints.TargetType;
 import frc.robot.commands.TestPathCommands;
-import frc.robot.commands.collectorCommands.AutomaticStateChange;
-import frc.robot.commands.collectorCommands.BothCollectorsUpState;
 import frc.robot.commands.collectorCommands.CollectorExpel;
 import frc.robot.commands.collectorCommands.CollectorIntake;
 import frc.robot.commands.collectorCommands.LeftCollectorDownState;
@@ -40,8 +36,8 @@ import frc.robot.commands.collectorCommands.RightCollectorDownState;
 import frc.robot.commands.indexerCommands.IndexerAutoUnjam;
 import frc.robot.commands.indexerCommands.IndexerReverseCommand;
 import frc.robot.subsystems.collector.Collector;
+import frc.robot.subsystems.collector.CollectorModuleIO;
 import frc.robot.subsystems.collector.CollectorModuleSimIO;
-import frc.robot.subsystems.collector.CollectorModuleTalonIO;
 import frc.robot.subsystems.collector.collectorConstants.CollectorTalonLeftConstants;
 import frc.robot.subsystems.collector.collectorConstants.CollectorTalonRightConstants;
 import frc.robot.subsystems.drive.Drive;
@@ -55,9 +51,10 @@ import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.IndexerConstants;
 import frc.robot.subsystems.indexer.IndexerIO;
 import frc.robot.subsystems.indexer.IndexerIOSim;
-import frc.robot.subsystems.indexer.IndexerIOTalonFX;
+import frc.robot.subsystems.shooter.BeamBreakIO;
 import frc.robot.subsystems.shooter.FlywheelIO;
 import frc.robot.subsystems.shooter.FlywheelIOSim;
+import frc.robot.subsystems.shooter.PivotIO;
 import frc.robot.subsystems.shooter.PivotIOSim;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterConstants;
@@ -85,6 +82,7 @@ public class RobotContainer {
   private final Vision vision;
   private final Shooter shooter;
   private final Indexer indexer;
+  private final Collector collector;
 
   // Controller
   private final Joystick leftJoystick;
@@ -149,11 +147,7 @@ public class RobotContainer {
 
         indexer = new Indexer(new IndexerIO() {});
 
-        // collector =
-        //     new Collector(
-        //        new CollectorModuleIO(){}, new CollectorModuleIO() {
-
-        //        });
+        collector = new Collector(new CollectorModuleIO() {}, new CollectorModuleIO() {});
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
@@ -213,10 +207,10 @@ public class RobotContainer {
                     VisionConstants.robotToCamera1,
                     simulation::getSimulatedDriveTrainPose));
 
-        // collector =
-        // new Collector(
-        // new CollectorModuleSimIO(simulation, new CollectorTalonLeftConstants()),
-        // new CollectorModuleSimIO(simulation, new CollectorTalonRightConstants()));
+        collector =
+            new Collector(
+                new CollectorModuleSimIO(simulation, new CollectorTalonLeftConstants()),
+                new CollectorModuleSimIO(simulation, new CollectorTalonRightConstants()));
 
         indexer = new Indexer(new IndexerIOSim(IndexerConstants.indexerMotorID));
 
