@@ -14,8 +14,11 @@ import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.signals.ForwardLimitSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
+import com.ctre.phoenix6.signals.ReverseLimitSourceValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -147,7 +150,7 @@ public class ShooterConstants {
 
   public static final Current pivotStatorCurrentLimit = Amps.of(120);
 
-  public static final double pivotSensorToMechanismRatio = 60 / 18;
+  public static final double pivotSensorToMechanismRatio = 4;
   public static final double pivotMotorToSensorRatio = 100;
 
   public static final AngularVelocity defaultUpperFlywheelVelocityGoal = RotationsPerSecond.of(50);
@@ -160,5 +163,21 @@ public class ShooterConstants {
       defaultVelocityTransfer.times(1.15);
   public static final Angle defaultPitchTransfer = Degrees.of(50);
 
+  // SENSOR CONSTANTS
+  public static final int pivotEncoderId = 0;
+  public static final double pivotEncoderOffset = 0;
+  public static final SensorDirectionValue pivotEncoderDirection =
+      SensorDirectionValue.Clockwise_Positive;
+
   public static final int beamBreakSensorChannel = 0;
+
+  public static final int shooterCandiId = 0;
+
+  public static final ReverseLimitSourceValue pivotReverseLimitSource =
+      ReverseLimitSourceValue.RemoteCANdiS1;
+  public static final ForwardLimitSourceValue pivotForwardLimitSource =
+      ForwardLimitSourceValue.RemoteCANdiS2;
+
+  // This isn't used in the code, but I want to keep it for reference when setting magnet offset
+  public static final Angle pivotStartAngle = Degrees.of(83);
 }
