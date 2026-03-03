@@ -73,6 +73,9 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
                 IntakeSimulation.IntakeSide.RIGHT,
                 1);
         break;
+
+      default:
+        break;
     }
 
     LinearSystem linearSystemIntakeMotors = LinearSystemId.createDCMotorSystem(0.002, 0.02);

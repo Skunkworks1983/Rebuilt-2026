@@ -227,6 +227,15 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
   }
 
   /**
+   * Sets the duty cycle of the intake motors
+   *
+   * @param dutyCycle double between -1.0 and 1.0
+   */
+  public void setCollectorDutyCycle(double dutyCycle) {
+    intakeMotor.set(dutyCycle);
+  }
+
+  /**
    * Checks to see if the collector is down
    *
    * <ul>

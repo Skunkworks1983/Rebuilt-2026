@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.indexerCommands;
 
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
@@ -14,7 +14,7 @@ import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
 
 /** Command that runs the indexer */
-public class IndexerCommand extends Command {
+public class IndexerReverseCommand extends Command {
   Indexer indexer;
 
   private LoggedTunableNumber indexerAngularVelocity =
@@ -22,21 +22,21 @@ public class IndexerCommand extends Command {
           "Indexer/AngularVelocity [Rot/s]",
           IndexerConstants.indexerAngularVelocity.in(Units.RotationsPerSecond));
 
-  public IndexerCommand(Indexer indexer) {
+  public IndexerReverseCommand(Indexer indexer) {
     this.indexer = indexer;
     addRequirements(indexer);
   }
 
   @Override
   public void initialize() {
-    indexer.setIndexerVelocity(RotationsPerSecond.of(indexerAngularVelocity.get()));
-    Logger.recordOutput("Index/Command is Running", true);
+    indexer.setIndexerVelocity(RotationsPerSecond.of(indexerAngularVelocity.get() * -1));
+    Logger.recordOutput("Index/Reverse Command is Running", true);
   }
 
   @Override
   public void end(boolean interrupted) {
     indexer.setIndexerDutyCycle(0);
-    Logger.recordOutput("Index/Command is Running", false);
+    Logger.recordOutput("Index/Reverse Command is Running", false);
   }
 
   @Override

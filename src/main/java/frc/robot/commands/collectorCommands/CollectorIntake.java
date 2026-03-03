@@ -4,8 +4,6 @@
 
 package frc.robot.commands.collectorCommands;
 
-import static edu.wpi.first.units.Units.RotationsPerSecond;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.collector.Collector;
 import frc.robot.subsystems.collector.CollectorModule;
@@ -48,11 +46,11 @@ public class CollectorIntake extends Command {
   @Override
   public void execute() {
     if (leftCollector.isCollectorDown() && lastModule != leftCollector) {
-      rightCollector.setCollectorVelocity(RotationsPerSecond.of(0));
+      rightCollector.setCollectorDutyCycle(0);
       leftCollector.setCollectorVelocity(leftCollector.getConstants().CollectorIntakeSpeed);
       lastModule = leftCollector;
     } else if (rightCollector.isCollectorDown() && lastModule != rightCollector) {
-      leftCollector.setCollectorVelocity(RotationsPerSecond.of(0));
+      leftCollector.setCollectorDutyCycle(0);
       rightCollector.setCollectorVelocity(rightCollector.getConstants().CollectorIntakeSpeed);
       lastModule = rightCollector;
     }
@@ -61,8 +59,8 @@ public class CollectorIntake extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    leftCollector.setCollectorVelocity(RotationsPerSecond.of(0));
-    rightCollector.setCollectorVelocity(RotationsPerSecond.of(0));
+    leftCollector.setCollectorDutyCycle(0);
+    rightCollector.setCollectorDutyCycle(0);
     Logger.recordOutput("Commands/Collector/CollectorIntake", false);
   }
 
