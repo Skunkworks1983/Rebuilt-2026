@@ -24,7 +24,6 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotBase;
-import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
 import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstants;
 import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstants.Side;
 
@@ -85,8 +84,8 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     setDownRunning = false;
 
     // Instantiates all motors and hardware objects
-    turnMotor = new TalonFX(constants.turnMotorID, CollectorConstants.collectorCan);
-    intakeMotor = new TalonFX(constants.intakeMotorID, CollectorConstants.collectorCan);
+    turnMotor = new TalonFX(constants.turnMotorID, "peripherals_2026");
+    intakeMotor = new TalonFX(constants.intakeMotorID, "peripherals_2026");
     upperLimitSwitch = new DigitalInput(constants.UpperLimitChannel);
     lowerLimitSwitch = new DigitalInput(constants.LowerLimitChannel);
     turnMotor.setPosition(Degrees.of(0));
