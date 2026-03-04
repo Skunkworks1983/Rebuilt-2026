@@ -25,7 +25,11 @@
           "degrees": 180
         }
       ],
-      "position":[0,0,0.276225]
+      "position": [
+        0,
+        0,
+        0.276225
+      ]
     }
   ],
   "components": []

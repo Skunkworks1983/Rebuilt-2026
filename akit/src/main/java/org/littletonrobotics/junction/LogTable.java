@@ -1,4 +1,4 @@
-// Copyright (c) 2021-2025 Littleton Robotics
+// Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
 //
 // Use of this source code is governed by a BSD
@@ -10,7 +10,6 @@ package org.littletonrobotics.junction;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.units.Unit;
-import edu.wpi.first.units.mutable.GenericMutableMeasureImpl;
 import edu.wpi.first.util.WPISerializable;
 import edu.wpi.first.util.protobuf.Protobuf;
 import edu.wpi.first.util.protobuf.ProtobufBuffer;
@@ -1347,22 +1346,23 @@ public class LogTable {
   /**
    * Reads a MutableMeasure value from the table.
    *
+   * <p>Unlike other "get" methods, this method mutates the provided value instead of returning a
+   * new instance. The object returned from this method is the same instance as the provided value.
+   *
    * @param <U> The unit type.
    * @param <Base> The base unit type
    * @param <M> The measure type.
    * @param key The field name.
-   * @param defaultValue The default field value.
+   * @param value The field value, to be mutated.
    * @return The field value.
    */
-  @SuppressWarnings("unchecked")
   public <U extends Unit, Base extends Measure<U>, M extends MutableMeasure<U, Base, M>> M get(
-      String key, M defaultValue) {
+      String key, M value) {
     if (data.containsKey(prefix + key)) {
-      double baseValue = get(key).getDouble(defaultValue.baseUnitMagnitude());
-      double relativeValue = defaultValue.unit().fromBaseUnits(baseValue);
-      return (M) new GenericMutableMeasureImpl<>(relativeValue, baseValue, defaultValue.unit());
+      double baseValue = get(key).getDouble(value.baseUnitMagnitude());
+      return value.mut_setBaseUnitMagnitude(baseValue);
     } else {
-      return defaultValue;
+      return value;
     }
   }
 
@@ -2247,6 +2247,8 @@ public class LogTable {
     public static LoggableType fromWPILOGType(String type) {
       if (wpilogTypes.contains(type)) {
         return LoggableType.values()[wpilogTypes.indexOf(type)];
+      } else if (type.equals("json")) {
+        return LoggableType.String;
       } else {
         return LoggableType.Raw;
       }
@@ -2261,6 +2263,8 @@ public class LogTable {
     public static LoggableType fromNT4Type(String type) {
       if (nt4Types.contains(type)) {
         return LoggableType.values()[nt4Types.indexOf(type)];
+      } else if (type.equals("json")) {
+        return LoggableType.String;
       } else {
         return LoggableType.Raw;
       }

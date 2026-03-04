@@ -22,13 +22,13 @@ public class CollectorTalonRightConstants extends CollectorModuleConstants {
 
     // Hardware ID's
     turnMotorID = 23;
-    intakeMotorID = 49;
+    intakeMotorID = 24;
 
     // Gear ratio's
     turnMotorGearRatio = 39.375;
 
     // Real Turn PID
-    turnkP = 6;
+    turnkP = 1;
     turnkD = 0.0;
     turnkI = 0.0;
 

@@ -4,12 +4,15 @@
 
 package frc.robot.subsystems.indexer;
 
+import static frc.robot.util.PhoenixUtil.tryUntilOk;
+
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.TorqueCurrentFOC;
+import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import edu.wpi.first.math.filter.Debouncer;
@@ -18,14 +21,14 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
-import frc.robot.subsystems.indexer.IndexerConstants.indexerConfigs;
 
 /** This is the motor for the Indexer. it takes in a ID */
 public class IndexerIOTalonFX implements IndexerIO {
 
   protected final TalonFX indexerMotor;
 
-  private final Debouncer indexerDebouncer = new Debouncer(0.5, DebounceType.kFalling);
+  private final Debouncer indexerDebouncer =
+      new Debouncer(IndexerConstants.disconnectedDebounceTimeSec, DebounceType.kFalling);
 
   // create status signals
   public final StatusSignal<Angle> indexerPosition;
@@ -33,9 +36,14 @@ public class IndexerIOTalonFX implements IndexerIO {
   public final StatusSignal<Voltage> indexerVoltage;
   public final StatusSignal<Current> indexerCurrent;
 
+  private final VelocityTorqueCurrentFOC velocityTorqueCurrentRequest =
+      new VelocityTorqueCurrentFOC(0.0);
+  private final TorqueCurrentFOC torqueCurrentRequest = new TorqueCurrentFOC(0);
+  private final DutyCycleOut dutyCycleOut = new DutyCycleOut(0);
+
   public IndexerIOTalonFX(int motorID) {
 
-    indexerMotor = new TalonFX(motorID);
+    indexerMotor = new TalonFX(motorID, IndexerConstants.indexerCanBus);
 
     // assigns values to the statussignals
     indexerPosition = indexerMotor.getPosition();
@@ -46,12 +54,13 @@ public class IndexerIOTalonFX implements IndexerIO {
     // creates and applies slot0 configs
     TalonFXConfiguration configs = new TalonFXConfiguration();
     Slot0Configs slot0Configs = configs.Slot0;
-    slot0Configs.kP = indexerConfigs.kP;
-    slot0Configs.kI = indexerConfigs.kI;
-    slot0Configs.kD = indexerConfigs.kD;
-    slot0Configs.kV = indexerConfigs.kV;
+    slot0Configs.kP = IndexerConstants.indexerKP;
+    slot0Configs.kD = IndexerConstants.indexerKD;
+    slot0Configs.kS = IndexerConstants.indexerKS;
+    slot0Configs.kV = IndexerConstants.indexerKV;
     configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-    indexerMotor.getConfigurator().apply(configs);
+
+    tryUntilOk(5, () -> indexerMotor.getConfigurator().apply(configs, 0.25));
 
     BaseStatusSignal.setUpdateFrequencyForAll(
         50, indexerAngularVelocity, indexerCurrent, indexerPosition, indexerVoltage);
@@ -72,12 +81,23 @@ public class IndexerIOTalonFX implements IndexerIO {
   }
 
   /** sets the control for the indexer motor to the defined velocity */
+  @Override
   public void setIndexerVelocity(AngularVelocity velocity) {
-    indexerMotor.setControl(new VelocityVoltage(velocity).withEnableFOC(true));
+    indexerMotor.setControl(velocityTorqueCurrentRequest.withVelocity(velocity));
   }
 
-  /** sets the duty cycle for the indexer motor to the defined value */
-  public void setIndexerDutyCycle(double dutyCycle) {
-    indexerMotor.setControl(new DutyCycleOut(dutyCycle).withEnableFOC(true));
+  @Override
+  public void setOpenLoopTorqueCurrent(Current output) {
+    indexerMotor.setControl(torqueCurrentRequest.withOutput(output));
+  }
+
+  @Override
+  public void setPID(Slot0Configs configs) {
+    tryUntilOk(5, () -> indexerMotor.getConfigurator().apply(configs, 0.25));
+  }
+
+  @Override
+  public void setDutyCycle(double dutyCycle) {
+    indexerMotor.setControl(dutyCycleOut.withOutput(dutyCycle));
   }
 }

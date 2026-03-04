@@ -4,8 +4,13 @@ import static edu.wpi.first.units.Units.Inches;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.units.measure.Distance;
 
 public class FieldConstants {
+  private static final Distance FIELD_LENGTH_INCHES = Inches.of(651.25);
+  private static final Distance FIELD_WIDTH_INCHES = Inches.of(317.69);
+  private static final Distance ALLIANCE_ZONE_LENGTH_INCHES = Inches.of(182.11);
+
   public static final Translation3d blueGoal =
       new Translation3d(Inches.of(182.11), Inches.of(158.845), Inches.of(72));
   public static final Translation3d redGoal =
@@ -93,4 +98,26 @@ public class FieldConstants {
 
   public static final HubCorners blueHubCorners = new BlueHub();
   public static final HubCorners redHubCorners = new RedHub();
+
+  /** Alliance zone rectangle centered on each alliance wall. */
+  public record AllianceZone(Translation2d minCorner, Translation2d maxCorner) {
+    public boolean contains(Translation2d point) {
+      return point.getX() >= minCorner.getX()
+          && point.getX() <= maxCorner.getX()
+          && point.getY() >= minCorner.getY()
+          && point.getY() <= maxCorner.getY();
+    }
+  }
+
+  public static final AllianceZone blueAllianceZone =
+      new AllianceZone(
+          new Translation2d(Inches.of(0.0), Inches.of(0.0)),
+          new Translation2d(ALLIANCE_ZONE_LENGTH_INCHES, FIELD_WIDTH_INCHES));
+
+  public static final AllianceZone redAllianceZone =
+      new AllianceZone(
+          new Translation2d(
+              Inches.of(FIELD_LENGTH_INCHES.in(Inches) - ALLIANCE_ZONE_LENGTH_INCHES.in(Inches)),
+              Inches.of(0.0)),
+          new Translation2d(FIELD_LENGTH_INCHES, FIELD_WIDTH_INCHES));
 }

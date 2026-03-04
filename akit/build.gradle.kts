@@ -5,7 +5,7 @@ plugins {
     id("java")
     id("google-test")
     id("edu.wpi.first.wpilib.repositories.WPILibRepositoriesPlugin") version "2025.0"
-    id("edu.wpi.first.NativeUtils") version "2025.9.0"
+    id("edu.wpi.first.NativeUtils") version "2026.0.1"
     id("edu.wpi.first.GradleJni") version "1.1.0"
     id("edu.wpi.first.GradleVsCode") version "2.1.0"
     id("com.diffplug.spotless") version "6.25.0"
@@ -21,7 +21,7 @@ repositories {
 }
 wpilibRepositories.addAllReleaseRepositories(project)
 
-val wpilibVersion = "2025.3.2"
+val wpilibVersion = "2026.1.1"
 
 dependencies {
     implementation("edu.wpi.first.cscore:cscore-java:$wpilibVersion")
@@ -48,9 +48,11 @@ tasks.withType<Javadoc> {
     exclude("com/google/flatbuffers/**", "org/littletonrobotics/conduit/**")
     title = "AdvantageKit API"
     options {
-        (this as StandardJavadocDocletOptions).links("https://docs.oracle.com/en/java/javase/17/docs/api/", "https://github.wpilib.org/allwpilib/docs/release/java/")
-        (this as StandardJavadocDocletOptions).stylesheetFile = file("javadoc.css")
-        (this as StandardJavadocDocletOptions).addBooleanOption("Werror", true)
+        (this as StandardJavadocDocletOptions).apply {
+            links("https://docs.oracle.com/en/java/javase/17/docs/api/", "https://github.wpilib.org/allwpilib/docs/release/java/")
+            stylesheetFile = file("javadoc.css")
+            addBooleanOption("Werror", true)
+        }
     }
 }
 
@@ -66,13 +68,13 @@ java {
 // Spotless formatting
 spotless {
     java {
-        target("src/main/java/**/*.java", "autolog/src/main/java/**/*.java")
+        target("src/main/java/**/*.java", "src/test/java/**/*.java", "autolog/src/main/java/**/*.java")
         toggleOffOn()
         googleJavaFormat()
         removeUnusedImports()
         trimTrailingWhitespace()
         endWithNewline()
-        licenseHeader("// Copyright (c) 2021-2025 Littleton Robotics\n// http://github.com/Mechanical-Advantage\n//\n// Use of this source code is governed by a BSD\n// license that can be found in the LICENSE file\n// at the root directory of this project.\n\n")
+        licenseHeader("// Copyright (c) 2021-2026 Littleton Robotics\n// http://github.com/Mechanical-Advantage\n//\n// Use of this source code is governed by a BSD\n// license that can be found in the LICENSE file\n// at the root directory of this project.\n\n")
     }
     cpp {
         target("src/main/native/**/*.cc", "src/main/native/**/*.h", "src/test/native/**/*.cc", "src/test/native/**/*.h")
@@ -80,7 +82,7 @@ spotless {
         eclipseCdt()
         trimTrailingWhitespace()
         endWithNewline()
-        licenseHeader("// Copyright (c) 2021-2025 Littleton Robotics\n// http://github.com/Mechanical-Advantage\n//\n// Use of this source code is governed by a BSD\n// license that can be found in the LICENSE file\n// at the root directory of this project.\n\n")
+        licenseHeader("// Copyright (c) 2021-2026 Littleton Robotics\n// http://github.com/Mechanical-Advantage\n//\n// Use of this source code is governed by a BSD\n// license that can be found in the LICENSE file\n// at the root directory of this project.\n\n")
     }
 }
 
