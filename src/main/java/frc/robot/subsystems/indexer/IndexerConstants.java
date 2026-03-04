@@ -20,19 +20,17 @@ public class IndexerConstants {
   /** CAN ID for the indexer. */
   public static final int indexerMotorID = 28;
 
-  public static final int runIndexerButtonId = 4;
-
   // PID for indexer
-  public static final double indexerKP = 3.5; // TODO: Indexer Tuning
+  public static final double indexerKP = 0.0; // TODO: Indexer Tuning
   public static final double indexerKD = 0.0;
 
   // Feed forwards for the indexer
   public static final double indexerKS = 1.0;
-  public static final double indexerKV = 0.50;
+  public static final double indexerKV = 0.75;
   public static final double indexerKA = 0.0;
 
   /** Alignment configuration for the indexer motor. */
-  public static final InvertedValue indexerMotorAlignment = InvertedValue.Clockwise_Positive;
+  public static final InvertedValue indexerMotorAlignment = InvertedValue.CounterClockwise_Positive;
 
   /** Stator current limit in Amps for the indexer motor. */
   public static final Current indexerStatorCurrentLimitAmps = Amps.of(120);

@@ -35,7 +35,7 @@ import frc.robot.commands.collectorCommands.CollectorExpel;
 import frc.robot.commands.collectorCommands.CollectorIntake;
 import frc.robot.commands.collectorCommands.LeftCollectorDownState;
 import frc.robot.commands.collectorCommands.RightCollectorDownState;
-import frc.robot.commands.indexerCommands.IndexerAutoUnjam;
+import frc.robot.commands.indexerCommands.IndexerCommand;
 import frc.robot.commands.indexerCommands.IndexerReverseCommand;
 import frc.robot.subsystems.collector.Collector;
 import frc.robot.subsystems.collector.CollectorModuleSimIO;
@@ -53,6 +53,7 @@ import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.IndexerConstants;
 import frc.robot.subsystems.indexer.IndexerIO;
 import frc.robot.subsystems.indexer.IndexerIOSim;
+import frc.robot.subsystems.indexer.IndexerIOTalonFX;
 import frc.robot.subsystems.shooter.BeamBreakIO;
 import frc.robot.subsystems.shooter.BeamBreakIOSensor;
 import frc.robot.subsystems.shooter.FlywheelIO;
@@ -153,7 +154,7 @@ public class RobotContainer {
         // eys, but it does work
         drive.setResetVisionIMUCallback((pose) -> vision.resetCameraIMU(pose));
 
-        indexer = new Indexer(new IndexerIO() {});
+        indexer = new Indexer(new IndexerIOTalonFX(28));
 
         collector =
             new Collector(
@@ -318,7 +319,6 @@ public class RobotContainer {
           new DriveAimedAutoShoot(
               drive, shooter, () -> -leftJoystick.getY(), () -> -leftJoystick.getX()));
       shootButton.onTrue(new InstantCommand(this::launchSimFuel));
-      runIndexer = new JoystickButton(buttonJoystick, IndexerConstants.runIndexerButtonId);
       runIndexer = new JoystickButton(buttonJoystick, Constants.OIConstants.ShooterIndexID);
       runIndexerReverse =
           new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID);
@@ -356,7 +356,7 @@ public class RobotContainer {
 
     BooleanSupplier beamBroken = () -> shooter.getBeamBreak();
 
-    runIndexer.whileTrue(new IndexerAutoUnjam(indexer, beamBroken));
+    runIndexer.whileTrue(new IndexerCommand(indexer));
     runIndexerReverse.whileTrue(new IndexerReverseCommand(indexer));
     // if the index button is hed and more than a second elapses before the beam break is broken the
     // indexer will reverse for 1 second before attempting to intake again

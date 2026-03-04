@@ -39,6 +39,7 @@ public class CollectorModuleConstants {
   public double intakekP;
   public double intakekD;
   public double intakekI;
+  public double intakekV;
 
   // Sim Turn PID
   public double SimTurnkP;
@@ -94,6 +95,7 @@ public class CollectorModuleConstants {
     intakekP = 0.0;
     intakekD = 0.0;
     intakekI = 0.0;
+    intakekV = 0.0;
 
     // Sim Turn PID
     SimTurnkP = 0.0;
@@ -111,8 +113,8 @@ public class CollectorModuleConstants {
     turnkA = 0.01;
 
     // Max Velocity and Acceleration
-    pivotMaxVelocity = RotationsPerSecond.of(.1);
-    pivotMaxAcceleration = RotationsPerSecondPerSecond.of(1);
+    pivotMaxVelocity = RotationsPerSecond.of(1);
+    pivotMaxAcceleration = RotationsPerSecondPerSecond.of(5);
 
     // Position
     CollectorUpPos = Degrees.of(0);
