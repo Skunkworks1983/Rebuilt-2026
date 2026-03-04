@@ -174,6 +174,4 @@ public class ShooterConstants {
       ReverseLimitSourceValue.RemoteCANdiS1;
   public static final ForwardLimitSourceValue pivotForwardLimitSource =
       ForwardLimitSourceValue.RemoteCANdiS2;
-
-  
 }
