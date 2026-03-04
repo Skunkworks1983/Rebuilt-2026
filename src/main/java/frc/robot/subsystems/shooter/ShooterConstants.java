@@ -60,18 +60,18 @@ public class ShooterConstants {
   public static final double upperFlywheelKD = 0.0;
 
   // Feed forwards for the flywheel
-  public static final double upperFlywheelKS = 0.017988;
-  public static final double upperFlywheelKV = 0.051044;
-  public static final double upperFlywheelKA = 3.50181;
+  public static final double upperFlywheelKS = 0.027988;
+  public static final double upperFlywheelKV = 0.071044;
+  public static final double upperFlywheelKA = 3.60181;
 
   // PID for flywheel
   public static final double lowerFlywheelKP = 9.5;
   public static final double lowerFlywheelKD = 0.0;
 
   // Feed forwards for the flywheel
-  public static final double lowerFlywheelKS = 0.017988;
-  public static final double lowerFlywheelKV = 0.065044;
-  public static final double lowerFlywheelKA = 3.5181;
+  public static final double lowerFlywheelKS = 0.027988;
+  public static final double lowerFlywheelKV = 0.075044;
+  public static final double lowerFlywheelKA = 3.6181;
 
   /** Maximum velocity of the flywheel in rotations per second. */
   public static final AngularVelocity flywheelMaxVelocityRotationsPerSec =
