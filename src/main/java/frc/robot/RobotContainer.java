@@ -45,6 +45,7 @@ import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.IndexerConstants;
 import frc.robot.subsystems.indexer.IndexerIO;
 import frc.robot.subsystems.indexer.IndexerIOSim;
+import frc.robot.subsystems.indexer.IndexerIOTalonFX;
 import frc.robot.subsystems.shooter.BeamBreakIO;
 import frc.robot.subsystems.shooter.BeamBreakIOSensor;
 import frc.robot.subsystems.shooter.FlywheelIO;
@@ -136,7 +137,7 @@ public class RobotContainer {
         // eys, but it does work
         drive.setResetVisionIMUCallback((pose) -> vision.resetCameraIMU(pose));
 
-        indexer = new Indexer(new IndexerIO() {});
+        indexer = new Indexer(new IndexerIOTalonFX(IndexerConstants.indexerMotorID));
 
         collector =
             new Collector(
@@ -292,7 +293,7 @@ public class RobotContainer {
             () -> -leftJoystick.getX(), // -Y (used to be)
             () -> rightJoystick.getX())); // Confirm if negitive or not
 
-    shootGoalButton = new JoystickButton(leftJoystick, 1);
+    shootGoalButton = new JoystickButton(buttonJoystick, Constants.OIConstants.ShooterIndexID);
 
     // shootGoalButton.whileTrue(
     //     new DriveAimedAutoShoot(

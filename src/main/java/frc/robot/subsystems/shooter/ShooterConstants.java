@@ -144,8 +144,8 @@ public class ShooterConstants {
 
   public static final Current pivotStatorCurrentLimit = Amps.of(120);
 
-  public static final double pivotSensorToMechanismRatio = 4;
-  public static final double pivotMotorToSensorRatio = 400;
+  public static final double pivotSensorToMechanismRatio = 400;
+  public static final double pivotMotorToSensorRatio = 4;
 
   public static final AngularVelocity defaultUpperFlywheelVelocityGoal = RotationsPerSecond.of(50);
   public static final AngularVelocity defaultLowerFlywheelVelocityGoal =

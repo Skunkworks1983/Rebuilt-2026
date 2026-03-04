@@ -74,8 +74,8 @@ public class PivotIOTalonFX implements PivotIO {
     pivotConfig.CurrentLimits.StatorCurrentLimit =
         ShooterConstants.pivotStatorCurrentLimit.in(Amps);
 
-    // pivotConfig.Feedback.SensorToMechanismRatio = ShooterConstants.pivotSensorToMechanismRatio;
-    pivotConfig.Feedback.RotorToSensorRatio = ShooterConstants.pivotMotorToSensorRatio;
+    pivotConfig.Feedback.SensorToMechanismRatio = ShooterConstants.pivotSensorToMechanismRatio;
+    // pivotConfig.Feedback.RotorToSensorRatio = ShooterConstants.pivotMotorToSensorRatio;
     // pivotConfig.Feedback.FeedbackRemoteSensorID = ShooterConstants.pivotEncoderId;
     pivotConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
 
