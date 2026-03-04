@@ -1,4 +1,4 @@
-// Copyright (c) 2021-2025 Littleton Robotics
+// Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
 //
 // Use of this source code is governed by a BSD
@@ -95,10 +95,10 @@ public class WPILOGReader implements LogReplaySource {
         if (record.isStart()) { // Ignore other control records
           entryIDs.put(record.getStartData().entry, record.getStartData().name);
           String typeStr = record.getStartData().type;
-          entryTypes.put(record.getStartData().entry, LoggableType.fromWPILOGType(typeStr));
-          if (typeStr.startsWith("proto:")
-              || typeStr.startsWith("struct:")
-              || typeStr.equals("structschema")) {
+          var loggableType = LoggableType.fromWPILOGType(typeStr);
+          entryTypes.put(record.getStartData().entry, loggableType);
+          if ((loggableType == LoggableType.Raw && !typeStr.equals("raw"))
+              || typeStr.equals("json")) {
             entryCustomTypes.put(record.getStartData().entry, typeStr);
           }
         }

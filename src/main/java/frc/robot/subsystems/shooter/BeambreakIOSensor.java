@@ -4,26 +4,19 @@
 
 package frc.robot.subsystems.shooter;
 
-import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.DigitalInput;
 
 /** Add your docs here. */
-public class BeambreakIOSensor implements BeamBreakIO {
+public class BeamBreakIOSensor implements BeamBreakIO {
 
-  DigitalInput beamBreakSensor;
+  private final DigitalInput beamBreakSensor;
 
-  public final boolean beamBroken;
-
-  Debouncer beambreakDebouncer = new Debouncer(0.5, Debouncer.DebounceType.kFalling);
-
-  public BeambreakIOSensor(int channel) {
-    beamBreakSensor = new DigitalInput(channel);
-    beamBroken = beamBreakSensor.get();
+  public BeamBreakIOSensor() {
+    beamBreakSensor = new DigitalInput(ShooterConstants.beamBreakSensorChannel);
   }
 
   @Override
   public void updateInputs(BeamBreakIOInputs inputs) {
-    inputs.beamBroken = beamBroken;
-    inputs.connected = beambreakDebouncer.calculate(beamBroken);
+    inputs.beamBroken = beamBreakSensor.get();
   }
 }

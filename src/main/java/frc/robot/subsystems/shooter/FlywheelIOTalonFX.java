@@ -13,6 +13,7 @@ import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -46,15 +47,19 @@ public class FlywheelIOTalonFX implements FlywheelIO {
     TalonFXConfiguration flywheelConfig = new TalonFXConfiguration();
 
     flywheelConfig.Feedback.SensorToMechanismRatio = ShooterConstants.flywheelGearRatio;
-    flywheelConfig.MotorOutput.Inverted = ShooterConstants.flywheelMotorInverted;
-    flywheelConfig.ClosedLoopGeneral.ContinuousWrap = true;
-    flywheelConfig.Slot0.kP = ShooterConstants.flywheelKP;
-    flywheelConfig.Slot0.kI = 0.0;
-    flywheelConfig.Slot0.kD = ShooterConstants.flywheelKD;
 
-    flywheelConfig.Slot0.kS = ShooterConstants.flywheelKS;
-    flywheelConfig.Slot0.kV = ShooterConstants.flywheelKV;
-    flywheelConfig.Slot0.kA = ShooterConstants.flywheelKA;
+    flywheelConfig.MotorOutput.Inverted = ShooterConstants.flywheelMotorInverted;
+    flywheelConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+
+    flywheelConfig.ClosedLoopGeneral.ContinuousWrap = true;
+
+    flywheelConfig.Slot0.kP = ShooterConstants.upperFlywheelKP;
+    flywheelConfig.Slot0.kI = 0.0;
+    flywheelConfig.Slot0.kD = ShooterConstants.upperFlywheelKD;
+
+    flywheelConfig.Slot0.kS = ShooterConstants.upperFlywheelKS;
+    flywheelConfig.Slot0.kV = ShooterConstants.upperFlywheelKV;
+    flywheelConfig.Slot0.kA = ShooterConstants.upperFlywheelKA;
 
     flywheelConfig.MotionMagic.MotionMagicAcceleration =
         ShooterConstants.flywheelMaxAcceleration.in(RotationsPerSecondPerSecond);

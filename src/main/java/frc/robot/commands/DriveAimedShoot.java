@@ -70,7 +70,10 @@ public class DriveAimedShoot extends Command {
         };
 
     shooter.setShooterSetpoints(
-        new ShooterSetpoints(controls.shooterVelocity(), controls.shooterPitch()));
+        new ShooterSetpoints(
+            controls.upperFlywheelVelocity(),
+            controls.lowerFlywheelVelocity(),
+            controls.shooterPitch()));
 
     double currentYawRadians = drive.getRotation().getRadians();
     double targetYawRadians = controls.driveYaw().getRadians();

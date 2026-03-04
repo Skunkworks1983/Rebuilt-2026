@@ -1,8 +1,5 @@
 package frc.robot.commands.Shooter;
 
-import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.shooter.Shooter;
@@ -43,7 +40,10 @@ public class NoYawShootHub extends Command {
             drive.getPose(), drive.getChassisSpeeds());
 
     shooter.setShooterSetpoints(
-        new ShooterSetpoints(controls.shooterVelocity(), controls.shooterPitch()));
+        new ShooterSetpoints(
+            controls.upperFlywheelVelocity(),
+            controls.lowerFlywheelVelocity(),
+            controls.shooterPitch()));
   }
 
   @Override
@@ -53,7 +53,7 @@ public class NoYawShootHub extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    shooter.setShooterSetpoints(new ShooterSetpoints(RadiansPerSecond.of(0), Degrees.of(0)));
+    shooter.stopFlywheels();
     Logger.recordOutput("Commands/Auto Shoot/Drive Aimed Goal No Yaw", false);
   }
 }

@@ -6,13 +6,18 @@ import static frc.robot.util.PhoenixUtil.tryUntilOk;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.TorqueCurrentFOC;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.ForwardLimitTypeValue;
+import com.ctre.phoenix6.signals.ReverseLimitTypeValue;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularAcceleration;
@@ -22,8 +27,9 @@ import edu.wpi.first.units.measure.Voltage;
 
 public class PivotIOTalonFX implements PivotIO {
   protected final TalonFX pivotMotor;
+  protected final CANcoder pivotEncoder;
 
-  private final StatusSignal<Angle> pivotPostion;
+  private final StatusSignal<Angle> pivotPosition;
   private final StatusSignal<Voltage> pivotAppliedVolts;
   private final StatusSignal<Current> pivotCurrent;
   private final StatusSignal<Current> pivotTorqueCurrent;
@@ -38,6 +44,7 @@ public class PivotIOTalonFX implements PivotIO {
 
   public PivotIOTalonFX() {
     pivotMotor = new TalonFX(ShooterConstants.pivotMotorId, ShooterConstants.shooterCan);
+    pivotEncoder = new CANcoder(ShooterConstants.pivotEncoderId, ShooterConstants.shooterCan);
 
     TalonFXConfiguration pivotConfig = new TalonFXConfiguration();
 
@@ -56,16 +63,31 @@ public class PivotIOTalonFX implements PivotIO {
     pivotConfig.CurrentLimits.StatorCurrentLimit =
         ShooterConstants.pivotStatorCurrentLimit.in(Amps);
 
+    pivotConfig.Feedback.SensorToMechanismRatio = ShooterConstants.pivotSensorToMechanismRatio;
+    pivotConfig.Feedback.RotorToSensorRatio = ShooterConstants.pivotMotorToSensorRatio;
+    pivotConfig.Feedback.FeedbackRemoteSensorID = ShooterConstants.pivotEncoderId;
+    pivotConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+
+    pivotConfig.HardwareLimitSwitch.ForwardLimitSource = ShooterConstants.pivotForwardLimitSource;
+    pivotConfig.HardwareLimitSwitch.ReverseLimitSource = ShooterConstants.pivotReverseLimitSource;
+    pivotConfig.HardwareLimitSwitch.ForwardLimitType = ForwardLimitTypeValue.NormallyOpen;
+    pivotConfig.HardwareLimitSwitch.ReverseLimitType = ReverseLimitTypeValue.NormallyOpen;
+    pivotConfig.HardwareLimitSwitch.ReverseLimitRemoteSensorID = ShooterConstants.shooterCandiId;
+
     tryUntilOk(5, () -> pivotMotor.getConfigurator().apply(pivotConfig, 0.25));
 
-    pivotPostion = pivotMotor.getPosition();
+    CANcoderConfiguration encoderConfig = new CANcoderConfiguration();
+    encoderConfig.MagnetSensor.MagnetOffset = ShooterConstants.pivotEncoderOffset;
+    encoderConfig.MagnetSensor.SensorDirection = ShooterConstants.pivotEncoderDirection;
+
+    pivotPosition = pivotMotor.getPosition();
     pivotAppliedVolts = pivotMotor.getMotorVoltage();
     pivotCurrent = pivotMotor.getStatorCurrent();
     pivotTorqueCurrent = pivotMotor.getTorqueCurrent();
     closedLoopError = pivotMotor.getClosedLoopError();
 
     BaseStatusSignal.setUpdateFrequencyForAll(
-        50.0, pivotPostion, pivotAppliedVolts, pivotCurrent, pivotTorqueCurrent, closedLoopError);
+        50.0, pivotPosition, pivotAppliedVolts, pivotCurrent, pivotTorqueCurrent, closedLoopError);
 
     ParentDevice.optimizeBusUtilizationForAll(pivotMotor);
   }
@@ -84,10 +106,10 @@ public class PivotIOTalonFX implements PivotIO {
   public void updateInputs(PivotIOInputs inputs) {
     StatusCode pivotStatus =
         BaseStatusSignal.refreshAll(
-            pivotPostion, pivotAppliedVolts, pivotCurrent, pivotTorqueCurrent);
+            pivotPosition, pivotAppliedVolts, pivotCurrent, pivotTorqueCurrent);
 
     inputs.connected = primaryConnectedDebounce.calculate(pivotStatus.isOK());
-    inputs.pivotPosition = pivotPostion.getValue();
+    inputs.pivotPosition = pivotPosition.getValue();
     inputs.pivotAppliedVolts = pivotAppliedVolts.getValue();
     inputs.pivotStatorCurrentAmps = pivotCurrent.getValue();
     inputs.pivotTorqueCurrentAmps = pivotTorqueCurrent.getValue();
