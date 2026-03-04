@@ -38,8 +38,8 @@ import frc.robot.commands.collectorCommands.RightCollectorDownState;
 import frc.robot.commands.indexerCommands.IndexerAutoUnjam;
 import frc.robot.commands.indexerCommands.IndexerReverseCommand;
 import frc.robot.subsystems.collector.Collector;
-import frc.robot.subsystems.collector.CollectorModuleIO;
 import frc.robot.subsystems.collector.CollectorModuleSimIO;
+import frc.robot.subsystems.collector.CollectorModuleTalonIO;
 import frc.robot.subsystems.collector.collectorConstants.CollectorTalonLeftConstants;
 import frc.robot.subsystems.collector.collectorConstants.CollectorTalonRightConstants;
 import frc.robot.subsystems.drive.Drive;
@@ -155,7 +155,10 @@ public class RobotContainer {
 
         indexer = new Indexer(new IndexerIO() {});
 
-        collector = new Collector(new CollectorModuleIO() {}, new CollectorModuleIO() {});
+        collector =
+            new Collector(
+                new CollectorModuleTalonIO(new CollectorTalonLeftConstants()),
+                new CollectorModuleTalonIO(new CollectorTalonRightConstants()));
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
