@@ -66,15 +66,10 @@ public final class Constants {
     // Shooter button joystick ID's
     public static final int ShooterShootHubID = 15;
     public static final int ShooterShootTransferID = 13;
-    public static final int ShooterShootHubID = 15;
-    public static final int ShooterShootTransferID = 13;
 
     public static final int ShooterIndexID = 12;
     public static final int ShooterFlywheelSwitchID = 11;
-    public static final int ShooterIndexID = 12;
-    public static final int ShooterFlywheelSwitchID = 11;
     public static final int ShooterHoldToAimID = 1; // Jotstick trigger
-    public static final int ShooterReverseIndexID = 18;
     public static final int ShooterReverseIndexID = 18;
   }
 }
