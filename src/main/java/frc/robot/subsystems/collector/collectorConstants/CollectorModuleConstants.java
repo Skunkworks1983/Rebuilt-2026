@@ -111,7 +111,7 @@ public class CollectorModuleConstants {
     turnkA = 0.01;
 
     // Max Velocity and Acceleration
-    pivotMaxVelocity = RotationsPerSecond.of(1);
+    pivotMaxVelocity = RotationsPerSecond.of(.1);
     pivotMaxAcceleration = RotationsPerSecondPerSecond.of(1);
 
     // Position

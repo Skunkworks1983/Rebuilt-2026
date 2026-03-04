@@ -6,7 +6,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 
 public class IndexerConstants {
 
-  public static final int indexerMotorID = 26;
+  public static final int indexerMotorID = 28;
   public static final int runIndexerButtonID = 2;
 
   public static final AngularVelocity indexerAngularVelocity = RadiansPerSecond.of(5);
