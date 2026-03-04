@@ -6,6 +6,8 @@ package frc.robot.subsystems.indexer;
 
 import static frc.robot.util.PhoenixUtil.tryUntilOk;
 
+import static frc.robot.util.PhoenixUtil.tryUntilOk;
+
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -14,8 +16,9 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.TorqueCurrentFOC;
+import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.InvertedValue;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.units.measure.Angle;
@@ -42,6 +45,7 @@ public class IndexerIOTalonFX implements IndexerIO {
   private final TorqueCurrentFOC torqueCurrentRequest = new TorqueCurrentFOC(0);
   private final DutyCycleOut dutyCycleOut = new DutyCycleOut(0);
 
+
   public IndexerIOTalonFX(int motorID) {
 
     indexerMotor = new TalonFX(motorID, IndexerConstants.indexerCanBus);
@@ -55,6 +59,13 @@ public class IndexerIOTalonFX implements IndexerIO {
     // creates and applies slot0 configs
     TalonFXConfiguration configs = new TalonFXConfiguration();
     Slot0Configs slot0Configs = configs.Slot0;
+    slot0Configs.kP = IndexerConstants.indexerKP;
+    slot0Configs.kD = IndexerConstants.indexerKD;
+    slot0Configs.kS = IndexerConstants.indexerKS;
+    slot0Configs.kV = IndexerConstants.indexerKV;
+    configs.MotorOutput.Inverted = IndexerConstants.indexerMotorAlignment;
+
+    tryUntilOk(5, () -> indexerMotor.getConfigurator().apply(configs, 0.25));
     slot0Configs.kP = IndexerConstants.indexerKP;
     slot0Configs.kD = IndexerConstants.indexerKD;
     slot0Configs.kS = IndexerConstants.indexerKS;
