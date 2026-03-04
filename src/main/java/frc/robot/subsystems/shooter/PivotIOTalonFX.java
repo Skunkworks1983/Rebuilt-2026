@@ -1,6 +1,8 @@
 package frc.robot.subsystems.shooter;
 
 import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
 import static frc.robot.util.PhoenixUtil.tryUntilOk;
 
 import com.ctre.phoenix6.BaseStatusSignal;
@@ -10,7 +12,7 @@ import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.ParentDevice;
@@ -36,8 +38,7 @@ public class PivotIOTalonFX implements PivotIO {
   protected final StatusSignal<Double> closedLoopError;
 
   private final TorqueCurrentFOC torqueCurrentRequest = new TorqueCurrentFOC(0);
-  private final PositionTorqueCurrentFOC positionTorqueCurentRequest =
-      new PositionTorqueCurrentFOC(0);
+  private final MotionMagicVoltage positionTorqueCurentRequest = new MotionMagicVoltage(0);
 
   private final Debouncer primaryConnectedDebounce =
       new Debouncer(ShooterConstants.disconnectedDebounceTimeSec, Debouncer.DebounceType.kFalling);
@@ -45,6 +46,11 @@ public class PivotIOTalonFX implements PivotIO {
   public PivotIOTalonFX() {
     pivotMotor = new TalonFX(ShooterConstants.pivotMotorId, ShooterConstants.shooterCan);
     pivotEncoder = new CANcoder(ShooterConstants.pivotEncoderId, ShooterConstants.shooterCan);
+    CANcoderConfiguration encoderConfig = new CANcoderConfiguration();
+    encoderConfig.MagnetSensor.MagnetOffset = ShooterConstants.pivotEncoderOffset;
+    encoderConfig.MagnetSensor.SensorDirection = ShooterConstants.pivotEncoderDirection;
+    encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
+    tryUntilOk(5, () -> pivotEncoder.getConfigurator().apply(encoderConfig, 0.25));
 
     TalonFXConfiguration pivotConfig = new TalonFXConfiguration();
 
@@ -59,26 +65,30 @@ public class PivotIOTalonFX implements PivotIO {
     pivotConfig.Slot0.kV = ShooterConstants.pivotkV;
     pivotConfig.Slot0.kA = ShooterConstants.pivotkA;
 
+    pivotConfig.MotionMagic.MotionMagicCruiseVelocity =
+        ShooterConstants.pivotMaxVelocity.in(RotationsPerSecond);
+    pivotConfig.MotionMagic.MotionMagicAcceleration =
+        ShooterConstants.pivotMaxAcceleration.in(RotationsPerSecondPerSecond);
+
     pivotConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     pivotConfig.CurrentLimits.StatorCurrentLimit =
         ShooterConstants.pivotStatorCurrentLimit.in(Amps);
 
-    pivotConfig.Feedback.SensorToMechanismRatio = ShooterConstants.pivotSensorToMechanismRatio;
+    // pivotConfig.Feedback.SensorToMechanismRatio = ShooterConstants.pivotSensorToMechanismRatio;
     pivotConfig.Feedback.RotorToSensorRatio = ShooterConstants.pivotMotorToSensorRatio;
-    pivotConfig.Feedback.FeedbackRemoteSensorID = ShooterConstants.pivotEncoderId;
-    pivotConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+    // pivotConfig.Feedback.FeedbackRemoteSensorID = ShooterConstants.pivotEncoderId;
+    pivotConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
 
     pivotConfig.HardwareLimitSwitch.ForwardLimitSource = ShooterConstants.pivotForwardLimitSource;
     pivotConfig.HardwareLimitSwitch.ReverseLimitSource = ShooterConstants.pivotReverseLimitSource;
     pivotConfig.HardwareLimitSwitch.ForwardLimitType = ForwardLimitTypeValue.NormallyOpen;
     pivotConfig.HardwareLimitSwitch.ReverseLimitType = ReverseLimitTypeValue.NormallyOpen;
     pivotConfig.HardwareLimitSwitch.ReverseLimitRemoteSensorID = ShooterConstants.shooterCandiId;
+    pivotConfig.HardwareLimitSwitch.ForwardLimitRemoteSensorID = ShooterConstants.shooterCandiId;
 
     tryUntilOk(5, () -> pivotMotor.getConfigurator().apply(pivotConfig, 0.25));
 
-    CANcoderConfiguration encoderConfig = new CANcoderConfiguration();
-    encoderConfig.MagnetSensor.MagnetOffset = ShooterConstants.pivotEncoderOffset;
-    encoderConfig.MagnetSensor.SensorDirection = ShooterConstants.pivotEncoderDirection;
+    pivotMotor.setPosition(ShooterConstants.pivotStartAngle);
 
     pivotPosition = pivotMotor.getPosition();
     pivotAppliedVolts = pivotMotor.getMotorVoltage();
@@ -89,7 +99,7 @@ public class PivotIOTalonFX implements PivotIO {
     BaseStatusSignal.setUpdateFrequencyForAll(
         50.0, pivotPosition, pivotAppliedVolts, pivotCurrent, pivotTorqueCurrent, closedLoopError);
 
-    ParentDevice.optimizeBusUtilizationForAll(pivotMotor);
+    ParentDevice.optimizeBusUtilizationForAll(pivotMotor, pivotEncoder);
   }
 
   @Override

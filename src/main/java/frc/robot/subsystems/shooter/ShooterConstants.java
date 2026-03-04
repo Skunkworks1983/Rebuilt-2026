@@ -16,7 +16,6 @@ import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.signals.ForwardLimitSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.ReverseLimitSourceValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -57,20 +56,22 @@ public class ShooterConstants {
   public static final int lowerFlywheelMotorID = 25;
 
   // PID for flywheel
-  public static final double upperFlywheelKP = 3.5; // TODO: Flywheel Tuning
+  public static final double upperFlywheelKP = 8.0;
   public static final double upperFlywheelKD = 0.0;
 
   // Feed forwards for the flywheel
-  public static final double upperFlywheelKS = 1.0;
-  public static final double upperFlywheelKV = 0.50;
-  public static final double upperFlywheelKA = 0.0;
+  public static final double upperFlywheelKS = 0.017988;
+  public static final double upperFlywheelKV = 0.051044;
+  public static final double upperFlywheelKA = 3.50181;
 
-  public static final double lowerFlywheelKP = 0;
-  public static final double lowerFlywheelKD = 0;
+  // PID for flywheel
+  public static final double lowerFlywheelKP = 9.5;
+  public static final double lowerFlywheelKD = 0.0;
 
-  public static final double lowerFlywheelKS = 0;
-  public static final double lowerFlywheelKV = 0;
-  public static final double lowerFlywheelKA = 0;
+  // Feed forwards for the flywheel
+  public static final double lowerFlywheelKS = 0.017988;
+  public static final double lowerFlywheelKV = 0.065044;
+  public static final double lowerFlywheelKA = 3.5181;
 
   /** Maximum velocity of the flywheel in rotations per second. */
   public static final AngularVelocity flywheelMaxVelocityRotationsPerSec =
@@ -83,15 +84,11 @@ public class ShooterConstants {
   /** Gear ratio of the flywheel mechanism. */
   public static final double flywheelGearRatio = 1.;
 
-  /** Alignment configuration for the follower flywheel motor against the primary motor. */
-  public static final MotorAlignmentValue flywheelFollowerMotorAlignment =
-      MotorAlignmentValue.Opposed;
-
   /** Stator current limit in Amps for the flywheel motors. */
   public static final Current flywheelStatorCurrentLimitAmps = Amps.of(120);
 
   /** Invert configuration for the primary flywheel motor. */
-  public static final InvertedValue flywheelMotorInverted = InvertedValue.Clockwise_Positive;
+  public static final InvertedValue flywheelMotorInverted = InvertedValue.CounterClockwise_Positive;
 
   /** Minimum physical pitch angle of the shooter. */
   public static final Angle minShooterPitch = Degrees.of(0); // TODO: Acutal Vals
@@ -148,7 +145,7 @@ public class ShooterConstants {
   public static final Current pivotStatorCurrentLimit = Amps.of(120);
 
   public static final double pivotSensorToMechanismRatio = 4;
-  public static final double pivotMotorToSensorRatio = 100;
+  public static final double pivotMotorToSensorRatio = 400;
 
   public static final AngularVelocity defaultUpperFlywheelVelocityGoal = RotationsPerSecond.of(50);
   public static final AngularVelocity defaultLowerFlywheelVelocityGoal =
@@ -162,9 +159,9 @@ public class ShooterConstants {
 
   // SENSOR CONSTANTS
   public static final int pivotEncoderId = 43;
-  public static final double pivotEncoderOffset = 0;
+  public static final double pivotEncoderOffset = 0.523660111111;
   public static final SensorDirectionValue pivotEncoderDirection =
-      SensorDirectionValue.Clockwise_Positive;
+      SensorDirectionValue.CounterClockwise_Positive;
 
   public static final int beamBreakSensorChannel = 0;
 
@@ -174,4 +171,8 @@ public class ShooterConstants {
       ReverseLimitSourceValue.RemoteCANdiS1;
   public static final ForwardLimitSourceValue pivotForwardLimitSource =
       ForwardLimitSourceValue.RemoteCANdiS2;
+
+  public static final AngularVelocity pivotMaxVelocity = RotationsPerSecond.of(1);
+
+  public static final AngularAcceleration pivotMaxAcceleration = RotationsPerSecondPerSecond.of(2);
 }

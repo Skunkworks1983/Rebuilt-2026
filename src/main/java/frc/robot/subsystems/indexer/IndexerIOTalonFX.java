@@ -14,7 +14,6 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.InvertedValue;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.units.measure.Angle;
@@ -58,7 +57,7 @@ public class IndexerIOTalonFX implements IndexerIO {
     slot0Configs.kD = IndexerConstants.indexerKD;
     slot0Configs.kS = IndexerConstants.indexerKS;
     slot0Configs.kV = IndexerConstants.indexerKV;
-    configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    configs.MotorOutput.Inverted = IndexerConstants.indexerMotorAlignment;
 
     tryUntilOk(5, () -> indexerMotor.getConfigurator().apply(configs, 0.25));
 

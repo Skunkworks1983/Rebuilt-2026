@@ -32,7 +32,7 @@ public class IndexerConstants {
   public static final double indexerKA = 0.0;
 
   /** Alignment configuration for the indexer motor. */
-  public static final InvertedValue indexerMotorAlignment = InvertedValue.Clockwise_Positive;
+  public static final InvertedValue indexerMotorAlignment = InvertedValue.CounterClockwise_Positive;
 
   /** Stator current limit in Amps for the indexer motor. */
   public static final Current indexerStatorCurrentLimitAmps = Amps.of(120);

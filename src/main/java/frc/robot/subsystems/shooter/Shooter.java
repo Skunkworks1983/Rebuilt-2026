@@ -7,6 +7,7 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.SignalLogger;
@@ -93,6 +94,15 @@ public class Shooter extends SubsystemBase {
       new LoggedTunableNumber("Shooter/Pivot/kV", ShooterConstants.pivotkV);
   private static final LoggedTunableNumber pivotKA =
       new LoggedTunableNumber("Shooter/Pivot/kA", ShooterConstants.pivotkA);
+
+  private static final LoggedTunableNumber pivotMaxVelocity =
+      new LoggedTunableNumber(
+          "Shooter/Pivot/Max Velocity [rps]",
+          ShooterConstants.pivotMaxVelocity.in(RotationsPerSecond));
+  private static final LoggedTunableNumber pivotMaxAcceleration =
+      new LoggedTunableNumber(
+          "Shooter/Pivot/Max Acceleration [rps/s]",
+          ShooterConstants.pivotMaxAcceleration.in(RotationsPerSecondPerSecond));
 
   private final Alert upperFlywheelDisconnectedAlert =
       new Alert("Forward Flywheel disconnected", AlertType.kError);
@@ -226,6 +236,18 @@ public class Shooter extends SubsystemBase {
               "Shooter PID Update",
               "Pivot PID gains have been updated."));
     }
+
+    if (pivotMaxAcceleration.hasChanged(hashCode()) || pivotMaxVelocity.hasChanged(hashCode())) {
+      pivot.setMotionConstraints(
+          RotationsPerSecond.of(pivotMaxVelocity.get()),
+          RotationsPerSecondPerSecond.of(pivotMaxAcceleration.get()));
+
+      Elastic.sendNotification(
+          new Elastic.Notification(
+              Elastic.NotificationLevel.INFO,
+              "Shooter Motion Constraints Update",
+              "Pivot motion constraints have been updated."));
+    }
   }
 
   /**
@@ -335,5 +357,9 @@ public class Shooter extends SubsystemBase {
 
   public boolean getBeamBreak() {
     return beamBreakInputs.beamBroken;
+  }
+
+  public void setManualAngle(Angle angle) {
+    pivot.setPosition(angle);
   }
 }
