@@ -4,18 +4,15 @@
 
 package frc.robot.commands.indexerCommands;
 
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.IndexerConstants;
 import frc.robot.util.LoggedTunableNumber;
-
-import static edu.wpi.first.units.Units.RotationsPerSecond;
-
 import java.util.function.BooleanSupplier;
-
 import org.littletonrobotics.junction.Logger;
 
 public class IndexerAutoUnjam extends Command {
@@ -56,7 +53,7 @@ public class IndexerAutoUnjam extends Command {
       indexer.setIndexerVelocity(RotationsPerSecond.of(indexerAngularVelocity.get()));
       Logger.recordOutput("Index/Reverse Command is Running", false);
       Logger.recordOutput("Index/Command is Running", true);
-    } else if(timer.get() < 2){
+    } else if (timer.get() < 2) {
       indexer.setIndexerVelocity(RotationsPerSecond.of(indexerAngularVelocity.get() * -1));
       Logger.recordOutput("Index/Command is Running", false);
       Logger.recordOutput("Index/Reverse Command is Running", true);

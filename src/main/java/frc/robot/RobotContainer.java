@@ -36,7 +36,6 @@ import frc.robot.commands.collectorCommands.HoldPosition;
 import frc.robot.commands.collectorCommands.LeftCollectorDownState;
 import frc.robot.commands.collectorCommands.RightCollectorDownState;
 import frc.robot.commands.indexerCommands.IndexerAutoUnjam;
-import frc.robot.commands.indexerCommands.IndexerCommand;
 import frc.robot.commands.indexerCommands.IndexerReverseCommand;
 import frc.robot.subsystems.collector.Collector;
 import frc.robot.subsystems.collector.CollectorModuleSimIO;
@@ -248,7 +247,8 @@ public class RobotContainer {
         break;
     }
 
-    NamedCommands.registerCommand("Shoot Preset Setpoits ", new ShootPresetSetpoints(shooter, TargetType.GOAL));
+    NamedCommands.registerCommand(
+        "Shoot Preset Setpoits ", new ShootPresetSetpoints(shooter, TargetType.GOAL));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -315,7 +315,6 @@ public class RobotContainer {
     ShootPresetSetpoints shootPresetSetpoints = new ShootPresetSetpoints(shooter, TargetType.GOAL);
     // shootGoalButton.whileTrue(shootPresetSetpoints);
 
-   
     // shootGoalButton.whileTrue(
     // new DriveAimedAutoShoot(
     //    drive, shooter, () -> -leftJoystick.getY(), () -> -leftJoystick.getX()));
