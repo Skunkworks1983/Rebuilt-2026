@@ -8,6 +8,8 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
 
+import com.ctre.phoenix6.CANBus;
+
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -22,6 +24,9 @@ public class CollectorModuleConstants {
 
   // Collectors side
   public Side collectorSide;
+
+  // Collector CanBus
+  public CANBus canbus;
 
   // Hardware ID's
   public int turnMotorID;
@@ -78,6 +83,9 @@ public class CollectorModuleConstants {
 
     // Collector Side
     collectorSide = Side.LEFT;
+
+    // Collector canBus
+    canbus = new CANBus("peripherals_2026");
 
     // Hardware ID's
     turnMotorID = 0;

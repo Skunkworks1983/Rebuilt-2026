@@ -41,9 +41,9 @@ public class IndexerIOTalonFX implements IndexerIO {
   private final TorqueCurrentFOC torqueCurrentRequest = new TorqueCurrentFOC(0);
   private final DutyCycleOut dutyCycleOut = new DutyCycleOut(0);
 
-  public IndexerIOTalonFX(int motorID) {
+  public IndexerIOTalonFX() {
 
-    indexerMotor = new TalonFX(motorID, IndexerConstants.indexerCanBus);
+    indexerMotor = new TalonFX(IndexerConstants.indexerMotorID, IndexerConstants.indexerCanBus);
 
     // assigns values to the statussignals
     indexerPosition = indexerMotor.getPosition();
