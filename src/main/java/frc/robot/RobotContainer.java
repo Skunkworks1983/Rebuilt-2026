@@ -321,8 +321,8 @@ public class RobotContainer {
     runIndexerReverse =
         new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID);
 
-    runIndexer.whileTrue(new IndexerCommand(indexer));
-    runIndexerReverse.whileTrue(new IndexerReverseCommand(indexer));
+    // runIndexer.whileTrue(new IndexerCommand(indexer));
+    // runIndexerReverse.whileTrue(new IndexerReverseCommand(indexer));
     // if the index button is hed and more than a second elapses before the beam
     // break is broken the
     // indexer will reverse for 1 second before attempting to intake again

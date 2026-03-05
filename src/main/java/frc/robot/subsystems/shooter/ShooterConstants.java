@@ -176,7 +176,7 @@ public class ShooterConstants {
   public static final ForwardLimitSourceValue pivotForwardLimitSource =
       ForwardLimitSourceValue.RemoteCANdiS2;
 
-  public static final AngularVelocity pivotMaxVelocity = RotationsPerSecond.of(1);
+  public static final AngularVelocity pivotMaxVelocity = RotationsPerSecond.of(5);
 
-  public static final AngularAcceleration pivotMaxAcceleration = RotationsPerSecondPerSecond.of(2);
+  public static final AngularAcceleration pivotMaxAcceleration = RotationsPerSecondPerSecond.of(10);
 }
