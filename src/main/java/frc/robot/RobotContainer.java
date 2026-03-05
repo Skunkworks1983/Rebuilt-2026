@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.commands.DriveAimedAutoShoot;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.Shooter.NoYawShootHub;
 import frc.robot.commands.Shooter.ShootPresetSetpoints;
@@ -131,7 +132,9 @@ public class RobotContainer {
 
         vision =
             new Vision(
-                drive, new VisionIOLimelight(VisionConstants.camera0Name, drive::getRotation));
+                drive,
+                new VisionIOLimelight(VisionConstants.camera0Name, drive::getRotation),
+                new VisionIOLimelight(VisionConstants.camera1Name, drive::getRotation));
 
         // This is a solution to the vision-drive cross dependency issue that hurts my
         // eys, but it does work
@@ -295,12 +298,12 @@ public class RobotContainer {
 
     shootGoalButton = new JoystickButton(buttonJoystick, Constants.OIConstants.ShooterIndexID);
 
-    // shootGoalButton.whileTrue(
-    //     new DriveAimedAutoShoot(
-    //         drive, shooter, () -> -leftJoystick.getY(), () -> -leftJoystick.getX()));
+    shootGoalButton.whileTrue(
+        new DriveAimedAutoShoot(
+            drive, shooter, () -> -leftJoystick.getY(), () -> -leftJoystick.getX()));
 
     ShootPresetSetpoints shootPresetSetpoints = new ShootPresetSetpoints(shooter, TargetType.GOAL);
-    shootGoalButton.whileTrue(shootPresetSetpoints);
+    // shootGoalButton.whileTrue(shootPresetSetpoints);
 
     runIndexer = new JoystickButton(buttonJoystick, 1);
     runIndexerReverse =
