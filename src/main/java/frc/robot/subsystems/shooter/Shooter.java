@@ -57,7 +57,8 @@ public class Shooter extends SubsystemBase {
   private final PivotIOInputsAutoLogged pivotInputs = new PivotIOInputsAutoLogged();
   private final BeamBreakIOInputsAutoLogged beamBreakInputs = new BeamBreakIOInputsAutoLogged();
 
-  private AngularVelocity flywheelSetpoint = RadiansPerSecond.of(0.);
+  private AngularVelocity upperFlywheelSetpoint = RadiansPerSecond.of(0.);
+  private AngularVelocity lowerFlywheelSetpoint = RadiansPerSecond.of(0.);
   private Angle pivotSetpoint = Radians.of(0.);
 
   private final SysIdRoutine sysId;
@@ -301,18 +302,31 @@ public class Shooter extends SubsystemBase {
    */
   @AutoLogOutput(key = "Shooter/canShoot")
   public boolean canShoot() {
+    return isUpperFlywheelAtSetpoint() && isLowerFlywheelAtSetpoint() && isPivotAtSetpoint();
+  }
+
+  @AutoLogOutput(key = "Shooter/UpperFlywheelAtSetpoint")
+  public boolean isUpperFlywheelAtSetpoint() {
     return MathUtil.isNear(
-            flywheelSetpoint.in(RotationsPerSecond),
-            upperFlywheelInputs.angularVelocity.in(RotationsPerSecond),
-            ShooterConstants.flywheelVelocityTolerance.in(RotationsPerSecond))
-        && MathUtil.isNear(
-            flywheelSetpoint.in(RotationsPerSecond),
-            lowerFlywheelInputs.angularVelocity.in(RotationsPerSecond),
-            ShooterConstants.flywheelVelocityTolerance.in(RotationsPerSecond))
-        && MathUtil.isNear(
-            pivotSetpoint.in(Degrees),
-            pivotInputs.pivotPosition.in(Degrees),
-            ShooterConstants.pivotPositionTolerence.in(Degrees));
+        upperFlywheelSetpoint.in(RotationsPerSecond),
+        upperFlywheelInputs.angularVelocity.in(RotationsPerSecond),
+        ShooterConstants.flywheelVelocityTolerance.in(RotationsPerSecond));
+  }
+
+  @AutoLogOutput(key = "Shooter/LowerFlywheelAtSetpoint")
+  public boolean isLowerFlywheelAtSetpoint() {
+    return MathUtil.isNear(
+        lowerFlywheelSetpoint.in(RotationsPerSecond),
+        lowerFlywheelInputs.angularVelocity.in(RotationsPerSecond),
+        ShooterConstants.flywheelVelocityTolerance.in(RotationsPerSecond));
+  }
+
+  @AutoLogOutput(key = "Shooter/PivotAtSetpoint")
+  public boolean isPivotAtSetpoint() {
+    return MathUtil.isNear(
+        pivotSetpoint.in(Degrees),
+        pivotInputs.pivotPosition.in(Degrees),
+        ShooterConstants.pivotPositionTolerence.in(Degrees));
   }
 
   /**
@@ -339,15 +353,19 @@ public class Shooter extends SubsystemBase {
    * @param setpoints The calculated shooter controls containing pitch and velocity.
    */
   public void setShooterSetpoints(ShooterSetpoints setpoints) {
-    AngularVelocity upperFlywheelSetpoint = setpoints.upperFlywheelVelocity();
-    AngularVelocity lowerFlywheelSetpoint = setpoints.lowerFlywheelVelocity();
-    Angle pivotSetpoint = setpoints.shooterPitch();
+    AngularVelocity targetUpperFlywheelSetpoint = setpoints.upperFlywheelVelocity();
+    AngularVelocity targetLowerFlywheelSetpoint = setpoints.lowerFlywheelVelocity();
+    Angle targetPivotSetpoint = setpoints.shooterPitch();
 
     Logger.recordOutput("Shooter/Setpoints", setpoints);
 
-    pivot.setPosition(pivotSetpoint);
-    upperFlywheel.setVelocity(upperFlywheelSetpoint);
-    lowerFlywheel.setVelocity(lowerFlywheelSetpoint);
+    upperFlywheelSetpoint = targetUpperFlywheelSetpoint;
+    lowerFlywheelSetpoint = targetLowerFlywheelSetpoint;
+    pivotSetpoint = targetPivotSetpoint;
+
+    pivot.setPosition(targetPivotSetpoint);
+    upperFlywheel.setVelocity(targetUpperFlywheelSetpoint);
+    lowerFlywheel.setVelocity(targetLowerFlywheelSetpoint);
   }
 
   public void stopFlywheels() {
@@ -361,5 +379,10 @@ public class Shooter extends SubsystemBase {
 
   public void setManualAngle(Angle angle) {
     pivot.setPosition(angle);
+  }
+
+  /** Returns pivot to its default position (all the way back). */
+  public void setPivotHome() {
+    setManualAngle(ShooterConstants.pivotStartAngle);
   }
 }

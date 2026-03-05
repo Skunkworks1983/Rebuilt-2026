@@ -66,6 +66,7 @@ public class ShootPresetSetpoints extends Command {
   @Override
   public void end(boolean interrupted) {
     shooter.stopFlywheels();
+    shooter.setPivotHome();
   }
 
   @Override

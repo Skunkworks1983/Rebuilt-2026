@@ -65,6 +65,6 @@ public class CollectorTalonRightConstants extends CollectorModuleConstants {
     LowerLimitChannel = 7;
 
     // Collector Position Tolerance
-    CollectorPosTolerance = Degrees.of(3);
+    CollectorPosTolerance = Degrees.of(5);
   }
 }

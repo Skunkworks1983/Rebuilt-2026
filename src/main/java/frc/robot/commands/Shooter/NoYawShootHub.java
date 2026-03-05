@@ -54,6 +54,7 @@ public class NoYawShootHub extends Command {
   @Override
   public void end(boolean interrupted) {
     shooter.stopFlywheels();
+    shooter.setPivotHome();
     Logger.recordOutput("Commands/Auto Shoot/Drive Aimed Goal No Yaw", false);
   }
 }

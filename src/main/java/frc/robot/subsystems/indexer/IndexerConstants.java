@@ -12,6 +12,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.units.measure.Voltage;
+import frc.robot.util.LoggedTunableNumber;
 
 public class IndexerConstants {
   public static CANBus indexerCanBus = new CANBus("rio");
@@ -35,7 +36,15 @@ public class IndexerConstants {
   /** Stator current limit in Amps for the indexer motor. */
   public static final Current indexerStatorCurrentLimitAmps = Amps.of(120);
 
-  public static final AngularVelocity indexerAngularVelocity = RotationsPerSecond.of(5);
+  public static final AngularVelocity indexerAngularVelocitySetpoint = RotationsPerSecond.of(5);
+  public static final LoggedTunableNumber indexerAngularVelocityRotationsPerSecond =
+      new LoggedTunableNumber(
+          "Indexer/AngularVelocity [Rps]", indexerAngularVelocitySetpoint.in(RotationsPerSecond));
+
+  public static final LoggedTunableNumber autoUnjamNoBeamBreakTimeoutSeconds =
+      new LoggedTunableNumber("Indexer/AutoUnjam/NoBeamBreakTimeout [sec]", 3.0);
+  public static final LoggedTunableNumber autoUnjamReverseDurationSeconds =
+      new LoggedTunableNumber("Indexer/AutoUnjam/ReverseDuration [sec]", 2.0);
 
   public static Velocity<VoltageUnit> sysIdRampRate = Volts.per(Second).of(2);
 

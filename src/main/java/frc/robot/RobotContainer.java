@@ -303,13 +303,18 @@ public class RobotContainer {
             drive,
             () -> -leftJoystick.getY(), // -X (used to be)
             () -> -leftJoystick.getX(), // -Y (used to be)
-            () -> rightJoystick.getX())); // Confirm if negitive or not
+            () -> -rightJoystick.getX())); // Confirm if negitive or not
 
-    shootGoalButton = new JoystickButton(buttonJoystick, Constants.OIConstants.ShooterIndexID);
+    shootGoalButton = new JoystickButton(rightJoystick, 1);
+    Command autoShootIndexerCommand = new IndexerAutoUnjam(indexer, shooter::getBeamBreak);
 
     shootGoalButton.whileTrue(
         new DriveAimedAutoShoot(
-            drive, shooter, () -> -leftJoystick.getY(), () -> -leftJoystick.getX()));
+            drive,
+            shooter,
+            autoShootIndexerCommand,
+            () -> -leftJoystick.getY(),
+            () -> -leftJoystick.getX()));
 
     ShootPresetSetpoints shootPresetSetpoints = new ShootPresetSetpoints(shooter, TargetType.GOAL);
     // shootGoalButton.whileTrue(shootPresetSetpoints);
@@ -317,7 +322,7 @@ public class RobotContainer {
     // shootGoalButton.whileTrue(
     // new DriveAimedAutoShoot(
     //    drive, shooter, () -> -leftJoystick.getY(), () -> -leftJoystick.getX()));
-    runIndexer = new JoystickButton(buttonJoystick, Constants.OIConstants.ShooterIndexID);
+    runIndexer = new JoystickButton(leftJoystick, 1);
     runIndexerReverse =
         new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID);
 
@@ -332,6 +337,7 @@ public class RobotContainer {
     TestPathCommands.publishTestPaths(drive);
 
     collector.setDefaultCommand(new HoldPosition(collector));
+    shooter.setDefaultCommand(Commands.run(shooter::setPivotHome, shooter));
 
     // State Buttons
     JoystickButton manualModeSwitch =

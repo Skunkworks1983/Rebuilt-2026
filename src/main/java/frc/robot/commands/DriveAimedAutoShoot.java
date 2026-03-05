@@ -13,8 +13,11 @@ import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.util.FieldConstants;
 import frc.robot.util.FieldConstants.AllianceZone;
 import java.util.function.DoubleSupplier;
+import org.littletonrobotics.junction.Logger;
 
 public class DriveAimedAutoShoot extends Command {
+  private static final String logKey = "Commands/Auto Shoot/Drive Aimed Auto";
+
   private final Drive drive;
   private final Shooter shooter;
   private final DriveAimedShoot goalCommand;
@@ -25,12 +28,18 @@ public class DriveAimedAutoShoot extends Command {
   private DriveAimedShoot activeCommand;
 
   public DriveAimedAutoShoot(
-      Drive drive, Shooter shooter, DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
+      Drive drive,
+      Shooter shooter,
+      Command indexerCommand,
+      DoubleSupplier xSupplier,
+      DoubleSupplier ySupplier) {
     this.drive = drive;
     this.shooter = shooter;
-    goalCommand = new DriveAimedShoot(drive, shooter, xSupplier, ySupplier, TargetType.GOAL);
+    goalCommand =
+        new DriveAimedShoot(drive, shooter, indexerCommand, xSupplier, ySupplier, TargetType.GOAL);
     transferCommand =
-        new DriveAimedShoot(drive, shooter, xSupplier, ySupplier, TargetType.TRANSFER);
+        new DriveAimedShoot(
+            drive, shooter, indexerCommand, xSupplier, ySupplier, TargetType.TRANSFER);
 
     allianceZoneTrigger = new Trigger(this::isInAllianceZone);
     allianceZoneTrigger.onTrue(Commands.runOnce(() -> switchTo(goalCommand)));
@@ -39,7 +48,9 @@ public class DriveAimedAutoShoot extends Command {
 
   @Override
   public void initialize() {
-    switchTo(isInAllianceZone() ? goalCommand : transferCommand);
+    boolean inAllianceZone = isInAllianceZone();
+    Logger.recordOutput(logKey, true);
+    switchTo(inAllianceZone ? goalCommand : transferCommand);
   }
 
   @Override
@@ -52,6 +63,9 @@ public class DriveAimedAutoShoot extends Command {
     CommandScheduler.getInstance().cancel(transferCommand);
 
     shooter.stopFlywheels();
+    shooter.setPivotHome();
+    Logger.recordOutput(logKey, false);
+    Logger.recordOutput(logKey + "/ActiveTarget", "NONE");
   }
 
   @Override
@@ -76,5 +90,6 @@ public class DriveAimedAutoShoot extends Command {
     }
     activeCommand = nextCommand;
     CommandScheduler.getInstance().schedule(activeCommand);
+    Logger.recordOutput(logKey + "/ActiveTarget", nextCommand == goalCommand ? "GOAL" : "TRANSFER");
   }
 }
