@@ -22,15 +22,15 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.commands.DriveAimedAutoShoot;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.Shooter.NoYawShootHub;
 import frc.robot.commands.Shooter.ShootPresetSetpoints;
 import frc.robot.commands.Shooter.ShootPresetSetpoints.TargetType;
 import frc.robot.commands.TestPathCommands;
-import frc.robot.commands.collectorCommands.AutomaticStateChange;
+import frc.robot.commands.collectorCommands.BothCollectorsUpState;
 import frc.robot.commands.collectorCommands.CollectorExpel;
 import frc.robot.commands.collectorCommands.CollectorIntake;
+import frc.robot.commands.collectorCommands.HoldPosition;
 import frc.robot.commands.collectorCommands.LeftCollectorDownState;
 import frc.robot.commands.collectorCommands.RightCollectorDownState;
 import frc.robot.commands.indexerCommands.IndexerCommand;
@@ -54,14 +54,11 @@ import frc.robot.subsystems.indexer.IndexerIOSim;
 import frc.robot.subsystems.indexer.IndexerIOTalonFX;
 import frc.robot.subsystems.shooter.BeamBreakIO;
 import frc.robot.subsystems.shooter.BeamBreakIOSensor;
-import frc.robot.subsystems.shooter.BeamBreakIOSensor;
 import frc.robot.subsystems.shooter.FlywheelIO;
 import frc.robot.subsystems.shooter.FlywheelIOSim;
 import frc.robot.subsystems.shooter.FlywheelIOTalonFX;
-import frc.robot.subsystems.shooter.FlywheelIOTalonFX;
 import frc.robot.subsystems.shooter.PivotIO;
 import frc.robot.subsystems.shooter.PivotIOSim;
-import frc.robot.subsystems.shooter.PivotIOTalonFX;
 import frc.robot.subsystems.shooter.PivotIOTalonFX;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterConstants;
@@ -314,12 +311,12 @@ public class RobotContainer {
     runIndexer = new JoystickButton(buttonJoystick, 1);
     runIndexerReverse =
         new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID);
-      shootGoalButton.whileTrue(
-          new DriveAimedAutoShoot(
-              drive, shooter, () -> -leftJoystick.getY(), () -> -leftJoystick.getX()));
-      runIndexer = new JoystickButton(buttonJoystick, Constants.OIConstants.ShooterIndexID);
-      runIndexerReverse =
-          new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID);
+    // shootGoalButton.whileTrue(
+    // new DriveAimedAutoShoot(
+    //    drive, shooter, () -> -leftJoystick.getY(), () -> -leftJoystick.getX()));
+    runIndexer = new JoystickButton(buttonJoystick, Constants.OIConstants.ShooterIndexID);
+    runIndexerReverse =
+        new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID);
 
     runIndexer.whileTrue(new IndexerCommand(indexer));
     runIndexerReverse.whileTrue(new IndexerReverseCommand(indexer));
@@ -331,42 +328,40 @@ public class RobotContainer {
 
     TestPathCommands.publishTestPaths(drive);
 
+    collector.setDefaultCommand(new HoldPosition(collector));
+
     // State Buttons
-    // JoystickButton manualModeSwitch =
-    // new JoystickButton(buttonJoystick,
-    // Constants.OIConstants.CollectorManualModeID);
-    // JoystickButton autoModeSwitch =
-    // new JoystickButton(buttonJoystick,
-    // Constants.OIConstants.CollectorAutoModeID);
+    JoystickButton manualModeSwitch =
+        new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualModeID);
+    JoystickButton autoModeSwitch =
+        new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorAutoModeID);
 
     // autoModeSwitch.whileTrue(new AutomaticStateChange(collector,
     // drive::getDirection));
 
-    // manualModeSwitch
-    //     .negate()
-    //     .and(autoModeSwitch.negate())
-    //     .onTrue(new BothCollectorsUpState(collector));
+    manualModeSwitch
+        .negate()
+        .and(autoModeSwitch.negate())
+        .onTrue(new BothCollectorsUpState(collector));
 
     // Collector Intake Button
 
-    // new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorIntakeID)
-    // .whileTrue(new CollectorIntake(collector));
+    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorIntakeID)
+        .whileTrue(new CollectorIntake(collector));
 
-    // // Coolector Reverse Intake Button
-    // new JoystickButton(buttonJoystick,
-    // Constants.OIConstants.CollectorReverseIntakeID)
-    // .whileTrue(new CollectorExpel(collector));
+    // Coolector Reverse Intake Button
+    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID)
+        .whileTrue(new CollectorExpel(collector));
 
-    // // Right Collector Down
-    // new JoystickButton(buttonJoystick,
-    // Constants.OIConstants.CollectorRightDownID)
-    // .and(manualModeSwitch)
-    // .onTrue(new RightCollectorDownState(collector));
+    // Right Collector Down
+    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorRightDownID)
+        .and(manualModeSwitch)
+        .onTrue(new RightCollectorDownState(collector));
 
-    // // Left Collector Down
-    // new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorLeftDownID)
-    // .and(manualModeSwitch)
-    // .onTrue(new LeftCollectorDownState(collector));
+    // Left Collector Down
+    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorLeftDownID)
+        .and(manualModeSwitch)
+        .onTrue(new LeftCollectorDownState(collector));
 
     // Lock to 0° when A button is held
     // controller

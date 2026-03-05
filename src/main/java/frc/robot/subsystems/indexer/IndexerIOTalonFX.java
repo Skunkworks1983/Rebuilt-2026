@@ -6,8 +6,6 @@ package frc.robot.subsystems.indexer;
 
 import static frc.robot.util.PhoenixUtil.tryUntilOk;
 
-import static frc.robot.util.PhoenixUtil.tryUntilOk;
-
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -16,8 +14,6 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
-import com.ctre.phoenix6.controls.TorqueCurrentFOC;
-import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
@@ -44,7 +40,6 @@ public class IndexerIOTalonFX implements IndexerIO {
       new VelocityTorqueCurrentFOC(0.0);
   private final TorqueCurrentFOC torqueCurrentRequest = new TorqueCurrentFOC(0);
   private final DutyCycleOut dutyCycleOut = new DutyCycleOut(0);
-
 
   public IndexerIOTalonFX(int motorID) {
 
