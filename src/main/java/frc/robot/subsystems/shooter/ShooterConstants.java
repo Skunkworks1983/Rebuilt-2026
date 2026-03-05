@@ -7,6 +7,7 @@ import static edu.wpi.first.units.Units.KilogramSquareMeters;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Second;
@@ -99,7 +100,8 @@ public class ShooterConstants {
   /** Moment of inertia of the flywheel mechanism. */
   public static final MomentOfInertia flywheelInertia = KilogramSquareMeters.of(0.01);
 
-  // This isn't used in the code, but I want to keep it for reference when setting magnet offset
+  // This isn't used in the code, but I want to keep it for reference when setting
+  // magnet offset
   public static final Angle pivotStartAngle = Degrees.of(83);
 
   /** Initial pose of the shooter on the robot in WPILIb robot coordinate system. */
@@ -144,8 +146,8 @@ public class ShooterConstants {
 
   public static final Current pivotStatorCurrentLimit = Amps.of(120);
 
-  public static final double pivotSensorToMechanismRatio = 400;
-  public static final double pivotMotorToSensorRatio = 4;
+  public static final double pivotSensorToMechanismRatio = 4.;
+  public static final double pivotMotorToSensorRatio = 100;
 
   public static final AngularVelocity defaultUpperFlywheelVelocityGoal = RotationsPerSecond.of(50);
   public static final AngularVelocity defaultLowerFlywheelVelocityGoal =
@@ -159,7 +161,9 @@ public class ShooterConstants {
 
   // SENSOR CONSTANTS
   public static final int pivotEncoderId = 43;
-  public static final double pivotEncoderOffset = 0.523660111111;
+  public static final double pivotEncoderAbsoluteOffset = -0.582275;
+  public static final double pivotEncoderTotalOffset =
+      pivotEncoderAbsoluteOffset + (pivotStartAngle.in(Rotations) * (pivotSensorToMechanismRatio));
   public static final SensorDirectionValue pivotEncoderDirection =
       SensorDirectionValue.CounterClockwise_Positive;
 

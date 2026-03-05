@@ -101,7 +101,7 @@ public class Shooter extends SubsystemBase {
           ShooterConstants.pivotMaxVelocity.in(RotationsPerSecond));
   private static final LoggedTunableNumber pivotMaxAcceleration =
       new LoggedTunableNumber(
-          "Shooter/Pivot/Max Acceleration [rps/s]",
+          "Shooter/Pivot/Max Acceleration [rps^2]",
           ShooterConstants.pivotMaxAcceleration.in(RotationsPerSecondPerSecond));
 
   private final Alert upperFlywheelDisconnectedAlert =
@@ -175,7 +175,7 @@ public class Shooter extends SubsystemBase {
     lowerFlywheelDisconnectedAlert.set(!lowerFlywheelInputs.connected);
 
     pivotDisconnectedAlert.set(
-        (!pivotInputs.connected) && Constants.currentMode != Constants.Mode.SIM);
+        (!pivotInputs.motorConnected) && Constants.currentMode != Constants.Mode.SIM);
 
     if (upperFlywheelKP.hasChanged(hashCode())
         || upperFlywheelKD.hasChanged(hashCode())

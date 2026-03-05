@@ -2,6 +2,7 @@ package frc.robot.subsystems.shooter;
 
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -23,10 +24,14 @@ public interface PivotIO {
   @AutoLog
   public static class PivotIOInputs {
     /** True when the pivot hardware is connected and responding. */
-    public boolean connected = false;
+    public boolean motorConnected = false;
+
+    public boolean encoderConnected = false;
 
     /** The absolute encoder position of the pivot where 0 equals a launch angle of 0. */
     public Angle pivotAbsolutePosition = Rotations.of(0);
+
+    public AngularVelocity pivotVelocity = RotationsPerSecond.of(0);
 
     /** The internal encoder position of the pivot where 0 equals a launch angle of 0. */
     public Angle pivotPosition = Rotations.of(0);
