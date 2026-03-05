@@ -50,8 +50,12 @@ public interface CollectorModuleIO {
     public boolean upperTriggered = false;
     public boolean lowerTriggered = false;
 
-    //
+    // When were on our way down
     public boolean goingDown = false;
+
+    // up and down
+    public boolean isUp = true;
+    public boolean isDown = false;
   }
 
   /**
@@ -121,6 +125,8 @@ public interface CollectorModuleIO {
   public default void goDown() {}
 
   public default void setPivotGains(Slot0Configs slotConfigs) {}
+
+  public default void setIntakeGains(Slot0Configs slot0Configs) {}
 
   public default void setMotionConstraints(MotionMagicConfigs motionMagicConfigs) {}
   ;

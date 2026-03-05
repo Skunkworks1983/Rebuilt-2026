@@ -37,6 +37,10 @@ public class CollectorModule {
   private final LoggedTunableNumber collectorPivotCruiseVelocity;
   private final LoggedTunableNumber collectorPivotMaxAcceleration;
 
+  private final LoggedTunableNumber collectorIntakeKP;
+  private final LoggedTunableNumber collectorIntakeKV;
+  private final LoggedTunableNumber collectorIntakeVelocity;
+
   /**
    * This is the collector module subsystem
    *
@@ -67,6 +71,15 @@ public class CollectorModule {
         new LoggedTunableNumber(
             "Collector/Pivot/MaxAcceleration [Rot/s/s]",
             collectorIO.getConstants().pivotMaxAcceleration.in(RotationsPerSecondPerSecond));
+
+    collectorIntakeKP =
+        new LoggedTunableNumber("Collector/Intake/kP", collectorIO.getConstants().intakekP);
+    collectorIntakeKV =
+        new LoggedTunableNumber("Collector/Intake/kV", collectorIO.getConstants().intakekV);
+    collectorIntakeVelocity =
+        new LoggedTunableNumber(
+            "Collector/Intake/Velocity",
+            collectorIO.getConstants().CollectorIntakeSpeed.baseUnitMagnitude());
   }
 
   public void periodic() {
@@ -84,7 +97,18 @@ public class CollectorModule {
       gains.kS = collectorPivotKS.get();
       gains.kV = collectorPivotKV.get();
       gains.kA = collectorPivotKA.get();
+
       collectorIO.setPivotGains(gains);
+    }
+
+    if (collectorIntakeKP.hasChanged(hashCode())
+        || collectorIntakeKV.hasChanged(hashCode())
+        || collectorIntakeVelocity.hasChanged(hashCode())) {
+      Slot0Configs gains = new Slot0Configs();
+      gains.kP = collectorIntakeKP.get();
+      gains.kV = collectorIntakeKV.get();
+
+      collectorIO.setIntakeGains(gains);
     }
 
     if (collectorPivotCruiseVelocity.hasChanged(hashCode())

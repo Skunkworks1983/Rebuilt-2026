@@ -20,15 +20,13 @@ public class IndexerConstants {
   /** CAN ID for the indexer. */
   public static final int indexerMotorID = 28;
 
-  public static final int runIndexerButtonId = 4;
-
   // PID for indexer
-  public static final double indexerKP = 0.8; // TODO: Indexer Tuning
+  public static final double indexerKP = 0.0; // TODO: Indexer Tuning
   public static final double indexerKD = 0.0;
 
   // Feed forwards for the indexer
   public static final double indexerKS = 1.0;
-  public static final double indexerKV = 0.50;
+  public static final double indexerKV = 0.75;
   public static final double indexerKA = 0.0;
 
   /** Alignment configuration for the indexer motor. */
@@ -37,7 +35,7 @@ public class IndexerConstants {
   /** Stator current limit in Amps for the indexer motor. */
   public static final Current indexerStatorCurrentLimitAmps = Amps.of(120);
 
-  public static final AngularVelocity indexerAngularVelocity = RotationsPerSecond.of(15);
+  public static final AngularVelocity indexerAngularVelocity = RotationsPerSecond.of(5);
 
   public static Velocity<VoltageUnit> sysIdRampRate = Volts.per(Second).of(2);
 
