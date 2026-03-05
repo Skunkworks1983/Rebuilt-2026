@@ -256,7 +256,8 @@ public class RobotContainer {
         break;
     }
 
-    NamedCommands.registerCommand("Shoot Preset Setpoits ", new ShootPresetSetpoints(shooter, TargetType.GOAL));
+    NamedCommands.registerCommand(
+        "Shoot Preset Setpoits ", new ShootPresetSetpoints(shooter, TargetType.GOAL));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
