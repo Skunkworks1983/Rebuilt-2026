@@ -10,6 +10,7 @@ package frc.robot;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.events.EventTrigger;
 import com.pathplanner.lib.events.PointTowardsZoneTrigger;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -29,6 +30,8 @@ import frc.robot.commands.DriveAimedAutoShoot;
 import frc.robot.commands.DriveAimedShoot;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.Shooter.NoYawShootHub;
+import frc.robot.commands.Shooter.ShootPresetSetpoints;
+import frc.robot.commands.Shooter.ShootPresetSetpoints.TargetType;
 import frc.robot.commands.TestPathCommands;
 import frc.robot.commands.collectorCommands.AutomaticStateChange;
 import frc.robot.commands.collectorCommands.CollectorExpel;
@@ -252,6 +255,8 @@ public class RobotContainer {
         indexer = new Indexer(new IndexerIO() {});
         break;
     }
+
+    NamedCommands.registerCommand("Shoot Preset Setpoits ", new ShootPresetSetpoints(shooter, TargetType.GOAL));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
