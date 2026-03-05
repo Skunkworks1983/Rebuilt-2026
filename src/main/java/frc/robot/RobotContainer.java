@@ -35,6 +35,7 @@ import frc.robot.commands.collectorCommands.CollectorIntake;
 import frc.robot.commands.collectorCommands.HoldPosition;
 import frc.robot.commands.collectorCommands.LeftCollectorDownState;
 import frc.robot.commands.collectorCommands.RightCollectorDownState;
+import frc.robot.commands.indexerCommands.IndexerAutoUnjam;
 import frc.robot.commands.indexerCommands.IndexerCommand;
 import frc.robot.commands.indexerCommands.IndexerReverseCommand;
 import frc.robot.subsystems.collector.Collector;
@@ -314,9 +315,7 @@ public class RobotContainer {
     ShootPresetSetpoints shootPresetSetpoints = new ShootPresetSetpoints(shooter, TargetType.GOAL);
     // shootGoalButton.whileTrue(shootPresetSetpoints);
 
-    runIndexer = new JoystickButton(buttonJoystick, 1);
-    runIndexerReverse =
-        new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID);
+   
     // shootGoalButton.whileTrue(
     // new DriveAimedAutoShoot(
     //    drive, shooter, () -> -leftJoystick.getY(), () -> -leftJoystick.getX()));
@@ -324,8 +323,8 @@ public class RobotContainer {
     runIndexerReverse =
         new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID);
 
-    // runIndexer.whileTrue(new IndexerCommand(indexer));
-    // runIndexerReverse.whileTrue(new IndexerReverseCommand(indexer));
+    runIndexer.whileTrue(new IndexerAutoUnjam(indexer, shooter::getBeamBreak));
+    runIndexerReverse.whileTrue(new IndexerReverseCommand(indexer));
     // if the index button is hed and more than a second elapses before the beam
     // break is broken the
     // indexer will reverse for 1 second before attempting to intake again
