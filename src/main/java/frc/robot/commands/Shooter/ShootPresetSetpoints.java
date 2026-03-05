@@ -60,7 +60,7 @@ public class ShootPresetSetpoints extends Command {
         new Shooter.ShooterSetpoints(
             RotationsPerSecond.of(upperVelocitySetpointRPS.get()),
             RotationsPerSecond.of(lowerVelocitySetpointRPS.get()),
-            shooter.getPivotAngle()));
+            Degrees.of(pitchSetpointDegrees.get())));
   }
 
   @Override
