@@ -147,7 +147,7 @@ public class RobotContainer {
         // eys, but it does work
         drive.setResetVisionIMUCallback((pose) -> vision.resetCameraIMU(pose));
 
-        indexer = new Indexer(new IndexerIOTalonFX(28));
+        indexer = new Indexer(new IndexerIOTalonFX());
 
         collector =
             new Collector(
@@ -217,7 +217,7 @@ public class RobotContainer {
                 new CollectorModuleSimIO(simulation, new CollectorTalonLeftConstants()),
                 new CollectorModuleSimIO(simulation, new CollectorTalonRightConstants()));
 
-        indexer = new Indexer(new IndexerIOSim(IndexerConstants.indexerMotorID));
+        indexer = new Indexer(new IndexerIOSim());
 
         break;
 
@@ -349,7 +349,6 @@ public class RobotContainer {
         .onTrue(new BothCollectorsUpState(collector));
 
     // Collector Intake Button
-
     new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorIntakeID)
         .whileTrue(new CollectorIntake(collector));
 
