@@ -8,6 +8,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.events.EventTrigger;
 import com.pathplanner.lib.events.PointTowardsZoneTrigger;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -245,6 +246,8 @@ public class RobotContainer {
         indexer = new Indexer(new IndexerIO() {});
         break;
     }
+
+    NamedCommands.registerCommand("Shoot Preset Setpoits ", new ShootPresetSetpoints(shooter, TargetType.GOAL));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
