@@ -22,8 +22,6 @@ public class IndexerAutoUnjam extends Command {
   Indexer indexer;
   Timer timer;
   BooleanSupplier beamBroken;
-  IndexerReverseCommand indexerReverseCommand;
-  IndexerCommand indexerCommand;
 
   private LoggedTunableNumber indexerAngularVelocity =
       new LoggedTunableNumber(
@@ -34,14 +32,13 @@ public class IndexerAutoUnjam extends Command {
     this.indexer = indexer;
     this.beamBroken = beamBroken;
     timer = new Timer();
-    indexerReverseCommand = new IndexerReverseCommand(indexer);
-    indexerCommand = new IndexerCommand(indexer);
   }
 
   @Override
   public void initialize() {
     Logger.recordOutput("Index/Auto-Unjam Command is Running", true);
     timer.start();
+    indexer.setIndexerVelocity(RotationsPerSecond.of(indexerAngularVelocity.get()));
   }
 
   @Override
