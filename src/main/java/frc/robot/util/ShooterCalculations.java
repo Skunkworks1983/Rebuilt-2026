@@ -206,31 +206,8 @@ public class ShooterCalculations {
     boolean possibleShot = true;
 
     // if (finalPitch < minPitchRadians || finalPitch > maxPitchRadians) {
-    //   double constrainedPitchRadians = MathUtil.clamp(finalPitch, minPitchRadians,
-    // maxPitchRadians);
-    //   Double constrainedStationaryBallExitSpeed =
-    //       solveBallExitSpeedForDistanceAndAngle(
-    //           distWithDrag, relativeGoalZ, constrainedPitchRadians);
-
-    //   if (constrainedStationaryBallExitSpeed != null) {
-    //     launchVelocityZ = constrainedStationaryBallExitSpeed * Math.sin(constrainedPitchRadians);
-    //     double constrainedHorizontalSpeed =
-    //         constrainedStationaryBallExitSpeed * Math.cos(constrainedPitchRadians);
-
-    //     stationaryLaunchVectorField = new Translation2d(constrainedHorizontalSpeed, angleToGoal);
-    //     effectiveLaunchVectorField = stationaryLaunchVectorField.minus(shooterVelField);
-
-    //     finalDriveYaw = effectiveLaunchVectorField.getAngle();
-    //     effectiveHorizontalSpeed = effectiveLaunchVectorField.getNorm();
-    //     finalPitch = Math.atan2(launchVelocityZ, effectiveHorizontalSpeed);
-    //   } else {
-    //     possibleShot = false;
-    //     finalPitch = constrainedPitchRadians;
-    //   }
-
-    //   finalPitch = MathUtil.clamp(finalPitch, minPitchRadians, maxPitchRadians);
-    //   double cosPitch = Math.max(Math.cos(finalPitch), 1e-6);
-    //   ballExitSpeed = effectiveHorizontalSpeed / cosPitch;
+    //   return solveBallExitSpeedForDistanceAndAngle(
+    //       finalPitch, distWithDrag, relativeGoalZ, angleToGoal, shooterVelField);
     // }
 
     double flywheelSurfaceSpeed = ballExitSpeed / ShooterSolverConstants.flywheelEfficiency;
@@ -274,26 +251,76 @@ public class ShooterCalculations {
         possibleShot);
   }
 
-  private static Double solveBallExitSpeedForDistanceAndAngle(
-      double distanceMeters, double relativeGoalHeightMeters, double launchAngleRadians) {
-    double cosTheta = Math.cos(launchAngleRadians);
-    double tanTheta = Math.tan(launchAngleRadians);
+  private static ShooterControls solveBallExitSpeedForDistanceAndAngle(
+      double finalPitch,
+      double distWithDrag,
+      double relativeGoalZ,
+      Rotation2d angleToGoal,
+      Translation2d shooterVelField) {
 
-    double denominator =
-        2.0 * cosTheta * cosTheta * (distanceMeters * tanTheta - relativeGoalHeightMeters);
+    double constrainedPitchRadians =
+        MathUtil.clamp(
+            finalPitch,
+            ShooterConstants.minShooterPitch.in(Radians),
+            ShooterConstants.maxShooterPitch.in(Radians));
 
-    if (denominator <= 1e-9) {
-      return null;
+    Translation2d stationaryLaunchVectorField = new Translation2d();
+    Translation2d effectiveLaunchVectorField = new Translation2d();
+    double launchVelocityZ = 0;
+
+    // Binary search over time of flight (t) to find the exact exit speed needed
+    double min_t = 0.1; // 100ms: Very fast, flat shot (lower bound)
+    double max_t = 4.0; // 4 seconds: Very slow, high lofted shot (upper bound)
+    double t = 1.0;
+
+    for (int i = 0; i < 15; i++) { // Increased to 15 for better convergence
+      t = (min_t + max_t) / 2.0;
+
+      // 1. Calculate required field-relative velocities for this time of flight
+      double reqHorizontalSpeed = distWithDrag / t;
+      double reqLaunchZ = (relativeGoalZ + 0.5 * ShooterSolverConstants.gravity * t * t) / t;
+
+      // 2. Create the field-relative launch vector (NOW USING POLAR CONSTRUCTOR)
+      Translation2d testStationaryVectorField = new Translation2d(reqHorizontalSpeed, angleToGoal);
+
+      // 3. Subtract robot velocity to get what the shooter actually needs to do
+      Translation2d testEffectiveLaunchVectorField =
+          testStationaryVectorField.minus(shooterVelField);
+
+      double calcHorizontalSpeed = testEffectiveLaunchVectorField.getNorm();
+      double calcPitch = Math.atan2(reqLaunchZ, calcHorizontalSpeed);
+
+      // 4. Adjust binary search bounds
+      if (calcPitch > constrainedPitchRadians) {
+        max_t = t;
+      } else {
+        min_t = t;
+      }
+
+      // Store values
+      stationaryLaunchVectorField = testStationaryVectorField;
+      effectiveLaunchVectorField = testEffectiveLaunchVectorField;
+      launchVelocityZ = reqLaunchZ;
     }
 
-    double speedSquared =
-        (ShooterSolverConstants.gravity * distanceMeters * distanceMeters) / denominator;
+    // 5. Apply the converged results
+    double effectiveHorizontalSpeed = effectiveLaunchVectorField.getNorm();
+    finalPitch = constrainedPitchRadians;
+    double ballExitSpeed = Math.hypot(effectiveHorizontalSpeed, launchVelocityZ);
 
-    if (!Double.isFinite(speedSquared) || speedSquared <= 0.0) {
-      return null;
-    }
+    double flywheelSurfaceSpeed = ballExitSpeed / ShooterSolverConstants.flywheelEfficiency;
+    double flywheelRadPerSec = flywheelSurfaceSpeed / ShooterConstants.flywheelRadius.in(Meters);
 
-    return Math.sqrt(speedSquared);
+    // TODO: Consider adding Logger.recordOutput() here so you don't lose telemetry
+    // when clamped!
+
+    return new ShooterControls(
+        RadiansPerSecond.of(flywheelRadPerSec),
+        RadiansPerSecond.of(
+            flywheelRadPerSec * ShooterSolverConstants.lowerFlywheelVelocityMultiplier.get()),
+        Radians.of(finalPitch),
+        effectiveLaunchVectorField.getAngle(),
+        true);
   }
 
   /**
@@ -541,8 +568,10 @@ public class ShooterCalculations {
     double flywheelRadPerSec = flywheelSurfaceSpeed / ShooterConstants.flywheelRadius.in(Meters);
 
     return new ShooterControls(
-        RadiansPerSecond.of(flywheelRadPerSec),
-        RadiansPerSecond.of(flywheelRadPerSec),
+        RadiansPerSecond.of(flywheelRadPerSec / ShooterSolverConstants.flywheelEfficiency),
+        RadiansPerSecond.of(
+            (flywheelRadPerSec / ShooterSolverConstants.flywheelEfficiency)
+                * ShooterSolverConstants.lowerFlywheelVelocityMultiplier.get()),
         Radians.of(hoodAngle.getRadians()),
         driveYaw,
         true);

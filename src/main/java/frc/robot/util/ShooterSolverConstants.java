@@ -33,7 +33,7 @@ public class ShooterSolverConstants {
    * Efficiency factor for the flywheel (1 is 100%, 0.1 is 10%). This should at a maximum be 0.5 as
    * half the velocity is converted to spin
    */
-  public static final double flywheelEfficiency = 0.45;
+  public static final double flywheelEfficiency = 0.42;
 
   // CONSTRAINED HEIGHT SOLVER
   /** Vertical clearance required above the hub for specialized constrained shots. */

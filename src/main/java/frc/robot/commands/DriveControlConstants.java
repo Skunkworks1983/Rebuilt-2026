@@ -20,9 +20,9 @@ public class DriveControlConstants {
       new LoggedTunableNumber("Drive Control/Yaw Max Acceleration Radians Per Second^2", 18.0);
 
   public static final LoggedTunableNumber linearFilterTimeConstant =
-      new LoggedTunableNumber("Auto Aim/Linear Filter Time Constant", 0.03);
+      new LoggedTunableNumber("Auto Aim/Linear Filter Time Constant", 0.05);
   public static final LoggedTunableNumber linearFilterPeriod =
-      new LoggedTunableNumber("Auto Aim/Linear Filter Period", 0.020);
+      new LoggedTunableNumber("Auto Aim/Linear Filter Period", 0.025);
 
   public static final Angle largeAngleJumpThreshold = Degrees.of(10);
 }
