@@ -5,8 +5,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.DriveAimedShoot.TargetType;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.shooter.Shooter;
@@ -23,9 +21,8 @@ public class DriveAimedAutoShoot extends Command {
   private final DriveAimedShoot goalCommand;
   private final DriveAimedShoot transferCommand;
 
-  private final Trigger allianceZoneTrigger;
-
   private DriveAimedShoot activeCommand;
+  private boolean wasInAllianceZone;
 
   public DriveAimedAutoShoot(
       Drive drive,
@@ -40,17 +37,26 @@ public class DriveAimedAutoShoot extends Command {
     transferCommand =
         new DriveAimedShoot(
             drive, shooter, indexerCommand, xSupplier, ySupplier, TargetType.TRANSFER);
-
-    allianceZoneTrigger = new Trigger(this::isInAllianceZone);
-    allianceZoneTrigger.onTrue(Commands.runOnce(() -> switchTo(goalCommand)));
-    allianceZoneTrigger.onFalse(Commands.runOnce(() -> switchTo(transferCommand)));
   }
 
   @Override
   public void initialize() {
     boolean inAllianceZone = isInAllianceZone();
+    wasInAllianceZone = inAllianceZone;
     Logger.recordOutput(logKey, true);
+    Logger.recordOutput(logKey + "/InAllianceZone", inAllianceZone);
     switchTo(inAllianceZone ? goalCommand : transferCommand);
+  }
+
+  @Override
+  public void execute() {
+    boolean inAllianceZone = isInAllianceZone();
+    Logger.recordOutput(logKey + "/InAllianceZone", inAllianceZone);
+
+    if (inAllianceZone != wasInAllianceZone) {
+      switchTo(inAllianceZone ? goalCommand : transferCommand);
+      wasInAllianceZone = inAllianceZone;
+    }
   }
 
   @Override
@@ -65,6 +71,7 @@ public class DriveAimedAutoShoot extends Command {
     shooter.stopFlywheels();
     shooter.setPivotHome();
     Logger.recordOutput(logKey, false);
+    Logger.recordOutput(logKey + "/InAllianceZone", false);
     Logger.recordOutput(logKey + "/ActiveTarget", "NONE");
   }
 

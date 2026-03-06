@@ -57,8 +57,13 @@ public class Shooter extends SubsystemBase {
   private final PivotIOInputsAutoLogged pivotInputs = new PivotIOInputsAutoLogged();
   private final BeamBreakIOInputsAutoLogged beamBreakInputs = new BeamBreakIOInputsAutoLogged();
 
+  @AutoLogOutput(key = "Shooter/Upper Flywheel/Setpoint")
   private AngularVelocity upperFlywheelSetpoint = RadiansPerSecond.of(0.);
+
+  @AutoLogOutput(key = "Shooter/Lower Flywheel/Setpoint")
   private AngularVelocity lowerFlywheelSetpoint = RadiansPerSecond.of(0.);
+
+  @AutoLogOutput(key = "Shooter/Pivot/Setpoint")
   private Angle pivotSetpoint = Radians.of(0.);
 
   private final SysIdRoutine sysId;

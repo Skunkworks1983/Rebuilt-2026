@@ -1,8 +1,18 @@
 package frc.robot.commands;
 
+import frc.robot.util.LoggedTunableNumber;
+
 public class DriveControlConstants {
-  public static final double YAW_CONTROL_KP = 5.5;
-  public static final double YAW_CONTROL_KD = 0.;
-  public static final double YAW_CONTROL_DEADBAND = 0.1;
-  public static final double YAW_SETPOINT_TOLERANCE_RADIANS = 0.5;
+  public static final LoggedTunableNumber YAW_CONTROL_KP =
+      new LoggedTunableNumber("Drive Control/Yaw Control KP", 5.0);
+  public static final LoggedTunableNumber YAW_CONTROL_KD =
+      new LoggedTunableNumber("Drive Control/Yaw Control KD", 0.4);
+  public static final LoggedTunableNumber YAW_CONTROL_DEADBAND =
+      new LoggedTunableNumber("Drive Control/Yaw Control Deadband", 0.1);
+  public static final LoggedTunableNumber YAW_SETPOINT_TOLERANCE_RADIANS =
+      new LoggedTunableNumber("Drive Control/Yaw Setpoint Tolerance Radians", 0.5);
+  public static final LoggedTunableNumber YAW_MAX_VELOCITY =
+      new LoggedTunableNumber("Drive Control/Yaw Max Velocity Radians Per Second", 8.0);
+  public static final LoggedTunableNumber YAW_MAX_ACCELERATION =
+      new LoggedTunableNumber("Drive Control/Yaw Max Acceleration Radians Per Second^2", 20.0);
 }

@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.IndexerConstants;
-import frc.robot.util.LoggedTunableNumber;
 import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.Logger;
 
@@ -59,7 +58,6 @@ public class IndexerAutoUnjam extends Command {
         }
         break;
     }
-
   }
 
   @Override

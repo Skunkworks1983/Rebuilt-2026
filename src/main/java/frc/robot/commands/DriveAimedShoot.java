@@ -1,8 +1,9 @@
 package frc.robot.commands;
 
-import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -27,11 +28,11 @@ public class DriveAimedShoot extends Command {
   private final Command indexerCommand;
   private final DoubleSupplier xSupplier;
   private final DoubleSupplier ySupplier;
-  private final PIDController yawController;
+  private ProfiledPIDController yawController;
   private final TargetType targetType;
   private final String logKey;
   private final String autoShootRequirementsLogKey;
-  private boolean wasReadyToShoot = false;
+  private boolean commandStarted = false;
 
   private Trigger readyToShoot;
 
@@ -49,26 +50,43 @@ public class DriveAimedShoot extends Command {
     this.targetType = targetType;
     this.indexerCommand = indexerCommand;
 
-    yawController = new PIDController(
-        DriveControlConstants.YAW_CONTROL_KP, 0.0, DriveControlConstants.YAW_CONTROL_KD);
+    yawController =
+        new ProfiledPIDController(
+            DriveControlConstants.YAW_CONTROL_KP.get(),
+            0.0,
+            DriveControlConstants.YAW_CONTROL_KD.get(),
+            new TrapezoidProfile.Constraints(
+                DriveControlConstants.YAW_MAX_VELOCITY.get(),
+                DriveControlConstants.YAW_MAX_ACCELERATION.get()));
     yawController.enableContinuousInput(-Math.PI, Math.PI);
-    yawController.setTolerance(DriveControlConstants.YAW_SETPOINT_TOLERANCE_RADIANS);
+    yawController.setTolerance(DriveControlConstants.YAW_SETPOINT_TOLERANCE_RADIANS.get());
 
     this.logKey = "Commands/Auto Shoot/Drive Aimed " + targetType.name();
     this.autoShootRequirementsLogKey = logKey + "/Requirements";
+    readyToShoot =
+        new Trigger(() -> shooter.canShoot() && yawController.atSetpoint() && commandStarted);
+    readyToShoot.whileTrue(indexerCommand);
     addRequirements(drive, shooter);
   }
 
   @Override
   public void initialize() {
-    yawController.reset();
-    wasReadyToShoot = false;
+    yawController =
+        new ProfiledPIDController(
+            DriveControlConstants.YAW_CONTROL_KP.get(),
+            0.0,
+            DriveControlConstants.YAW_CONTROL_KD.get(),
+            new TrapezoidProfile.Constraints(
+                DriveControlConstants.YAW_MAX_VELOCITY.get(),
+                DriveControlConstants.YAW_MAX_ACCELERATION.get()));
+    yawController.enableContinuousInput(-Math.PI, Math.PI);
+    yawController.setTolerance(DriveControlConstants.YAW_SETPOINT_TOLERANCE_RADIANS.get());
+
     CommandScheduler.getInstance().cancel(indexerCommand);
+    commandStarted = true;
     Logger.recordOutput(logKey, true);
     Logger.recordOutput(autoShootRequirementsLogKey + "/IndexerCommandScheduled", false);
     Logger.recordOutput(autoShootRequirementsLogKey + "/ReadyToShoot", false);
-    readyToShoot = new Trigger(() -> shooter.canShoot() && yawController.atSetpoint());
-    readyToShoot.whileTrue(indexerCommand);
   }
 
   @Override
@@ -76,12 +94,13 @@ public class DriveAimedShoot extends Command {
     var currentPose = drive.getPose();
     var currentSpeeds = drive.getChassisSpeeds();
 
-    ShooterControls controls = switch (targetType) {
-      case GOAL -> ShooterCalculations.getApexConstrainedShooterControls(
-          currentPose, currentSpeeds);
-      case TRANSFER -> ShooterCalculations.getShooterControlsTransfer(
-          currentSpeeds, currentPose, shooter.getShooterForwardLinearVelocity());
-    };
+    ShooterControls controls =
+        switch (targetType) {
+          case GOAL -> ShooterCalculations.getApexConstrainedShooterControls(
+              currentPose, currentSpeeds);
+          case TRANSFER -> ShooterCalculations.getShooterControlsTransfer(
+              currentSpeeds, currentPose, shooter.getShooterForwardLinearVelocity());
+        };
 
     shooter.setShooterSetpoints(
         new ShooterSetpoints(
@@ -97,9 +116,10 @@ public class DriveAimedShoot extends Command {
 
     double omegaCalculated = yawController.calculate(currentYawRadians, targetYawRadians);
 
-    ChassisSpeeds targetSpeeds = DriveUtils.getChassisSpeeds(
-        drive, xSupplier, ySupplier, omegaCalculated // Override rotation
-    );
+    ChassisSpeeds targetSpeeds =
+        DriveUtils.getChassisSpeeds(
+            drive, xSupplier, ySupplier, omegaCalculated // Override rotation
+            );
 
     boolean isRed = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red;
 
@@ -109,18 +129,20 @@ public class DriveAimedShoot extends Command {
         ChassisSpeeds.fromFieldRelativeSpeeds(
             targetSpeeds, drive.getRotation().plus(fieldCentricOffset)));
 
-    Logger.recordOutput(autoShootRequirementsLogKey + "/YawErrorRadians", yawController.getError());
-    Logger.recordOutput(autoShootRequirementsLogKey + "/DriveReadyToShoot", yawController.atSetpoint());
-    Logger.recordOutput(autoShootRequirementsLogKey + "/ReadyToShoot", yawController.atSetpoint() && shooter.canShoot());
+    Logger.recordOutput(
+        autoShootRequirementsLogKey + "/DriveReadyToShoot", yawController.atSetpoint());
+    Logger.recordOutput(
+        autoShootRequirementsLogKey + "/ReadyToShoot",
+        yawController.atSetpoint() && shooter.canShoot());
   }
 
   @Override
   public void end(boolean interrupted) {
+    commandStarted = false;
     CommandScheduler.getInstance().cancel(indexerCommand);
     shooter.setPivotHome();
     Logger.recordOutput(autoShootRequirementsLogKey + "/ReadyToShoot", false);
     Logger.recordOutput(autoShootRequirementsLogKey + "/IndexerCommandScheduled", false);
     Logger.recordOutput(logKey, false);
-    readyToShoot = null;
   }
 }

@@ -92,10 +92,10 @@ public class ShooterConstants {
   public static final InvertedValue flywheelMotorInverted = InvertedValue.CounterClockwise_Positive;
 
   /** Minimum physical pitch angle of the shooter. */
-  public static final Angle minShooterPitch = Degrees.of(0); // TODO: Acutal Vals
+  public static final Angle minShooterPitch = Degrees.of(60);
 
   /** Maximum physical pitch angle of the shooter. */
-  public static final Angle maxShooterPitch = Degrees.of(80);
+  public static final Angle maxShooterPitch = Degrees.of(84);
 
   /** Moment of inertia of the flywheel mechanism. */
   public static final MomentOfInertia flywheelInertia = KilogramSquareMeters.of(0.01);
@@ -123,7 +123,7 @@ public class ShooterConstants {
           flywheelMaxVelocityRotationsPerSec.in(RadiansPerSecond) * flywheelRadius.in(Meters));
 
   /** Allowable error tolerance for the flywheel velocity. */
-  public static final AngularVelocity flywheelVelocityTolerance = RotationsPerSecond.of(1);
+  public static final AngularVelocity flywheelVelocityTolerance = RotationsPerSecond.of(2);
 
   // PIVOT CONSTANTS
 
@@ -131,7 +131,7 @@ public class ShooterConstants {
   public static final int pivotMotorId = 27;
 
   /** Allowable error tolerance for the pivot position. */
-  public static final Angle pivotPositionTolerence = Degrees.of(2);
+  public static final Angle pivotPositionTolerence = Degrees.of(4);
 
   // PID for pivot
   public static final double pivotkP = 90; // TODO: SET VALUES

@@ -53,7 +53,7 @@ public class DriveCommands {
           // Apply rotation deadband
           double omega =
               MathUtil.applyDeadband(
-                  omegaSupplier.getAsDouble(), DriveControlConstants.YAW_CONTROL_DEADBAND);
+                  omegaSupplier.getAsDouble(), DriveControlConstants.YAW_CONTROL_DEADBAND.get());
 
           // Square rotation value for more precise control
           omega = Math.copySign(omega * omega, omega);

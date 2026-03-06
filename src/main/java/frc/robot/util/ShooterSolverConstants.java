@@ -37,7 +37,7 @@ public class ShooterSolverConstants {
 
   // CONSTRAINED HEIGHT SOLVER
   /** Vertical clearance required above the hub for specialized constrained shots. */
-  public static final Distance hubHeightClearance = Meters.of(0.5);
+  public static final Distance hubHeightClearance = Meters.of(1.0);
 
   public static final LoggedTunableNumber lowerFlywheelVelocityMultiplier =
       new LoggedTunableNumber("Lower Flywheel Velocity Multiplier", 1.15);
