@@ -7,9 +7,9 @@ import frc.robot.util.LoggedTunableNumber;
 
 public class DriveControlConstants {
   public static final LoggedTunableNumber YAW_CONTROL_KP =
-      new LoggedTunableNumber("Drive Control/Yaw Control KP", 3.7);
+      new LoggedTunableNumber("Drive Control/Yaw Control KP", 4);
   public static final LoggedTunableNumber YAW_CONTROL_KD =
-      new LoggedTunableNumber("Drive Control/Yaw Control KD", 0.5);
+      new LoggedTunableNumber("Drive Control/Yaw Control KD", 0);
   public static final LoggedTunableNumber YAW_CONTROL_DEADBAND =
       new LoggedTunableNumber("Drive Control/Yaw Control Deadband", 0.1);
   public static final LoggedTunableNumber YAW_SETPOINT_TOLERANCE_RADIANS =
