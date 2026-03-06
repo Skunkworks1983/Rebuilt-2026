@@ -5,6 +5,7 @@
 package frc.robot.subsystems.collector;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static frc.robot.util.PhoenixUtil.tryUntilOk;
 
@@ -126,6 +127,10 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     turnSlot0Configs.kV = constants.turnkV;
     turnSlot0Configs.kA = constants.turnkA;
 
+    turnConfig.HardwareLimitSwitch.ForwardLimitAutosetPositionEnable = true;
+    turnConfig.HardwareLimitSwitch.ForwardLimitAutosetPositionValue =
+        constants.CollectorUpPos.in(Rotations);
+
     // Motion Magic Configs for Turn Motor
     var turnMotionMagicConfig = turnConfig.MotionMagic;
     turnMotionMagicConfig.MotionMagicCruiseVelocity = .1;
@@ -218,7 +223,13 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     // Update sensor inputs
     inputs.upperTriggered = !upperLimitSwitch.get();
     inputs.lowerTriggered = !lowerLimitSwitch.get();
-
+    if (!upperLimitSwitch.get()
+        || turnMotor
+            .getPosition()
+            .getValue()
+            .lte(constants.CollectorUpPos.plus(constants.CollectorPosTolerance))) {
+      turnMotor.setPosition(Rotations.of(0));
+    }
     // up and down
     inputs.isUp =
         !upperLimitSwitch.get()
@@ -305,6 +316,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
    * @return whether or not collector is up
    */
   public boolean isCollectorUp() {
+
     return !upperLimitSwitch.get()
         || turnMotor
             .getPosition()
