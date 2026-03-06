@@ -318,7 +318,8 @@ public class RobotContainer {
             shooter,
             autoShootIndexerCommand,
             () -> -leftJoystick.getY(),
-            () -> -leftJoystick.getX()));
+            () -> -leftJoystick.getX(),
+            () -> -rightJoystick.getX()));
 
     ShootPresetSetpoints shootPresetSetpoints = new ShootPresetSetpoints(shooter, TargetType.GOAL);
     // shootGoalButton.whileTrue(shootPresetSetpoints);

@@ -223,13 +223,13 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     // Update sensor inputs
     inputs.upperTriggered = !upperLimitSwitch.get();
     inputs.lowerTriggered = !lowerLimitSwitch.get();
-    if (!upperLimitSwitch.get()
-        || turnMotor
-            .getPosition()
-            .getValue()
-            .lte(constants.CollectorUpPos.plus(constants.CollectorPosTolerance))) {
-      turnMotor.setPosition(Rotations.of(0));
-    }
+    // if (!upperLimitSwitch.get()
+    //     || turnMotor
+    //         .getPosition()
+    //         .getValue()
+    //         .lte(constants.CollectorUpPos.plus(constants.CollectorPosTolerance))) {
+    //   turnMotor.setPosition(Rotations.of(0));
+    // }
     // up and down
     inputs.isUp =
         !upperLimitSwitch.get()
