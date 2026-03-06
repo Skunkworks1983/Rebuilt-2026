@@ -57,7 +57,7 @@ public class ShooterConstants {
   public static final int lowerFlywheelMotorID = 25;
 
   // PID for flywheel
-  public static final double upperFlywheelKP = 8.0;
+  public static final double upperFlywheelKP = 8.2;
   public static final double upperFlywheelKD = 0.0;
 
   // Feed forwards for the flywheel
@@ -66,7 +66,7 @@ public class ShooterConstants {
   public static final double upperFlywheelKA = 3.60181;
 
   // PID for flywheel
-  public static final double lowerFlywheelKP = 9.5;
+  public static final double lowerFlywheelKP = 9.7;
   public static final double lowerFlywheelKD = 0.0;
 
   // Feed forwards for the flywheel
@@ -134,7 +134,7 @@ public class ShooterConstants {
   public static final Angle pivotPositionTolerence = Degrees.of(4);
 
   // PID for pivot
-  public static final double pivotkP = 90; // TODO: SET VALUES
+  public static final double pivotkP = 160; // TODO: SET VALUES
   public static final double pivotkD = 0;
 
   // Feedforwards for pivot
@@ -176,7 +176,8 @@ public class ShooterConstants {
   public static final ForwardLimitSourceValue pivotForwardLimitSource =
       ForwardLimitSourceValue.RemoteCANdiS2;
 
-  public static final AngularVelocity pivotMaxVelocity = RotationsPerSecond.of(5);
+  public static final AngularVelocity pivotMaxVelocity = RotationsPerSecond.of(55);
 
-  public static final AngularAcceleration pivotMaxAcceleration = RotationsPerSecondPerSecond.of(10);
+  public static final AngularAcceleration pivotMaxAcceleration =
+      RotationsPerSecondPerSecond.of(150);
 }

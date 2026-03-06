@@ -3,7 +3,6 @@ package frc.robot.util;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
 
-import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
@@ -72,7 +71,13 @@ public class ShooterSolverConstants {
 
   public static final Angle transferShotSafetyMargin = Degrees.of(5);
 
-  public static final Distance closeShotDistance = Meters.of(0.15);
+  public static final Distance closeShotDistance = Meters.of(1.25);
 
-  public static final LoggedTunableNumber closeShotClearenceMultiplier =  new LoggedTunableNumber("Shooter/Close Shot Clearance Multiplier", 0.1);
+  public static final LoggedTunableNumber closeShotClearenceMultiplier =
+      new LoggedTunableNumber("Shooter/Close Shot Clearance Multiplier", 2.0);
+
+  public static final LoggedTunableNumber closeShootVelocity =
+      new LoggedTunableNumber("Shooter/Close Shoot Velocity RPS", 50);
+  public static final LoggedTunableNumber closeShootAngle =
+      new LoggedTunableNumber("Shooter/Close Shoot Angle Deg", 70);
 }
