@@ -24,10 +24,10 @@ public class ShooterSolverConstants {
   public static final Angle defaultPitch = Degrees.of(45);
 
   /** Air drag coefficient approximation. */
-  public static final double drag = 0.05;
+  public static final double drag = 0.08;
 
   /** Maximum multiplier to apply for drag compensation. */
-  public static final double maxDragMultiplier = 1.5;
+  public static final double maxDragMultiplier = 3;
 
   /**
    * Efficiency factor for the flywheel (1 is 100%, 0.1 is 10%). This should at a maximum be 0.5 as
@@ -37,7 +37,7 @@ public class ShooterSolverConstants {
 
   // CONSTRAINED HEIGHT SOLVER
   /** Vertical clearance required above the hub for specialized constrained shots. */
-  public static final Distance hubHeightClearance = Meters.of(1.0);
+  public static final Distance hubHeightClearance = Meters.of(0.5);
 
   public static final LoggedTunableNumber lowerFlywheelVelocityMultiplier =
       new LoggedTunableNumber("Lower Flywheel Velocity Multiplier", 1.15);

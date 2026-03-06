@@ -1,10 +1,13 @@
 package frc.robot.commands;
 
+import static edu.wpi.first.units.Units.Degrees;
+
+import edu.wpi.first.units.measure.Angle;
 import frc.robot.util.LoggedTunableNumber;
 
 public class DriveControlConstants {
   public static final LoggedTunableNumber YAW_CONTROL_KP =
-      new LoggedTunableNumber("Drive Control/Yaw Control KP", 5.0);
+      new LoggedTunableNumber("Drive Control/Yaw Control KP", 4.8);
   public static final LoggedTunableNumber YAW_CONTROL_KD =
       new LoggedTunableNumber("Drive Control/Yaw Control KD", 0.4);
   public static final LoggedTunableNumber YAW_CONTROL_DEADBAND =
@@ -12,7 +15,14 @@ public class DriveControlConstants {
   public static final LoggedTunableNumber YAW_SETPOINT_TOLERANCE_RADIANS =
       new LoggedTunableNumber("Drive Control/Yaw Setpoint Tolerance Radians", 0.5);
   public static final LoggedTunableNumber YAW_MAX_VELOCITY =
-      new LoggedTunableNumber("Drive Control/Yaw Max Velocity Radians Per Second", 8.0);
+      new LoggedTunableNumber("Drive Control/Yaw Max Velocity Radians Per Second", 7.0);
   public static final LoggedTunableNumber YAW_MAX_ACCELERATION =
-      new LoggedTunableNumber("Drive Control/Yaw Max Acceleration Radians Per Second^2", 20.0);
+      new LoggedTunableNumber("Drive Control/Yaw Max Acceleration Radians Per Second^2", 18.0);
+
+  public static final LoggedTunableNumber linearFilterTimeConstant =
+      new LoggedTunableNumber("Auto Aim/Linear Filter Time Constant", 0.03);
+  public static final LoggedTunableNumber linearFilterPeriod =
+      new LoggedTunableNumber("Auto Aim/Linear Filter Period", 0.020);
+
+  public static final Angle largeAngleJumpThreshold = Degrees.of(10);
 }

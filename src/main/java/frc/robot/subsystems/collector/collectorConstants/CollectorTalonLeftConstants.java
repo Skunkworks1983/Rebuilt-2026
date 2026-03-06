@@ -55,7 +55,7 @@ public class CollectorTalonLeftConstants extends CollectorModuleConstants {
 
     // Position
     CollectorUpPos = Rotations.of(0);
-    CollectorDownPos = Rotations.of(.2);
+    CollectorDownPos = Rotations.of(.23);
 
     // Collector Intake Speeds
     CollectorIntakeSpeed = RotationsPerSecond.of(8);
@@ -65,6 +65,6 @@ public class CollectorTalonLeftConstants extends CollectorModuleConstants {
     LowerLimitChannel = 8;
 
     // Collector Position Tolerance
-    CollectorPosTolerance = Degrees.of(5);
+    CollectorPosTolerance = Degrees.of(3);
   }
 }

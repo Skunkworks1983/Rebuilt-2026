@@ -1,5 +1,8 @@
 package frc.robot.commands;
 
+import static edu.wpi.first.units.Units.Radians;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -33,6 +36,9 @@ public class DriveAimedShoot extends Command {
   private final String logKey;
   private final String autoShootRequirementsLogKey;
   private boolean commandStarted = false;
+
+  private double lastFilteredYaw;
+  private double yawFilterAlpha;
 
   private Trigger readyToShoot;
 
@@ -83,6 +89,14 @@ public class DriveAimedShoot extends Command {
     yawController.setTolerance(DriveControlConstants.YAW_SETPOINT_TOLERANCE_RADIANS.get());
 
     CommandScheduler.getInstance().cancel(indexerCommand);
+
+    lastFilteredYaw = drive.getRotation().getRadians();
+    double filterPeriod = DriveControlConstants.linearFilterPeriod.get();
+    double filterTimeConstant = DriveControlConstants.linearFilterTimeConstant.get();
+    yawFilterAlpha =
+        filterTimeConstant <= 0.0
+            ? 1.0
+            : MathUtil.clamp(filterPeriod / (filterTimeConstant + filterPeriod), 0.0, 1.0);
     commandStarted = true;
     Logger.recordOutput(logKey, true);
     Logger.recordOutput(autoShootRequirementsLogKey + "/IndexerCommandScheduled", false);
@@ -110,11 +124,19 @@ public class DriveAimedShoot extends Command {
 
     double currentYawRadians = drive.getRotation().getRadians();
     double targetYawRadians = controls.driveYaw().getRadians();
+    double targetYawDelta = MathUtil.angleModulus(targetYawRadians - lastFilteredYaw);
 
-    Logger.recordOutput(logKey + "/Target Yaw", targetYawRadians);
-    Logger.recordOutput(logKey + "/Current Yaw", currentYawRadians);
+    if (Math.abs(targetYawDelta) > DriveControlConstants.largeAngleJumpThreshold.in(Radians)) {
+      lastFilteredYaw = targetYawRadians;
+    } else {
+      lastFilteredYaw += yawFilterAlpha * targetYawDelta;
+    }
+    double filteredTargetYaw = MathUtil.angleModulus(lastFilteredYaw);
+    Logger.recordOutput("Auto Shoot/Target Yaw", targetYawRadians);
+    Logger.recordOutput("Auto Shoot/Current Yaw", currentYawRadians);
+    Logger.recordOutput("Auto Shoot/Filtered Target Yaw", filteredTargetYaw);
 
-    double omegaCalculated = yawController.calculate(currentYawRadians, targetYawRadians);
+    double omegaCalculated = yawController.calculate(currentYawRadians, filteredTargetYaw);
 
     ChassisSpeeds targetSpeeds =
         DriveUtils.getChassisSpeeds(

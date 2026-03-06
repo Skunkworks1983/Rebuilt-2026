@@ -205,32 +205,33 @@ public class ShooterCalculations {
     double unconstrainedPitch = finalPitch;
     boolean possibleShot = true;
 
-    if (finalPitch < minPitchRadians || finalPitch > maxPitchRadians) {
-      double constrainedPitchRadians = MathUtil.clamp(finalPitch, minPitchRadians, maxPitchRadians);
-      Double constrainedStationaryBallExitSpeed =
-          solveBallExitSpeedForDistanceAndAngle(
-              distWithDrag, relativeGoalZ, constrainedPitchRadians);
+    // if (finalPitch < minPitchRadians || finalPitch > maxPitchRadians) {
+    //   double constrainedPitchRadians = MathUtil.clamp(finalPitch, minPitchRadians,
+    // maxPitchRadians);
+    //   Double constrainedStationaryBallExitSpeed =
+    //       solveBallExitSpeedForDistanceAndAngle(
+    //           distWithDrag, relativeGoalZ, constrainedPitchRadians);
 
-      if (constrainedStationaryBallExitSpeed != null) {
-        launchVelocityZ = constrainedStationaryBallExitSpeed * Math.sin(constrainedPitchRadians);
-        double constrainedHorizontalSpeed =
-            constrainedStationaryBallExitSpeed * Math.cos(constrainedPitchRadians);
+    //   if (constrainedStationaryBallExitSpeed != null) {
+    //     launchVelocityZ = constrainedStationaryBallExitSpeed * Math.sin(constrainedPitchRadians);
+    //     double constrainedHorizontalSpeed =
+    //         constrainedStationaryBallExitSpeed * Math.cos(constrainedPitchRadians);
 
-        stationaryLaunchVectorField = new Translation2d(constrainedHorizontalSpeed, angleToGoal);
-        effectiveLaunchVectorField = stationaryLaunchVectorField.minus(shooterVelField);
+    //     stationaryLaunchVectorField = new Translation2d(constrainedHorizontalSpeed, angleToGoal);
+    //     effectiveLaunchVectorField = stationaryLaunchVectorField.minus(shooterVelField);
 
-        finalDriveYaw = effectiveLaunchVectorField.getAngle();
-        effectiveHorizontalSpeed = effectiveLaunchVectorField.getNorm();
-        finalPitch = Math.atan2(launchVelocityZ, effectiveHorizontalSpeed);
-      } else {
-        possibleShot = false;
-        finalPitch = constrainedPitchRadians;
-      }
+    //     finalDriveYaw = effectiveLaunchVectorField.getAngle();
+    //     effectiveHorizontalSpeed = effectiveLaunchVectorField.getNorm();
+    //     finalPitch = Math.atan2(launchVelocityZ, effectiveHorizontalSpeed);
+    //   } else {
+    //     possibleShot = false;
+    //     finalPitch = constrainedPitchRadians;
+    //   }
 
-      finalPitch = MathUtil.clamp(finalPitch, minPitchRadians, maxPitchRadians);
-      double cosPitch = Math.max(Math.cos(finalPitch), 1e-6);
-      ballExitSpeed = effectiveHorizontalSpeed / cosPitch;
-    }
+    //   finalPitch = MathUtil.clamp(finalPitch, minPitchRadians, maxPitchRadians);
+    //   double cosPitch = Math.max(Math.cos(finalPitch), 1e-6);
+    //   ballExitSpeed = effectiveHorizontalSpeed / cosPitch;
+    // }
 
     double flywheelSurfaceSpeed = ballExitSpeed / ShooterSolverConstants.flywheelEfficiency;
 

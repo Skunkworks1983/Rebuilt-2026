@@ -138,9 +138,7 @@ public class RobotContainer {
 
         vision =
             new Vision(
-                drive,
-                new VisionIOLimelight(VisionConstants.camera0Name, drive::getRotation),
-                new VisionIOLimelight(VisionConstants.camera1Name, drive::getRotation));
+                drive, new VisionIOLimelight(VisionConstants.camera0Name, drive::getRotation));
 
         // This is a solution to the vision-drive cross dependency issue that hurts my
         // eys, but it does work
