@@ -244,6 +244,7 @@ public class RobotContainer {
         indexer = new Indexer(new IndexerIO() {});
         break;
     }
+    Command autoShootIndexerCommand = new IndexerAutoUnjam(indexer, shooter::getBeamBreak);
 
     NamedCommands.registerCommand(
         "Shoot Preset Setpoits ", new ShootPresetSetpoints(shooter, TargetType.GOAL));
@@ -252,7 +253,8 @@ public class RobotContainer {
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
     new EventTrigger("FIRE")
         .onTrue(Commands.print("LEBRON!").andThen(new InstantCommand(this::launchSimFuel)));
-    new PointTowardsZoneTrigger("Aim Hub").whileTrue(new NoYawShootHub(shooter, drive));
+    new PointTowardsZoneTrigger("Aim Hub")
+        .whileTrue(new NoYawShootHub(shooter, drive, autoShootIndexerCommand));
 
     // Set up SysId routines
     autoChooser.addOption(
@@ -281,6 +283,9 @@ public class RobotContainer {
         "Shooter SysId (Dynamic Forward)", shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
     autoChooser.addOption(
         "Shooter SysId (Dynamic Reverse)", shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+
+    autoChooser.addOption(
+        "Simple Auto", new NoYawShootHub(shooter, drive, autoShootIndexerCommand));
 
     // Configure the button bindings
     configureButtonBindings();

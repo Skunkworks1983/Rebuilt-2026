@@ -7,7 +7,6 @@ package frc.robot.subsystems.collector.collectorConstants;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 /**
  * This class is a grouping of constants

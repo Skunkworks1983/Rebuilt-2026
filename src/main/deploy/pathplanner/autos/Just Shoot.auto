@@ -5,15 +5,28 @@
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "race",
           "data": {
-            "name": "Shoot Preset Setpoits"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Shoot Preset Setpoits"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 10.0
+                }
+              }
+            ]
           }
         }
       ]
     }
   },
-  "resetOdom": true,
+  "resetOdom": false,
   "folder": null,
   "choreoAuto": false
 }
