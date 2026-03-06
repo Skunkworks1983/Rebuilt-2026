@@ -3,6 +3,7 @@ package frc.robot.util;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
 
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
@@ -16,15 +17,13 @@ public class ShooterSolverConstants {
   /** Safety buffer angle for avoiding the hub when transferring from neutral zone. */
   public static final Rotation2d hubSafetyAngle = new Rotation2d();
 
-  public static final Distance minShootDistanceHub = Meters.of(0.5);
-
   public static double gravity = 9.80665; // m / s^2
 
   /** Default pitch angle to use when other calculations fail or default is needed. */
-  public static final Angle defaultPitch = Degrees.of(45);
+  public static final Angle defaultPitch = Degrees.of(70);
 
   /** Air drag coefficient approximation. */
-  public static final double drag = 0.08;
+  public static final double drag = 0.075;
 
   /** Maximum multiplier to apply for drag compensation. */
   public static final double maxDragMultiplier = 3;
@@ -72,4 +71,8 @@ public class ShooterSolverConstants {
   public static final double shotLatencyModelLearningRate = 0.15;
 
   public static final Angle transferShotSafetyMargin = Degrees.of(5);
+
+  public static final Distance closeShotDistance = Meters.of(0.15);
+
+  public static final LoggedTunableNumber closeShotClearenceMultiplier =  new LoggedTunableNumber("Shooter/Close Shot Clearance Multiplier", 0.1);
 }
