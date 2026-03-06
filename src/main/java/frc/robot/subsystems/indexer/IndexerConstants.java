@@ -42,7 +42,7 @@ public class IndexerConstants {
           "Indexer/AngularVelocity [Rps]", indexerAngularVelocitySetpoint.in(RotationsPerSecond));
 
   public static final LoggedTunableNumber autoUnjamNoBeamBreakTimeoutSeconds =
-      new LoggedTunableNumber("Indexer/AutoUnjam/NoBeamBreakTimeout [sec]", 3.0);
+      new LoggedTunableNumber("Indexer/AutoUnjam/NoBeamBreakTimeout [sec]", 2.0);
   public static final LoggedTunableNumber autoUnjamReverseDurationSeconds =
       new LoggedTunableNumber("Indexer/AutoUnjam/ReverseDuration [sec]", 2.0);
 

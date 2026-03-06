@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterConstants;
 import frc.robot.util.LoggedTunableNumber;
+import org.littletonrobotics.junction.Logger;
 
 public class ShootPresetSetpoints extends Command {
   public enum TargetType {
@@ -56,6 +57,7 @@ public class ShootPresetSetpoints extends Command {
 
   @Override
   public void initialize() {
+    Logger.recordOutput("Commands/Manual Shoot/Shoot preset setpoints", true);
     shooter.setShooterSetpoints(
         new Shooter.ShooterSetpoints(
             RotationsPerSecond.of(upperVelocitySetpointRPS.get()),
@@ -67,6 +69,7 @@ public class ShootPresetSetpoints extends Command {
   public void end(boolean interrupted) {
     shooter.stopFlywheels();
     shooter.setPivotHome();
+    Logger.recordOutput("Commands/Manual Shoot/Shoot preset setpoints", false);
   }
 
   @Override
