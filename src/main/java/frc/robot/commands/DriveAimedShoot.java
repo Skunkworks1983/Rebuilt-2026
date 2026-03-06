@@ -1,11 +1,17 @@
 package frc.robot.commands;
 
-import edu.wpi.first.math.controller.PIDController;
+import static edu.wpi.first.units.Units.Radians;
+
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.Shooter.ShooterSetpoints;
@@ -22,15 +28,24 @@ public class DriveAimedShoot extends Command {
 
   private final Drive drive;
   private final Shooter shooter;
+  private final Command indexerCommand;
   private final DoubleSupplier xSupplier;
   private final DoubleSupplier ySupplier;
-  private final PIDController yawController;
+  private ProfiledPIDController yawController;
   private final TargetType targetType;
   private final String logKey;
+  private final String autoShootRequirementsLogKey;
+  private boolean commandStarted = false;
+
+  private double lastFilteredYaw;
+  private double yawFilterAlpha;
+
+  private Trigger readyToShoot;
 
   public DriveAimedShoot(
       Drive drive,
       Shooter shooter,
+      Command indexerCommand,
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
       TargetType targetType) {
@@ -39,21 +54,53 @@ public class DriveAimedShoot extends Command {
     this.xSupplier = xSupplier;
     this.ySupplier = ySupplier;
     this.targetType = targetType;
+    this.indexerCommand = indexerCommand;
 
     yawController =
-        new PIDController(
-            DriveControlConstants.YAW_CONTROL_KP, 0.0, DriveControlConstants.YAW_CONTROL_KD);
+        new ProfiledPIDController(
+            DriveControlConstants.YAW_CONTROL_KP.get(),
+            0.0,
+            DriveControlConstants.YAW_CONTROL_KD.get(),
+            new TrapezoidProfile.Constraints(
+                DriveControlConstants.YAW_MAX_VELOCITY.get(),
+                DriveControlConstants.YAW_MAX_ACCELERATION.get()));
     yawController.enableContinuousInput(-Math.PI, Math.PI);
+    yawController.setTolerance(DriveControlConstants.YAW_SETPOINT_TOLERANCE_RADIANS.get());
 
     this.logKey = "Commands/Auto Shoot/Drive Aimed " + targetType.name();
-
+    this.autoShootRequirementsLogKey = logKey + "/Requirements";
+    readyToShoot =
+        new Trigger(() -> shooter.canShoot() && yawController.atSetpoint() && commandStarted);
+    readyToShoot.whileTrue(indexerCommand);
     addRequirements(drive, shooter);
   }
 
   @Override
   public void initialize() {
-    yawController.reset();
+    yawController =
+        new ProfiledPIDController(
+            DriveControlConstants.YAW_CONTROL_KP.get(),
+            0.0,
+            DriveControlConstants.YAW_CONTROL_KD.get(),
+            new TrapezoidProfile.Constraints(
+                DriveControlConstants.YAW_MAX_VELOCITY.get(),
+                DriveControlConstants.YAW_MAX_ACCELERATION.get()));
+    yawController.enableContinuousInput(-Math.PI, Math.PI);
+    yawController.setTolerance(DriveControlConstants.YAW_SETPOINT_TOLERANCE_RADIANS.get());
+
+    CommandScheduler.getInstance().cancel(indexerCommand);
+
+    lastFilteredYaw = drive.getRotation().getRadians();
+    double filterPeriod = DriveControlConstants.linearFilterPeriod.get();
+    double filterTimeConstant = DriveControlConstants.linearFilterTimeConstant.get();
+    yawFilterAlpha =
+        filterTimeConstant <= 0.0
+            ? 1.0
+            : MathUtil.clamp(filterPeriod / (filterTimeConstant + filterPeriod), 0.0, 1.0);
+    commandStarted = true;
     Logger.recordOutput(logKey, true);
+    Logger.recordOutput(autoShootRequirementsLogKey + "/IndexerCommandScheduled", false);
+    Logger.recordOutput(autoShootRequirementsLogKey + "/ReadyToShoot", false);
   }
 
   @Override
@@ -77,11 +124,19 @@ public class DriveAimedShoot extends Command {
 
     double currentYawRadians = drive.getRotation().getRadians();
     double targetYawRadians = controls.driveYaw().getRadians();
+    double targetYawDelta = MathUtil.angleModulus(targetYawRadians - lastFilteredYaw);
 
-    Logger.recordOutput(logKey + "/Target Yaw", targetYawRadians);
-    Logger.recordOutput(logKey + "/Current Yaw", currentYawRadians);
+    if (Math.abs(targetYawDelta) > DriveControlConstants.largeAngleJumpThreshold.in(Radians)) {
+      lastFilteredYaw = targetYawRadians;
+    } else {
+      lastFilteredYaw += yawFilterAlpha * targetYawDelta;
+    }
+    double filteredTargetYaw = MathUtil.angleModulus(lastFilteredYaw);
+    Logger.recordOutput("Auto Shoot/Target Yaw", targetYawRadians);
+    Logger.recordOutput("Auto Shoot/Current Yaw", currentYawRadians);
+    Logger.recordOutput("Auto Shoot/Filtered Target Yaw", filteredTargetYaw);
 
-    double omegaCalculated = yawController.calculate(currentYawRadians, targetYawRadians);
+    double omegaCalculated = yawController.calculate(currentYawRadians, filteredTargetYaw);
 
     ChassisSpeeds targetSpeeds =
         DriveUtils.getChassisSpeeds(
@@ -95,11 +150,21 @@ public class DriveAimedShoot extends Command {
     drive.runVelocity(
         ChassisSpeeds.fromFieldRelativeSpeeds(
             targetSpeeds, drive.getRotation().plus(fieldCentricOffset)));
+
+    Logger.recordOutput(
+        autoShootRequirementsLogKey + "/DriveReadyToShoot", yawController.atSetpoint());
+    Logger.recordOutput(
+        autoShootRequirementsLogKey + "/ReadyToShoot",
+        yawController.atSetpoint() && shooter.canShoot());
   }
 
   @Override
   public void end(boolean interrupted) {
-    yawController.close();
+    commandStarted = false;
+    CommandScheduler.getInstance().cancel(indexerCommand);
+    shooter.setPivotHome();
+    Logger.recordOutput(autoShootRequirementsLogKey + "/ReadyToShoot", false);
+    Logger.recordOutput(autoShootRequirementsLogKey + "/IndexerCommandScheduled", false);
     Logger.recordOutput(logKey, false);
   }
 }

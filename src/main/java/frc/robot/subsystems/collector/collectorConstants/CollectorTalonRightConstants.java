@@ -55,7 +55,7 @@ public class CollectorTalonRightConstants extends CollectorModuleConstants {
 
     // Position
     CollectorUpPos = Rotations.of(0);
-    CollectorDownPos = Rotations.of(.2);
+    CollectorDownPos = Rotations.of(.23);
 
     // Collector Intake Speeds
     CollectorIntakeSpeed = RotationsPerSecond.of(8);

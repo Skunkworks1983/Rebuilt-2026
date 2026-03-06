@@ -44,10 +44,10 @@ public class CollectorIntake extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (leftCollector.isCollectorDown()) {
+    if (!leftCollector.isCollectorUp()) {
       rightCollector.setCollectorDutyCycle(0);
       leftCollector.setCollectorVelocity(leftCollector.getConstants().CollectorIntakeSpeed);
-    } else if (rightCollector.isCollectorDown()) {
+    } else if (!rightCollector.isCollectorUp()) {
       leftCollector.setCollectorDutyCycle(0);
       rightCollector.setCollectorVelocity(rightCollector.getConstants().CollectorIntakeSpeed);
     }

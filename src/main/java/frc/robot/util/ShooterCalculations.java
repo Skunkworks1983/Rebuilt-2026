@@ -195,11 +195,22 @@ public class ShooterCalculations {
 
     Rotation2d finalDriveYaw = effectiveLaunchVectorField.getAngle();
 
+    double minPitchRadians = ShooterConstants.minShooterPitch.in(Radians);
+    double maxPitchRadians = ShooterConstants.maxShooterPitch.in(Radians);
+
     double effectiveHorizontalSpeed = effectiveLaunchVectorField.getNorm();
     double ballExitSpeed = Math.hypot(effectiveHorizontalSpeed, launchVelocityZ);
-    double flywheelSurfaceSpeed = ballExitSpeed / ShooterSolverConstants.flywheelEfficiency;
 
     double finalPitch = Math.atan2(launchVelocityZ, effectiveHorizontalSpeed);
+    double unconstrainedPitch = finalPitch;
+    boolean possibleShot = true;
+
+    // if (finalPitch < minPitchRadians || finalPitch > maxPitchRadians) {
+    //   return solveBallExitSpeedForDistanceAndAngle(
+    //       finalPitch, distWithDrag, relativeGoalZ, angleToGoal, shooterVelField);
+    // }
+
+    double flywheelSurfaceSpeed = ballExitSpeed / ShooterSolverConstants.flywheelEfficiency;
 
     // DEBUG LOGGING
     // TODO: Remove/Reduce logging (esp because this can be gotten from log replay)
@@ -216,6 +227,13 @@ public class ShooterCalculations {
     Logger.recordOutput("Shooter/Goal/LeadShiftXY", leadShiftField);
     Logger.recordOutput("Shooter/TargetVector/Real", targetVector);
     Logger.recordOutput("Shooter/TargetVector/Virtual", virtualTargetVector);
+    Logger.recordOutput(
+        "Shooter/ApexConstrained/PitchBeforeClampDeg", Math.toDegrees(unconstrainedPitch));
+    Logger.recordOutput("Shooter/ApexConstrained/PitchAfterClampDeg", Math.toDegrees(finalPitch));
+    Logger.recordOutput(
+        "Shooter/ApexConstrained/PitchWasClamped",
+        unconstrainedPitch < minPitchRadians || unconstrainedPitch > maxPitchRadians);
+    Logger.recordOutput("Shooter/ApexConstrained/PossibleShot", possibleShot);
 
     // Should be ~0
     Translation2d shouldMatchStationary = effectiveLaunchVectorField.plus(robotLinearVelocityField);
@@ -230,6 +248,78 @@ public class ShooterCalculations {
                 * ShooterSolverConstants.lowerFlywheelVelocityMultiplier.get()),
         Radians.of(finalPitch),
         finalDriveYaw,
+        possibleShot);
+  }
+
+  private static ShooterControls solveBallExitSpeedForDistanceAndAngle(
+      double finalPitch,
+      double distWithDrag,
+      double relativeGoalZ,
+      Rotation2d angleToGoal,
+      Translation2d shooterVelField) {
+
+    double constrainedPitchRadians =
+        MathUtil.clamp(
+            finalPitch,
+            ShooterConstants.minShooterPitch.in(Radians),
+            ShooterConstants.maxShooterPitch.in(Radians));
+
+    Translation2d stationaryLaunchVectorField = new Translation2d();
+    Translation2d effectiveLaunchVectorField = new Translation2d();
+    double launchVelocityZ = 0;
+
+    // Binary search over time of flight (t) to find the exact exit speed needed
+    double min_t = 0.1; // 100ms: Very fast, flat shot (lower bound)
+    double max_t = 4.0; // 4 seconds: Very slow, high lofted shot (upper bound)
+    double t = 1.0;
+
+    for (int i = 0; i < 15; i++) { // Increased to 15 for better convergence
+      t = (min_t + max_t) / 2.0;
+
+      // 1. Calculate required field-relative velocities for this time of flight
+      double reqHorizontalSpeed = distWithDrag / t;
+      double reqLaunchZ = (relativeGoalZ + 0.5 * ShooterSolverConstants.gravity * t * t) / t;
+
+      // 2. Create the field-relative launch vector (NOW USING POLAR CONSTRUCTOR)
+      Translation2d testStationaryVectorField = new Translation2d(reqHorizontalSpeed, angleToGoal);
+
+      // 3. Subtract robot velocity to get what the shooter actually needs to do
+      Translation2d testEffectiveLaunchVectorField =
+          testStationaryVectorField.minus(shooterVelField);
+
+      double calcHorizontalSpeed = testEffectiveLaunchVectorField.getNorm();
+      double calcPitch = Math.atan2(reqLaunchZ, calcHorizontalSpeed);
+
+      // 4. Adjust binary search bounds
+      if (calcPitch > constrainedPitchRadians) {
+        max_t = t;
+      } else {
+        min_t = t;
+      }
+
+      // Store values
+      stationaryLaunchVectorField = testStationaryVectorField;
+      effectiveLaunchVectorField = testEffectiveLaunchVectorField;
+      launchVelocityZ = reqLaunchZ;
+    }
+
+    // 5. Apply the converged results
+    double effectiveHorizontalSpeed = effectiveLaunchVectorField.getNorm();
+    finalPitch = constrainedPitchRadians;
+    double ballExitSpeed = Math.hypot(effectiveHorizontalSpeed, launchVelocityZ);
+
+    double flywheelSurfaceSpeed = ballExitSpeed / ShooterSolverConstants.flywheelEfficiency;
+    double flywheelRadPerSec = flywheelSurfaceSpeed / ShooterConstants.flywheelRadius.in(Meters);
+
+    // TODO: Consider adding Logger.recordOutput() here so you don't lose telemetry
+    // when clamped!
+
+    return new ShooterControls(
+        RadiansPerSecond.of(flywheelRadPerSec),
+        RadiansPerSecond.of(
+            flywheelRadPerSec * ShooterSolverConstants.lowerFlywheelVelocityMultiplier.get()),
+        Radians.of(finalPitch),
+        effectiveLaunchVectorField.getAngle(),
         true);
   }
 
@@ -478,8 +568,10 @@ public class ShooterCalculations {
     double flywheelRadPerSec = flywheelSurfaceSpeed / ShooterConstants.flywheelRadius.in(Meters);
 
     return new ShooterControls(
-        RadiansPerSecond.of(flywheelRadPerSec),
-        RadiansPerSecond.of(flywheelRadPerSec),
+        RadiansPerSecond.of(flywheelRadPerSec / ShooterSolverConstants.flywheelEfficiency),
+        RadiansPerSecond.of(
+            (flywheelRadPerSec / ShooterSolverConstants.flywheelEfficiency)
+                * ShooterSolverConstants.lowerFlywheelVelocityMultiplier.get()),
         Radians.of(hoodAngle.getRadians()),
         driveYaw,
         true);

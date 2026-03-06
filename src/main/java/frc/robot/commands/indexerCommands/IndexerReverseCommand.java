@@ -6,21 +6,14 @@ package frc.robot.commands.indexerCommands;
 
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
-import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.IndexerConstants;
-import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
 
 /** Command that runs the indexer */
 public class IndexerReverseCommand extends Command {
   Indexer indexer;
-
-  private LoggedTunableNumber indexerAngularVelocity =
-      new LoggedTunableNumber(
-          "Indexer/AngularVelocity [Rot/s]",
-          IndexerConstants.indexerAngularVelocity.in(Units.RotationsPerSecond));
 
   public IndexerReverseCommand(Indexer indexer) {
     this.indexer = indexer;
@@ -29,7 +22,8 @@ public class IndexerReverseCommand extends Command {
 
   @Override
   public void initialize() {
-    indexer.setIndexerVelocity(RotationsPerSecond.of(indexerAngularVelocity.get() * -1));
+    indexer.setIndexerVelocity(
+        RotationsPerSecond.of(-IndexerConstants.indexerAngularVelocityRotationsPerSecond.get()));
     Logger.recordOutput("Index/Reverse Command is Running", true);
   }
 
