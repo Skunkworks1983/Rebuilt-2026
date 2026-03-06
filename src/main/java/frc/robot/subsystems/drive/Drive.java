@@ -17,7 +17,10 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.pathfinding.Pathfinding;
+import com.pathplanner.lib.util.DriveFeedforwards;
 import com.pathplanner.lib.util.PathPlannerLogging;
+import com.pathplanner.lib.util.swerve.SwerveSetpoint;
+import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
@@ -34,6 +37,8 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -85,9 +90,10 @@ public class Drive extends SubsystemBase implements VisionConsumer {
                   tunerConstants.getBackRight().LocationY)));
 
   // PathPlanner config constants
-  private static final double ROBOT_MASS_KG = 74.088;
+  private static final double ROBOT_MASS_KG = 74.088; // With bumpers and battery
   private static final double ROBOT_MOI = 6.883;
   private static final double WHEEL_COF = 1.2;
+  private static final AngularVelocity MAX_MODULE_OMEGA_RAD_PER_SEC = RadiansPerSecond.of(18.0);
   private static final RobotConfig PP_CONFIG =
       new RobotConfig(
           ROBOT_MASS_KG,
@@ -101,6 +107,9 @@ public class Drive extends SubsystemBase implements VisionConsumer {
               tunerConstants.getFrontLeft().SlipCurrent,
               1),
           getModuleTranslations());
+  private final SwerveSetpointGenerator setpointGenerator =
+      new SwerveSetpointGenerator(PP_CONFIG, MAX_MODULE_OMEGA_RAD_PER_SEC);
+  private SwerveSetpoint previousSetpoint;
 
   static final Lock odometryLock = new ReentrantLock();
   private final GyroIO gyroIO;
@@ -202,6 +211,11 @@ public class Drive extends SubsystemBase implements VisionConsumer {
                 (state) -> Logger.recordOutput("Drive/SysIdState", state.toString())),
             new SysIdRoutine.Mechanism(
                 (voltage) -> runCharacterization(voltage.in(Volts)), null, this));
+    ChassisSpeeds currentSpeeds = getChassisSpeeds();
+    SwerveModuleState[] currentStates = getModuleStates();
+    previousSetpoint =
+        new SwerveSetpoint(
+            currentSpeeds, currentStates, DriveFeedforwards.zeros(PP_CONFIG.numModules));
   }
 
   @Override
@@ -347,7 +361,7 @@ public class Drive extends SubsystemBase implements VisionConsumer {
 
   /** Returns the measured chassis speeds of the robot. */
   @AutoLogOutput(key = "SwerveChassisSpeeds/Measured")
-  private ChassisSpeeds getChassisSpeeds() {
+  public ChassisSpeeds getChassisSpeeds() {
     return kinematics.toChassisSpeeds(getModuleStates());
   }
 
@@ -425,5 +439,13 @@ public class Drive extends SubsystemBase implements VisionConsumer {
 
   public void setResetVisionIMUCallback(Consumer<Pose2d> resetIMUCallback) {
     resetLimelightIMUCallback = resetIMUCallback;
+  }
+
+  public AngularVelocity getAngularVelocity() {
+    return RadiansPerSecond.of(gyroInputs.yawVelocityRadPerSec);
+  }
+
+  public LinearVelocity getDirection() {
+    return MetersPerSecond.of(getChassisSpeeds().vyMetersPerSecond);
   }
 }

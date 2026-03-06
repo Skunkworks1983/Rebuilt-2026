@@ -35,7 +35,7 @@ public class TunerConstantsSwervles implements TunerConstants {
   // When using closed-loop control, the drive motor uses the control
   // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
   private static final Slot0Configs driveGains =
-      new Slot0Configs().withKP(0.1).withKI(0).withKD(0).withKS(0).withKV(0.124);
+      new Slot0Configs().withKP(0.5498).withKI(0).withKD(0).withKS(0.12277).withKV(0.74139);
 
   // The closed-loop output type to use for the steer motors;
   // This affects the PID/FF gains for the steer motors
@@ -79,11 +79,11 @@ public class TunerConstantsSwervles implements TunerConstants {
 
   // CAN bus that the devices are located on;
   // All swerve devices must share the same CAN bus
-  public static final CANBus kCANBus = new CANBus("Drivebase 2025", "./logs/example.hoot");
+  public static final CANBus kCANBus = new CANBus("drivebase_2026", "./logs/example.hoot");
 
   // Theoretical free speed (m/s) at 12 V applied output;
   // This needs to be tuned to your individual robot
-  public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(3.048);
+  public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(5);
 
   // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;
   // This may need to be tuned to your individual robot
