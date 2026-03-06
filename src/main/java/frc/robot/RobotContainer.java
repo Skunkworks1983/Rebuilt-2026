@@ -29,6 +29,7 @@ import frc.robot.commands.Shooter.NoYawShootHub;
 import frc.robot.commands.Shooter.ShootPresetSetpoints;
 import frc.robot.commands.Shooter.ShootPresetSetpoints.TargetType;
 import frc.robot.commands.TestPathCommands;
+import frc.robot.commands.collectorCommands.AutomaticStateChange;
 import frc.robot.commands.collectorCommands.BothCollectorsUpState;
 import frc.robot.commands.collectorCommands.CollectorExpel;
 import frc.robot.commands.collectorCommands.CollectorIntake;
@@ -343,8 +344,7 @@ public class RobotContainer {
     JoystickButton autoModeSwitch =
         new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorAutoModeID);
 
-    // autoModeSwitch.whileTrue(new AutomaticStateChange(collector,
-    // drive::getDirection));
+    autoModeSwitch.whileTrue(new AutomaticStateChange(collector, drive::getDirection));
 
     manualModeSwitch
         .negate()
