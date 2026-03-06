@@ -161,6 +161,11 @@ public class CollectorModule {
     collectorIO.setCollectorVelocity(velocity);
   }
 
+  /** sets Just the encoder pos */
+  public void setCollectorEncoderPos(Angle angle) {
+    collectorIO.setCollectorEncoderPos(angle);
+  }
+
   /**
    * Sets the collectors position
    *

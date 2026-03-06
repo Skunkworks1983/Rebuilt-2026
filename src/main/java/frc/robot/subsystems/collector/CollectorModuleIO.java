@@ -77,6 +77,9 @@ public interface CollectorModuleIO {
    */
   public default void setCollectorVelocity(AngularVelocity velocity) {}
 
+  /** sets Just the encoder pos */
+  public default void setCollectorEncoderPos(Angle angle) {}
+
   /**
    * Sets the collectors position
    *

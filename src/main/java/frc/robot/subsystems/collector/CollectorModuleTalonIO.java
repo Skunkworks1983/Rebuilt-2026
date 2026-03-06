@@ -223,13 +223,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     // Update sensor inputs
     inputs.upperTriggered = !upperLimitSwitch.get();
     inputs.lowerTriggered = !lowerLimitSwitch.get();
-    if (!upperLimitSwitch.get()
-        || turnMotor
-            .getPosition()
-            .getValue()
-            .lte(constants.CollectorUpPos.plus(constants.CollectorPosTolerance))) {
-      turnMotor.setPosition(Rotations.of(0));
-    }
+
     // up and down
     inputs.isUp =
         !upperLimitSwitch.get()
@@ -268,6 +262,11 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
           new VelocityVoltage(RotationsPerSecond.of(collectorIntakeVelocity.get())));
       lastVelocity = velocity;
     }
+  }
+
+  /** sets Just the encoder pos */
+  public void setCollectorEncoderPos(Angle angle) {
+    turnMotor.setPosition(angle);
   }
 
   /**
