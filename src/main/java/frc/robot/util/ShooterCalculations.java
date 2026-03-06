@@ -154,7 +154,7 @@ public class ShooterCalculations {
     double distWithDrag = trueDistance * dragMultiplier;
     Logger.recordOutput("Auto Shoot/True Distance", trueDistance);
     double relativeGoalZ = goal.getZ() - ShooterConstants.shooterInitalPosition.getZ();
-    double currentClearance = ShooterSolverConstants.hubHeightClearance.in(Meters);
+    double currentClearance = ShooterSolverConstants.hubHeightClearance.get();
     if (distWithDrag < ShooterSolverConstants.closeShotDistance.in(Meters)) {
       // 1. Force a minimum horizontal distance so the pitch leans forward into the
       // goal.
@@ -222,8 +222,9 @@ public class ShooterCalculations {
     double effectiveHorizontalSpeed = effectiveLaunchVectorField.getNorm();
     double ballExitSpeed = Math.hypot(effectiveHorizontalSpeed, launchVelocityZ);
 
-    double finalPitch = Math.atan2(launchVelocityZ, effectiveHorizontalSpeed);
-    double unconstrainedPitch = finalPitch;
+    double unconstrainedPitch = Math.atan2(launchVelocityZ, effectiveHorizontalSpeed);
+
+    double finalPitch = MathUtil.clamp(unconstrainedPitch, minPitchRadians, maxPitchRadians);
     boolean possibleShot = true;
 
     // if (finalPitch < minPitchRadians || finalPitch > maxPitchRadians) {
@@ -331,9 +332,6 @@ public class ShooterCalculations {
 
     double flywheelSurfaceSpeed = ballExitSpeed / ShooterSolverConstants.flywheelEfficiency.get();
     double flywheelRadPerSec = flywheelSurfaceSpeed / ShooterConstants.flywheelRadius.in(Meters);
-
-    // TODO: Consider adding Logger.recordOutput() here so you don't lose telemetry
-    // when clamped!
 
     return new ShooterControls(
         RadiansPerSecond.of(flywheelRadPerSec),
@@ -468,11 +466,12 @@ public class ShooterCalculations {
       Angle lowArc = Radians.of(0.5 * twoTheta);
       Angle highArc = Radians.of(Math.toRadians(90)).minus(lowArc);
 
-      if (isValidPitch(lowArc)) {
-        calculatedPitch = lowArc;
-      } else if (isValidPitch(highArc)) {
-        calculatedPitch = highArc;
-      }
+      calculatedPitch = lowArc;
+      // if (isValidPitch(lowArc)) {
+      //   calculatedPitch = lowArc;
+      // } else if (isValidPitch(highArc)) {
+      //   calculatedPitch = highArc;
+      // }
     }
 
     // Attempt 2: Solve for required PROJECTILE VELOCITY given midpoint pitch

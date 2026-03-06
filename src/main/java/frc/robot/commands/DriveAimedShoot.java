@@ -1,9 +1,10 @@
 package frc.robot.commands;
 
-import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -29,7 +30,7 @@ public class DriveAimedShoot extends Command {
   private final DoubleSupplier xSupplier;
   private final DoubleSupplier ySupplier;
   private final DoubleSupplier rotationSupplier;
-  private PIDController yawController;
+  private ProfiledPIDController yawController;
   // private TrapezoidProfile profile;
   private final TargetType targetType;
   private final String logKey;
@@ -66,10 +67,13 @@ public class DriveAimedShoot extends Command {
     // DriveControlConstants.YAW_MAX_ACCELERATION.get()));
 
     yawController =
-        new PIDController(
+        new ProfiledPIDController(
             DriveControlConstants.YAW_CONTROL_KP.get(),
             0.0,
-            DriveControlConstants.YAW_CONTROL_KD.get());
+            DriveControlConstants.YAW_CONTROL_KD.get(),
+            new Constraints(
+                DriveControlConstants.YAW_MAX_VELOCITY.get(),
+                DriveControlConstants.YAW_MAX_ACCELERATION.get()));
     yawController.enableContinuousInput(-Math.PI, Math.PI);
     yawController.setTolerance(DriveControlConstants.YAW_SETPOINT_TOLERANCE_RADIANS.get());
 
@@ -84,10 +88,13 @@ public class DriveAimedShoot extends Command {
   @Override
   public void initialize() {
     yawController =
-        new PIDController(
+        new ProfiledPIDController(
             DriveControlConstants.YAW_CONTROL_KP.get(),
             0.0,
-            DriveControlConstants.YAW_CONTROL_KD.get());
+            DriveControlConstants.YAW_CONTROL_KD.get(),
+            new Constraints(
+                DriveControlConstants.YAW_MAX_VELOCITY.get(),
+                DriveControlConstants.YAW_MAX_ACCELERATION.get()));
     yawController.enableContinuousInput(-Math.PI, Math.PI);
     yawController.setTolerance(DriveControlConstants.YAW_SETPOINT_TOLERANCE_RADIANS.get());
 
@@ -106,6 +113,7 @@ public class DriveAimedShoot extends Command {
     Logger.recordOutput(logKey, true);
     // Logger.recordOutput(autoShootRequirementsLogKey + "/IndexerCommandScheduled", false);
     Logger.recordOutput(autoShootRequirementsLogKey + "/ReadyToShoot", false);
+    yawController.reset(drive.getRotation().getRadians());
   }
 
   @Override

@@ -92,7 +92,7 @@ public class ShooterConstants {
   public static final InvertedValue flywheelMotorInverted = InvertedValue.CounterClockwise_Positive;
 
   /** Minimum physical pitch angle of the shooter. */
-  public static final Angle minShooterPitch = Degrees.of(60);
+  public static final Angle minShooterPitch = Degrees.of(55);
 
   /** Maximum physical pitch angle of the shooter. */
   public static final Angle maxShooterPitch = Degrees.of(84);
@@ -134,8 +134,8 @@ public class ShooterConstants {
   public static final Angle pivotPositionTolerence = Degrees.of(4);
 
   // PID for pivot
-  public static final double pivotkP = 160; // TODO: SET VALUES
-  public static final double pivotkD = 0;
+  public static final double pivotkP = 100; // TODO: SET VALUES
+  public static final double pivotkD = 1;
 
   // Feedforwards for pivot
   public static final double pivotkS = 1;
@@ -179,5 +179,5 @@ public class ShooterConstants {
   public static final AngularVelocity pivotMaxVelocity = RotationsPerSecond.of(55);
 
   public static final AngularAcceleration pivotMaxAcceleration =
-      RotationsPerSecondPerSecond.of(150);
+      RotationsPerSecondPerSecond.of(180);
 }
