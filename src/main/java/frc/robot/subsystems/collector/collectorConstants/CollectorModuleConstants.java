@@ -60,9 +60,9 @@ public class CollectorModuleConstants {
   public double turnkV;
   public double turnkA;
 
-  // Max Velocity and Acceleration
-  public AngularVelocity pivotMaxVelocity;
-  public AngularAcceleration pivotMaxAcceleration;
+  // Motion Magic constraints
+  public AngularVelocity motionMagicCruiseVelocity;
+  public AngularAcceleration motionMagicAcceleration;
 
   // Position
   public Angle CollectorUpPos;
@@ -119,9 +119,9 @@ public class CollectorModuleConstants {
     turnkV = 0.12;
     turnkA = 0.01;
 
-    // Max Velocity and Acceleration
-    pivotMaxVelocity = RotationsPerSecond.of(1.7);
-    pivotMaxAcceleration = RotationsPerSecondPerSecond.of(14);
+    // Motion Magic constraints
+    motionMagicCruiseVelocity = RotationsPerSecond.of(1.7);
+    motionMagicAcceleration = RotationsPerSecondPerSecond.of(14);
 
     // Position
     CollectorUpPos = Degrees.of(0);

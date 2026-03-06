@@ -5,8 +5,8 @@
 package frc.robot.subsystems.collector;
 
 import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
 import static frc.robot.util.PhoenixUtil.tryUntilOk;
 
 import com.ctre.phoenix6.BaseStatusSignal;
@@ -68,6 +68,8 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
   private final StatusSignal<Current> intakeCurrent;
   private final LoggedTunableNumber collectorIntakeVelocity;
 
+  // private final Trigger upperLimitTrigger;
+
   // Connection debouncers
   private final Debouncer driveConnectedDebounce =
       new Debouncer(0.5, Debouncer.DebounceType.kFalling);
@@ -127,14 +129,12 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     turnSlot0Configs.kV = constants.turnkV;
     turnSlot0Configs.kA = constants.turnkA;
 
-    turnConfig.HardwareLimitSwitch.ForwardLimitAutosetPositionEnable = true;
-    turnConfig.HardwareLimitSwitch.ForwardLimitAutosetPositionValue =
-        constants.CollectorUpPos.in(Rotations);
-
     // Motion Magic Configs for Turn Motor
     var turnMotionMagicConfig = turnConfig.MotionMagic;
-    turnMotionMagicConfig.MotionMagicCruiseVelocity = .1;
-    turnMotionMagicConfig.MotionMagicAcceleration = .1;
+    turnMotionMagicConfig.MotionMagicCruiseVelocity =
+        constants.motionMagicCruiseVelocity.in(RotationsPerSecond);
+    turnMotionMagicConfig.MotionMagicAcceleration =
+        constants.motionMagicAcceleration.in(RotationsPerSecondPerSecond);
 
     // Applying Turn Motor Configs
     tryUntilOk(5, () -> turnMotor.getConfigurator().apply(turnConfig, 0.25));
@@ -187,6 +187,10 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
         turnCurrent,
         turnError);
     ParentDevice.optimizeBusUtilizationForAll(turnMotor, intakeMotor);
+
+    // upperLimitTrigger = new Trigger(upperLimitSwitch::get);
+    // False because inverted switch
+    // upperLimitTrigger.onFalse(new InstantCommand(() -> turnMotor.setPosition(Degrees.of(0))));
   }
 
   @Override
@@ -315,7 +319,6 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
    * @return whether or not collector is up
    */
   public boolean isCollectorUp() {
-
     return !upperLimitSwitch.get()
         || turnMotor
             .getPosition()
