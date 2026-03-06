@@ -149,7 +149,7 @@ public class ShooterCalculations {
     double trueDistance = targetVector.getNorm();
 
     // Simple drag approximation
-    double dragMultiplier = 1.0 + (ShooterSolverConstants.drag * trueDistance);
+    double dragMultiplier = 1.0 + (ShooterSolverConstants.drag.get() * trueDistance);
     dragMultiplier = MathUtil.clamp(dragMultiplier, 1.0, ShooterSolverConstants.maxDragMultiplier);
     double distWithDrag = trueDistance * dragMultiplier;
     Logger.recordOutput("Auto Shoot/True Distance", trueDistance);
@@ -231,7 +231,7 @@ public class ShooterCalculations {
     // finalPitch, distWithDrag, relativeGoalZ, angleToGoal, shooterVelField);
     // }
 
-    double flywheelSurfaceSpeed = ballExitSpeed / ShooterSolverConstants.flywheelEfficiency;
+    double flywheelSurfaceSpeed = ballExitSpeed / ShooterSolverConstants.flywheelEfficiency.get();
 
     // DEBUG LOGGING
     // TODO: Remove/Reduce logging (esp because this can be gotten from log replay)
@@ -329,7 +329,7 @@ public class ShooterCalculations {
     finalPitch = constrainedPitchRadians;
     double ballExitSpeed = Math.hypot(effectiveHorizontalSpeed, launchVelocityZ);
 
-    double flywheelSurfaceSpeed = ballExitSpeed / ShooterSolverConstants.flywheelEfficiency;
+    double flywheelSurfaceSpeed = ballExitSpeed / ShooterSolverConstants.flywheelEfficiency.get();
     double flywheelRadPerSec = flywheelSurfaceSpeed / ShooterConstants.flywheelRadius.in(Meters);
 
     // TODO: Consider adding Logger.recordOutput() here so you don't lose telemetry
@@ -439,12 +439,17 @@ public class ShooterCalculations {
     // PART 2: BALLISTIC SOLVER
     double distanceToTargetMeters = distanceToTarget.in(Meters);
 
+    // Simple drag approximation
+    double dragMultiplier = 1.0 + (ShooterSolverConstants.drag.get() * distanceToTargetMeters);
+    dragMultiplier = MathUtil.clamp(dragMultiplier, 1.0, ShooterSolverConstants.maxDragMultiplier);
+    distanceToTargetMeters = distanceToTargetMeters * dragMultiplier;
+
     // Raw flywheel surface speed
     double currentFlywheelLinearVelocity = flywheelLinearVelocity.in(MetersPerSecond);
 
     // Effective projectile launch speed after efficiency losses
     double currentProjectileVelocity =
-        currentFlywheelLinearVelocity * ShooterSolverConstants.flywheelEfficiency;
+        currentFlywheelLinearVelocity * ShooterSolverConstants.flywheelEfficiency.get();
 
     Angle calculatedPitch = null;
 
@@ -492,7 +497,7 @@ public class ShooterCalculations {
     // Convert solved projectile velocity back into required flywheel surface
     // velocity
     double calculatedFlywheelVelocity =
-        calculatedProjectileVelocity / ShooterSolverConstants.flywheelEfficiency;
+        calculatedProjectileVelocity / ShooterSolverConstants.flywheelEfficiency.get();
 
     return new ShooterControls(
         RadiansPerSecond.of(
@@ -582,9 +587,9 @@ public class ShooterCalculations {
     double flywheelRadPerSec = flywheelSurfaceSpeed / ShooterConstants.flywheelRadius.in(Meters);
 
     return new ShooterControls(
-        RadiansPerSecond.of(flywheelRadPerSec / ShooterSolverConstants.flywheelEfficiency),
+        RadiansPerSecond.of(flywheelRadPerSec / ShooterSolverConstants.flywheelEfficiency.get()),
         RadiansPerSecond.of(
-            (flywheelRadPerSec / ShooterSolverConstants.flywheelEfficiency)
+            (flywheelRadPerSec / ShooterSolverConstants.flywheelEfficiency.get())
                 * ShooterSolverConstants.lowerFlywheelVelocityMultiplier.get()),
         Radians.of(hoodAngle.getRadians()),
         driveYaw,
