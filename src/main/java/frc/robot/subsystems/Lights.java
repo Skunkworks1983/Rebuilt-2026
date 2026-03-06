@@ -7,22 +7,29 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.DigitalOutput;
 
 /** Add your docs here. */
-public class lights {
+public class Lights {
 
   DigitalOutput led0;
   DigitalOutput led1;
   DigitalOutput led2;
 
-  public lights() {
+  LightPattern currentLight = LightPattern.None;
+
+  public Lights() {
     led0 = new DigitalOutput(0);
     led1 = new DigitalOutput(0);
     led2 = new DigitalOutput(0);
   }
 
-  public void setLight(int pattern) {
-    led0.set((pattern & 1) > 0);
-    led1.set((pattern & 2) > 0);
-    led2.set((pattern & 4) > 0);
+  public void setLight(LightPattern pattern) {
+    currentLight = pattern;
+    led0.set((pattern.getValue() & 1) > 0);
+    led1.set((pattern.getValue() & 2) > 0);
+    led2.set((pattern.getValue() & 4) > 0);
+  }
+
+  public LightPattern getPattern() {
+    return currentLight;
   }
 
   public enum LightPattern {

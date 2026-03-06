@@ -38,6 +38,7 @@ import frc.robot.commands.collectorCommands.LeftCollectorDownState;
 import frc.robot.commands.collectorCommands.RightCollectorDownState;
 import frc.robot.commands.indexerCommands.IndexerAutoUnjam;
 import frc.robot.commands.indexerCommands.IndexerReverseCommand;
+import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.collector.Collector;
 import frc.robot.subsystems.collector.CollectorModuleSimIO;
 import frc.robot.subsystems.collector.CollectorModuleTalonIO;
@@ -88,6 +89,7 @@ public class RobotContainer {
   private final Shooter shooter;
   private final Indexer indexer;
   private final Collector collector;
+  private final Lights lights;
 
   // Controller
   private final Joystick leftJoystick;
@@ -114,6 +116,8 @@ public class RobotContainer {
     leftJoystick = new Joystick(Constants.OIConstants.LeftJoystick);
     rightJoystick = new Joystick(Constants.OIConstants.RightJoystick);
     buttonJoystick = new Joystick(Constants.OIConstants.ButtonJoystick);
+
+    lights = new Lights();
 
     switch (Constants.currentMode) {
       case REAL:
@@ -411,6 +415,10 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     return autoChooser.get();
+  }
+
+  public Lights getLights() {
+    return lights;
   }
 
   /**

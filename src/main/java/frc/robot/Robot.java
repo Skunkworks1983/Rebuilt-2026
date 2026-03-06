@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.Mode;
+import frc.robot.subsystems.Lights;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.seasonspecific.rebuilt2026.Arena2026Rebuilt;
 import org.littletonrobotics.junction.LogFileUtil;
@@ -86,6 +87,8 @@ public class Robot extends LoggedRobot {
     robotContainer = new RobotContainer();
   }
 
+  int counter = 0;
+
   /** This function is called periodically during all modes. */
   @Override
   public void robotPeriodic() {
@@ -102,6 +105,18 @@ public class Robot extends LoggedRobot {
 
     // Return to non-RT thread priority (do not modify the first argument)
     // Threads.setCurrentThreadPriority(false, 10);
+
+    counter++;
+
+    if (counter > 4) {
+      if (robotContainer.getLights().getPattern() == Lights.LightPattern.Pattern7
+          || robotContainer.getLights().getPattern() == Lights.LightPattern.None) {
+        robotContainer.getLights().setLight(Lights.LightPattern.Pattern6);
+      } else if (robotContainer.getLights().getPattern() == Lights.LightPattern.Pattern6) {
+        robotContainer.getLights().setLight(Lights.LightPattern.Pattern7);
+      }
+      counter = 0;
+    }
   }
 
   /** This function is called once when the robot is disabled. */
