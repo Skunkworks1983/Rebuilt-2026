@@ -394,7 +394,7 @@ public class Shooter extends SubsystemBase {
     setManualAngle(ShooterConstants.pivotStartAngle);
   }
 
-  public boolean isPivotHomed(){
+  public boolean isPivotHomed() {
     return pivotInputs.pivotPosition.gte(Degrees.of(79.5));
   }
 }
