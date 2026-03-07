@@ -6,6 +6,7 @@ package frc.robot.subsystems.collector.collectorConstants;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
@@ -64,7 +65,7 @@ public class CollectorTalonLeftConstants extends CollectorModuleConstants {
     CollectorDownPos = Radians.of(1.65);
 
     // Collector Intake Speeds
-    CollectorIntakeSpeed = RotationsPerSecond.of(35);
+    CollectorIntakeSpeed = RadiansPerSecond.of(40);
 
     // Limit Switch Constants
     UpperLimitChannel = 6;
