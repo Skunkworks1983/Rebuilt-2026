@@ -25,12 +25,14 @@ public class ManualCollectorDown extends Command {
           .getLeftCollector()
           .setCollectorPivotDutyCycle(
               collector.getLeftCollector().getConstants().CollectorPivotVelocity);
+      collector.getRightCollector().setCollectorPos(collector.getRightCollector().getConstants().CollectorUpPos);
     }
     if (!collector.getRightCollector().isCollectorUp()) {
       collector
           .getRightCollector()
           .setCollectorPivotDutyCycle(
               collector.getRightCollector().getConstants().CollectorPivotVelocity);
+      collector.getLeftCollector().setCollectorPos(collector.getLeftCollector().getConstants().CollectorUpPos);
     }
   }
 
