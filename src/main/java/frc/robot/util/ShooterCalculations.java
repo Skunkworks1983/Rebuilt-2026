@@ -167,7 +167,6 @@ public class ShooterCalculations {
           closeShotAngle,
           currentRobotRotation,
           true);
-
     }
     // Simple drag approximation
     double dragMultiplier = 1.0 + (ShooterSolverConstants.drag.get() * trueDistance);
@@ -427,57 +426,28 @@ public class ShooterCalculations {
     // Effective projectile launch speed after efficiency losses
     double currentProjectileVelocity = currentFlywheelLinearVelocity * ShooterSolverConstants.flywheelEfficiency.get();
 
-    Angle calculatedPitch = null;
+    Angle calculatedPitch = ShooterConstants.minShooterPitch;
 
     // This variable stores PROJECTILE velocity through the solve,
     // then gets converted back to flywheel velocity at the end.
     double calculatedProjectileVelocity = currentProjectileVelocity;
 
-    // Attempt 1: Solve for Shooter Pitch given CURRENT PROJECTILE VELOCITY
-    double projectileVelocitySquared = currentProjectileVelocity * currentProjectileVelocity;
-    double sinArgument = (ShooterSolverConstants.gravity * distanceToTargetMeters) / projectileVelocitySquared;
+    double sinTwoTheta = Math.sin(2.0 * ShooterConstants.minShooterPitch.in(Radians));
 
-    if (Math.abs(sinArgument) <= 1.0) {
-      double twoTheta = Math.asin(sinArgument);
-
-      Angle lowArc = Radians.of(0.5 * twoTheta);
-      Angle highArc = Radians.of(Math.toRadians(90)).minus(lowArc);
-
-      calculatedPitch = lowArc;
+    if (Math.abs(sinTwoTheta) > 1e-6) {
+      double requiredProjectileVelocity = Math
+          .sqrt((ShooterSolverConstants.gravity * distanceToTargetMeters) / sinTwoTheta);
+      calculatedProjectileVelocity = requiredProjectileVelocity;
+    } else {
+      calculatedProjectileVelocity = ShooterConstants.defaultVelocityTransfer.in(RadiansPerSecond);
     }
 
-    // Attempt 2: Solve for required PROJECTILE VELOCITY given midpoint pitch
-    if (calculatedPitch == null) {
-      double minRad = ShooterConstants.minShooterPitch.in(Radians);
-      double maxRad = ShooterConstants.maxShooterPitch.in(Radians);
-      Angle midpointPitch = Radians.of((minRad + maxRad) / 2.0);
+  // Convert solved projectile velocity back into required flywheel surface
+  // velocity
+  double calculatedFlywheelVelocity =
+        calculatedProjectileVelocity / ShooterSolverConstants.flywheelEfficiency.get();
 
-      double sinTwoTheta = Math.sin(2.0 * midpointPitch.in(Radians));
-
-      if (Math.abs(sinTwoTheta) > 1e-6) {
-        double requiredProjectileVelocity = Math
-            .sqrt((ShooterSolverConstants.gravity * distanceToTargetMeters) / sinTwoTheta);
-        calculatedProjectileVelocity = requiredProjectileVelocity;
-        calculatedPitch = midpointPitch;
-      } else {
-        calculatedProjectileVelocity = 0.0;
-        calculatedPitch = midpointPitch;
-      }
-    }
-
-    // Convert solved projectile velocity back into required flywheel surface
-    // velocity
-    double calculatedFlywheelVelocity = calculatedProjectileVelocity / ShooterSolverConstants.flywheelEfficiency.get();
-
-    return new ShooterControls(
-        RadiansPerSecond.of(
-            calculatedFlywheelVelocity / ShooterConstants.flywheelRadius.in(Meters)),
-        RadiansPerSecond.of(
-            (calculatedFlywheelVelocity / ShooterConstants.flywheelRadius.in(Meters))
-                * ShooterSolverConstants.lowerFlywheelVelocityMultiplier.get()),
-        calculatedPitch,
-        finalYaw,
-        true);
+  return new ShooterControls(RadiansPerSecond.of(calculatedFlywheelVelocity/ShooterConstants.flywheelRadius.in(Meters)),RadiansPerSecond.of((calculatedFlywheelVelocity/ShooterConstants.flywheelRadius.in(Meters))*ShooterSolverConstants.lowerFlywheelVelocityMultiplier.get()),calculatedPitch,finalYaw,true);
   }
 
   /**
@@ -494,37 +464,41 @@ public class ShooterCalculations {
   public static ShooterControls getInterpolatedShooterControls(
       Pose2d odometryPose, ChassisSpeeds robotRelativeSpeeds) {
 
-    Translation3d goal = DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red
-        ? FieldConstants.redGoal
-        : FieldConstants.blueGoal;
+    Translation3d goal =
+        DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red
+            ? FieldConstants.redGoal
+            : FieldConstants.blueGoal;
 
     // 1) Phase delay pose prediction
     double phaseDelaySec = ShooterSolverConstants.defaultShotLatencySec;
-    Pose2d releasePose = odometryPose.exp(
-        new Twist2d(
-            robotRelativeSpeeds.vxMetersPerSecond * phaseDelaySec,
-            robotRelativeSpeeds.vyMetersPerSecond * phaseDelaySec,
-            robotRelativeSpeeds.omegaRadiansPerSecond * phaseDelaySec));
+    Pose2d releasePose =
+        odometryPose.exp(
+            new Twist2d(
+                robotRelativeSpeeds.vxMetersPerSecond * phaseDelaySec,
+                robotRelativeSpeeds.vyMetersPerSecond * phaseDelaySec,
+                robotRelativeSpeeds.omegaRadiansPerSecond * phaseDelaySec));
 
     // 2) Shooter position in field frame (robot center + shooter offset rotated
     // into field)
-    Translation2d shooterOffsetField = ShooterConstants.shooterInitalPosition
-        .getTranslation()
-        .toTranslation2d()
-        .rotateBy(releasePose.getRotation());
+    Translation2d shooterOffsetField =
+        ShooterConstants.shooterInitalPosition
+            .getTranslation()
+            .toTranslation2d()
+            .rotateBy(releasePose.getRotation());
 
     Translation2d releaseShooterPosField = releasePose.getTranslation().plus(shooterOffsetField);
     Translation2d targetField = goal.toTranslation2d();
 
     // 3) Field-relative velocity (for lookahead)
-    Translation2d chassisVelField = new Translation2d(
-        robotRelativeSpeeds.vxMetersPerSecond, robotRelativeSpeeds.vyMetersPerSecond)
-        .rotateBy(releasePose.getRotation());
+    Translation2d chassisVelField =
+        new Translation2d(
+                robotRelativeSpeeds.vxMetersPerSecond, robotRelativeSpeeds.vyMetersPerSecond)
+            .rotateBy(releasePose.getRotation());
 
     // include tangential velocity from omega. .
     double omega = robotRelativeSpeeds.omegaRadiansPerSecond;
-    Translation2d tangentialVelField = new Translation2d(-omega * shooterOffsetField.getY(),
-        omega * shooterOffsetField.getX());
+    Translation2d tangentialVelField =
+        new Translation2d(-omega * shooterOffsetField.getY(), omega * shooterOffsetField.getX());
 
     Translation2d shooterVelField = chassisVelField.plus(tangentialVelField);
 
