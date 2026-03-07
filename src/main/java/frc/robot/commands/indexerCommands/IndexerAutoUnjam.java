@@ -46,7 +46,7 @@ public class IndexerAutoUnjam extends Command {
   public void execute() {
     switch (state) {
       case FEED:
-        if (beamBroken.getAsBoolean()) {
+        if (!beamBroken.getAsBoolean()) {
           timer.restart();
         } else if (timer.hasElapsed(IndexerConstants.autoUnjamNoBeamBreakTimeoutSeconds.get())) {
           setState(AutoUnjamState.REVERSE);
