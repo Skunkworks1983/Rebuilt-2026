@@ -20,6 +20,7 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants;
 import frc.robot.Constants.Mode;
+import frc.robot.subsystems.shooter.ShooterConstants.FlywheelLevel;
 
 public class FlywheelIOTalonFX implements FlywheelIO {
   protected final TalonFX flywheelMotor; // Protected for the sim
@@ -41,7 +42,7 @@ public class FlywheelIOTalonFX implements FlywheelIO {
    *
    * @param flywheelCanID This is primarily used to differentiate the two flywheels in logging
    */
-  public FlywheelIOTalonFX(int flywheelCanID) {
+  public FlywheelIOTalonFX(int flywheelCanID, FlywheelLevel level) {
     flywheelMotor = new TalonFX(flywheelCanID, ShooterConstants.shooterCan);
 
     TalonFXConfiguration flywheelConfig = new TalonFXConfiguration();
@@ -53,13 +54,23 @@ public class FlywheelIOTalonFX implements FlywheelIO {
 
     flywheelConfig.ClosedLoopGeneral.ContinuousWrap = true;
 
-    flywheelConfig.Slot0.kP = ShooterConstants.upperFlywheelKP;
-    flywheelConfig.Slot0.kI = 0.0;
-    flywheelConfig.Slot0.kD = ShooterConstants.upperFlywheelKD;
+    if (level == FlywheelLevel.Upper) {
+      flywheelConfig.Slot0.kP = ShooterConstants.upperFlywheelKP;
+      flywheelConfig.Slot0.kI = 0.0;
+      flywheelConfig.Slot0.kD = ShooterConstants.upperFlywheelKD;
 
-    flywheelConfig.Slot0.kS = ShooterConstants.upperFlywheelKS;
-    flywheelConfig.Slot0.kV = ShooterConstants.upperFlywheelKV;
-    flywheelConfig.Slot0.kA = ShooterConstants.upperFlywheelKA;
+      flywheelConfig.Slot0.kS = ShooterConstants.upperFlywheelKS;
+      flywheelConfig.Slot0.kV = ShooterConstants.upperFlywheelKV;
+      flywheelConfig.Slot0.kA = ShooterConstants.upperFlywheelKA;
+    } else {
+      flywheelConfig.Slot0.kP = ShooterConstants.lowerFlywheelKP;
+      flywheelConfig.Slot0.kI = 0.0;
+      flywheelConfig.Slot0.kD = ShooterConstants.lowerFlywheelKD;
+
+      flywheelConfig.Slot0.kS = ShooterConstants.lowerFlywheelKS;
+      flywheelConfig.Slot0.kV = ShooterConstants.lowerFlywheelKV;
+      flywheelConfig.Slot0.kA = ShooterConstants.lowerFlywheelKA;
+    }
 
     flywheelConfig.MotionMagic.MotionMagicAcceleration =
         ShooterConstants.flywheelMaxAcceleration.in(RotationsPerSecondPerSecond);

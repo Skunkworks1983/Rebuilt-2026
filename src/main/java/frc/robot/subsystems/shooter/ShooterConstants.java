@@ -180,4 +180,9 @@ public class ShooterConstants {
 
   public static final AngularAcceleration pivotMaxAcceleration =
       RotationsPerSecondPerSecond.of(195);
+
+  public enum FlywheelLevel {
+    Upper,
+    Lower
+  }
 }

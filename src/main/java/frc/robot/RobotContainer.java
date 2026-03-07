@@ -64,6 +64,7 @@ import frc.robot.subsystems.shooter.PivotIOSim;
 import frc.robot.subsystems.shooter.PivotIOTalonFX;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterConstants;
+import frc.robot.subsystems.shooter.ShooterConstants.FlywheelLevel;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
@@ -132,8 +133,8 @@ public class RobotContainer {
 
         shooter =
             new Shooter(
-                new FlywheelIOTalonFX(ShooterConstants.upperFlywheelMotorID),
-                new FlywheelIOTalonFX(ShooterConstants.lowerFlywheelMotorID),
+                new FlywheelIOTalonFX(ShooterConstants.upperFlywheelMotorID, FlywheelLevel.Upper),
+                new FlywheelIOTalonFX(ShooterConstants.lowerFlywheelMotorID, FlywheelLevel.Lower),
                 new PivotIOTalonFX(),
                 new BeamBreakIOSensor());
 
@@ -193,8 +194,8 @@ public class RobotContainer {
 
         shooter =
             new Shooter(
-                new FlywheelIOSim(ShooterConstants.upperFlywheelMotorID),
-                new FlywheelIOSim(ShooterConstants.lowerFlywheelMotorID),
+                new FlywheelIOSim(ShooterConstants.upperFlywheelMotorID, FlywheelLevel.Upper),
+                new FlywheelIOSim(ShooterConstants.lowerFlywheelMotorID, FlywheelLevel.Lower),
                 new PivotIOSim(),
                 new BeamBreakIO() {});
 
