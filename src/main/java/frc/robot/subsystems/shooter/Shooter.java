@@ -18,6 +18,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -254,6 +255,8 @@ public class Shooter extends SubsystemBase {
               "Shooter Motion Constraints Update",
               "Pivot motion constraints have been updated."));
     }
+
+    SmartDashboard.putBoolean("Shooter/Pivot/Trenchable", isPivotHomed());
   }
 
   /**
@@ -389,5 +392,9 @@ public class Shooter extends SubsystemBase {
   /** Returns pivot to its default position (all the way back). */
   public void setPivotHome() {
     setManualAngle(ShooterConstants.pivotStartAngle);
+  }
+
+  public boolean isPivotHomed(){
+    return pivotInputs.pivotPosition.gte(Degrees.of(79.5));
   }
 }

@@ -7,6 +7,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterConstants;
 import frc.robot.util.LoggedTunableNumber;
+import frc.robot.util.ShooterSolverConstants;
+
 import org.littletonrobotics.junction.Logger;
 
 public class ShootPresetSetpoints extends Command {
