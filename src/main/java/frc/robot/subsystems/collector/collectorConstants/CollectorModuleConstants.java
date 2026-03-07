@@ -131,7 +131,7 @@ public class CollectorModuleConstants {
     CollectorDownPos = Degrees.of(0);
 
     // Pivot Velocity
-    CollectorPivotVelocity = 0.01;
+    CollectorPivotVelocity = 0.3;
 
     // Collector Intake Speeds
     CollectorIntakeSpeed = RotationsPerSecond.of(0);

@@ -20,14 +20,18 @@ public class ManualCollectorDown extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    collector
-        .getLeftCollector()
-        .setCollectorPivotDutyCycle(
-            collector.getLeftCollector().getConstants().CollectorPivotVelocity);
-    collector
-        .getRightCollector()
-        .setCollectorPivotDutyCycle(
-            collector.getRightCollector().getConstants().CollectorPivotVelocity);
+    if(!collector.getLeftCollector().isCollectorUp()) {
+      collector
+          .getLeftCollector()
+          .setCollectorPivotDutyCycle(
+              collector.getLeftCollector().getConstants().CollectorPivotVelocity);
+    }
+    if(!collector.getRightCollector().isCollectorUp()) {
+      collector
+          .getRightCollector()
+          .setCollectorPivotDutyCycle(
+              collector.getRightCollector().getConstants().CollectorPivotVelocity);
+        }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
