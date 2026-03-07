@@ -31,9 +31,9 @@ public class CollectorTalonRightConstants extends CollectorModuleConstants {
     turnMotorGearRatio = 39.375;
 
     // Real Turn PID
-    turnkP = 80;
-    turnkD = 1.0;
-    turnkI = 0.;
+    turnkP = 65;
+    turnkD = 2.0;
+    turnkI = 0.0;
 
     // Real intake PID
     intakekP = 0.5;
@@ -53,8 +53,8 @@ public class CollectorTalonRightConstants extends CollectorModuleConstants {
 
     // Feed forward
     turnkS = 0.25;
-    turnkV = 0.4;
-    turnkA = 0.03;
+    turnkV = 0.45;
+    turnkA = 0.035;
 
     // Motion Magic constraints
     motionMagicCruiseVelocity = RotationsPerSecond.of(8);
@@ -62,7 +62,7 @@ public class CollectorTalonRightConstants extends CollectorModuleConstants {
 
     // Position
     CollectorUpPos = Rotations.of(0);
-    CollectorDownPos = Radians.of(1.4);
+    CollectorDownPos = Radians.of(1.3);
 
     // Collector Intake Speeds
     CollectorIntakeSpeed = RadiansPerSecond.of(35.699111);
@@ -72,6 +72,6 @@ public class CollectorTalonRightConstants extends CollectorModuleConstants {
     LowerLimitChannel = 7;
 
     // Collector Position Tolerance
-    CollectorPosTolerance = Degrees.of(2);
+    CollectorPosTolerance = Degrees.of(3);
   }
 }
