@@ -340,7 +340,6 @@ public class RobotContainer {
 
     TestPathCommands.publishTestPaths(drive);
 
-    collector.setDefaultCommand(new HoldPosition(collector));
     shooter.setDefaultCommand(Commands.run(shooter::setPivotHome, shooter));
 
     // State Buttons
@@ -419,7 +418,16 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return autoChooser.get();
+    return autoChooser.get().alongWith(new HoldPosition(collector));
+  }
+
+  /**
+   * Use this to pass the teleop beggining command to the main {@link Robot} class.
+   *
+   * @return the command to run in teleop init
+   */
+  public Command getTeleopInitCommand() {
+    return new HoldPosition(collector);
   }
 
   /**
