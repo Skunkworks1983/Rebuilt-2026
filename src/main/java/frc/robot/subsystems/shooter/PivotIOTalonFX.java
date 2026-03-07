@@ -1,7 +1,6 @@
 package frc.robot.subsystems.shooter;
 
 import static edu.wpi.first.units.Units.Amps;
-import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
 import static frc.robot.util.PhoenixUtil.tryUntilOk;
