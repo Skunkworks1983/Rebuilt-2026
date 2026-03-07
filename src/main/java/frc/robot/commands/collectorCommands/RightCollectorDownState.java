@@ -6,7 +6,6 @@ package frc.robot.commands.collectorCommands;
 
 import static edu.wpi.first.units.Units.Rotations;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.collector.Collector;
 import org.littletonrobotics.junction.Logger;
@@ -72,9 +71,9 @@ public class RightCollectorDownState extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(collector.getRightCollector().isCollectorDown()
+    if (collector.getRightCollector().isCollectorDown()
         && collector.getLeftCollector().isCollectorUp()) {
-          count++;
+      count++;
     } else {
       count = 0;
     }
