@@ -134,8 +134,8 @@ public class ShooterConstants {
   public static final Angle pivotPositionTolerence = Degrees.of(4);
 
   // PID for pivot
-  public static final double pivotkP = 100; // TODO: SET VALUES
-  public static final double pivotkD = 1;
+  public static final double pivotkP = 175; // TODO: SET VALUES
+  public static final double pivotkD = 0;
 
   // Feedforwards for pivot
   public static final double pivotkS = 1;
@@ -179,5 +179,5 @@ public class ShooterConstants {
   public static final AngularVelocity pivotMaxVelocity = RotationsPerSecond.of(55);
 
   public static final AngularAcceleration pivotMaxAcceleration =
-      RotationsPerSecondPerSecond.of(180);
+      RotationsPerSecondPerSecond.of(195);
 }
