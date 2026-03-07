@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import frc.robot.util.LoggedTunableNumber;
 
 public class VisionConstants {
+
   // AprilTag layout
   public static AprilTagFieldLayout aprilTagLayout =
       AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
@@ -31,6 +32,7 @@ public class VisionConstants {
 
   // Basic filtering thresholds
   public static double maxAmbiguity = 0.3;
+  public static final double maxTagDistance = 5; // Meters
   public static double maxZError = 0.75;
 
   // Standard deviation baselines, for 1 meter distance and 1 tag
