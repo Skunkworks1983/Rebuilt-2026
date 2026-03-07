@@ -74,7 +74,7 @@ public class ShooterSolverConstants {
 
   public static final Angle transferShotSafetyMargin = Degrees.of(10);
 
-  public static final Distance closeShotDistance = Meters.of(1.25);
+  public static final Distance closeShotDistance = Meters.of(1.3);
 
   public static final LoggedTunableNumber closeShotClearenceMultiplier =
       new LoggedTunableNumber("Shooter/Close Shot Clearance Multiplier", 2.0);
