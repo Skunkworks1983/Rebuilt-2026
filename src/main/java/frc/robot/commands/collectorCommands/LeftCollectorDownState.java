@@ -59,21 +59,21 @@ public class LeftCollectorDownState extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    if (collector.getLeftCollector().isCollectorUp()) {
-      collector.getLeftCollector().setCollectorEncoderPos(Rotations.of(0));
-    }
-    if (collector.getRightCollector().isCollectorUp()) {
-      collector.getRightCollector().setCollectorEncoderPos(Rotations.of(0));
-    }
+    // if (collector.getLeftCollector().isCollectorUp()) {
+    //   collector.getLeftCollector().setCollectorEncoderPos(Rotations.of(0));
+    // }
+    // if (collector.getRightCollector().isCollectorUp()) {
+    //   collector.getRightCollector().setCollectorEncoderPos(Rotations.of(0));
+    // }
     Logger.recordOutput("Commands/Collector/LeftCollectorDownState", false);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(collector.getLeftCollector().isCollectorDown()
+    if (collector.getLeftCollector().isCollectorDown()
         && collector.getRightCollector().isCollectorUp()) {
-          count++;
+      count++;
     } else {
       count = 0;
     }

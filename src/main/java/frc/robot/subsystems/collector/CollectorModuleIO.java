@@ -38,6 +38,7 @@ public interface CollectorModuleIO {
     public Voltage turnAppliedVolts = Volts.of(0.0);
     public Current turnCurrentAmps = Amps.of(0.0);
     public double turnClosedLoopError = 0.0;
+    public double turnSetPoint = 0.0;
 
     // Intake Motor Inputs
     public boolean intakeConnected = false;

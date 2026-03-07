@@ -365,21 +365,21 @@ public class RobotContainer {
 
     // Right Collector Down
     new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorRightDownID)
-        .and(manualModeSwitch)
+        //.and(manualModeSwitch)
         .onTrue(new RightCollectorDownState(collector));
 
     // Left Collector Down
     new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorLeftDownID)
-        .and(manualModeSwitch)
+        //.and(manualModeSwitch)
         .onTrue(new LeftCollectorDownState(collector));
 
     // Both Collectors Up
     new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualUpID)
-        .and(manualModeSwitch)
+        //.and(manualModeSwitch)
         .onTrue(new BothCollectorsUpState(collector));
 
     new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualPivot)
-        .and(manualModeSwitch)
+        //.and(manualModeSwitch)
         .whileTrue(new ManualCollectorDown(collector));
 
     new JoystickButton(buttonJoystick, Constants.OIConstants.ShooterShootTransferID)

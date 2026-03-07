@@ -12,8 +12,6 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.Mode;
-import frc.robot.commands.collectorCommands.HoldPosition;
-
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.seasonspecific.rebuilt2026.Arena2026Rebuilt;
 import org.littletonrobotics.junction.LogFileUtil;
@@ -145,8 +143,8 @@ public class Robot extends LoggedRobot {
     // this line or comment it out.
     if (autonomousCommand != null) {
       autonomousCommand.cancel();
-      CommandScheduler.getInstance().schedule(teleInitCommand);
     }
+    CommandScheduler.getInstance().schedule(teleInitCommand);
 
     HubShiftUtil.initialize();
   }

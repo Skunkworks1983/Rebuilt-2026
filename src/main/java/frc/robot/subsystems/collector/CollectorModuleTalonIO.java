@@ -61,6 +61,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
   private final StatusSignal<Voltage> turnAppliedVolts;
   private final StatusSignal<Current> turnCurrent;
   private final StatusSignal<Double> turnError;
+  private final StatusSignal<Double> turnSetPoint;
 
   // Inputs from intake motor
   private final StatusSignal<Angle> intakePosition;
@@ -169,6 +170,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     turnAppliedVolts = turnMotor.getMotorVoltage();
     turnCurrent = turnMotor.getStatorCurrent();
     turnError = turnMotor.getClosedLoopError();
+    turnSetPoint = turnMotor.getClosedLoopReference();
 
     // Create intake status signals
     intakePosition = intakeMotor.getPosition();
@@ -186,7 +188,8 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
         turnVelocity,
         turnAppliedVolts,
         turnCurrent,
-        turnError);
+        turnError,
+        turnSetPoint);
     ParentDevice.optimizeBusUtilizationForAll(turnMotor, intakeMotor);
 
     // upperLimitTrigger = new Trigger(upperLimitSwitch::get);
@@ -203,7 +206,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
   public void updateInputs(CollectorIOInputs inputs) {
     // Refresh all signals
     var turnStatus =
-        BaseStatusSignal.refreshAll(turnPosition, turnVelocity, turnAppliedVolts, turnCurrent);
+        BaseStatusSignal.refreshAll(turnPosition, turnVelocity, turnAppliedVolts, turnCurrent, turnSetPoint);
     var upperStatus =
         BaseStatusSignal.refreshAll(
             intakePosition, intakeVelocity, intakeAppliedVolts, intakeCurrent);
@@ -217,6 +220,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     inputs.turnAppliedVolts = turnAppliedVolts.getValue();
     inputs.turnCurrentAmps = turnCurrent.getValue();
     inputs.turnClosedLoopError = turnError.getValueAsDouble();
+    inputs.turnSetPoint = turnSetPoint.getValueAsDouble();
 
     // Update intake inputs
     inputs.intakeConnected = driveConnectedDebounce.calculate(upperStatus.isOK());
