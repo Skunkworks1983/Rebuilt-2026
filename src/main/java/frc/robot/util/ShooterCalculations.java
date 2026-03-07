@@ -1,11 +1,9 @@
 package frc.robot.util;
 
-import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -152,32 +150,11 @@ public class ShooterCalculations {
     double dragMultiplier = 1.0 + (ShooterSolverConstants.drag.get() * trueDistance);
     dragMultiplier = MathUtil.clamp(dragMultiplier, 1.0, ShooterSolverConstants.maxDragMultiplier);
     double distWithDrag = trueDistance * dragMultiplier;
-    Logger.recordOutput("Auto Shoot/True Distance", trueDistance);
-    double relativeGoalZ = goal.getZ() - ShooterConstants.shooterInitalPosition.getZ();
-    double currentClearance = ShooterSolverConstants.hubHeightClearance.get();
-    if (distWithDrag < ShooterSolverConstants.closeShotDistance.in(Meters)) {
-      // 1. Force a minimum horizontal distance so the pitch leans forward into the
-      // goal.
-      // This ensures requiredHorizontalSpeed never approaches 0.
-      distWithDrag = ShooterSolverConstants.closeShotDistance.in(Meters);
-      Logger.recordOutput("Shooter/Shooting Close", true);
-      AngularVelocity closeShotVelocity =
-          RotationsPerSecond.of(ShooterSolverConstants.closeShootVelocity.get());
-      Angle closeShotAngle = Degrees.of(ShooterSolverConstants.closeShootAngle.get());
-      return new ShooterControls(
-          closeShotVelocity,
-          closeShotVelocity.times(ShooterSolverConstants.lowerFlywheelVelocityMultiplier.get()),
-          closeShotAngle,
-          currentRobotRotation,
-          true);
-      // 2. Squash the apex trajectory.
-      // We don't need a high, looping arc when we are point-blank.
-      // A clearance of 0.05m to 0.1m just gives it enough lift to clear the rim.
 
-    }
+    double relativeGoalZ = goal.getZ() - ShooterConstants.shooterInitalPosition.getZ();
 
     // Apex height calculation
-    double heightTrajectoryPeak = relativeGoalZ + currentClearance;
+    double heightTrajectoryPeak = relativeGoalZ + ShooterSolverConstants.hubHeightClearance.get();
     heightTrajectoryPeak = Math.max(heightTrajectoryPeak, 0.1);
 
     double launchVelocityZ = Math.sqrt(2.0 * ShooterSolverConstants.gravity * heightTrajectoryPeak);
@@ -216,23 +193,16 @@ public class ShooterCalculations {
 
     Rotation2d finalDriveYaw = effectiveLaunchVectorField.getAngle();
 
-    double minPitchRadians = ShooterConstants.minShooterPitch.in(Radians);
-    double maxPitchRadians = ShooterConstants.maxShooterPitch.in(Radians);
-
     double effectiveHorizontalSpeed = effectiveLaunchVectorField.getNorm();
     double ballExitSpeed = Math.hypot(effectiveHorizontalSpeed, launchVelocityZ);
-
-    double unconstrainedPitch = Math.atan2(launchVelocityZ, effectiveHorizontalSpeed);
-
-    double finalPitch = MathUtil.clamp(unconstrainedPitch, minPitchRadians, maxPitchRadians);
-    boolean possibleShot = true;
-
-    // if (finalPitch < minPitchRadians || finalPitch > maxPitchRadians) {
-    // return solveBallExitSpeedForDistanceAndAngle(
-    // finalPitch, distWithDrag, relativeGoalZ, angleToGoal, shooterVelField);
-    // }
-
     double flywheelSurfaceSpeed = ballExitSpeed / ShooterSolverConstants.flywheelEfficiency.get();
+
+    double finalPitch = Math.atan2(launchVelocityZ, effectiveHorizontalSpeed);
+    finalPitch =
+        MathUtil.clamp(
+            finalPitch,
+            ShooterConstants.minShooterPitch.in(Radians),
+            ShooterConstants.maxShooterPitch.in(Radians));
 
     // DEBUG LOGGING
     // TODO: Remove/Reduce logging (esp because this can be gotten from log replay)
@@ -249,13 +219,6 @@ public class ShooterCalculations {
     Logger.recordOutput("Shooter/Goal/LeadShiftXY", leadShiftField);
     Logger.recordOutput("Shooter/TargetVector/Real", targetVector);
     Logger.recordOutput("Shooter/TargetVector/Virtual", virtualTargetVector);
-    Logger.recordOutput(
-        "Shooter/ApexConstrained/PitchBeforeClampDeg", Math.toDegrees(unconstrainedPitch));
-    Logger.recordOutput("Shooter/ApexConstrained/PitchAfterClampDeg", Math.toDegrees(finalPitch));
-    Logger.recordOutput(
-        "Shooter/ApexConstrained/PitchWasClamped",
-        unconstrainedPitch < minPitchRadians || unconstrainedPitch > maxPitchRadians);
-    Logger.recordOutput("Shooter/ApexConstrained/PossibleShot", possibleShot);
 
     // Should be ~0
     Translation2d shouldMatchStationary = effectiveLaunchVectorField.plus(robotLinearVelocityField);
@@ -270,7 +233,7 @@ public class ShooterCalculations {
                 * ShooterSolverConstants.lowerFlywheelVelocityMultiplier.get()),
         Radians.of(finalPitch),
         finalDriveYaw,
-        possibleShot);
+        true);
   }
 
   private static ShooterControls solveBallExitSpeedForDistanceAndAngle(

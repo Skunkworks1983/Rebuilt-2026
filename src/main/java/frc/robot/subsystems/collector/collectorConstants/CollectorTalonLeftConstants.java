@@ -64,7 +64,7 @@ public class CollectorTalonLeftConstants extends CollectorModuleConstants {
     CollectorDownPos = Radians.of(1.5);
 
     // Collector Intake Speeds
-    CollectorIntakeSpeed = RotationsPerSecond.of(6);
+    CollectorIntakeSpeed = RotationsPerSecond.of(35);
 
     // Limit Switch Constants
     UpperLimitChannel = 6;

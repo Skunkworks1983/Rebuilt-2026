@@ -156,8 +156,16 @@ public class DriveAimedShoot extends Command {
     Logger.recordOutput("Auto Shoot/Target Yaw", targetYawRadians);
     Logger.recordOutput("Auto Shoot/Current Yaw", currentYawRadians);
     // Logger.recordOutput("Auto Shoot/Filtered Target Yaw", filteredTargetYaw);
+    double omegaCalculated;
 
-    double omegaCalculated = yawController.calculate(currentYawRadians, targetYawRadians);
+    if (targetType == TargetType.GOAL) {
+
+      omegaCalculated =
+          yawController.calculate(currentYawRadians, targetYawRadians)
+              + rotationSupplier.getAsDouble();
+    } else {
+      omegaCalculated = rotationSupplier.getAsDouble();
+    }
 
     ChassisSpeeds targetSpeeds =
         DriveUtils.getChassisSpeeds(
