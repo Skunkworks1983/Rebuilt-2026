@@ -88,7 +88,8 @@ public class PivotIOTalonFX implements PivotIO {
     // pivotConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
     pivotConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
     pivotConfig.HardwareLimitSwitch.ReverseLimitAutosetPositionEnable = true;
-    pivotConfig.HardwareLimitSwitch.ReverseLimitAutosetPositionValue = ShooterConstants.pivotStartAngle.in(Rotations);
+    pivotConfig.HardwareLimitSwitch.ReverseLimitAutosetPositionValue =
+        ShooterConstants.pivotStartAngle.in(Rotations);
 
     pivotConfig.HardwareLimitSwitch.ForwardLimitSource = ShooterConstants.pivotForwardLimitSource;
     pivotConfig.HardwareLimitSwitch.ReverseLimitSource = ShooterConstants.pivotReverseLimitSource;
@@ -100,7 +101,6 @@ public class PivotIOTalonFX implements PivotIO {
     tryUntilOk(5, () -> pivotMotor.getConfigurator().apply(pivotConfig, 0.25));
 
     pivotMotor.setPosition(ShooterConstants.pivotStartAngle);
-    
     pivotAbsolutePosition = pivotEncoder.getAbsolutePosition();
     pivotPosition = pivotMotor.getPosition();
     pivotVelocity = pivotMotor.getVelocity();

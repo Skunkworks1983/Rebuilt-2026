@@ -167,13 +167,10 @@ public class DriveAimedShoot extends Command {
       omegaCalculated = rotationSupplier.getAsDouble();
     }
     Logger.recordOutput("Auto Shoot/Omega Calculated", omegaCalculated);
-    
+
     ChassisSpeeds targetSpeeds =
         DriveUtils.getChassisSpeeds(
-            drive,
-            xSupplier,
-            ySupplier,
-            omegaCalculated // Override rotation
+            drive, xSupplier, ySupplier, omegaCalculated // Override rotation
             );
 
     boolean isRed = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red;
