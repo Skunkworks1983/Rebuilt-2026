@@ -72,7 +72,7 @@ public class ShooterSolverConstants {
   /** Learning rate for the shot latency correction model. */
   public static final double shotLatencyModelLearningRate = 0.15;
 
-  public static final Angle transferShotSafetyMargin = Degrees.of(5);
+  public static final Angle transferShotSafetyMargin = Degrees.of(10);
 
   public static final Distance closeShotDistance = Meters.of(1.25);
 
