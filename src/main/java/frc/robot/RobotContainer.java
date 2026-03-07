@@ -29,12 +29,12 @@ import frc.robot.commands.Shooter.NoYawShootHub;
 import frc.robot.commands.Shooter.ShootPresetSetpoints;
 import frc.robot.commands.Shooter.ShootPresetSetpoints.TargetType;
 import frc.robot.commands.TestPathCommands;
-import frc.robot.commands.collectorCommands.AutomaticStateChange;
 import frc.robot.commands.collectorCommands.BothCollectorsUpState;
 import frc.robot.commands.collectorCommands.CollectorExpel;
 import frc.robot.commands.collectorCommands.CollectorIntake;
 import frc.robot.commands.collectorCommands.HoldPosition;
 import frc.robot.commands.collectorCommands.LeftCollectorDownState;
+import frc.robot.commands.collectorCommands.ManualCollectorDown;
 import frc.robot.commands.collectorCommands.RightCollectorDownState;
 import frc.robot.commands.indexerCommands.IndexerAutoUnjam;
 import frc.robot.commands.indexerCommands.IndexerReverseCommand;
@@ -298,7 +298,7 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    Trigger shootGoalButton;
+    Trigger shootAutoAim;
     JoystickButton runIndexer;
     JoystickButton runIndexerReverse;
     // Default command, normal field-relative drive
@@ -309,10 +309,10 @@ public class RobotContainer {
             () -> -leftJoystick.getX(), // -Y (used to be)
             () -> -rightJoystick.getX())); // Confirm if negitive or not
 
-    shootGoalButton = new JoystickButton(rightJoystick, 1);
+    shootAutoAim = new JoystickButton(rightJoystick, 1);
     Command autoShootIndexerCommand = new IndexerAutoUnjam(indexer, shooter::getBeamBreak);
 
-    shootGoalButton.whileTrue(
+    shootAutoAim.whileTrue(
         new DriveAimedAutoShoot(
             drive,
             shooter,
@@ -321,12 +321,11 @@ public class RobotContainer {
             () -> -leftJoystick.getX(),
             () -> -rightJoystick.getX()));
 
-    ShootPresetSetpoints shootPresetSetpoints = new ShootPresetSetpoints(shooter, TargetType.GOAL);
-    // shootGoalButton.whileTrue(shootPresetSetpoints);
+    ShootPresetSetpoints shootPresetSetpointsGoal =
+        new ShootPresetSetpoints(shooter, TargetType.GOAL);
+    ShootPresetSetpoints shootPresetSetpointsTransfer =
+        new ShootPresetSetpoints(shooter, TargetType.TRANSFER);
 
-    // shootGoalButton.whileTrue(
-    // new DriveAimedAutoShoot(
-    //    drive, shooter, () -> -leftJoystick.getY(), () -> -leftJoystick.getX()));
     runIndexer = new JoystickButton(leftJoystick, 1);
     runIndexerReverse =
         new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID);
@@ -350,7 +349,7 @@ public class RobotContainer {
     JoystickButton autoModeSwitch =
         new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorAutoModeID);
 
-    autoModeSwitch.whileTrue(new AutomaticStateChange(collector, drive::getDirection));
+    // autoModeSwitch.whileTrue(new AutomaticStateChange(collector, drive::getDirection));
 
     manualModeSwitch
         .negate()
@@ -379,6 +378,15 @@ public class RobotContainer {
     new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualUpID)
         .and(manualModeSwitch)
         .onTrue(new BothCollectorsUpState(collector));
+
+    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualPivot)
+        .and(manualModeSwitch)
+        .whileTrue(new ManualCollectorDown(collector));
+
+    new JoystickButton(buttonJoystick, Constants.OIConstants.ShooterShootTransferID)
+        .whileTrue(shootPresetSetpointsTransfer);
+    new JoystickButton(buttonJoystick, Constants.OIConstants.ShooterShootHubID)
+        .whileTrue(shootPresetSetpointsGoal);
 
     // Lock to 0° when A button is held
     // controller

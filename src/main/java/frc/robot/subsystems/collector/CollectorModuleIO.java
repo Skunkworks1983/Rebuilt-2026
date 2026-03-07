@@ -88,11 +88,18 @@ public interface CollectorModuleIO {
   public default void setCollectorPos(Angle angle) {}
 
   /**
+   * Sets the velocity of our pivot motor collector motors
+   *
+   * @param velocity -Angular Velocity
+   */
+  public default void setCollectorPivotDutyCycle(double dutyCycle) {}
+
+  /**
    * Sets the duty cycle of the intake motors
    *
    * @param dutyCycle double between -1.0 and 1.0
    */
-  public default void setCollectorDutyCycle(double dutyCycle) {}
+  public default void setCollectorIntakeDutyCycle(double dutyCycle) {}
 
   /**
    * Checks to see if the collector is down

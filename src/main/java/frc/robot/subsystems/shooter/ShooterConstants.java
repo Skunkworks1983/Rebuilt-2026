@@ -154,10 +154,10 @@ public class ShooterConstants {
       defaultUpperFlywheelVelocityGoal.times(1.15);
   public static final Angle defaultPitchGoal = Degrees.of(70);
 
-  public static final AngularVelocity defaultVelocityTransfer = RotationsPerSecond.of(60);
+  public static final AngularVelocity defaultVelocityTransfer = RotationsPerSecond.of(65);
   public static final AngularVelocity defaultLowerFlywheelVelocityTransfer =
       defaultVelocityTransfer.times(1.15);
-  public static final Angle defaultPitchTransfer = Degrees.of(50);
+  public static final Angle defaultPitchTransfer = Degrees.of(58);
 
   // SENSOR CONSTANTS
   public static final int pivotEncoderId = 43;

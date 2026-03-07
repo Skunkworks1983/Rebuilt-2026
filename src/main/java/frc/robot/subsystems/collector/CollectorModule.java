@@ -177,12 +177,21 @@ public class CollectorModule {
   }
 
   /**
+   * Sets the velocity of our pivot motor collector motors
+   *
+   * @param velocity -Angular Velocity
+   */
+  public void setCollectorPivotDutyCycle(double dutyCycle) {
+    collectorIO.setCollectorPivotDutyCycle(dutyCycle);
+  }
+
+  /**
    * Sets the duty cycle of the intake motors
    *
    * @param dutyCycle double between -1.0 and 1.0
    */
   public void setCollectorDutyCycle(double dutyCycle) {
-    collectorIO.setCollectorDutyCycle(dutyCycle);
+    collectorIO.setCollectorIntakeDutyCycle(dutyCycle);
   }
 
   /**

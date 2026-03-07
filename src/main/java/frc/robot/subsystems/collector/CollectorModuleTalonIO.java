@@ -14,6 +14,7 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.ParentDevice;
@@ -283,11 +284,20 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
   }
 
   /**
+   * Sets the velocity of our pivot motor collector motors
+   *
+   * @param velocity -Angular Velocity
+   */
+  public void setCollectorPivotDutyCycle(double dutyCycle) {
+    turnMotor.setControl(new DutyCycleOut(dutyCycle));
+  }
+
+  /**
    * Sets the duty cycle of the intake motors
    *
    * @param dutyCycle double between -1.0 and 1.0
    */
-  public void setCollectorDutyCycle(double dutyCycle) {
+  public void setCollectorIntakeDutyCycle(double dutyCycle) {
     intakeMotor.set(dutyCycle);
     lastVelocity = RotationsPerSecond.of(dutyCycle);
   }

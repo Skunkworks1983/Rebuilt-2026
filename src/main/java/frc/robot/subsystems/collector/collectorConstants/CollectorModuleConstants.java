@@ -68,6 +68,9 @@ public class CollectorModuleConstants {
   public Angle CollectorUpPos;
   public Angle CollectorDownPos;
 
+  // Collector Manual pivot velocity
+  public double CollectorPivotVelocity;
+
   // Collector Intake Speeds
   public AngularVelocity CollectorIntakeSpeed;
 
@@ -126,6 +129,9 @@ public class CollectorModuleConstants {
     // Position
     CollectorUpPos = Degrees.of(0);
     CollectorDownPos = Degrees.of(0);
+
+    // Pivot Velocity
+    CollectorPivotVelocity = 0.01;
 
     // Collector Intake Speeds
     CollectorIntakeSpeed = RotationsPerSecond.of(0);
