@@ -144,7 +144,6 @@ public class RobotContainer {
 
         // This is a solution to the vision-drive cross dependency issue that hurts my
         // eys, but it does work
-        drive.setResetVisionIMUCallback((pose) -> vision.resetCameraIMU(pose));
 
         indexer = new Indexer(new IndexerIOTalonFX());
 
