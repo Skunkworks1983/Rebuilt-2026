@@ -7,9 +7,8 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.RotationsPerSecond;
-
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.events.EventTrigger;
 import com.pathplanner.lib.events.PointTowardsZoneTrigger;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -18,7 +17,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -26,13 +24,16 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveAimedAutoShoot;
-import frc.robot.commands.DriveAimedShoot;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.Shooter.NoYawShootHub;
+import frc.robot.commands.Shooter.ShootPresetSetpoints;
+import frc.robot.commands.Shooter.ShootPresetSetpoints.TargetType;
 import frc.robot.commands.TestPathCommands;
 import frc.robot.commands.collectorCommands.AutomaticStateChange;
+import frc.robot.commands.collectorCommands.BothCollectorsUpState;
 import frc.robot.commands.collectorCommands.CollectorExpel;
 import frc.robot.commands.collectorCommands.CollectorIntake;
+import frc.robot.commands.collectorCommands.HoldPosition;
 import frc.robot.commands.collectorCommands.LeftCollectorDownState;
 import frc.robot.commands.collectorCommands.RightCollectorDownState;
 import frc.robot.commands.indexerCommands.IndexerAutoUnjam;
@@ -50,9 +51,9 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.drive.ModuleIOTalonFXSim;
 import frc.robot.subsystems.indexer.Indexer;
-import frc.robot.subsystems.indexer.IndexerConstants;
 import frc.robot.subsystems.indexer.IndexerIO;
 import frc.robot.subsystems.indexer.IndexerIOSim;
+import frc.robot.subsystems.indexer.IndexerIOTalonFX;
 import frc.robot.subsystems.shooter.BeamBreakIO;
 import frc.robot.subsystems.shooter.BeamBreakIOSensor;
 import frc.robot.subsystems.shooter.FlywheelIO;
@@ -69,7 +70,6 @@ import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import frc.robot.util.sim.SimProjectile;
-import java.util.function.BooleanSupplier;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
@@ -100,7 +100,6 @@ public class RobotContainer {
    * <p>Only used when {@link Constants#controlScheme} is set to {@link
    * Constants.ControlScheme#XBOX}
    */
-  private final XboxController xboxController;
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -112,17 +111,10 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    if (Constants.controlScheme == Constants.ControlScheme.OI) {
-      leftJoystick = new Joystick(Constants.OIConstants.LeftJoystick);
-      rightJoystick = new Joystick(Constants.OIConstants.RightJoystick);
-      buttonJoystick = new Joystick(Constants.OIConstants.ButtonJoystick);
-      xboxController = null;
-    } else {
-      xboxController = new XboxController(0);
-      leftJoystick = null;
-      rightJoystick = null;
-      buttonJoystick = null;
-    }
+    leftJoystick = new Joystick(Constants.OIConstants.LeftJoystick);
+    rightJoystick = new Joystick(Constants.OIConstants.RightJoystick);
+    buttonJoystick = new Joystick(Constants.OIConstants.ButtonJoystick);
+
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
@@ -153,7 +145,7 @@ public class RobotContainer {
         // eys, but it does work
         drive.setResetVisionIMUCallback((pose) -> vision.resetCameraIMU(pose));
 
-        indexer = new Indexer(new IndexerIO() {});
+        indexer = new Indexer(new IndexerIOTalonFX());
 
         collector =
             new Collector(
@@ -223,7 +215,7 @@ public class RobotContainer {
                 new CollectorModuleSimIO(simulation, new CollectorTalonLeftConstants()),
                 new CollectorModuleSimIO(simulation, new CollectorTalonRightConstants()));
 
-        indexer = new Indexer(new IndexerIOSim(IndexerConstants.indexerMotorID));
+        indexer = new Indexer(new IndexerIOSim());
 
         break;
 
@@ -252,12 +244,17 @@ public class RobotContainer {
         indexer = new Indexer(new IndexerIO() {});
         break;
     }
+    Command autoShootIndexerCommand = new IndexerAutoUnjam(indexer, shooter::getBeamBreak);
+
+    NamedCommands.registerCommand(
+        "Shoot Preset Setpoits ", new ShootPresetSetpoints(shooter, TargetType.GOAL));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
     new EventTrigger("FIRE")
         .onTrue(Commands.print("LEBRON!").andThen(new InstantCommand(this::launchSimFuel)));
-    new PointTowardsZoneTrigger("Aim Hub").whileTrue(new NoYawShootHub(shooter, drive));
+    new PointTowardsZoneTrigger("Aim Hub")
+        .whileTrue(new NoYawShootHub(shooter, drive, autoShootIndexerCommand));
 
     // Set up SysId routines
     autoChooser.addOption(
@@ -287,6 +284,9 @@ public class RobotContainer {
     autoChooser.addOption(
         "Shooter SysId (Dynamic Reverse)", shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
+    autoChooser.addOption(
+        "Simple Auto", new NoYawShootHub(shooter, drive, autoShootIndexerCommand));
+
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -299,76 +299,50 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     Trigger shootGoalButton;
-    Trigger shootTransferButton;
     JoystickButton runIndexer;
     JoystickButton runIndexerReverse;
     // Default command, normal field-relative drive
-    if (Constants.controlScheme == Constants.ControlScheme.OI) {
-      drive.setDefaultCommand(
-          DriveCommands.joystickDrive(
-              drive,
-              () -> -leftJoystick.getY(), // -X (used to be)
-              () -> -leftJoystick.getX(), // -Y (used to be)
-              () -> rightJoystick.getX())); // Confirm if negitive or not
+    drive.setDefaultCommand(
+        DriveCommands.joystickDrive(
+            drive,
+            () -> -leftJoystick.getY(), // -X (used to be)
+            () -> -leftJoystick.getX(), // -Y (used to be)
+            () -> -rightJoystick.getX())); // Confirm if negitive or not
 
-      shootGoalButton = new JoystickButton(leftJoystick, 1);
-      Trigger shootButton = new JoystickButton(rightJoystick, 1);
+    shootGoalButton = new JoystickButton(rightJoystick, 1);
+    Command autoShootIndexerCommand = new IndexerAutoUnjam(indexer, shooter::getBeamBreak);
 
-      shootGoalButton.whileTrue(
-          new DriveAimedAutoShoot(
-              drive, shooter, () -> -leftJoystick.getY(), () -> -leftJoystick.getX()));
-      shootButton.onTrue(new InstantCommand(this::launchSimFuel));
-      runIndexer = new JoystickButton(buttonJoystick, IndexerConstants.runIndexerButtonId);
-      runIndexer = new JoystickButton(buttonJoystick, Constants.OIConstants.ShooterIndexID);
-      runIndexerReverse =
-          new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID);
+    shootGoalButton.whileTrue(
+        new DriveAimedAutoShoot(
+            drive,
+            shooter,
+            autoShootIndexerCommand,
+            () -> -leftJoystick.getY(),
+            () -> -leftJoystick.getX(),
+            () -> -rightJoystick.getX()));
 
-    } else {
-      drive.setDefaultCommand(
-          DriveCommands.joystickDrive(
-              drive,
-              () -> -xboxController.getLeftY(),
-              () -> -xboxController.getLeftX(),
-              () -> -xboxController.getRightX()));
-      shootGoalButton = new JoystickButton(xboxController, XboxController.Button.kA.value);
-      shootTransferButton = new JoystickButton(xboxController, XboxController.Button.kY.value);
-      Trigger shootButton = new JoystickButton(xboxController, XboxController.Button.kB.value);
+    ShootPresetSetpoints shootPresetSetpoints = new ShootPresetSetpoints(shooter, TargetType.GOAL);
+    // shootGoalButton.whileTrue(shootPresetSetpoints);
 
-      shootGoalButton.whileTrue(
-          new DriveAimedShoot(
-              drive,
-              shooter,
-              () -> -xboxController.getLeftY(),
-              () -> -xboxController.getLeftX(),
-              DriveAimedShoot.TargetType.GOAL));
-      shootTransferButton.whileTrue(
-          new DriveAimedShoot(
-              drive,
-              shooter,
-              () -> -xboxController.getLeftY(),
-              () -> -xboxController.getLeftX(),
-              DriveAimedShoot.TargetType.TRANSFER));
-      shootButton.onTrue(new InstantCommand(this::launchSimFuel));
-      runIndexer = new JoystickButton(xboxController, Constants.OIConstants.ShooterIndexID);
-      runIndexerReverse =
-          new JoystickButton(xboxController, Constants.OIConstants.CollectorReverseIntakeID);
-    }
+    // shootGoalButton.whileTrue(
+    // new DriveAimedAutoShoot(
+    //    drive, shooter, () -> -leftJoystick.getY(), () -> -leftJoystick.getX()));
+    runIndexer = new JoystickButton(leftJoystick, 1);
+    runIndexerReverse =
+        new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID);
 
-    BooleanSupplier beamBroken = () -> shooter.getBeamBreak();
-
-    runIndexer.whileTrue(new IndexerAutoUnjam(indexer, beamBroken));
+    runIndexer.whileTrue(new IndexerAutoUnjam(indexer, shooter::getBeamBreak));
     runIndexerReverse.whileTrue(new IndexerReverseCommand(indexer));
-    // if the index button is hed and more than a second elapses before the beam break is broken the
+    // if the index button is hed and more than a second elapses before the beam
+    // break is broken the
     // indexer will reverse for 1 second before attempting to intake again
 
     Logger.recordOutput("Control Scheme", Constants.controlScheme);
 
     TestPathCommands.publishTestPaths(drive);
 
-    SmartDashboard.putData("Shooter/Sim Shoot", new InstantCommand(this::launchSimFuel));
-    SmartDashboard.putData(
-        "Shooter/Set Manual Velocity",
-        new InstantCommand(() -> shooter.setManualVelocity(RotationsPerSecond.of(25))));
+    collector.setDefaultCommand(new HoldPosition(collector));
+    shooter.setDefaultCommand(Commands.run(shooter::setPivotHome, shooter));
 
     // State Buttons
     JoystickButton manualModeSwitch =
@@ -378,13 +352,12 @@ public class RobotContainer {
 
     autoModeSwitch.whileTrue(new AutomaticStateChange(collector, drive::getDirection));
 
-    // manualModeSwitch
-    //     .negate()
-    //     .and(autoModeSwitch.negate())
-    //     .onTrue(new BothCollectorsUpState(collector));
+    manualModeSwitch
+        .negate()
+        .and(autoModeSwitch.negate())
+        .onTrue(new BothCollectorsUpState(collector));
 
     // Collector Intake Button
-
     new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorIntakeID)
         .whileTrue(new CollectorIntake(collector));
 
@@ -401,6 +374,11 @@ public class RobotContainer {
     new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorLeftDownID)
         .and(manualModeSwitch)
         .onTrue(new LeftCollectorDownState(collector));
+
+    // Both Collectors Up
+    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualUpID)
+        .and(manualModeSwitch)
+        .onTrue(new BothCollectorsUpState(collector));
 
     // Lock to 0° when A button is held
     // controller

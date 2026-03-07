@@ -4,6 +4,8 @@
 
 package frc.robot.commands.collectorCommands;
 
+import static edu.wpi.first.units.Units.Rotations;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.collector.Collector;
 import org.littletonrobotics.junction.Logger;
@@ -34,6 +36,12 @@ public class RightCollectorDownState extends Command {
   @Override
   public void initialize() {
     Logger.recordOutput("Commands/Collector/RightCollectorDownState", true);
+    if (collector.getLeftCollector().isCollectorUp()) {
+      collector.getLeftCollector().setCollectorEncoderPos(Rotations.of(0));
+    }
+    if (collector.getRightCollector().isCollectorUp()) {
+      collector.getRightCollector().setCollectorEncoderPos(Rotations.of(0));
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -50,6 +58,12 @@ public class RightCollectorDownState extends Command {
   @Override
   public void end(boolean interrupted) {
     Logger.recordOutput("Commands/Collector/RightCollectorDownState", false);
+    if (collector.getLeftCollector().isCollectorUp()) {
+      collector.getLeftCollector().setCollectorEncoderPos(Rotations.of(0));
+    }
+    if (collector.getRightCollector().isCollectorUp()) {
+      collector.getRightCollector().setCollectorEncoderPos(Rotations.of(0));
+    }
   }
 
   // Returns true when the command should end.

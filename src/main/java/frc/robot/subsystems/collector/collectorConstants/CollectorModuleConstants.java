@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
 
+import com.ctre.phoenix6.CANBus;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -22,6 +23,9 @@ public class CollectorModuleConstants {
 
   // Collectors side
   public Side collectorSide;
+
+  // Collector CanBus
+  public CANBus canbus;
 
   // Hardware ID's
   public int turnMotorID;
@@ -39,6 +43,7 @@ public class CollectorModuleConstants {
   public double intakekP;
   public double intakekD;
   public double intakekI;
+  public double intakekV;
 
   // Sim Turn PID
   public double SimTurnkP;
@@ -55,9 +60,9 @@ public class CollectorModuleConstants {
   public double turnkV;
   public double turnkA;
 
-  // Max Velocity and Acceleration
-  public AngularVelocity pivotMaxVelocity;
-  public AngularAcceleration pivotMaxAcceleration;
+  // Motion Magic constraints
+  public AngularVelocity motionMagicCruiseVelocity;
+  public AngularAcceleration motionMagicAcceleration;
 
   // Position
   public Angle CollectorUpPos;
@@ -78,6 +83,9 @@ public class CollectorModuleConstants {
     // Collector Side
     collectorSide = Side.LEFT;
 
+    // Collector canBus
+    canbus = new CANBus("peripherals_2026");
+
     // Hardware ID's
     turnMotorID = 0;
     intakeMotorID = 0;
@@ -94,6 +102,7 @@ public class CollectorModuleConstants {
     intakekP = 0.0;
     intakekD = 0.0;
     intakekI = 0.0;
+    intakekV = 0.0;
 
     // Sim Turn PID
     SimTurnkP = 0.0;
@@ -110,9 +119,9 @@ public class CollectorModuleConstants {
     turnkV = 0.12;
     turnkA = 0.01;
 
-    // Max Velocity and Acceleration
-    pivotMaxVelocity = RotationsPerSecond.of(1);
-    pivotMaxAcceleration = RotationsPerSecondPerSecond.of(1);
+    // Motion Magic constraints
+    motionMagicCruiseVelocity = RotationsPerSecond.of(1.7);
+    motionMagicAcceleration = RotationsPerSecondPerSecond.of(14);
 
     // Position
     CollectorUpPos = Degrees.of(0);

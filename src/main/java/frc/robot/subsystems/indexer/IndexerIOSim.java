@@ -18,8 +18,8 @@ public class IndexerIOSim extends IndexerIOTalonFX {
   DCMotorSim indexerMotorSim;
   Voltage voltage;
 
-  public IndexerIOSim(int motorID) {
-    super(motorID);
+  public IndexerIOSim() {
+    super();
     LinearSystem linearSystem = LinearSystemId.createDCMotorSystem(0.002, 0.02);
 
     double[] stdevs = {0.00, 0.00};

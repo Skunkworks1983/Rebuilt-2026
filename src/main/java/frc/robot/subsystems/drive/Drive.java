@@ -285,17 +285,22 @@ public class Drive extends SubsystemBase implements VisionConsumer {
    * @param speeds Speeds in meters/sec
    */
   public void runVelocity(ChassisSpeeds speeds) {
-    previousSetpoint =
-        setpointGenerator.generateSetpoint(previousSetpoint, speeds, Seconds.of(0.02));
+    // Calculate module setpoints
+    ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(speeds, 0.02);
+    SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(discreteSpeeds);
+    SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, tunerConstants.getSpeedAt12Volts());
 
-    var setpointStates = previousSetpoint.moduleStates();
-
+    // Log unoptimized setpoints and setpoint speeds
     Logger.recordOutput("SwerveStates/Setpoints", setpointStates);
-    Logger.recordOutput("SwerveChassisSpeeds/Setpoints", previousSetpoint.robotRelativeSpeeds());
+    Logger.recordOutput("SwerveChassisSpeeds/Setpoints", discreteSpeeds);
 
+    // Send setpoints to modules
     for (int i = 0; i < 4; i++) {
       modules[i].runSetpoint(setpointStates[i]);
     }
+
+    // Log optimized setpoints (runSetpoint mutates each state)
+    Logger.recordOutput("SwerveStates/SetpointsOptimized", setpointStates);
   }
 
   /** Runs the drive in a straight line with the specified drive output. */
@@ -437,7 +442,7 @@ public class Drive extends SubsystemBase implements VisionConsumer {
   }
 
   public AngularVelocity getAngularVelocity() {
-    return RadiansPerSecond.of(gyroInputs.yawVelocityRadPerSec);
+    return RadiansPerSecond.of(getChassisSpeeds().omegaRadiansPerSecond);
   }
 
   public LinearVelocity getDirection() {

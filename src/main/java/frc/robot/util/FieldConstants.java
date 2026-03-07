@@ -17,10 +17,10 @@ public class FieldConstants {
       new Translation3d(Inches.of(469.09), Inches.of(158.845), Inches.of(72));
 
   public static final Translation2d redFuelTransferTarget =
-      new Translation2d(Inches.of(162.11), Inches.of(158.845)); // TODO :SET ACTUAL
+      new Translation2d(Inches.of(651.25 - 60), Inches.of(158.845)); // TODO :SET ACTUAL
 
   public static final Translation2d blueFuelTransferTarget =
-      new Translation2d(Inches.of(142.11), Inches.of(158.845));
+      new Translation2d(Inches.of(60), Inches.of(158.845));
 
   public static interface HubCorners {
     Translation2d getAllianceSideLeft();

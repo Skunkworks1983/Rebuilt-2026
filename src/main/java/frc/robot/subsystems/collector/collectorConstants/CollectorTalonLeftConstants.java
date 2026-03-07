@@ -5,8 +5,10 @@
 package frc.robot.subsystems.collector.collectorConstants;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
 
 /**
  * This class is a grouping of constants
@@ -28,14 +30,15 @@ public class CollectorTalonLeftConstants extends CollectorModuleConstants {
     turnMotorGearRatio = 39.375;
 
     // Real Turn PID
-    turnkP = 1;
-    turnkD = 0.0;
+    turnkP = 80;
+    turnkD = 1.0;
     turnkI = 0.0;
 
     // Real intake PID
-    intakekP = 0.0;
+    intakekP = 0;
     intakekD = 0.0;
     intakekI = 0.0;
+    intakekV = 0.5;
 
     // Sim Turn PID
     SimTurnkP = 13.5;
@@ -49,21 +52,25 @@ public class CollectorTalonLeftConstants extends CollectorModuleConstants {
 
     // feed forward
     turnkS = 0.25;
-    turnkV = 0.12;
-    turnkA = 0.01;
+    turnkV = 0.4;
+    turnkA = 0.03;
+
+    // Motion Magic constraints
+    motionMagicCruiseVelocity = RotationsPerSecond.of(8);
+    motionMagicAcceleration = RotationsPerSecondPerSecond.of(10);
 
     // Position
     CollectorUpPos = Rotations.of(0);
-    CollectorDownPos = Rotations.of(.25);
+    CollectorDownPos = Radians.of(1.5);
 
     // Collector Intake Speeds
-    CollectorIntakeSpeed = RotationsPerSecond.of(0);
+    CollectorIntakeSpeed = RotationsPerSecond.of(35);
 
     // Limit Switch Constants
-    UpperLimitChannel = 24;
-    LowerLimitChannel = 23;
+    UpperLimitChannel = 6;
+    LowerLimitChannel = 8;
 
     // Collector Position Tolerance
-    CollectorPosTolerance = Degrees.of(3);
+    CollectorPosTolerance = Degrees.of(2);
   }
 }
