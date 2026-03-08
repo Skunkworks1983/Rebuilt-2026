@@ -363,9 +363,9 @@ public class RobotContainer {
         .whileTrue(new CollectorExpel(collector));
 
     // Right Collector Down
-    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorRightDownID)
+    // new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorRightDownID)
         // .and(manualModeSwitch)
-        .onTrue(new RightCollectorDownState(collector));
+        // .onTrue(new RightCollectorDownState(collector));
 
     // Left Collector Down
     new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorLeftDownID)
