@@ -206,7 +206,8 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
   public void updateInputs(CollectorIOInputs inputs) {
     // Refresh all signals
     var turnStatus =
-        BaseStatusSignal.refreshAll(turnPosition, turnVelocity, turnAppliedVolts, turnCurrent, turnSetPoint);
+        BaseStatusSignal.refreshAll(
+            turnPosition, turnVelocity, turnAppliedVolts, turnCurrent, turnSetPoint);
     var upperStatus =
         BaseStatusSignal.refreshAll(
             intakePosition, intakeVelocity, intakeAppliedVolts, intakeCurrent);

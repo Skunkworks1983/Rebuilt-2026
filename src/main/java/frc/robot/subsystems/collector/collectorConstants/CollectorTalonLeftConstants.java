@@ -36,7 +36,7 @@ public class CollectorTalonLeftConstants extends CollectorModuleConstants {
     turnkI = 0.0;
 
     // Real intake PID
-    intakekP = 0;
+    intakekP = 3;
     intakekD = 0.0;
     intakekI = 0.0;
     intakekV = 0.5;
@@ -57,15 +57,15 @@ public class CollectorTalonLeftConstants extends CollectorModuleConstants {
     turnkA = 0.03;
 
     // Motion Magic constraints
-    motionMagicCruiseVelocity = RotationsPerSecond.of(8);
-    motionMagicAcceleration = RotationsPerSecondPerSecond.of(10);
+    motionMagicCruiseVelocity = RotationsPerSecond.of(7);
+    motionMagicAcceleration = RotationsPerSecondPerSecond.of(9);
 
     // Position
     CollectorUpPos = Rotations.of(0);
-    CollectorDownPos = Radians.of(1.65);
+    CollectorDownPos = Radians.of(1.55);
 
     // Collector Intake Speeds
-    CollectorIntakeSpeed = RadiansPerSecond.of(40);
+    CollectorIntakeSpeed = RadiansPerSecond.of(50);
 
     // Limit Switch Constants
     UpperLimitChannel = 6;
