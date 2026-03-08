@@ -77,11 +77,13 @@ public class CollectorModule {
 
     collectorIntakeKP =
         new LoggedTunableNumber(modulePrefix + "Intake/kP", collectorIO.getConstants().intakekP);
-    
+
     collectorIntakeKV =
         new LoggedTunableNumber(modulePrefix + "Intake/kV", collectorIO.getConstants().intakekV);
-    collectorIntakeKA = new LoggedTunableNumber(modulePrefix + "Intake/kA", collectorIO.getConstants().intakekA);
-    collectorIntakeKS = new LoggedTunableNumber(modulePrefix + "Intake/kS", collectorIO.getConstants().intakekS);
+    collectorIntakeKA =
+        new LoggedTunableNumber(modulePrefix + "Intake/kA", collectorIO.getConstants().intakekA);
+    collectorIntakeKS =
+        new LoggedTunableNumber(modulePrefix + "Intake/kS", collectorIO.getConstants().intakekS);
     collectorIntakeVelocity =
         new LoggedTunableNumber(
             modulePrefix + "Intake/Velocity",
