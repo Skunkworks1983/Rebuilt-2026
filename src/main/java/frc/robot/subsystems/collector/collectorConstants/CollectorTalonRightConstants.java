@@ -42,7 +42,7 @@ public class CollectorTalonRightConstants extends CollectorModuleConstants {
     intakekI = 0.0;
     intakekV = 0;
     intakekA = 9;
-    intakekS = 7;
+    intakekS = 8;
 
     // Sim Turn PID
     SimTurnkP = 13.5;
