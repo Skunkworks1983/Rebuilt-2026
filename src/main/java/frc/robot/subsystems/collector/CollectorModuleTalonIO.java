@@ -155,7 +155,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
 
     // PID config for intakeMotor
     var intakeConfig = new TalonFXConfiguration();
-    intakeConfig.CurrentLimits.SupplyCurrentLimit = 80;
+    intakeConfig.CurrentLimits.SupplyCurrentLimit = 100;
     intakeConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
     if (RobotBase.isReal()) {
