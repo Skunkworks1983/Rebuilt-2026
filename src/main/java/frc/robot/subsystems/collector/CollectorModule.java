@@ -172,8 +172,8 @@ public class CollectorModule {
    *
    * @param angle WPILib angle
    */
-  public void setCollectorPos(Angle angle) {
-    collectorIO.setCollectorPos(angle);
+  public void setCollectorPos(Angle angle, int slot) {
+    collectorIO.setCollectorPos(angle, slot);
   }
 
   /**

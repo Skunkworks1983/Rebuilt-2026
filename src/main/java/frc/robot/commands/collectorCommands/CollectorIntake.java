@@ -47,6 +47,7 @@ public class CollectorIntake extends Command {
     if (!leftCollector.isCollectorUp()) {
       rightCollector.setCollectorDutyCycle(0);
       leftCollector.setCollectorVelocity(leftCollector.getConstants().CollectorIntakeSpeed);
+
     } else if (!rightCollector.isCollectorUp()) {
       leftCollector.setCollectorDutyCycle(0);
       rightCollector.setCollectorVelocity(rightCollector.getConstants().CollectorIntakeSpeed);

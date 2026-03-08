@@ -18,7 +18,6 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
-import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -129,9 +128,19 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
       turnSlot0Configs.kI = constants.turnkI;
     }
 
+    var turnSlot1Configs = turnConfig.Slot1;
+
+    turnSlot1Configs.kP = constants.turnkP / 2;
+    turnSlot1Configs.kD = constants.turnkD / 2;
+    turnSlot1Configs.kI = constants.turnkI / 2;
+
     turnSlot0Configs.kS = constants.turnkS;
     turnSlot0Configs.kV = constants.turnkV;
     turnSlot0Configs.kA = constants.turnkA;
+
+    turnSlot1Configs.kS = constants.turnkS / 2;
+    turnSlot1Configs.kV = constants.turnkV / 2;
+    turnSlot1Configs.kA = constants.turnkA / 2;
 
     // Motion Magic Configs for Turn Motor
     var turnMotionMagicConfig = turnConfig.MotionMagic;
@@ -248,7 +257,9 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
             || turnMotor
                 .getPosition()
                 .getValue()
-                .gte(Radians.of(constants.CollectorDownPos.get()).minus(constants.CollectorPosTolerance));
+                .gte(
+                    Radians.of(constants.CollectorDownPos.get())
+                        .minus(constants.CollectorPosTolerance));
 
     Logger.recordOutput(
         "Collector/Module/" + constants.collectorSide + "/Collector Up Position",
@@ -269,6 +280,11 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
    * @param velocity -Angular Velocity
    */
   public void setCollectorVelocity(AngularVelocity velocity) {
+    if (velocity.gt(RotationsPerSecond.of(0))) {
+      setCollectorPos(Radians.of(constants.CollectorDownPos.get()), 1);
+    } else {
+      setCollectorPos(Radians.of(constants.CollectorDownPos.get()), 0);
+    }
     if (!velocity.equals(lastVelocity)) {
       intakeMotor.setControl(
           new VelocityTorqueCurrentFOC(RotationsPerSecond.of(collectorIntakeVelocity.get())));
@@ -286,8 +302,8 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
    *
    * @param angle -WPILib Angle
    */
-  public void setCollectorPos(Angle angle) {
-    turnMotor.setControl(new MotionMagicVoltage(angle));
+  public void setCollectorPos(Angle angle, int slot) {
+    turnMotor.setControl(new MotionMagicVoltage(angle).withSlot(slot));
   }
 
   /**
@@ -323,7 +339,9 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
         || turnMotor
             .getPosition()
             .getValue()
-            .gte(Radians.of(constants.CollectorDownPos.get()).minus(constants.CollectorPosTolerance));
+            .gte(
+                Radians.of(constants.CollectorDownPos.get())
+                    .minus(constants.CollectorPosTolerance));
   }
 
   /**
@@ -351,7 +369,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
   /** Sets Collector to its up position */
   public void goUp() {
     if (!setUpRunning) {
-      setCollectorPos(constants.CollectorUpPos);
+      setCollectorPos(constants.CollectorUpPos, 0);
       Logger.recordOutput(
           "Collector/" + constants.turnMotorID + "/setpoint", constants.CollectorUpPos);
       setUpRunning = true;
@@ -362,7 +380,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
   /** Sets Collector to its up position */
   public void goDown() {
     if (!setDownRunning) {
-      setCollectorPos(Radians.of(constants.CollectorDownPos.get()));
+      setCollectorPos(Radians.of(constants.CollectorDownPos.get()), 0);
       Logger.recordOutput(
           "Collector/" + constants.turnMotorID + "/setpoint", constants.CollectorDownPos);
 

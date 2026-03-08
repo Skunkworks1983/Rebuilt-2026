@@ -20,8 +20,8 @@ public class HoldPosition extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    collector.getLeftCollector().setCollectorPos(collector.getLeftCollector().getPosition());
-    collector.getRightCollector().setCollectorPos(collector.getRightCollector().getPosition());
+    collector.getLeftCollector().setCollectorPos(collector.getLeftCollector().getPosition(), 0);
+    collector.getRightCollector().setCollectorPos(collector.getRightCollector().getPosition(), 0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

@@ -86,7 +86,7 @@ public interface CollectorModuleIO {
    *
    * @param angle WPILib angle
    */
-  public default void setCollectorPos(Angle angle) {}
+  public default void setCollectorPos(Angle angle, int slot) {}
 
   /**
    * Sets the velocity of our pivot motor collector motors

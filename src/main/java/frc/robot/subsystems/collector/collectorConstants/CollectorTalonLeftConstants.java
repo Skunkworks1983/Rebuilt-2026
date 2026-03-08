@@ -5,7 +5,6 @@
 package frc.robot.subsystems.collector.collectorConstants;
 
 import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
@@ -64,8 +63,7 @@ public class CollectorTalonLeftConstants extends CollectorModuleConstants {
 
     // Position
     CollectorUpPos = Rotations.of(0);
-    CollectorDownPos = new LoggedTunableNumber("Collectpr/Left/Downpose",1.55);
-    
+    CollectorDownPos = new LoggedTunableNumber("Collectpr/Left/Downpose", 1.55);
 
     // Collector Intake Speeds
     CollectorIntakeSpeed = RadiansPerSecond.of(50);
