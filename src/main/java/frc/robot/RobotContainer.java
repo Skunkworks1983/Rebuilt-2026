@@ -356,7 +356,7 @@ public class RobotContainer {
 
     // Collector Intake Button
     new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorIntakeID)
-        .whileTrue(new CollectorIntake(collector));
+        .whileTrue(new CollectorIntake(collector, indexer));
 
     // Coolector Reverse Intake Button
     new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID)
