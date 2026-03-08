@@ -12,6 +12,7 @@ import com.ctre.phoenix6.CANBus;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
+import frc.robot.util.LoggedTunableNumber;
 
 /** An Interface for collector constants */
 public class CollectorModuleConstants {
@@ -66,7 +67,7 @@ public class CollectorModuleConstants {
 
   // Position
   public Angle CollectorUpPos;
-  public Angle CollectorDownPos;
+  public LoggedTunableNumber CollectorDownPos;
 
   // Collector Manual pivot velocity
   public double CollectorPivotVelocity;
@@ -128,7 +129,7 @@ public class CollectorModuleConstants {
 
     // Position
     CollectorUpPos = Degrees.of(0);
-    CollectorDownPos = Degrees.of(0);
+    // CollectorDownPos = Degrees
 
     // Pivot Velocity
     CollectorPivotVelocity = 0.3;

@@ -2,6 +2,7 @@ package frc.robot.subsystems.collector;
 
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.Radians;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.LinearSystem;
@@ -113,9 +114,10 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
 
   /** Change lower limit switch value */
   public boolean isLowerLimitTrue() {
-    return turnMotorSim
-        .getAngularPosition()
-        .gte(constants.CollectorDownPos.plus(constants.CollectorPosTolerance));
+    return false;
+    // return turnMotorSim
+    //     .getAngularPosition()
+    //     .gte(constants.CollectorDownPos.get() + constants.CollectorPosTolerance.in(Radians));
   }
 
   /**

@@ -11,6 +11,8 @@ import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
 
+import frc.robot.util.LoggedTunableNumber;
+
 /**
  * This class is a grouping of constants
  *
@@ -39,7 +41,7 @@ public class CollectorTalonLeftConstants extends CollectorModuleConstants {
     intakekP = 3;
     intakekD = 0.0;
     intakekI = 0.0;
-    intakekV = 0.5;
+    intakekV = 0;
 
     // Sim Turn PID
     SimTurnkP = 13.5;
@@ -62,7 +64,8 @@ public class CollectorTalonLeftConstants extends CollectorModuleConstants {
 
     // Position
     CollectorUpPos = Rotations.of(0);
-    CollectorDownPos = Radians.of(1.55);
+    CollectorDownPos = new LoggedTunableNumber("Collectpr/Left/Downpose",1.55);
+    
 
     // Collector Intake Speeds
     CollectorIntakeSpeed = RadiansPerSecond.of(50);
