@@ -37,7 +37,7 @@ public class CollectorTalonRightConstants extends CollectorModuleConstants {
     turnkI = 0;
 
     // Real intake PID
-    intakekP = 10;
+    intakekP = 40;
     intakekD = 0.0;
     intakekI = 0.0;
     intakekV = 0;
