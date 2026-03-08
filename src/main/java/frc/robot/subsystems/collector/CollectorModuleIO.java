@@ -68,7 +68,7 @@ public interface CollectorModuleIO {
 
   /** Gets Constants */
   public default CollectorModuleConstants getConstants() {
-    return null;
+    return new CollectorModuleConstants();
   }
 
   /**
