@@ -13,6 +13,7 @@ public class ManualCollectorUp extends Command {
   /** Creates a new ManualCollectorUp. */
   public ManualCollectorUp(Collector collector) {
     // Use addRequirements() here to declare subsystem dependencies.
+    this.collector = collector;
     addRequirements(collector);
   }
 
@@ -20,14 +21,14 @@ public class ManualCollectorUp extends Command {
   @Override
   public void initialize() {
     collector
-      .getLeftCollector()
-      .setCollectorPivotDutyCycle(
-        -collector.getLeftCollector().getConstants().CollectorPivotVelocity);
+        .getLeftCollector()
+        .setCollectorPivotDutyCycle(
+            -collector.getLeftCollector().getConstants().CollectorPivotVelocity);
 
     collector
-      .getRightCollector()
-      .setCollectorPivotDutyCycle(
-        -collector.getLeftCollector().getConstants().CollectorPivotVelocity);
+        .getRightCollector()
+        .setCollectorPivotDutyCycle(
+            -collector.getLeftCollector().getConstants().CollectorPivotVelocity);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
