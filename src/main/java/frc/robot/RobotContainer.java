@@ -40,6 +40,7 @@ import frc.robot.commands.collectorCommands.RightCollectorDownState;
 import frc.robot.commands.indexerCommands.IndexerAutoUnjam;
 import frc.robot.commands.indexerCommands.IndexerReverseCommand;
 import frc.robot.subsystems.collector.Collector;
+import frc.robot.subsystems.collector.CollectorModuleIO;
 import frc.robot.subsystems.collector.CollectorModuleSimIO;
 import frc.robot.subsystems.collector.CollectorModuleTalonIO;
 import frc.robot.subsystems.collector.collectorConstants.CollectorTalonLeftConstants;
@@ -237,10 +238,7 @@ public class RobotContainer {
 
         vision = new Vision(drive, new VisionIO() {}, new VisionIO() {});
 
-        collector =
-            new Collector(
-                new CollectorModuleSimIO(simulation, new CollectorTalonLeftConstants()),
-                new CollectorModuleSimIO(simulation, new CollectorTalonRightConstants()));
+        collector = new Collector(new CollectorModuleIO() {}, new CollectorModuleIO() {});
 
         indexer = new Indexer(new IndexerIO() {});
         break;
