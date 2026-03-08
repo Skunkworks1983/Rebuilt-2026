@@ -35,6 +35,7 @@ import frc.robot.commands.collectorCommands.CollectorIntake;
 import frc.robot.commands.collectorCommands.HoldPosition;
 import frc.robot.commands.collectorCommands.LeftCollectorDownState;
 import frc.robot.commands.collectorCommands.ManualCollectorDown;
+import frc.robot.commands.collectorCommands.ManualCollectorUp;
 import frc.robot.commands.collectorCommands.RightCollectorDownState;
 import frc.robot.commands.indexerCommands.IndexerAutoUnjam;
 import frc.robot.commands.indexerCommands.IndexerReverseCommand;
@@ -378,12 +379,17 @@ public class RobotContainer {
         // .and(manualModeSwitch)
         .onTrue(new BothCollectorsUpState(collector));
 
-    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualPivot)
+    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualPivotDown)
         // .and(manualModeSwitch)
         .whileTrue(new ManualCollectorDown(collector));
 
+    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualPivotUp)
+        // .and(manualModeSwitch)
+        .whileTrue(new ManualCollectorUp(collector));
+
     new JoystickButton(buttonJoystick, Constants.OIConstants.ShooterShootTransferID)
         .whileTrue(shootPresetSetpointsTransfer);
+
     new JoystickButton(buttonJoystick, Constants.OIConstants.ShooterShootHubID)
         .whileTrue(shootPresetSetpointsGoal);
 
