@@ -37,7 +37,7 @@ public class CollectorTalonRightConstants extends CollectorModuleConstants {
     turnkI = 0;
 
     // Real intake PID
-    intakekP = 40;
+    intakekP = 80;
     intakekD = 0.0;
     intakekI = 0.0;
     intakekV = 0;
@@ -67,7 +67,7 @@ public class CollectorTalonRightConstants extends CollectorModuleConstants {
     CollectorDownPos = new LoggedTunableNumber("Collector/Right/Downpose rad", 1.55);
 
     // Collector Intake Speeds
-    CollectorIntakeSpeed = RadiansPerSecond.of(50);
+    CollectorIntakeSpeed = RadiansPerSecond.of(80);
 
     // Limit Switch Constants
     UpperLimitChannel = 9;
