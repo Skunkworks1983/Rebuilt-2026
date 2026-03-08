@@ -130,17 +130,17 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
 
     var turnSlot1Configs = turnConfig.Slot1;
 
-    turnSlot1Configs.kP = constants.turnkP / 2;
-    turnSlot1Configs.kD = constants.turnkD / 2;
-    turnSlot1Configs.kI = constants.turnkI / 2;
+    turnSlot1Configs.kP = constants.turnkP / 10;
+    turnSlot1Configs.kD = constants.turnkD / 10;
+    turnSlot1Configs.kI = constants.turnkI / 10;
 
     turnSlot0Configs.kS = constants.turnkS;
     turnSlot0Configs.kV = constants.turnkV;
     turnSlot0Configs.kA = constants.turnkA;
 
-    turnSlot1Configs.kS = constants.turnkS / 2;
-    turnSlot1Configs.kV = constants.turnkV / 2;
-    turnSlot1Configs.kA = constants.turnkA / 2;
+    turnSlot1Configs.kS = 0;
+    turnSlot1Configs.kV = 0;
+    turnSlot1Configs.kA = 0;
 
     // Motion Magic Configs for Turn Motor
     var turnMotionMagicConfig = turnConfig.MotionMagic;
