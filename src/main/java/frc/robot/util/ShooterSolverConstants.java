@@ -23,7 +23,7 @@ public class ShooterSolverConstants {
 
   /** Air drag coefficient approximation. */
   public static LoggedTunableNumber drag =
-      new LoggedTunableNumber("Shooter/Air Drag Coefficient", 0.082);
+      new LoggedTunableNumber("Shooter/Air Drag Coefficient", 0.084);
 
   /** Maximum multiplier to apply for drag compensation. */
   public static final double maxDragMultiplier = 3;
@@ -33,7 +33,7 @@ public class ShooterSolverConstants {
    * half the velocity is converted to spin
    */
   public static final LoggedTunableNumber flywheelEfficiency =
-      new LoggedTunableNumber("Flywheel Efficiency", 0.415);
+      new LoggedTunableNumber("Flywheel Efficiency", 0.41);
 
   // CONSTRAINED HEIGHT SOLVER
   /** Vertical clearance required above the hub for specialized constrained shots. */
