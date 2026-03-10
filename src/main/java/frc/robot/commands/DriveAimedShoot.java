@@ -99,7 +99,7 @@ public class DriveAimedShoot extends Command {
     yawController.setTolerance(DriveControlConstants.YAW_SETPOINT_TOLERANCE_RADIANS.get());
 
     CommandScheduler.getInstance().cancel(indexerCommand);
-
+    // TODO: Test if filtering is helpful
     // lastFilteredYaw = drive.getRotation().getRadians();
     // double filterPeriod = DriveControlConstants.linearFilterPeriod.get();
     // double filterTimeConstant =
