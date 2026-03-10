@@ -41,9 +41,11 @@ import frc.robot.commands.indexerCommands.IndexerReverseCommand;
 import frc.robot.subsystems.collector.Collector;
 import frc.robot.subsystems.collector.CollectorModuleIO;
 import frc.robot.subsystems.collector.CollectorModuleSimIO;
+import frc.robot.subsystems.collector.CollectorModuleSingleTalonIO;
 import frc.robot.subsystems.collector.CollectorModuleTalonIO;
 import frc.robot.subsystems.collector.collectorConstants.CollectorTalonLeftConstants;
 import frc.robot.subsystems.collector.collectorConstants.CollectorTalonRightConstants;
+import frc.robot.subsystems.collector.collectorConstants.CollectorTalonSingleConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -218,6 +220,59 @@ public class RobotContainer {
 
         indexer = new Indexer(new IndexerIOSim());
 
+        break;
+
+      case SINGLEREAL:
+        // Real robot with single collector, instantiate hardware IO implementations
+        // ModuleIOTalonFX is intended for modules with TalonFX drive, TalonFX turn, and
+        // a CANcoder
+        drive =
+            new Drive(
+                new GyroIOPigeon2(),
+                new ModuleIOTalonFX(Constants.tunerConstants.getFrontLeft()),
+                new ModuleIOTalonFX(Constants.tunerConstants.getFrontRight()),
+                new ModuleIOTalonFX(Constants.tunerConstants.getBackLeft()),
+                new ModuleIOTalonFX(Constants.tunerConstants.getBackRight()),
+                (pose) -> {},
+                (pose) -> {});
+
+        shooter =
+            new Shooter(
+                new FlywheelIOTalonFX(ShooterConstants.upperFlywheelMotorID, FlywheelLevel.Upper),
+                new FlywheelIOTalonFX(ShooterConstants.lowerFlywheelMotorID, FlywheelLevel.Lower),
+                new PivotIOTalonFX(),
+                new BeamBreakIOSensor());
+
+        vision =
+            new Vision(
+                drive, new VisionIOLimelight(VisionConstants.camera0Name, drive::getRotation));
+
+        // This is a solution to the vision-drive cross dependency issue that hurts my
+        // eys, but it does work
+
+        indexer = new Indexer(new IndexerIOTalonFX());
+
+        collector =
+            new Collector(
+                new CollectorModuleSingleTalonIO(new CollectorTalonSingleConstants()));
+
+        // The ModuleIOTalonFXS implementation provides an example implementation for
+        // TalonFXS controller connected to a CANdi with a PWM encoder. The
+        // implementations
+        // of ModuleIOTalonFX, ModuleIOTalonFXS, and ModuleIOSpark (from the Spark
+        // swerve
+        // template) can be freely intermixed to support alternative hardware
+        // arrangements.
+        // Please see the AdvantageKit template documentation for more information:
+        // https://docs.advantagekit.org/getting-started/template-projects/talonfx-swerve-template#custom-module-implementations
+        //
+        // drive =
+        // new Drive(
+        // new GyroIOPigeon2(),
+        // new ModuleIOTalonFXS(TunerConstants.FrontLeft),
+        // new ModuleIOTalonFXS(TunerConstants.FrontRight),
+        // new ModuleIOTalonFXS(TunerConstants.BackLeft),
+        // new ModuleIOTalonFXS(TunerConstants.BackRight));
         break;
 
       default:
