@@ -183,77 +183,79 @@ public class Shooter extends SubsystemBase {
 
     pivotDisconnectedAlert.set(
         (!pivotInputs.motorConnected) && Constants.currentMode != Constants.Mode.SIM);
+    if (Constants.tuningMode) {
+      int hash = hashCode();
+      if (upperFlywheelKP.hasChanged(hash)
+          || upperFlywheelKD.hasChanged(hash)
+          || upperFlywheelKS.hasChanged(hash)
+          || upperFlywheelKV.hasChanged(hash)
+          || upperFlywheelKA.hasChanged(hash)) {
+        Slot0Configs gains = new Slot0Configs();
+        gains.kP = upperFlywheelKP.get();
+        gains.kD = upperFlywheelKD.get();
+        gains.kS = upperFlywheelKS.get();
+        gains.kV = upperFlywheelKV.get();
+        gains.kA = upperFlywheelKA.get();
+        upperFlywheel.setPID(gains);
 
-    if (upperFlywheelKP.hasChanged(hashCode())
-        || upperFlywheelKD.hasChanged(hashCode())
-        || upperFlywheelKS.hasChanged(hashCode())
-        || upperFlywheelKV.hasChanged(hashCode())
-        || upperFlywheelKA.hasChanged(hashCode())) {
-      Slot0Configs gains = new Slot0Configs();
-      gains.kP = upperFlywheelKP.get();
-      gains.kD = upperFlywheelKD.get();
-      gains.kS = upperFlywheelKS.get();
-      gains.kV = upperFlywheelKV.get();
-      gains.kA = upperFlywheelKA.get();
-      upperFlywheel.setPID(gains);
+        Elastic.sendNotification(
+            new Elastic.Notification(
+                Elastic.NotificationLevel.INFO,
+                "Shooter PID Update",
+                "Upper flywheel PID gains have been updated."));
+      }
 
-      Elastic.sendNotification(
-          new Elastic.Notification(
-              Elastic.NotificationLevel.INFO,
-              "Shooter PID Update",
-              "Upper flywheel PID gains have been updated."));
-    }
+      if (lowerFlywheelKP.hasChanged(hash)
+          || lowerFlywheelKD.hasChanged(hash)
+          || lowerFlywheelKS.hasChanged(hash)
+          || lowerFlywheelKV.hasChanged(hash)
+          || lowerFlywheelKA.hasChanged(hash)) {
+        Slot0Configs gains = new Slot0Configs();
+        gains.kP = lowerFlywheelKP.get();
+        gains.kD = lowerFlywheelKD.get();
+        gains.kS = lowerFlywheelKS.get();
+        gains.kV = lowerFlywheelKV.get();
+        gains.kA = lowerFlywheelKA.get();
+        lowerFlywheel.setPID(gains);
 
-    if (lowerFlywheelKP.hasChanged(hashCode())
-        || lowerFlywheelKD.hasChanged(hashCode())
-        || lowerFlywheelKS.hasChanged(hashCode())
-        || lowerFlywheelKV.hasChanged(hashCode())
-        || lowerFlywheelKA.hasChanged(hashCode())) {
-      Slot0Configs gains = new Slot0Configs();
-      gains.kP = lowerFlywheelKP.get();
-      gains.kD = lowerFlywheelKD.get();
-      gains.kS = lowerFlywheelKS.get();
-      gains.kV = lowerFlywheelKV.get();
-      gains.kA = lowerFlywheelKA.get();
-      lowerFlywheel.setPID(gains);
+        Elastic.sendNotification(
+            new Elastic.Notification(
+                Elastic.NotificationLevel.INFO,
+                "Shooter PID Update",
+                "Lower flywheel PID gains have been updated."));
+      }
 
-      Elastic.sendNotification(
-          new Elastic.Notification(
-              Elastic.NotificationLevel.INFO,
-              "Shooter PID Update",
-              "Lower flywheel PID gains have been updated."));
-    }
+      if (pivotKP.hasChanged(hash)
+          || pivotKD.hasChanged(hash)
+          || pivotKS.hasChanged(hash)
+          || pivotKV.hasChanged(hash)
+          || pivotKA.hasChanged(hash)) {
+        Slot0Configs gains = new Slot0Configs();
+        gains.kP = pivotKP.get();
+        gains.kD = pivotKD.get();
+        gains.kS = pivotKS.get();
+        gains.kV = pivotKV.get();
+        gains.kA = pivotKA.get();
+        pivot.setPID(gains);
 
-    if (pivotKP.hasChanged(hashCode())
-        || pivotKD.hasChanged(hashCode())
-        || pivotKS.hasChanged(hashCode())
-        || pivotKV.hasChanged(hashCode())
-        || pivotKA.hasChanged(hashCode())) {
-      Slot0Configs gains = new Slot0Configs();
-      gains.kP = pivotKP.get();
-      gains.kD = pivotKD.get();
-      gains.kS = pivotKS.get();
-      gains.kV = pivotKV.get();
-      gains.kA = pivotKA.get();
-      pivot.setPID(gains);
+        Elastic.sendNotification(
+            new Elastic.Notification(
+                Elastic.NotificationLevel.INFO,
+                "Shooter PID Update",
+                "Pivot PID gains have been updated."));
+      }
 
-      Elastic.sendNotification(
-          new Elastic.Notification(
-              Elastic.NotificationLevel.INFO,
-              "Shooter PID Update",
-              "Pivot PID gains have been updated."));
-    }
+      if (pivotMaxAcceleration.hasChanged(hash) || pivotMaxVelocity.hasChanged(hash)) {
+        pivot.setMotionConstraints(
+            RotationsPerSecond.of(pivotMaxVelocity.get()),
+            RotationsPerSecondPerSecond.of(pivotMaxAcceleration.get()));
 
-    if (pivotMaxAcceleration.hasChanged(hashCode()) || pivotMaxVelocity.hasChanged(hashCode())) {
-      pivot.setMotionConstraints(
-          RotationsPerSecond.of(pivotMaxVelocity.get()),
-          RotationsPerSecondPerSecond.of(pivotMaxAcceleration.get()));
-
-      Elastic.sendNotification(
-          new Elastic.Notification(
-              Elastic.NotificationLevel.INFO,
-              "Shooter Motion Constraints Update",
-              "Pivot motion constraints have been updated."));
+        Elastic.sendNotification(
+            new Elastic.Notification(
+                Elastic.NotificationLevel.INFO,
+                "Shooter Motion Constraints Update",
+                "Pivot motion constraints have been updated."));
+      }
     }
 
     SmartDashboard.putBoolean("Shooter/Pivot/Trenchable", isPivotHomed());
