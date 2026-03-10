@@ -48,6 +48,8 @@ public class CollectorModuleConstants {
   public double intakekD;
   public double intakekI;
   public double intakekV;
+  public double intakekS;
+  public double intakekA;
 
   // Sim Turn PID
   public double SimTurnkP;
@@ -113,6 +115,8 @@ public class CollectorModuleConstants {
     intakekD = 0.0;
     intakekI = 0.0;
     intakekV = 0.0;
+    intakekS = 0.0;
+    intakekA = 0.0;
 
     // Sim Turn PID
     SimTurnkP = 0.0;

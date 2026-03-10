@@ -36,7 +36,6 @@ import frc.robot.commands.collectorCommands.HoldPosition;
 import frc.robot.commands.collectorCommands.LeftCollectorDownState;
 import frc.robot.commands.collectorCommands.ManualCollectorDown;
 import frc.robot.commands.collectorCommands.ManualCollectorUp;
-import frc.robot.commands.collectorCommands.RightCollectorDownState;
 import frc.robot.commands.indexerCommands.IndexerAutoUnjam;
 import frc.robot.commands.indexerCommands.IndexerReverseCommand;
 import frc.robot.subsystems.collector.Collector;
@@ -363,9 +362,9 @@ public class RobotContainer {
         .whileTrue(new CollectorExpel(collector));
 
     // Right Collector Down
-    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorRightDownID)
-        // .and(manualModeSwitch)
-        .onTrue(new RightCollectorDownState(collector));
+    // new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorRightDownID)
+    // .and(manualModeSwitch)
+    // .onTrue(new RightCollectorDownState(collector));
 
     // Left Collector Down
     new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorLeftDownID)

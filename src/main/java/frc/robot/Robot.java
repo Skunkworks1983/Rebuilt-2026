@@ -121,6 +121,10 @@ public class Robot extends LoggedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+    if (Constants.currentMode == Mode.SIM) {
+      SimulatedArena.getInstance().resetFieldForAuto();
+    }
+
     autonomousCommand = robotContainer.getAutonomousCommand();
     teleInitCommand = robotContainer.getTeleopInitCommand();
 
