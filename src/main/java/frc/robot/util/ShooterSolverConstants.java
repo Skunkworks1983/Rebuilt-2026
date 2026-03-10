@@ -13,13 +13,7 @@ import edu.wpi.first.units.measure.Distance;
  * @author Eddy Walsh
  */
 public class ShooterSolverConstants {
-  /** Safety buffer angle for avoiding the hub when transferring from neutral zone. */
-  public static final Rotation2d hubSafetyAngle = new Rotation2d();
-
   public static double gravity = 9.80665; // m / s^2
-
-  /** Default pitch angle to use when other calculations fail or default is needed. */
-  public static final Angle defaultPitch = Degrees.of(70);
 
   /** Air drag coefficient approximation. */
   public static LoggedTunableNumber drag =
@@ -42,22 +36,6 @@ public class ShooterSolverConstants {
 
   public static final LoggedTunableNumber lowerFlywheelVelocityMultiplier =
       new LoggedTunableNumber("Lower Flywheel Velocity Multiplier", 1.15);
-
-  // ITERATIVE SOLVER
-  /** Maximum iterations for the numerical solver loop. */
-  public static int maxIterations = 30;
-
-  /** Maximum allowable error in the solver's convergence. */
-  public static double maxError = 0.001;
-
-  /** Optimization weight for pitch angle changes in the solver. */
-  public static double weightTheta = 1.;
-
-  /** Optimization weight for velocity changes in the solver. */
-  public static double weightVelocity = 1.;
-
-  /** Learning rate/step size for the gradient descent solver. */
-  public static final double changeRate = 0.85;
 
   // SHOT LATENCY MODEL
   /** Default time delay from code trigger to shot release. */
