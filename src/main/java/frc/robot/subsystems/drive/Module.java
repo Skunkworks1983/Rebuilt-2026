@@ -86,6 +86,7 @@ public class Module {
     io.setDriveOpenLoop(output);
     io.setTurnPosition(Rotation2d.kZero);
 
+    // Switches between drive and spin motors for sysId
     // io.setTurnOpenLoop(output);
   }
 

@@ -114,9 +114,6 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
   /** Change lower limit switch value */
   public boolean isLowerLimitTrue() {
     return false;
-    // return turnMotorSim
-    //     .getAngularPosition()
-    //     .gte(constants.CollectorDownPos.get() + constants.CollectorPosTolerance.in(Radians));
   }
 
   /**

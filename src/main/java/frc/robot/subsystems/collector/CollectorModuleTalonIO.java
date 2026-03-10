@@ -131,9 +131,9 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
 
     var turnSlot1Configs = turnConfig.Slot1;
 
-    turnSlot1Configs.kP = constants.turnkP / 10;
-    turnSlot1Configs.kD = constants.turnkD / 10;
-    turnSlot1Configs.kI = constants.turnkI / 10;
+    turnSlot1Configs.kP = constants.turnkP / constants.slot1Divisiable;
+    turnSlot1Configs.kD = constants.turnkD / constants.slot1Divisiable;
+    turnSlot1Configs.kI = constants.turnkI / constants.slot1Divisiable;
 
     turnSlot0Configs.kS = constants.turnkS;
     turnSlot0Configs.kV = constants.turnkV;
@@ -204,10 +204,6 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
         turnError,
         turnSetPoint);
     ParentDevice.optimizeBusUtilizationForAll(turnMotor, intakeMotor);
-
-    // upperLimitTrigger = new Trigger(upperLimitSwitch::get);
-    // False because inverted switch
-    // upperLimitTrigger.onFalse(new InstantCommand(() -> turnMotor.setPosition(Degrees.of(0))));
   }
 
   @Override
