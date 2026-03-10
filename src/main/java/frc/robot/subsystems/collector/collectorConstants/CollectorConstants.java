@@ -24,6 +24,4 @@ public class CollectorConstants {
 
   // Collector tick number for auto state change
   public static final double collectorTicksForAuto = 0.0;
-
-  public static final CANBus collectorCan = new CANBus("rio"); // TODO: Enter canbus
 }
