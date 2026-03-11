@@ -255,35 +255,34 @@ public class RobotContainer {
         .whileTrue(new NoYawShootHub(shooter, drive, autoShootIndexerCommand));
 
     // Set up SysId routines
-    autoChooser.addOption(
+    autoChooserAddOption(
         "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
-    autoChooser.addOption(
+    autoChooserAddOption(
         "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
 
-    autoChooser.addOption(
+    autoChooserAddOption(
         "Drive SysId (Quasistatic Forward)",
         drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption(
+    autoChooserAddOption(
         "Drive SysId (Quasistatic Reverse)",
         drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    autoChooser.addOption(
+    autoChooserAddOption(
         "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption(
+    autoChooserAddOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-    autoChooser.addOption(
+    autoChooserAddOption(
         "Shooter SysId (Quasistatic Forward)",
         shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption(
+    autoChooserAddOption(
         "Shooter SysId (Quasistatic Reverse)",
         shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    autoChooser.addOption(
+    autoChooserAddOption(
         "Shooter SysId (Dynamic Forward)", shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption(
+    autoChooserAddOption(
         "Shooter SysId (Dynamic Reverse)", shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-    autoChooser.addOption(
-        "Simple Auto", new NoYawShootHub(shooter, drive, autoShootIndexerCommand));
+    autoChooserAddOption("Simple Auto", new NoYawShootHub(shooter, drive, autoShootIndexerCommand));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -397,7 +396,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return autoChooser.get().alongWith(new HoldPosition(collector));
+    return autoChooser.get();
   }
 
   /**
@@ -464,5 +463,10 @@ public class RobotContainer {
                 simulation.getDriveTrainSimulatedChassisSpeedsFieldRelative(),
                 shooter.getShooterForwardLinearVelocity(),
                 shooter.getPivotAngle()));
+  }
+
+  /** auto chooser option that dosent  crash robot when ran slong side holdPosition*/
+  public void autoChooserAddOption(String key, Command command) {
+    autoChooser.addOption(key, command.alongWith(new HoldPosition(collector)));
   }
 }
