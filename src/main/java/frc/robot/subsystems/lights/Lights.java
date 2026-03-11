@@ -13,7 +13,7 @@ public class Lights {
   private DigitalOutput led1;
   private DigitalOutput led2;
 
-  LightPattern currentLight = LightPattern.None;
+  private LightPattern currentLight = LightPattern.None;
 
   public Lights() {
     led0 = new DigitalOutput(LightsConstants.led0Channel);
