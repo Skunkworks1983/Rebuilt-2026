@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.lights;
 
 import edu.wpi.first.wpilibj.DigitalOutput;
 
@@ -16,9 +16,9 @@ public class Lights {
   LightPattern currentLight = LightPattern.None;
 
   public Lights() {
-    led0 = new DigitalOutput(0);
-    led1 = new DigitalOutput(0);
-    led2 = new DigitalOutput(0);
+    led0 = new DigitalOutput(LightsConstants.led0Channel);
+    led1 = new DigitalOutput(LightsConstants.led1Channel);
+    led2 = new DigitalOutput(LightsConstants.led2Channel);
   }
 
   public void setLight(LightPattern pattern) {
