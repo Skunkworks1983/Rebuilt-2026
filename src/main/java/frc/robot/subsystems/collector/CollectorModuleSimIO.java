@@ -25,7 +25,7 @@ import org.ironmaple.simulation.drivesims.AbstractDriveTrainSimulation;
  * @author Liam B
  * @author Arlo
  */
-public class CollectorModuleSimIO extends CollectorModuleTalonIO {
+public class CollectorModuleSimIO extends CollectorModuleSingleTalonIO {
   private IntakeSimulation collectorSimulation;
 
   private DCMotorSim intakeMotorSim;
