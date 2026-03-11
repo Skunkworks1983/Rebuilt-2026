@@ -312,11 +312,6 @@ public class CollectorModuleSingleTalonIO implements CollectorModuleIO {
    * @param velocity -Angular Velocity
    */
   public void setCollectorVelocity(AngularVelocity velocity) {
-    if (velocity.gt(RotationsPerSecond.of(0))) {
-      setCollectorPos(Radians.of(constants.CollectorDownPos.get()), 1);
-    } else {
-      setCollectorPos(Radians.of(constants.CollectorDownPos.get()), 0);
-    }
     if (!velocity.equals(lastVelocity)) {
       intakeUpperMotor.setControl(
           new VelocityTorqueCurrentFOC(RotationsPerSecond.of(collectorUpperIntakeVelocity.get())));
