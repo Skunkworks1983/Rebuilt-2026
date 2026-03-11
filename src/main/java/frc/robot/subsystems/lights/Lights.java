@@ -9,9 +9,9 @@ import edu.wpi.first.wpilibj.DigitalOutput;
 /** Add your docs here. */
 public class Lights {
 
-  DigitalOutput led0;
-  DigitalOutput led1;
-  DigitalOutput led2;
+  private DigitalOutput led0;
+  private DigitalOutput led1;
+  private DigitalOutput led2;
 
   LightPattern currentLight = LightPattern.None;
 
