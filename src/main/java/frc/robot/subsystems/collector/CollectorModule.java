@@ -141,7 +141,7 @@ public class CollectorModule {
    * @return -Angular Velocity
    */
   public AngularVelocity getVelocityOfIntake() {
-    return inputs.intakeVelocity;
+    return inputs.intakeUpperVelocity;
   }
 
   /**
