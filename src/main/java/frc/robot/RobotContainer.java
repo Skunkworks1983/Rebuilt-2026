@@ -405,7 +405,7 @@ public class RobotContainer {
    * @return the command to run in teleop init
    */
   public Command getTeleopInitCommand() {
-    return new HoldPosition(collector);
+    return new BothCollectorsUpState(collector);
   }
 
   /**
@@ -467,6 +467,6 @@ public class RobotContainer {
 
   /** auto chooser option that dosent  crash robot when ran slong side holdPosition*/
   public void autoChooserAddOption(String key, Command command) {
-    autoChooser.addOption(key, command.alongWith(new HoldPosition(collector)));
+    autoChooser.addOption(key, command.alongWith(new BothCollectorsUpState(collector)));
   }
 }
