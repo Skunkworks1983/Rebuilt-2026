@@ -36,7 +36,7 @@ public class IndexerConstants {
   /** Stator current limit in Amps for the indexer motor. */
   public static final Current indexerStatorCurrentLimitAmps = Amps.of(120);
 
-  public static final AngularVelocity indexerAngularVelocitySetpoint = RotationsPerSecond.of(5);
+  public static final AngularVelocity indexerAngularVelocitySetpoint = RotationsPerSecond.of(10);
   public static final LoggedTunableNumber indexerAngularVelocityRotationsPerSecond =
       new LoggedTunableNumber(
           "Indexer/AngularVelocity [Rps]", indexerAngularVelocitySetpoint.in(RotationsPerSecond));

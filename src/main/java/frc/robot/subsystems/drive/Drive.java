@@ -90,8 +90,8 @@ public class Drive extends SubsystemBase implements VisionConsumer {
                   tunerConstants.getBackRight().LocationY)));
 
   // PathPlanner config constants
-  private static final double ROBOT_MASS_KG = 74.088; // With bumpers and battery
-  private static final double ROBOT_MOI = 6.883;
+  private static final double ROBOT_MASS_KG = 54.8; // With bumpers and battery
+  private static final double ROBOT_MOI = 6.583;
   private static final double WHEEL_COF = 1.2;
   private static final AngularVelocity MAX_MODULE_OMEGA_RAD_PER_SEC = RadiansPerSecond.of(18.0);
   private static final RobotConfig PP_CONFIG =
@@ -142,7 +142,7 @@ public class Drive extends SubsystemBase implements VisionConsumer {
   /** Consumer to also reset the simulation field pose when resetting odometry */
   private final Consumer<Pose2d> resetSimulationPoseCallBack;
 
- private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
+  private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
   private Rotation2d rawGyroRotation = Rotation2d.kZero;
   private SwerveModulePosition[] lastModulePositions = // For delta tracking
       new SwerveModulePosition[] {
@@ -153,6 +153,7 @@ public class Drive extends SubsystemBase implements VisionConsumer {
       };
   private SwerveDrivePoseEstimator poseEstimator =
       new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, Pose2d.kZero);
+
   public Drive(
       GyroIO gyroIO,
       ModuleIO flModuleIO,
@@ -390,11 +391,10 @@ public class Drive extends SubsystemBase implements VisionConsumer {
   }
 
   /** Resets the current odometry pose. */
-  public void setPose(Pose2d pose) {
-    if (Constants.currentMode == Mode.SIM){
+  private void setPose(Pose2d pose) {
+    if (Constants.currentMode == Mode.SIM) {
       // In simulation also reset the simulation field pose
       resetSimulationPoseCallBack.accept(pose);
-
     }
     poseEstimator.resetPosition(rawGyroRotation, getModulePositions(), pose);
   }

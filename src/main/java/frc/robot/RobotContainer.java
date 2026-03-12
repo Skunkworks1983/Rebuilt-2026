@@ -9,8 +9,6 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.events.EventTrigger;
-import com.pathplanner.lib.events.PointTowardsZoneTrigger;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -19,12 +17,12 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveAimedAutoShoot;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.Shooter.AutonomousAimedShoot;
 import frc.robot.commands.Shooter.NoYawShootHub;
 import frc.robot.commands.Shooter.ShootPresetSetpoints;
 import frc.robot.commands.Shooter.ShootPresetSetpoints.TargetType;
@@ -129,7 +127,6 @@ public class RobotContainer {
                 new ModuleIOTalonFX(Constants.tunerConstants.getFrontRight()),
                 new ModuleIOTalonFX(Constants.tunerConstants.getBackLeft()),
                 new ModuleIOTalonFX(Constants.tunerConstants.getBackRight()),
-                (pose) -> {},
                 (pose) -> {});
 
         shooter =
@@ -141,7 +138,9 @@ public class RobotContainer {
 
         vision =
             new Vision(
-                drive, new VisionIOLimelight(VisionConstants.camera0Name, drive::getRotation));
+                drive,
+                new VisionIOLimelight(VisionConstants.camera0Name, drive::getRotation),
+                new VisionIOLimelight(VisionConstants.camera1Name, drive::getRotation));
 
         // This is a solution to the vision-drive cross dependency issue that hurts my
         // eys, but it does work
@@ -189,8 +188,7 @@ public class RobotContainer {
                     Constants.tunerConstants.getBackLeft(), simulation.getModules()[2]),
                 new ModuleIOTalonFXSim(
                     Constants.tunerConstants.getBackRight(), simulation.getModules()[3]),
-                simulation::setSimulationWorldPose,
-                (pose) -> {});
+                simulation::setSimulationWorldPose);
 
         shooter =
             new Shooter(
@@ -229,7 +227,6 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {},
-                (pose) -> {},
                 (pose) -> {});
         shooter =
             new Shooter(
@@ -242,18 +239,25 @@ public class RobotContainer {
         indexer = new Indexer(new IndexerIO() {});
         break;
     }
-    Command autoShootIndexerCommand = new IndexerAutoUnjam(indexer, shooter::getBeamBreak);
 
     NamedCommands.registerCommand(
-        "Shoot Preset Setpoits ", new ShootPresetSetpoints(shooter, TargetType.GOAL));
+        "Auto Aimed Shoot", new AutonomousAimedShoot(drive, shooter, indexer));
+
+    // NamedCommands.registerCommand(
+    //     "Shoot Preset Setpoits ", new ShootPresetSetpoints(shooter, TargetType.GOAL));
+    // NamedCommands.registerCommand("Index", new IndexerCommand(indexer));
+    // new EventTrigger("Index").onTrue(new IndexerCommand(indexer));
+    // NamedCommands.registerCommand(
+    //     "YawControlledShoot", new ShootPresetSetpoints(shooter, TargetType.GOAL));
+
+    // NamedCommands.registerCommand("Index", new IndexerCommand(indexer));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
-    new EventTrigger("FIRE")
-        .onTrue(Commands.print("LEBRON!").andThen(new InstantCommand(this::launchSimFuel)));
-    new PointTowardsZoneTrigger("Aim Hub")
-        .whileTrue(new NoYawShootHub(shooter, drive, autoShootIndexerCommand));
-
+    // new EventTrigger("FIRE")
+    //     .onTrue(Commands.print("LEBRON!").andThen(new InstantCommand(this::launchSimFuel)));
+    // new PointTowardsZoneTrigger("Aim Hub").whileTrue(new NoYawShootHub(shooter, drive));
+    // new EventTrigger("NoYawShoot").whileTrue(new NoYawShootHub(shooter, drive));
     // Set up SysId routines
     autoChooser.addOption(
         "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
@@ -282,8 +286,7 @@ public class RobotContainer {
     autoChooser.addOption(
         "Shooter SysId (Dynamic Reverse)", shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-    autoChooser.addOption(
-        "Simple Auto", new NoYawShootHub(shooter, drive, autoShootIndexerCommand));
+    autoChooser.addOption("Simple Auto", new NoYawShootHub(shooter, drive));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -308,13 +311,11 @@ public class RobotContainer {
             () -> -rightJoystick.getX())); // Confirm if negitive or not
 
     shootAutoAim = new JoystickButton(rightJoystick, 1);
-    Command autoShootIndexerCommand = new IndexerAutoUnjam(indexer, shooter::getBeamBreak);
 
     shootAutoAim.whileTrue(
         new DriveAimedAutoShoot(
             drive,
             shooter,
-            autoShootIndexerCommand,
             () -> -leftJoystick.getY(),
             () -> -leftJoystick.getX(),
             () -> -rightJoystick.getX()));
@@ -338,7 +339,7 @@ public class RobotContainer {
 
     TestPathCommands.publishTestPaths(drive);
 
-    shooter.setDefaultCommand(Commands.run(shooter::setPivotHome, shooter));
+    shooter.setDefaultCommand(Commands.run(shooter::stop, shooter));
 
     // State Buttons
     JoystickButton manualModeSwitch =
@@ -346,7 +347,8 @@ public class RobotContainer {
     JoystickButton autoModeSwitch =
         new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorAutoModeID);
 
-    // autoModeSwitch.whileTrue(new AutomaticStateChange(collector, drive::getDirection));
+    // autoModeSwitch.whileTrue(new AutomaticStateChange(collector,
+    // drive::getDirection));
 
     manualModeSwitch
         .negate()
@@ -362,7 +364,8 @@ public class RobotContainer {
         .whileTrue(new CollectorExpel(collector));
 
     // Right Collector Down
-    // new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorRightDownID)
+    // new JoystickButton(buttonJoystick,
+    // Constants.OIConstants.CollectorRightDownID)
     // .and(manualModeSwitch)
     // .onTrue(new RightCollectorDownState(collector));
 
