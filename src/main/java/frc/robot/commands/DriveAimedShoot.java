@@ -8,8 +8,6 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.Shooter.ShooterSetpoints;
@@ -26,7 +24,6 @@ public class DriveAimedShoot extends Command {
 
   private final Drive drive;
   private final Shooter shooter;
-  private final Command indexerCommand;
   private final DoubleSupplier xSupplier;
   private final DoubleSupplier ySupplier;
   private final DoubleSupplier rotationSupplier;
@@ -35,19 +32,15 @@ public class DriveAimedShoot extends Command {
   private final TargetType targetType;
   private final String logKey;
   private final String autoShootRequirementsLogKey;
-  private boolean commandStarted = false;
 
   private final SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(2, 2.5);
 
   private double lastFilteredYaw;
   private double yawFilterAlpha;
 
-  private Trigger readyToShoot;
-
   public DriveAimedShoot(
       Drive drive,
       Shooter shooter,
-      Command indexerCommand,
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
       DoubleSupplier rotationSupplier,
@@ -58,7 +51,6 @@ public class DriveAimedShoot extends Command {
     this.ySupplier = ySupplier;
     this.rotationSupplier = rotationSupplier;
     this.targetType = targetType;
-    this.indexerCommand = indexerCommand;
 
     // profile =
     // new TrapezoidProfile(
@@ -98,7 +90,6 @@ public class DriveAimedShoot extends Command {
     yawController.enableContinuousInput(-Math.PI, Math.PI);
     yawController.setTolerance(DriveControlConstants.YAW_SETPOINT_TOLERANCE_RADIANS.get());
 
-    CommandScheduler.getInstance().cancel(indexerCommand);
     // TODO: Test if filtering is helpful
     // lastFilteredYaw = drive.getRotation().getRadians();
     // double filterPeriod = DriveControlConstants.linearFilterPeriod.get();
@@ -109,7 +100,6 @@ public class DriveAimedShoot extends Command {
     // ? 1.0
     // : MathUtil.clamp(filterPeriod / (filterTimeConstant + filterPeriod), 0.0,
     // 1.0);
-    commandStarted = true;
     Logger.recordOutput(logKey, true);
     // Logger.recordOutput(autoShootRequirementsLogKey + "/IndexerCommandScheduled", false);
     Logger.recordOutput(autoShootRequirementsLogKey + "/ReadyToShoot", false);
@@ -160,11 +150,9 @@ public class DriveAimedShoot extends Command {
 
     if (targetType == TargetType.GOAL) {
 
-      omegaCalculated =
-          yawController.calculate(currentYawRadians, targetYawRadians)
-              + rotationSupplier.getAsDouble();
+      omegaCalculated = yawController.calculate(currentYawRadians, targetYawRadians);
     } else {
-      omegaCalculated = rotationSupplier.getAsDouble();
+      omegaCalculated = yawController.calculate(currentYawRadians, targetYawRadians);
     }
     Logger.recordOutput("Auto Shoot/Omega Calculated", omegaCalculated);
 
@@ -190,7 +178,6 @@ public class DriveAimedShoot extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    commandStarted = false;
     // CommandScheduler.getInstance().cancel(indexerCommand);
     shooter.setPivotHome();
     Logger.recordOutput(autoShootRequirementsLogKey + "/ReadyToShoot", false);
