@@ -57,7 +57,7 @@ public class ShooterConstants {
   public static final int lowerFlywheelMotorID = 25;
 
   // PID for flywheel
-  public static final double upperFlywheelKP = 8.2;
+  public static final double upperFlywheelKP = 8.35;
   public static final double upperFlywheelKD = 0.0;
 
   // Feed forwards for the flywheel
@@ -66,7 +66,7 @@ public class ShooterConstants {
   public static final double upperFlywheelKA = 3.60181;
 
   // PID for flywheel
-  public static final double lowerFlywheelKP = 9.7;
+  public static final double lowerFlywheelKP = 9.75;
   public static final double lowerFlywheelKD = 0.0;
 
   // Feed forwards for the flywheel

@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -30,10 +31,10 @@ import frc.robot.commands.TestPathCommands;
 import frc.robot.commands.collectorCommands.BothCollectorsUpState;
 import frc.robot.commands.collectorCommands.CollectorExpel;
 import frc.robot.commands.collectorCommands.CollectorIntake;
-import frc.robot.commands.collectorCommands.HoldPosition;
 import frc.robot.commands.collectorCommands.LeftCollectorDownState;
 import frc.robot.commands.collectorCommands.ManualCollectorDown;
 import frc.robot.commands.collectorCommands.ManualCollectorUp;
+import frc.robot.commands.collectorCommands.RightCollectorDownState;
 import frc.robot.commands.indexerCommands.IndexerAutoUnjam;
 import frc.robot.commands.indexerCommands.IndexerReverseCommand;
 import frc.robot.subsystems.collector.Collector;
@@ -239,7 +240,7 @@ public class RobotContainer {
         indexer = new Indexer(new IndexerIO() {});
         break;
     }
-
+    NamedCommands.registerCommand("Both Collectors Up", new BothCollectorsUpState(collector));
     NamedCommands.registerCommand(
         "Auto Aimed Shoot", new AutonomousAimedShoot(drive, shooter, indexer));
 
@@ -364,10 +365,9 @@ public class RobotContainer {
         .whileTrue(new CollectorExpel(collector));
 
     // Right Collector Down
-    // new JoystickButton(buttonJoystick,
-    // Constants.OIConstants.CollectorRightDownID)
-    // .and(manualModeSwitch)
-    // .onTrue(new RightCollectorDownState(collector));
+    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorRightDownID)
+        .and(manualModeSwitch)
+        .onTrue(new RightCollectorDownState(collector));
 
     // Left Collector Down
     new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorLeftDownID)
@@ -469,8 +469,12 @@ public class RobotContainer {
                 shooter.getPivotAngle()));
   }
 
-  /** auto chooser option that dosent  crash robot when ran slong side holdPosition*/
+  /** auto chooser option that dosent crash robot when ran slong side holdPosition */
   public void autoChooserAddOption(String key, Command command) {
-    autoChooser.addOption(key, command.alongWith(new BothCollectorsUpState(collector)));
+    autoChooser.addOption(key, command);
+  }
+
+  public void scheduleBothCollectorsUp() {
+    CommandScheduler.getInstance().schedule(new BothCollectorsUpState(collector));
   }
 }

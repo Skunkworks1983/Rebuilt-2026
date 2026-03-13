@@ -64,7 +64,7 @@ public class CollectorTalonRightConstants extends CollectorModuleConstants {
     motionMagicAcceleration = RotationsPerSecondPerSecond.of(9);
 
     // Position
-    CollectorUpPos = Rotations.of(0);
+    CollectorUpPos = Rotations.of(-0.02);
 
     CollectorDownPos = new LoggedTunableNumber("Collector/Right/Downpose rad", 1.55);
 

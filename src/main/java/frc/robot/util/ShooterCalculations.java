@@ -1,6 +1,7 @@
 package frc.robot.util;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Radians;
@@ -337,15 +338,26 @@ public class ShooterCalculations {
    */
   public static ShooterControls getShooterControlsTransfer(
       ChassisSpeeds speeds, Pose2d odometryPose, LinearVelocity flywheelLinearVelocity) {
-    Translation2d target =
-        DriverStation.getAlliance().get() == Alliance.Red
-            ? FieldConstants.redFuelTransferTarget
-            : FieldConstants.blueFuelTransferTarget;
+    boolean isLeft =
+        odometryPose.getTranslation().getY() > FieldConstants.FIELD_WIDTH_INCHES.in(Inches) / 2.0;
+
+    Translation2d target;
+    Alliance alliance =
+        DriverStation.getAlliance().isPresent() ? DriverStation.getAlliance().get() : Alliance.Red;
+    if (alliance == Alliance.Red) {
+      target =
+          isLeft
+              ? FieldConstants.redLeftFuelTransferTarget
+              : FieldConstants.redRightFuelTransferTarget;
+    } else {
+      target =
+          isLeft
+              ? FieldConstants.blueLeftFuelTransferTarget
+              : FieldConstants.blueRightFuelTransferTarget;
+    }
 
     HubCorners hubCorners =
-        DriverStation.getAlliance().get() == Alliance.Red
-            ? FieldConstants.redHubCorners
-            : FieldConstants.blueHubCorners;
+        alliance == Alliance.Red ? FieldConstants.redHubCorners : FieldConstants.blueHubCorners;
 
     Translation2d targetVector = target.minus(odometryPose.getTranslation());
     Logger.recordOutput("TransferShot/TargetVector", targetVector);

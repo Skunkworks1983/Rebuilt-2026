@@ -150,11 +150,9 @@ public class DriveAimedShoot extends Command {
 
     if (targetType == TargetType.GOAL) {
 
-      omegaCalculated =
-          yawController.calculate(currentYawRadians, targetYawRadians)
-              + rotationSupplier.getAsDouble();
+      omegaCalculated = yawController.calculate(currentYawRadians, targetYawRadians);
     } else {
-      omegaCalculated = rotationSupplier.getAsDouble();
+      omegaCalculated = yawController.calculate(currentYawRadians, targetYawRadians);
     }
     Logger.recordOutput("Auto Shoot/Omega Calculated", omegaCalculated);
 
