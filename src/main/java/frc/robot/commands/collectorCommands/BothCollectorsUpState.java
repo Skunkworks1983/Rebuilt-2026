@@ -33,8 +33,8 @@ public class BothCollectorsUpState extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    collector.getLeftCollector().goUp();
-    collector.getRightCollector().goUp();
+    collector.getLeftCollector().setCollectorPos(collector.getLeftCollector().getConstants().CollectorUpPos, 0);
+    collector.getRightCollector().setCollectorPos(collector.getRightCollector().getConstants().CollectorUpPos, 0);
     Logger.recordOutput("Commands/Collector/BothCollectorsUpState", true);
   }
 
