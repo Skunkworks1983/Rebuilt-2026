@@ -202,7 +202,7 @@ public class AutonomousAimedShoot extends Command {
       indexer.setIndexerVelocity(RotationsPerSecond.of(-speedRps));
       Logger.recordOutput("Auto Shoot/Unjamming", true);
       Logger.recordOutput("Auto Shoot/UnjamState", "REVERSE");
-      Logger.recordOutput("Auto Shoot/Indexer Velocity", -speedRps);
+      Logger.recordOutput("Auto Shoot/Indexer Velocity", -50);
     }
   }
 }

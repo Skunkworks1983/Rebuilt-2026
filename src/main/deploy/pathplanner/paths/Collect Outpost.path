@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.9171396396396405,
-        "y": 7.165731981981983
+        "x": 2.5122967189728955,
+        "y": 7.198502139800285
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.17614891525551,
-        "y": 7.239813024097784
+        "x": 2.771305994588765,
+        "y": 7.272583181916086
       },
       "isLocked": false,
       "linkedName": "Far Trench Shoot"
@@ -64,12 +64,12 @@
     },
     {
       "anchor": {
-        "x": 2.9171396396396405,
-        "y": 7.165731981981983
+        "x": 2.5122967189728955,
+        "y": 7.198502139800285
       },
       "prevControl": {
-        "x": 3.1479193235906133,
-        "y": 7.2618607366576216
+        "x": 2.7430764029238683,
+        "y": 7.294630894475923
       },
       "nextControl": null,
       "isLocked": false,
@@ -115,13 +115,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -57.03059609653791
+    "rotation": -56.309932474020236
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -57.03059609653791
+    "rotation": -56.309932474020236
   },
   "useDefaultConstraints": false
 }
