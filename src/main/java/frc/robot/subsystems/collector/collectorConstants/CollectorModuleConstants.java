@@ -32,6 +32,7 @@ public class CollectorModuleConstants {
   // Hardware ID's
   public int turnMotorID;
   public int intakeMotorID;
+  public int intakeMotorLowerID;
 
   // Gear ratio's
   public double turnMotorGearRatio;
@@ -51,6 +52,14 @@ public class CollectorModuleConstants {
   public double intakekV;
   public double intakekS;
   public double intakekA;
+
+  // Real intake PID
+  public double intakeLowerkP;
+  public double intakeLowerkD;
+  public double intakeLowerkI;
+  public double intakeLowerkV;
+  public double intakeLowerkS;
+  public double intakeLowerkA;
 
   // Sim Turn PID
   public double SimTurnkP;

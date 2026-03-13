@@ -27,6 +27,7 @@ public class CollectorTalonSingleConstants extends CollectorModuleConstants {
     // Hardware ID's
     turnMotorID = 23;
     intakeMotorID = 24;
+    intakeMotorLowerID = 0;
 
     // Gear ratio's
     turnMotorGearRatio = 39.375;
@@ -43,6 +44,14 @@ public class CollectorTalonSingleConstants extends CollectorModuleConstants {
     intakekV = 0;
     intakekA = 9;
     intakekS = 8;
+
+    // Real intake PID
+    intakeLowerkP = 4.5;
+    intakeLowerkD = 0.0;
+    intakeLowerkI = 0.0;
+    intakeLowerkV = 0;
+    intakeLowerkA = 9;
+    intakeLowerkS = 8;
 
     // Sim Turn PID
     SimTurnkP = 13.5;

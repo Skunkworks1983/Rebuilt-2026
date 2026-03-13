@@ -45,14 +45,14 @@ public class CollectorModuleSingleTalonIO implements CollectorModuleIO {
   protected final TalonFX turnMotor;
   protected final TalonFX intakeUpperMotor;
   protected final TalonFX intakeLowerMotor;
-  protected final DigitalInput upperLimitSwitch;
-  protected final DigitalInput lowerLimitSwitch;
+  //protected final DigitalInput upperLimitSwitch;
+  //protected final DigitalInput lowerLimitSwitch;
 
   // Constants
   public final CollectorModuleConstants constants;
 
   // Helper variables
-  private Side side;
+  //private Side side;
   private boolean setUpRunning;
   private boolean setDownRunning;
   private AngularVelocity lastVelocity;
@@ -97,7 +97,7 @@ public class CollectorModuleSingleTalonIO implements CollectorModuleIO {
     this.constants = constants;
 
     // Collector side
-    side = constants.collectorSide;
+    //side = constants.collectorSide;
 
     // isRunning Variables
     setUpRunning = false;
@@ -106,9 +106,9 @@ public class CollectorModuleSingleTalonIO implements CollectorModuleIO {
     // Instantiates all motors and hardware objects
     turnMotor = new TalonFX(constants.turnMotorID, constants.canbus);
     intakeUpperMotor = new TalonFX(constants.intakeMotorID, constants.canbus);
-    intakeLowerMotor = new TalonFX(constants.intakeMotorID, constants.canbus);
-    upperLimitSwitch = new DigitalInput(constants.UpperLimitChannel);
-    lowerLimitSwitch = new DigitalInput(constants.LowerLimitChannel);
+    intakeLowerMotor = new TalonFX(constants.intakeMotorLowerID, constants.canbus);
+    //upperLimitSwitch = new DigitalInput(constants.UpperLimitChannel);
+    //lowerLimitSwitch = new DigitalInput(constants.LowerLimitChannel);
     turnMotor.setPosition(Degrees.of(0));
 
     // Config for turnMotor
@@ -163,19 +163,35 @@ public class CollectorModuleSingleTalonIO implements CollectorModuleIO {
     tryUntilOk(5, () -> turnMotor.getConfigurator().apply(turnConfig, 0.25));
 
     // PID config for intakeMotor // TODO: make config for lower intake
-    var intakeConfig = new TalonFXConfiguration();
-    intakeConfig.CurrentLimits.SupplyCurrentLimit = 120;
-    intakeConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    var intakeUpperConfig = new TalonFXConfiguration();
+    intakeUpperConfig.CurrentLimits.SupplyCurrentLimit = 120;
+    intakeUpperConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
     if (RobotBase.isReal()) {
-      intakeConfig.Slot0.kP = constants.intakekP;
-      intakeConfig.Slot0.kD = constants.intakekP;
-      intakeConfig.Slot0.kI = constants.intakekI;
-      intakeConfig.Slot0.kV = constants.intakekV;
+      intakeUpperConfig.Slot0.kP = constants.intakekP;
+      intakeUpperConfig.Slot0.kD = constants.intakekP;
+      intakeUpperConfig.Slot0.kI = constants.intakekI;
+      intakeUpperConfig.Slot0.kV = constants.intakekV;
     } else if (RobotBase.isSimulation()) {
-      intakeConfig.Slot0.kP = constants.SimIntakekP;
-      intakeConfig.Slot0.kD = constants.SimIntakekP;
-      intakeConfig.Slot0.kI = constants.SimIntakekI;
+      intakeUpperConfig.Slot0.kP = constants.SimIntakekP;
+      intakeUpperConfig.Slot0.kD = constants.SimIntakekP;
+      intakeUpperConfig.Slot0.kI = constants.SimIntakekI;
+    }
+
+    // PID config for intakeMotor // TODO: make config for lower intake
+    var intakeLowerConfig = new TalonFXConfiguration();
+    intakeLowerConfig.CurrentLimits.SupplyCurrentLimit = 120;
+    intakeLowerConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+
+    if (RobotBase.isReal()) {
+      intakeLowerConfig.Slot0.kP = constants.intakekP;
+      intakeLowerConfig.Slot0.kD = constants.intakekP;
+      intakeLowerConfig.Slot0.kI = constants.intakekI;
+      intakeLowerConfig.Slot0.kV = constants.intakekV;
+    } else if (RobotBase.isSimulation()) {
+      intakeLowerConfig.Slot0.kP = constants.SimIntakekP;
+      intakeLowerConfig.Slot0.kD = constants.SimIntakekP;
+      intakeLowerConfig.Slot0.kI = constants.SimIntakekI;
     }
 
     collectorUpperIntakeVelocity =
@@ -189,7 +205,8 @@ public class CollectorModuleSingleTalonIO implements CollectorModuleIO {
             constants.CollectorIntakeSpeed.baseUnitMagnitude());
 
     // Applying Intake Configs
-    tryUntilOk(5, () -> intakeUpperMotor.getConfigurator().apply(intakeConfig, 0.25));
+    tryUntilOk(5, () -> intakeUpperMotor.getConfigurator().apply(intakeUpperConfig, 0.25));
+    tryUntilOk(5, () -> intakeLowerMotor.getConfigurator().apply(intakeLowerConfig, 0.25));
 
     // Create turn status signals
     turnPosition = turnMotor.getPosition();
@@ -273,25 +290,25 @@ public class CollectorModuleSingleTalonIO implements CollectorModuleIO {
     inputs.intakeLowerAppliedVolts = intakeLowerAppliedVolts.getValue();
     inputs.intakeLowerCurrentAmps = intakeLowerCurrent.getValue();
 
-    // Update sensor inputs
-    inputs.upperTriggered = !upperLimitSwitch.get();
-    inputs.lowerTriggered = !lowerLimitSwitch.get();
+    // // Update sensor inputs
+    // inputs.upperTriggered = !upperLimitSwitch.get();
+    // inputs.lowerTriggered = !lowerLimitSwitch.get();
 
-    // up and down
-    inputs.isUp =
-        !upperLimitSwitch.get()
-            || turnMotor
-                .getPosition()
-                .getValue()
-                .lte(constants.CollectorUpPos.plus(constants.CollectorPosTolerance));
-    inputs.isDown =
-        !lowerLimitSwitch.get()
-            || turnMotor
-                .getPosition()
-                .getValue()
-                .gte(
-                    Radians.of(constants.CollectorDownPos.get())
-                        .minus(constants.CollectorPosTolerance));
+    // // up and down
+    // inputs.isUp =
+    //     !upperLimitSwitch.get()
+    //         || turnMotor
+    //             .getPosition()
+    //             .getValue()
+    //             .lte(constants.CollectorUpPos.plus(constants.CollectorPosTolerance));
+    // inputs.isDown =
+    //     !lowerLimitSwitch.get()
+    //         || turnMotor
+    //             .getPosition()
+    //             .getValue()
+    //             .gte(
+    //                 Radians.of(constants.CollectorDownPos.get())
+    //                     .minus(constants.CollectorPosTolerance));
 
     Logger.recordOutput(
         "Collector/Module/" + constants.collectorSide + "/Collector Up Position",
@@ -355,46 +372,48 @@ public class CollectorModuleSingleTalonIO implements CollectorModuleIO {
     lastVelocity = RotationsPerSecond.of(dutyCycle);
   }
 
-  /**
-   * Checks to see if the collector is down
-   *
-   * <ul>
-   *   <li>This is to help ensure that we only have one collectordown at a time
-   * </ul>
-   *
-   * @return whether or not collector is down
-   */
-  public boolean isCollectorDown() {
-    return !lowerLimitSwitch.get()
-        || turnMotor
-            .getPosition()
-            .getValue()
-            .gte(
-                Radians.of(constants.CollectorDownPos.get())
-                    .minus(constants.CollectorPosTolerance));
-  }
+  // Unknown if we need these for now
 
-  /**
-   * Checks to see if the collector is up
-   *
-   * <ul>
-   *   <li>This is to help ensure that we only have one collectordown at a time
-   * </ul>
-   *
-   * @return whether or not collector is up
-   */
-  public boolean isCollectorUp() {
-    return !upperLimitSwitch.get()
-        || turnMotor
-            .getPosition()
-            .getValue()
-            .lte(constants.CollectorUpPos.plus(constants.CollectorPosTolerance));
-  }
+  // /**
+  //  * Checks to see if the collector is down
+  //  *
+  //  * <ul>
+  //  *   <li>This is to help ensure that we only have one collectordown at a time
+  //  * </ul>
+  //  *
+  //  * @return whether or not collector is down
+  //  */
+  // public boolean isCollectorDown() {
+  //   return !lowerLimitSwitch.get()
+  //       || turnMotor
+  //           .getPosition()
+  //           .getValue()
+  //           .gte(
+  //               Radians.of(constants.CollectorDownPos.get())
+  //                   .minus(constants.CollectorPosTolerance));
+  // }
 
-  // Gets side i.e: left
-  public Side getSide() {
-    return side;
-  }
+  // /**
+  //  * Checks to see if the collector is up
+  //  *
+  //  * <ul>
+  //  *   <li>This is to help ensure that we only have one collectordown at a time
+  //  * </ul>
+  //  *
+  //  * @return whether or not collector is up
+  //  */
+  // public boolean isCollectorUp() {
+  //   return !upperLimitSwitch.get()
+  //       || turnMotor
+  //           .getPosition()
+  //           .getValue()
+  //           .lte(constants.CollectorUpPos.plus(constants.CollectorPosTolerance));
+  // }
+
+  // // Gets side i.e: left
+  // public Side getSide() {
+  //   return side;
+  // }
 
   /** Sets Collector to its up position */
   public void goUp() {

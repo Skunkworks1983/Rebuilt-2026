@@ -25,7 +25,7 @@ import org.ironmaple.simulation.drivesims.AbstractDriveTrainSimulation;
  * @author Liam B
  * @author Arlo
  */
-public class CollectorModuleSimIO extends CollectorModuleSingleTalonIO {
+public class CollectorModuleSimIO extends CollectorModuleTalonIO {
   private IntakeSimulation collectorSimulation;
 
   private DCMotorSim intakeMotorSim;
@@ -125,7 +125,7 @@ public class CollectorModuleSimIO extends CollectorModuleSingleTalonIO {
   public void updateInputs(CollectorIOInputs input) {
 
     var turnMotorTalonFX = super.turnMotor.getSimState();
-    var intakeMotorTalonFX = super.intakeUpperMotor.getSimState();
+    var intakeMotorTalonFX = super.intakeMotor.getSimState();
 
     turnMotorTalonFX.setSupplyVoltage(RobotController.getBatteryVoltage());
     intakeMotorTalonFX.setSupplyVoltage(RobotController.getBatteryVoltage());
