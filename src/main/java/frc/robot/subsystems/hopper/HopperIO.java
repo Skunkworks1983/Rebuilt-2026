@@ -28,14 +28,14 @@ public interface HopperIO {
   public default void setHopperVelocity(AngularVelocity velocity) {}
 
   /**
-   * Reconfigure PID/FF gains used by the flywheel controller on the fly.
+   * Reconfigure PID/FF gains used by the hopper controller on the fly.
    *
    * @param configs controller gains
    */
   public default void setPID(Slot0Configs configs) {}
 
   /**
-   * Apply an open-loop torque/current command to the flywheel motor.
+   * Apply an open-loop torque/current command to the hopper motor.
    *
    * <p>This is primarily for SysID
    *

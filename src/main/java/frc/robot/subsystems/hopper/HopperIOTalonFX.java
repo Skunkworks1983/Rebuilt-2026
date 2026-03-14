@@ -58,15 +58,8 @@ public class HopperIOTalonFX implements HopperIO {
     slot0Configs.kD = HopperConstants.hopperKD;
     slot0Configs.kS = HopperConstants.hopperKS;
     slot0Configs.kV = HopperConstants.hopperKV;
+    slot0Configs.kA = HopperConstants.hopperKA;
     configs.MotorOutput.Inverted = HopperConstants.hopperMotorAlignment;
-
-    tryUntilOk(5, () -> hopperMotor.getConfigurator().apply(configs, 0.25));
-    slot0Configs.kP = HopperConstants.hopperKP;
-    slot0Configs.kD = HopperConstants.hopperKD;
-    slot0Configs.kS = HopperConstants.hopperKS;
-    slot0Configs.kV = HopperConstants.hopperKV;
-    configs.MotorOutput.Inverted = HopperConstants.hopperMotorAlignment;
-
     tryUntilOk(5, () -> hopperMotor.getConfigurator().apply(configs, 0.25));
 
     BaseStatusSignal.setUpdateFrequencyForAll(

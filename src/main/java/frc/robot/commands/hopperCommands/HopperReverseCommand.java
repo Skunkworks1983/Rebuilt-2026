@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.hopperCommands;
 
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
@@ -12,10 +12,10 @@ import frc.robot.subsystems.hopper.HopperConstants;
 import org.littletonrobotics.junction.Logger;
 
 /** Command that runs the hopper */
-public class HopperCommand extends Command {
+public class HopperReverseCommand extends Command {
   Hopper hopper;
 
-  public HopperCommand(Hopper hopper) {
+  public HopperReverseCommand(Hopper hopper) {
     this.hopper = hopper;
     addRequirements(hopper);
   }
@@ -23,14 +23,14 @@ public class HopperCommand extends Command {
   @Override
   public void initialize() {
     hopper.setHopperVelocity(
-        RotationsPerSecond.of(HopperConstants.hopperAngularVelocityRotationsPerSecond.get()));
-    Logger.recordOutput("Index/Command is Running", true);
+        RotationsPerSecond.of(HopperConstants.hopperAngularVelocityRotationsPerSecond.get() * -1));
+    Logger.recordOutput("Hopper/Reverse Command is Running", true);
   }
 
   @Override
   public void end(boolean interrupted) {
     hopper.setHopperDutyCycle(0);
-    Logger.recordOutput("Index/Command is Running", false);
+    Logger.recordOutput("Hopper/Reverse Command is Running", false);
   }
 
   @Override

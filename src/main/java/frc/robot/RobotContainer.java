@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -26,7 +25,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveAimedAutoShoot;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.HopperCommand;
 import frc.robot.commands.Shooter.NoYawShootHub;
 import frc.robot.commands.Shooter.ShootPresetSetpoints;
 import frc.robot.commands.Shooter.ShootPresetSetpoints.TargetType;
@@ -38,6 +36,7 @@ import frc.robot.commands.collectorCommands.HoldPosition;
 import frc.robot.commands.collectorCommands.LeftCollectorDownState;
 import frc.robot.commands.collectorCommands.ManualCollectorDown;
 import frc.robot.commands.collectorCommands.ManualCollectorUp;
+import frc.robot.commands.hopperCommands.HopperCommand;
 import frc.robot.commands.indexerCommands.IndexerAutoUnjam;
 import frc.robot.commands.indexerCommands.IndexerReverseCommand;
 import frc.robot.subsystems.collector.Collector;
@@ -354,8 +353,6 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     Trigger shootAutoAim;
-    JoystickButton runIndexer;
-    JoystickButton runIndexerReverse;
     // Default command, normal field-relative drive
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
@@ -381,12 +378,12 @@ public class RobotContainer {
     ShootPresetSetpoints shootPresetSetpointsTransfer =
         new ShootPresetSetpoints(shooter, TargetType.TRANSFER);
 
-    runIndexer = new JoystickButton(leftJoystick, 1);
-    runIndexerReverse =
+    JoystickButton runIndexer = new JoystickButton(leftJoystick, 1);
+    JoystickButton runIndexerReverse =
         new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID);
 
-    runIndexer.whileTrue(new IndexerAutoUnjam(indexer, shooter::getBeamBreak));
-    runIndexerReverse.whileTrue(new IndexerReverseCommand(indexer));
+    runIndexer.whileTrue(new IndexerAutoUnjam(indexer, shooter::getBeamBreak).alongWith(new HopperCommand(hopper)));
+    runIndexerReverse.whileTrue(new IndexerReverseCommand(indexer).alongWith(new HopperCommand(hopper)));
     // if the index button is hed and more than a second elapses before the beam
     // break is broken the
     // indexer will reverse for 1 second before attempting to intake again
@@ -454,7 +451,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    CommandScheduler.getInstance().schedule(new HopperCommand(hopper));
     return autoChooser.get().alongWith(new HoldPosition(collector));
   }
 
@@ -464,7 +460,6 @@ public class RobotContainer {
    * @return the command to run in teleop init
    */
   public Command getTeleopInitCommand() {
-    CommandScheduler.getInstance().schedule(new HopperCommand(hopper));
     return new HoldPosition(collector);
   }
 
