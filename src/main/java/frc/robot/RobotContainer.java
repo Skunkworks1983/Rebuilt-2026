@@ -36,8 +36,8 @@ import frc.robot.commands.collectorCommands.doubleCollectorCommands.HoldPosition
 import frc.robot.commands.collectorCommands.doubleCollectorCommands.LeftCollectorDownState;
 import frc.robot.commands.collectorCommands.doubleCollectorCommands.ManualCollectorDown;
 import frc.robot.commands.collectorCommands.doubleCollectorCommands.ManualCollectorUp;
-import frc.robot.commands.collectorCommands.singleCollectorCommands.singleCollectorDown;
-import frc.robot.commands.collectorCommands.singleCollectorCommands.singleCollectorIntake;
+import frc.robot.commands.collectorCommands.singleCollectorCommands.SingleCollectorDown;
+import frc.robot.commands.collectorCommands.singleCollectorCommands.SingleCollectorIntake;
 import frc.robot.commands.indexerCommands.IndexerAutoUnjam;
 import frc.robot.commands.indexerCommands.IndexerReverseCommand;
 import frc.robot.subsystems.collector.Collector;
@@ -439,9 +439,9 @@ public class RobotContainer {
 
       case SINGLEREAL:
         new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorRightDownID)
-            .onTrue(new singleCollectorDown(collector));
+            .onTrue(new SingleCollectorDown(collector));
         new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorIntakeID)
-            .whileTrue(new singleCollectorIntake(collector));
+            .whileTrue(new SingleCollectorIntake(collector));
         break;
 
       default:
