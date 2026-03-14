@@ -6,7 +6,6 @@ package frc.robot.subsystems.collector.collectorConstants;
 
 import static edu.wpi.first.units.Units.Inches;
 
-import com.ctre.phoenix6.CANBus;
 import edu.wpi.first.math.geometry.Translation2d;
 
 /** Add your docs here. */

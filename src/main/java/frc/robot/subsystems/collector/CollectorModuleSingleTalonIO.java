@@ -27,10 +27,8 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstants;
-import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstants.Side;
 import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
 
@@ -45,14 +43,14 @@ public class CollectorModuleSingleTalonIO implements CollectorModuleIO {
   protected final TalonFX turnMotor;
   protected final TalonFX intakeUpperMotor;
   protected final TalonFX intakeLowerMotor;
-  //protected final DigitalInput upperLimitSwitch;
-  //protected final DigitalInput lowerLimitSwitch;
+  // protected final DigitalInput upperLimitSwitch;
+  // protected final DigitalInput lowerLimitSwitch;
 
   // Constants
   public final CollectorModuleConstants constants;
 
   // Helper variables
-  //private Side side;
+  // private Side side;
   private boolean setUpRunning;
   private boolean setDownRunning;
   private AngularVelocity lastVelocity;
@@ -97,7 +95,7 @@ public class CollectorModuleSingleTalonIO implements CollectorModuleIO {
     this.constants = constants;
 
     // Collector side
-    //side = constants.collectorSide;
+    // side = constants.collectorSide;
 
     // isRunning Variables
     setUpRunning = false;
@@ -107,8 +105,8 @@ public class CollectorModuleSingleTalonIO implements CollectorModuleIO {
     turnMotor = new TalonFX(constants.turnMotorID, constants.canbus);
     intakeUpperMotor = new TalonFX(constants.intakeMotorID, constants.canbus);
     intakeLowerMotor = new TalonFX(constants.intakeMotorLowerID, constants.canbus);
-    //upperLimitSwitch = new DigitalInput(constants.UpperLimitChannel);
-    //lowerLimitSwitch = new DigitalInput(constants.LowerLimitChannel);
+    // upperLimitSwitch = new DigitalInput(constants.UpperLimitChannel);
+    // lowerLimitSwitch = new DigitalInput(constants.LowerLimitChannel);
     turnMotor.setPosition(Degrees.of(0));
 
     // Config for turnMotor
@@ -225,7 +223,8 @@ public class CollectorModuleSingleTalonIO implements CollectorModuleIO {
     intakeLowerCurrent = intakeLowerMotor.getStatorCurrent();
 
     // Configure periodic frames
-    BaseStatusSignal.setUpdateFrequencyForAll(50.0, turnPosition, intakeUpperPosition, intakeLowerPosition);
+    BaseStatusSignal.setUpdateFrequencyForAll(
+        50.0, turnPosition, intakeUpperPosition, intakeLowerPosition);
     BaseStatusSignal.setUpdateFrequencyForAll(
         50.0,
         intakeUpperVelocity,

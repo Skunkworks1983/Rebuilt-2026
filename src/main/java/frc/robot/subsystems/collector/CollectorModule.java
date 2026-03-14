@@ -21,8 +21,8 @@ import org.littletonrobotics.junction.Logger;
  * This is the collector module subsystem
  *
  * <ul>
- * <li>Uses IO's to switch between left and right<\li>
- * <ul>
+ *   <li>Uses IO's to switch between left and right<\li>
+ *       <ul>
  *
  * @author Liam B
  */
@@ -48,7 +48,7 @@ public class CollectorModule {
    * This is the collector module subsystem
    *
    * <ul>
-   * <li>Uses IO's to switch between left and right
+   *   <li>Uses IO's to switch between left and right
    * </ul>
    *
    * @param collectorIO
@@ -56,27 +56,39 @@ public class CollectorModule {
   public CollectorModule(CollectorModuleIO collectorIO) {
     this.collectorIO = collectorIO;
     String modulePrefix = "Collector/" + collectorIO.getSide() + "/";
-    collectorPivotKP = new LoggedTunableNumber(modulePrefix + "Pivot/kP", collectorIO.getConstants().turnkP);
-    collectorPivotKD = new LoggedTunableNumber(modulePrefix + "Pivot/kD", collectorIO.getConstants().turnkD);
-    collectorPivotKS = new LoggedTunableNumber(modulePrefix + "Pivot/kS", collectorIO.getConstants().turnkS);
-    collectorPivotKV = new LoggedTunableNumber(modulePrefix + "Pivot/kV", collectorIO.getConstants().turnkV);
-    collectorPivotKA = new LoggedTunableNumber(modulePrefix + "Pivot/kA", collectorIO.getConstants().turnkA);
+    collectorPivotKP =
+        new LoggedTunableNumber(modulePrefix + "Pivot/kP", collectorIO.getConstants().turnkP);
+    collectorPivotKD =
+        new LoggedTunableNumber(modulePrefix + "Pivot/kD", collectorIO.getConstants().turnkD);
+    collectorPivotKS =
+        new LoggedTunableNumber(modulePrefix + "Pivot/kS", collectorIO.getConstants().turnkS);
+    collectorPivotKV =
+        new LoggedTunableNumber(modulePrefix + "Pivot/kV", collectorIO.getConstants().turnkV);
+    collectorPivotKA =
+        new LoggedTunableNumber(modulePrefix + "Pivot/kA", collectorIO.getConstants().turnkA);
 
-    collectorPivotCruiseVelocity = new LoggedTunableNumber(
-        modulePrefix + "Pivot/CruiseVelocity [Rots]",
-        collectorIO.getConstants().motionMagicCruiseVelocity.in(RotationsPerSecond));
-    collectorPivotMaxAcceleration = new LoggedTunableNumber(
-        modulePrefix + "Pivot/MaxAcceleration [Rots^2]",
-        collectorIO.getConstants().motionMagicAcceleration.in(RotationsPerSecondPerSecond));
+    collectorPivotCruiseVelocity =
+        new LoggedTunableNumber(
+            modulePrefix + "Pivot/CruiseVelocity [Rots]",
+            collectorIO.getConstants().motionMagicCruiseVelocity.in(RotationsPerSecond));
+    collectorPivotMaxAcceleration =
+        new LoggedTunableNumber(
+            modulePrefix + "Pivot/MaxAcceleration [Rots^2]",
+            collectorIO.getConstants().motionMagicAcceleration.in(RotationsPerSecondPerSecond));
 
-    collectorIntakeKP = new LoggedTunableNumber(modulePrefix + "Intake/kP", collectorIO.getConstants().intakekP);
+    collectorIntakeKP =
+        new LoggedTunableNumber(modulePrefix + "Intake/kP", collectorIO.getConstants().intakekP);
 
-    collectorIntakeKV = new LoggedTunableNumber(modulePrefix + "Intake/kV", collectorIO.getConstants().intakekV);
-    collectorIntakeKA = new LoggedTunableNumber(modulePrefix + "Intake/kA", collectorIO.getConstants().intakekA);
-    collectorIntakeKS = new LoggedTunableNumber(modulePrefix + "Intake/kS", collectorIO.getConstants().intakekS);
-    collectorIntakeVelocity = new LoggedTunableNumber(
-        modulePrefix + "Intake/Velocity",
-        collectorIO.getConstants().CollectorIntakeSpeed.baseUnitMagnitude());
+    collectorIntakeKV =
+        new LoggedTunableNumber(modulePrefix + "Intake/kV", collectorIO.getConstants().intakekV);
+    collectorIntakeKA =
+        new LoggedTunableNumber(modulePrefix + "Intake/kA", collectorIO.getConstants().intakekA);
+    collectorIntakeKS =
+        new LoggedTunableNumber(modulePrefix + "Intake/kS", collectorIO.getConstants().intakekS);
+    collectorIntakeVelocity =
+        new LoggedTunableNumber(
+            modulePrefix + "Intake/Velocity",
+            collectorIO.getConstants().CollectorIntakeSpeed.baseUnitMagnitude());
   }
 
   public void periodic() {
@@ -118,7 +130,6 @@ public class CollectorModule {
         collectorIO.setMotionConstraints(motionMagicConfigs);
       }
     }
-
   }
 
   /** Gets Constants */
@@ -198,7 +209,7 @@ public class CollectorModule {
    * Checks to see if the collector is down
    *
    * <ul>
-   * <li>This is to help ensure that we only have one collectordown at a time
+   *   <li>This is to help ensure that we only have one collectordown at a time
    * </ul>
    */
   public boolean isCollectorDown() {
@@ -209,7 +220,7 @@ public class CollectorModule {
    * Checks to see if the collector is up
    *
    * <ul>
-   * <li>This is to help ensure that we only have one collectordown at a time
+   *   <li>This is to help ensure that we only have one collectordown at a time
    * </ul>
    */
   public boolean isCollectorUp() {

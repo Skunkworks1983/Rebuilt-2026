@@ -43,8 +43,8 @@ import frc.robot.commands.indexerCommands.IndexerReverseCommand;
 import frc.robot.subsystems.collector.Collector;
 import frc.robot.subsystems.collector.CollectorModuleIO;
 import frc.robot.subsystems.collector.CollectorModuleSimIO;
-import frc.robot.subsystems.collector.CollectorModuleTalonIO;
 import frc.robot.subsystems.collector.CollectorModuleSingleTalonIO;
+import frc.robot.subsystems.collector.CollectorModuleTalonIO;
 import frc.robot.subsystems.collector.collectorConstants.CollectorTalonLeftConstants;
 import frc.robot.subsystems.collector.collectorConstants.CollectorTalonRightConstants;
 import frc.robot.subsystems.collector.collectorConstants.CollectorTalonSingleConstants;
@@ -251,9 +251,7 @@ public class RobotContainer {
 
         indexer = new Indexer(new IndexerIOTalonFX());
 
-        collector =
-            new Collector(
-                new CollectorModuleTalonIO(new CollectorTalonSingleConstants()));
+        collector = new Collector(new CollectorModuleTalonIO(new CollectorTalonSingleConstants()));
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
@@ -387,67 +385,67 @@ public class RobotContainer {
     shooter.setDefaultCommand(Commands.run(shooter::setPivotHome, shooter));
 
     switch (Constants.currentMode) {
-        case REAL:
-            // State Buttons
-            JoystickButton manualModeSwitch =
-                new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualModeID);
-            JoystickButton autoModeSwitch =
-                new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorAutoModeID);
+      case REAL:
+        // State Buttons
+        JoystickButton manualModeSwitch =
+            new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualModeID);
+        JoystickButton autoModeSwitch =
+            new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorAutoModeID);
 
-            // autoModeSwitch.whileTrue(new AutomaticStateChange(collector, drive::getDirection));
+        // autoModeSwitch.whileTrue(new AutomaticStateChange(collector, drive::getDirection));
 
-            manualModeSwitch
-                .negate()
-                .and(autoModeSwitch.negate())
-                .onTrue(new BothCollectorsUpState(collector));
+        manualModeSwitch
+            .negate()
+            .and(autoModeSwitch.negate())
+            .onTrue(new BothCollectorsUpState(collector));
 
-            // Collector Intake Button
-            new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorIntakeID)
-                .whileTrue(new CollectorIntake(collector, indexer));
+        // Collector Intake Button
+        new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorIntakeID)
+            .whileTrue(new CollectorIntake(collector, indexer));
 
-            // Coolector Reverse Intake Button
-            new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID)
-                .whileTrue(new CollectorExpel(collector));
+        // Coolector Reverse Intake Button
+        new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID)
+            .whileTrue(new CollectorExpel(collector));
 
-            // Right Collector Down
-            // new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorRightDownID)
+        // Right Collector Down
+        // new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorRightDownID)
+        // .and(manualModeSwitch)
+        // .onTrue(new RightCollectorDownState(collector));
+
+        // Left Collector Down
+        new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorLeftDownID)
             // .and(manualModeSwitch)
-            // .onTrue(new RightCollectorDownState(collector));
+            .onTrue(new LeftCollectorDownState(collector));
 
-            // Left Collector Down
-            new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorLeftDownID)
-                // .and(manualModeSwitch)
-                .onTrue(new LeftCollectorDownState(collector));
+        // Both Collectors Up
+        new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualUpID)
+            // .and(manualModeSwitch)
+            .onTrue(new BothCollectorsUpState(collector));
 
-            // Both Collectors Up
-            new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualUpID)
-                // .and(manualModeSwitch)
-                .onTrue(new BothCollectorsUpState(collector));
+        new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualPivotDown)
+            // .and(manualModeSwitch)
+            .whileTrue(new ManualCollectorDown(collector));
 
-            new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualPivotDown)
-                // .and(manualModeSwitch)
-                .whileTrue(new ManualCollectorDown(collector));
+        new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualPivotUp)
+            // .and(manualModeSwitch)
+            .whileTrue(new ManualCollectorUp(collector));
 
-            new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualPivotUp)
-                // .and(manualModeSwitch)
-                .whileTrue(new ManualCollectorUp(collector));
+        new JoystickButton(buttonJoystick, Constants.OIConstants.ShooterShootTransferID)
+            .whileTrue(shootPresetSetpointsTransfer);
 
-            new JoystickButton(buttonJoystick, Constants.OIConstants.ShooterShootTransferID)
-                .whileTrue(shootPresetSetpointsTransfer);
+        new JoystickButton(buttonJoystick, Constants.OIConstants.ShooterShootHubID)
+            .whileTrue(shootPresetSetpointsGoal);
+        break;
 
-            new JoystickButton(buttonJoystick, Constants.OIConstants.ShooterShootHubID)
-                .whileTrue(shootPresetSetpointsGoal);
-            break;
+      case SINGLEREAL:
+        new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorRightDownID)
+            .onTrue(new singleCollectorDown(collector));
+        new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorIntakeID)
+            .whileTrue(new singleCollectorIntake(collector));
+        break;
 
-        case SINGLEREAL:
-            new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorRightDownID)
-                .onTrue(new singleCollectorDown(collector));
-            new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorIntakeID)
-                .whileTrue(new singleCollectorIntake(collector));
-            break;
-    
-        default:
-            break;
+      default:
+        break;
     }
   }
 

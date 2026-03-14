@@ -9,7 +9,6 @@ import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.Slot0Configs;
-
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
@@ -22,8 +21,7 @@ import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
 
 /**
- * {@summary} Requires one IndexerIOTalonFX and can run said motor at a defined
- * velocity
+ * {@summary} Requires one IndexerIOTalonFX and can run said motor at a defined velocity
  *
  * @author Cyrus M.
  */
@@ -35,28 +33,29 @@ public class Indexer extends SubsystemBase {
 
   public final IndexerIOInputsAutoLogged inputs = new IndexerIOInputsAutoLogged();
 
-  private static final LoggedTunableNumber indexerlKP = new LoggedTunableNumber("Indexer/kP",
-      IndexerConstants.indexerKP);
-  private static final LoggedTunableNumber indexerlKD = new LoggedTunableNumber("Indexer/kD",
-      IndexerConstants.indexerKD);
-  private static final LoggedTunableNumber indexerlKS = new LoggedTunableNumber("Indexer/kS",
-      IndexerConstants.indexerKS);
-  private static final LoggedTunableNumber indexerlKV = new LoggedTunableNumber("Indexer/kV",
-      IndexerConstants.indexerKV);
-  private static final LoggedTunableNumber indexerlKA = new LoggedTunableNumber("Indexer/kA",
-      IndexerConstants.indexerKA);
+  private static final LoggedTunableNumber indexerlKP =
+      new LoggedTunableNumber("Indexer/kP", IndexerConstants.indexerKP);
+  private static final LoggedTunableNumber indexerlKD =
+      new LoggedTunableNumber("Indexer/kD", IndexerConstants.indexerKD);
+  private static final LoggedTunableNumber indexerlKS =
+      new LoggedTunableNumber("Indexer/kS", IndexerConstants.indexerKS);
+  private static final LoggedTunableNumber indexerlKV =
+      new LoggedTunableNumber("Indexer/kV", IndexerConstants.indexerKV);
+  private static final LoggedTunableNumber indexerlKA =
+      new LoggedTunableNumber("Indexer/kA", IndexerConstants.indexerKA);
 
   public Indexer(IndexerIO indexerMotor) {
     this.indexer = indexerMotor;
 
-    sysId = new SysIdRoutine(
-        new SysIdRoutine.Config(
-            IndexerConstants.sysIdRampRate,
-            IndexerConstants.sysIdStepSize,
-            null,
-            (state) -> SignalLogger.writeString("Indexer/SysIdState", state.toString())),
-        new SysIdRoutine.Mechanism(
-            (voltage) -> runIndexerTorqueCurrent(voltage.in(Volts)), null, this));
+    sysId =
+        new SysIdRoutine(
+            new SysIdRoutine.Config(
+                IndexerConstants.sysIdRampRate,
+                IndexerConstants.sysIdStepSize,
+                null,
+                (state) -> SignalLogger.writeString("Indexer/SysIdState", state.toString())),
+            new SysIdRoutine.Mechanism(
+                (voltage) -> runIndexerTorqueCurrent(voltage.in(Volts)), null, this));
   }
 
   private void runIndexerTorqueCurrent(double torqueCurrent) {
@@ -91,7 +90,6 @@ public class Indexer extends SubsystemBase {
                 "Indexer PID Update",
                 "Indexer motor PID gains have been updated."));
       }
-
     }
   }
 
