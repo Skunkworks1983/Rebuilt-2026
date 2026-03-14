@@ -34,7 +34,7 @@ public class FlywheelIOTalonFX implements FlywheelIO {
   private final VelocityTorqueCurrentFOC velocityTorqueCurrentRequest =
       new VelocityTorqueCurrentFOC(0.0);
 
-  private final Debouncer primaryConnectedDebounce =
+  private final Debouncer primaryConnectedDebounce =  
       new Debouncer(ShooterConstants.disconnectedDebounceTimeSec, Debouncer.DebounceType.kFalling);
 
   /**
