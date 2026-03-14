@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.events.EventTrigger;
@@ -36,7 +38,7 @@ import frc.robot.commands.collectorCommands.HoldPosition;
 import frc.robot.commands.collectorCommands.LeftCollectorDownState;
 import frc.robot.commands.collectorCommands.ManualCollectorDown;
 import frc.robot.commands.collectorCommands.ManualCollectorUp;
-import frc.robot.commands.hopperCommands.HopperCommand;
+import frc.robot.commands.hopperCommands.HopperVelocityCommand;
 import frc.robot.commands.indexerCommands.IndexerAutoUnjam;
 import frc.robot.commands.indexerCommands.IndexerReverseCommand;
 import frc.robot.subsystems.collector.Collector;
@@ -55,6 +57,7 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.drive.ModuleIOTalonFXSim;
 import frc.robot.subsystems.hopper.Hopper;
+import frc.robot.subsystems.hopper.HopperConstants;
 import frc.robot.subsystems.hopper.HopperIOSim;
 import frc.robot.subsystems.hopper.HopperIOTalonFX;
 import frc.robot.subsystems.indexer.Indexer;
@@ -382,8 +385,21 @@ public class RobotContainer {
     JoystickButton runIndexerReverse =
         new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID);
 
-    runIndexer.whileTrue(new IndexerAutoUnjam(indexer, shooter::getBeamBreak).alongWith(new HopperCommand(hopper)));
-    runIndexerReverse.whileTrue(new IndexerReverseCommand(indexer).alongWith(new HopperCommand(hopper)));
+    runIndexer.whileTrue(
+        new IndexerAutoUnjam(indexer, shooter::getBeamBreak)
+            .alongWith(
+                new HopperVelocityCommand(
+                    hopper,
+                    RotationsPerSecond.of(
+                        HopperConstants.hopperAngularVelocityRotationsPerSecond.get()))));
+
+    runIndexerReverse.whileTrue(
+        new IndexerReverseCommand(indexer)
+            .alongWith(
+                new HopperVelocityCommand(
+                    hopper,
+                    RotationsPerSecond.of(
+                        HopperConstants.hopperReverseAngularVelocityRotationsPerSecond.get()))));
     // if the index button is hed and more than a second elapses before the beam
     // break is broken the
     // indexer will reverse for 1 second before attempting to intake again
@@ -400,7 +416,8 @@ public class RobotContainer {
     JoystickButton autoModeSwitch =
         new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorAutoModeID);
 
-    // autoModeSwitch.whileTrue(new AutomaticStateChange(collector, drive::getDirection));
+    // autoModeSwitch.whileTrue(new AutomaticStateChange(collector,
+    // drive::getDirection));
 
     manualModeSwitch
         .negate()
@@ -416,7 +433,8 @@ public class RobotContainer {
         .whileTrue(new CollectorExpel(collector));
 
     // Right Collector Down
-    // new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorRightDownID)
+    // new JoystickButton(buttonJoystick,
+    // Constants.OIConstants.CollectorRightDownID)
     // .and(manualModeSwitch)
     // .onTrue(new RightCollectorDownState(collector));
 
