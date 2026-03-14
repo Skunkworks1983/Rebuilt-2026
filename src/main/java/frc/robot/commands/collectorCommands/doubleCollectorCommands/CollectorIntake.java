@@ -5,15 +5,15 @@
 package frc.robot.commands.collectorCommands.doubleCollectorCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.collector.Collector;
-import frc.robot.subsystems.collector.CollectorModule;
+import frc.robot.subsystems.collector.doubleCollector.CollectorModule;
+import frc.robot.subsystems.collector.doubleCollector.DoubleCollector;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.IndexerConstants;
 import org.littletonrobotics.junction.Logger;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class CollectorIntake extends Command {
-  Collector collector;
+  DoubleCollector collector;
   Indexer indexer;
   CollectorModule leftCollector;
   CollectorModule rightCollector;
@@ -31,7 +31,7 @@ public class CollectorIntake extends Command {
    *
    * @param collector The collector subsystem WARNING: Not Required!!
    */
-  public CollectorIntake(Collector collector, Indexer indexer) {
+  public CollectorIntake(DoubleCollector collector, Indexer indexer) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.collector = collector;
     this.indexer = indexer;

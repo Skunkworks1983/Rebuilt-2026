@@ -5,12 +5,12 @@
 package frc.robot.commands.collectorCommands.doubleCollectorCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.collector.Collector;
+import frc.robot.subsystems.collector.doubleCollector.DoubleCollector;
 import org.littletonrobotics.junction.Logger;
 
 /** The Both Collectors Up state */
 public class BothCollectorsUpState extends Command {
-  private Collector collector;
+  private DoubleCollector collector;
 
   /**
    * Creates a new BothCollectorUpState.
@@ -24,7 +24,7 @@ public class BothCollectorsUpState extends Command {
    *
    * @param collector The collector subsystem
    */
-  public BothCollectorsUpState(Collector collector) {
+  public BothCollectorsUpState(DoubleCollector collector) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.collector = collector;
     addRequirements(collector);

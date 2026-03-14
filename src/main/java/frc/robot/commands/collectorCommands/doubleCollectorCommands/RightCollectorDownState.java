@@ -7,13 +7,12 @@ package frc.robot.commands.collectorCommands.doubleCollectorCommands;
 import static edu.wpi.first.units.Units.Rotations;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.collector.Collector;
+import frc.robot.subsystems.collector.doubleCollector.DoubleCollector;
 import org.littletonrobotics.junction.Logger;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class RightCollectorDownState extends Command {
-  private Collector collector;
-
+  private DoubleCollector collector;
   /**
    * Creates a new RightCollectorDownState.
    *
@@ -26,7 +25,7 @@ public class RightCollectorDownState extends Command {
    *
    * @param collector The collector subsystem
    */
-  public RightCollectorDownState(Collector collector) {
+  public RightCollectorDownState(DoubleCollector collector) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.collector = collector;
     addRequirements(collector);

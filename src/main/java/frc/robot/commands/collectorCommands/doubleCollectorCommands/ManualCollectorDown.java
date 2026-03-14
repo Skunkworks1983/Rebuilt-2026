@@ -5,13 +5,13 @@
 package frc.robot.commands.collectorCommands.doubleCollectorCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.collector.Collector;
+import frc.robot.subsystems.collector.doubleCollector.DoubleCollector;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ManualCollectorDown extends Command {
-  Collector collector;
+  DoubleCollector collector;
   /** Creates a new ManualCollectorDown. */
-  public ManualCollectorDown(Collector collector) {
+  public ManualCollectorDown(DoubleCollector collector) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.collector = collector;
     addRequirements(collector);

@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.collector;
+package frc.robot.subsystems.collector.doubleCollector;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
@@ -23,7 +23,7 @@ import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
  *   <li>It takes in two collector module IO's to assign to two collector modules
  * </ul>
  */
-public class Collector extends SubsystemBase {
+public class DoubleCollector extends SubsystemBase {
 
   @AutoLogOutput(key = "collectorRight/mechanism")
   private LoggedMechanism2d loggedMechanism2dLeft = new LoggedMechanism2d(0, 0);
@@ -60,7 +60,7 @@ public class Collector extends SubsystemBase {
    * @param leftIO left collector
    * @param rightIO right collector
    */
-  public Collector(CollectorModuleIO leftIO, CollectorModuleIO rightIO) {
+  public DoubleCollector(CollectorModuleIO leftIO, CollectorModuleIO rightIO) {
     // Collector Modules
     leftCollector = new CollectorModule(leftIO);
     rightCollector = new CollectorModule(rightIO);
@@ -83,7 +83,7 @@ public class Collector extends SubsystemBase {
    *
    * @param collector
    */
-  public Collector(CollectorModuleIO collector) {}
+  public DoubleCollector(CollectorModuleIO collector) {}
 
   @Override
   public void periodic() {
