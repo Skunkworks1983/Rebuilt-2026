@@ -10,6 +10,8 @@ import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
 
+import com.ctre.phoenix6.signals.InvertedValue;
+
 import frc.robot.util.LoggedTunableNumber;
 
 /**
@@ -37,21 +39,23 @@ public class CollectorTalonSingleConstants extends CollectorModuleConstants {
     turnkD = 1.0;
     turnkI = 0;
 
-    // Real intake PID
+    // Real intake upper PID
     intakekP = 4.5;
     intakekD = 0.0;
     intakekI = 0.0;
     intakekV = 0;
     intakekA = 9;
     intakekS = 8;
+    upperIntakInvertedValue = InvertedValue.Clockwise_Positive;
 
-    // Real intake PID
+    // Real intake lower PID
     intakeLowerkP = 4.5;
     intakeLowerkD = 0.0;
     intakeLowerkI = 0.0;
     intakeLowerkV = 0;
     intakeLowerkA = 9;
     intakeLowerkS = 8;
+    lowerIntakInvertedValue = InvertedValue.Clockwise_Positive;
 
     // Sim Turn PID
     SimTurnkP = 13.5;
@@ -74,7 +78,6 @@ public class CollectorTalonSingleConstants extends CollectorModuleConstants {
 
     // Position
     CollectorUpPos = Rotations.of(0);
-
     CollectorDownPos = new LoggedTunableNumber("Collector/Right/Downpose rad", 1.55);
 
     // Collector Intake Speeds

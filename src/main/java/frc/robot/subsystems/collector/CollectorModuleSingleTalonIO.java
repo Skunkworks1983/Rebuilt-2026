@@ -115,11 +115,7 @@ public class CollectorModuleSingleTalonIO implements CollectorModuleIO {
     var turnConfig = new TalonFXConfiguration();
     turnConfig.CurrentLimits.SupplyCurrentLimit = 80;
     turnConfig.Feedback.SensorToMechanismRatio = constants.turnMotorGearRatio;
-    if (constants.collectorSide.equals(Side.LEFT)) {
-      turnConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    } else {
-      turnConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-    }
+    turnConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
     // Pid Configs for Turn Motor
     var turnSlot0Configs = turnConfig.Slot0;
@@ -165,7 +161,7 @@ public class CollectorModuleSingleTalonIO implements CollectorModuleIO {
     // PID config for intakeMotor // TODO: make config for lower intake
     var intakeUpperConfig = new TalonFXConfiguration();
     intakeUpperConfig.CurrentLimits.SupplyCurrentLimit = 120;
-    intakeUpperConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    intakeUpperConfig.MotorOutput.Inverted = constants.upperIntakInvertedValue;
 
     if (RobotBase.isReal()) {
       intakeUpperConfig.Slot0.kP = constants.intakekP;
@@ -181,7 +177,7 @@ public class CollectorModuleSingleTalonIO implements CollectorModuleIO {
     // PID config for intakeMotor // TODO: make config for lower intake
     var intakeLowerConfig = new TalonFXConfiguration();
     intakeLowerConfig.CurrentLimits.SupplyCurrentLimit = 120;
-    intakeLowerConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    intakeLowerConfig.MotorOutput.Inverted = constants.lowerIntakInvertedValue;
 
     if (RobotBase.isReal()) {
       intakeLowerConfig.Slot0.kP = constants.intakekP;

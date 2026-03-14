@@ -9,6 +9,8 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
 
 import com.ctre.phoenix6.CANBus;
+import com.ctre.phoenix6.signals.InvertedValue;
+
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -52,14 +54,16 @@ public class CollectorModuleConstants {
   public double intakekV;
   public double intakekS;
   public double intakekA;
+  public InvertedValue upperIntakInvertedValue;
 
-  // Real intake PID
+  // Real intake lower PID
   public double intakeLowerkP;
   public double intakeLowerkD;
   public double intakeLowerkI;
   public double intakeLowerkV;
   public double intakeLowerkS;
   public double intakeLowerkA;
+  public InvertedValue lowerIntakInvertedValue;
 
   // Sim Turn PID
   public double SimTurnkP;
