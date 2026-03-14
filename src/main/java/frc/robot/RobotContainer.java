@@ -301,7 +301,7 @@ public class RobotContainer {
 
         break;
     }
-    Command autoShootIndexerCommand = new IndexerAutoUnjam(indexer, shooter::getBeamBreak);
+    Command autoShootIndexerCommand = new IndexerAutoUnjam(indexer, shooter::getBeamBreak, hopper);
 
     NamedCommands.registerCommand(
         "Shoot Preset Setpoits ", new ShootPresetSetpoints(shooter, TargetType.GOAL));
@@ -365,7 +365,7 @@ public class RobotContainer {
             () -> -rightJoystick.getX())); // Confirm if negitive or not
 
     shootAutoAim = new JoystickButton(rightJoystick, 1);
-    Command autoShootIndexerCommand = new IndexerAutoUnjam(indexer, shooter::getBeamBreak);
+    Command autoShootIndexerCommand = new IndexerAutoUnjam(indexer, shooter::getBeamBreak, hopper);
 
     shootAutoAim.whileTrue(
         new DriveAimedAutoShoot(
@@ -385,8 +385,7 @@ public class RobotContainer {
     JoystickButton runIndexerReverse =
         new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID);
 
-    runIndexer.whileTrue(
-        new IndexerAutoUnjam(indexer, shooter::getBeamBreak, hopper));
+    runIndexer.whileTrue(new IndexerAutoUnjam(indexer, shooter::getBeamBreak, hopper));
 
     runIndexerReverse.whileTrue(
         new IndexerReverseCommand(indexer)
@@ -395,7 +394,7 @@ public class RobotContainer {
                     hopper,
                     RotationsPerSecond.of(
                         HopperConstants.hopperReverseAngularVelocityRotationsPerSecond.get()))));
-    
+
     // if the index button is hed and more than a second elapses before the beam
     // break is broken the
     // indexer will reverse for 1 second before attempting to intake again

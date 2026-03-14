@@ -91,7 +91,8 @@ public class IndexerAutoUnjam extends Command {
   private void applyStateOutput() {
     double indexerSpeedRps = IndexerConstants.indexerAngularVelocityRotationsPerSecond.get();
     double hopperSpeedRps = HopperConstants.hopperAngularVelocityRotationsPerSecond.get();
-    double hopperReverseSpeedRps = HopperConstants.hopperReverseAngularVelocityRotationsPerSecond.get();
+    double hopperReverseSpeedRps =
+        HopperConstants.hopperReverseAngularVelocityRotationsPerSecond.get();
 
     if (state == AutoUnjamState.FEED) {
       indexer.setIndexerVelocity(RotationsPerSecond.of(indexerSpeedRps));
