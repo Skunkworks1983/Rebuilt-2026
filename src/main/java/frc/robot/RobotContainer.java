@@ -226,13 +226,9 @@ public class RobotContainer {
                 new CollectorModuleSimIO(simulation, new CollectorTalonLeftConstants()),
                 new CollectorModuleSimIO(simulation, new CollectorTalonRightConstants()));
 
-        indexer = 
-            new Indexer(
-                new IndexerIOSim());
+        indexer = new Indexer(new IndexerIOSim());
 
-        hopper = 
-            new Hopper(
-                new HopperIOSim());
+        hopper = new Hopper(new HopperIOSim());
 
         break;
 
@@ -370,7 +366,6 @@ public class RobotContainer {
 
     shootAutoAim = new JoystickButton(rightJoystick, 1);
     Command autoShootIndexerCommand = new IndexerAutoUnjam(indexer, shooter::getBeamBreak);
-
 
     shootAutoAim.whileTrue(
         new DriveAimedAutoShoot(
