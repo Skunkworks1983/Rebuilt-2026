@@ -386,12 +386,7 @@ public class RobotContainer {
         new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID);
 
     runIndexer.whileTrue(
-        new IndexerAutoUnjam(indexer, shooter::getBeamBreak)
-            .alongWith(
-                new HopperVelocityCommand(
-                    hopper,
-                    RotationsPerSecond.of(
-                        HopperConstants.hopperAngularVelocityRotationsPerSecond.get()))));
+        new IndexerAutoUnjam(indexer, shooter::getBeamBreak, hopper));
 
     runIndexerReverse.whileTrue(
         new IndexerReverseCommand(indexer)
@@ -400,6 +395,7 @@ public class RobotContainer {
                     hopper,
                     RotationsPerSecond.of(
                         HopperConstants.hopperReverseAngularVelocityRotationsPerSecond.get()))));
+    
     // if the index button is hed and more than a second elapses before the beam
     // break is broken the
     // indexer will reverse for 1 second before attempting to intake again
