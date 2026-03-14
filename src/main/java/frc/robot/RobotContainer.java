@@ -459,6 +459,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+    CommandScheduler.getInstance().schedule(new HopperCommand(hopper));
     return autoChooser.get().alongWith(new HoldPosition(collector));
   }
 
