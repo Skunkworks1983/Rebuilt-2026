@@ -37,7 +37,7 @@ public class CollectorModuleConstants {
   // Gear ratio's
   public double turnMotorGearRatio;
 
-  // Slot 1 devisiable 
+  // Slot 1 devisiable
   public double slot1Divisiable;
 
   // Real Turn PID

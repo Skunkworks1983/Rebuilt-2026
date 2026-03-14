@@ -83,9 +83,7 @@ public class Collector extends SubsystemBase {
    *
    * @param collector
    */
-  public Collector(CollectorModuleIO collector) {
-    
-  }
+  public Collector(CollectorModuleIO collector) {}
 
   @Override
   public void periodic() {
@@ -97,7 +95,7 @@ public class Collector extends SubsystemBase {
    * @return -Left collector Module
    */
   public CollectorModule getLeftCollector() {
-    if(Constants.currentMode.equals(Mode.SINGLEREAL)) {
+    if (Constants.currentMode.equals(Mode.SINGLEREAL)) {
       return null;
     }
     return leftCollector;
@@ -107,7 +105,7 @@ public class Collector extends SubsystemBase {
    * @return -Right collector module
    */
   public CollectorModule getRightCollector() {
-    if(Constants.currentMode.equals(Mode.SINGLEREAL)) {
+    if (Constants.currentMode.equals(Mode.SINGLEREAL)) {
       return null;
     }
     return rightCollector;
@@ -117,7 +115,7 @@ public class Collector extends SubsystemBase {
    * @return - The Collector
    */
   public CollectorModule getSingleCollector() {
-    if(Constants.currentMode.equals(Mode.SINGLEREAL)) {
+    if (Constants.currentMode.equals(Mode.SINGLEREAL)) {
       return singleCollector;
     }
     return null;

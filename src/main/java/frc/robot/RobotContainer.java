@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -25,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveAimedAutoShoot;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.HopperCommand;
 import frc.robot.commands.Shooter.NoYawShootHub;
 import frc.robot.commands.Shooter.ShootPresetSetpoints;
 import frc.robot.commands.Shooter.ShootPresetSetpoints.TargetType;
@@ -41,8 +43,8 @@ import frc.robot.commands.indexerCommands.IndexerReverseCommand;
 import frc.robot.subsystems.collector.Collector;
 import frc.robot.subsystems.collector.CollectorModuleIO;
 import frc.robot.subsystems.collector.CollectorModuleSimIO;
-import frc.robot.subsystems.collector.CollectorModuleTalonIO;
 import frc.robot.subsystems.collector.CollectorModuleSingleTalonIO;
+import frc.robot.subsystems.collector.CollectorModuleTalonIO;
 import frc.robot.subsystems.collector.collectorConstants.CollectorTalonLeftConstants;
 import frc.robot.subsystems.collector.collectorConstants.CollectorTalonRightConstants;
 import frc.robot.subsystems.collector.collectorConstants.CollectorTalonSingleConstants;
@@ -53,6 +55,9 @@ import frc.robot.subsystems.drive.GyroIOSim;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.drive.ModuleIOTalonFXSim;
+import frc.robot.subsystems.hopper.Hopper;
+import frc.robot.subsystems.hopper.HopperIOSim;
+import frc.robot.subsystems.hopper.HopperIOTalonFX;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.IndexerIO;
 import frc.robot.subsystems.indexer.IndexerIOSim;
@@ -92,6 +97,7 @@ public class RobotContainer {
   private final Shooter shooter;
   private final Indexer indexer;
   private final Collector collector;
+  private final Hopper hopper;
 
   // Controller
   private final Joystick leftJoystick;
@@ -154,6 +160,8 @@ public class RobotContainer {
             new Collector(
                 new CollectorModuleSingleTalonIO(new CollectorTalonLeftConstants()),
                 new CollectorModuleSingleTalonIO(new CollectorTalonRightConstants()));
+
+        hopper = new Hopper(new HopperIOTalonFX());
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
@@ -218,7 +226,13 @@ public class RobotContainer {
                 new CollectorModuleSimIO(simulation, new CollectorTalonLeftConstants()),
                 new CollectorModuleSimIO(simulation, new CollectorTalonRightConstants()));
 
-        indexer = new Indexer(new IndexerIOSim());
+        indexer = 
+            new Indexer(
+                new IndexerIOSim());
+
+        hopper = 
+            new Hopper(
+                new HopperIOSim());
 
         break;
 
@@ -249,9 +263,9 @@ public class RobotContainer {
 
         indexer = new Indexer(new IndexerIOTalonFX());
 
-        collector =
-            new Collector(
-                new CollectorModuleTalonIO(new CollectorTalonSingleConstants()));
+        collector = new Collector(new CollectorModuleTalonIO(new CollectorTalonSingleConstants()));
+
+        hopper = new Hopper(new HopperIOTalonFX());
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
@@ -284,6 +298,9 @@ public class RobotContainer {
         collector = new Collector(new CollectorModuleIO() {}, new CollectorModuleIO() {});
 
         indexer = new Indexer(new IndexerIO() {});
+
+        hopper = new Hopper(new HopperIOTalonFX() {});
+
         break;
     }
     Command autoShootIndexerCommand = new IndexerAutoUnjam(indexer, shooter::getBeamBreak);
@@ -353,6 +370,7 @@ public class RobotContainer {
 
     shootAutoAim = new JoystickButton(rightJoystick, 1);
     Command autoShootIndexerCommand = new IndexerAutoUnjam(indexer, shooter::getBeamBreak);
+
 
     shootAutoAim.whileTrue(
         new DriveAimedAutoShoot(
@@ -450,6 +468,7 @@ public class RobotContainer {
    * @return the command to run in teleop init
    */
   public Command getTeleopInitCommand() {
+    CommandScheduler.getInstance().schedule(new HopperCommand(hopper));
     return new HoldPosition(collector);
   }
 
