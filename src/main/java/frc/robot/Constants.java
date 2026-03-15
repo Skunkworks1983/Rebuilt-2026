@@ -16,7 +16,7 @@ import frc.robot.generated.TunerConstants;
  */
 public final class Constants {
   public static final Mode simMode = Mode.SIM;
-  public static final Mode currentMode = Mode.REAL;
+  public static final Mode currentMode = Mode.SIM;
   public static final ControlScheme controlScheme = ControlScheme.OI;
   public static final RobotHardware robotHardware = RobotHardware.Rebuilt;
   public static final TunerConstants tunerConstants = TunerConstants.getTunerConstants();
@@ -67,12 +67,14 @@ public final class Constants {
     public static final int CollectorReverseIntakeID = 22;
     public static final int CollectorManualPivotDown = 11;
     public static final int CollectorManualPivotUp = 4;
+    public static final int collectorSingleFunButton = 3;
 
     // Shooter button joystick ID's
     public static final int ShooterShootHubID = 15;
     public static final int ShooterShootTransferID = 13;
 
     public static final int ShooterIndexID = 12;
+
     // public static final int ShooterFlywheelSwitchID = 6;
     public static final int ShooterHoldToAimID = 1; // Jotstick trigger
     public static final int ShooterReverseIndexID = 18;

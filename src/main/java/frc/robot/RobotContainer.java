@@ -36,6 +36,7 @@ import frc.robot.commands.collectorCommands.doubleCollectorCommands.HoldPosition
 import frc.robot.commands.collectorCommands.doubleCollectorCommands.LeftCollectorDownState;
 import frc.robot.commands.collectorCommands.doubleCollectorCommands.ManualCollectorDown;
 import frc.robot.commands.collectorCommands.doubleCollectorCommands.ManualCollectorUp;
+import frc.robot.commands.collectorCommands.doubleCollectorCommands.RightCollectorDownState;
 import frc.robot.commands.collectorCommands.singleCollectorCommands.SingleCollectorDown;
 import frc.robot.commands.collectorCommands.singleCollectorCommands.SingleCollectorIntake;
 import frc.robot.commands.indexerCommands.IndexerAutoUnjam;
@@ -77,6 +78,9 @@ import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
+import frc.robot.util.Elastic;
+import frc.robot.util.Elastic.Notification;
+import frc.robot.util.Elastic.NotificationLevel;
 import frc.robot.util.sim.SimProjectile;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
@@ -265,15 +269,6 @@ public class RobotContainer {
             new SingleCollector(
                 new CollectorModuleSingleTalonIO(new CollectorTalonSingleConstants()));
 
-        // The ModuleIOTalonFXS implementation provides an example implementation for
-        // TalonFXS controller connected to a CANdi with a PWM encoder. The
-        // implementations
-        // of ModuleIOTalonFX, ModuleIOTalonFXS, and ModuleIOSpark (from the Spark
-        // swerve
-        // template) can be freely intermixed to support alternative hardware
-        // arrangements.
-        // Please see the AdvantageKit template documentation for more information:
-        // https://docs.advantagekit.org/getting-started/template-projects/talonfx-swerve-template#custom-module-implementations
         break;
 
       default:
@@ -406,8 +401,6 @@ public class RobotContainer {
         JoystickButton autoModeSwitch =
             new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorAutoModeID);
 
-        // autoModeSwitch.whileTrue(new AutomaticStateChange(collector, drive::getDirection));
-
         manualModeSwitch
             .negate()
             .and(autoModeSwitch.negate())
@@ -417,14 +410,14 @@ public class RobotContainer {
         new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorIntakeID)
             .whileTrue(new CollectorIntake(doubleCollector, indexer));
 
-        // Coolector Reverse Intake Button
+        // Colector Reverse Intake Button
         new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID)
             .whileTrue(new CollectorExpel(doubleCollector));
 
         // Right Collector Down
-        // new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorRightDownID)
-        // .and(manualModeSwitch)
-        // .onTrue(new RightCollectorDownState(collector));
+        new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorRightDownID)
+            .and(manualModeSwitch)
+            .onTrue(new RightCollectorDownState(doubleCollector));
 
         // Left Collector Down
         new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorLeftDownID)
@@ -456,6 +449,15 @@ public class RobotContainer {
             .onTrue(new SingleCollectorDown(singleCollector));
         new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorIntakeID)
             .whileTrue(new SingleCollectorIntake(singleCollector));
+        new JoystickButton(leftJoystick, Constants.OIConstants.collectorSingleFunButton)
+            .onTrue(
+                new InstantCommand(
+                    () ->
+                        Elastic.sendNotification(
+                            new Notification(
+                                NotificationLevel.INFO,
+                                "They think I'm driving but im actually watching the surfer",
+                                "<img src=\"/deploy/tenor/driverInfo.gif\" alt=\"GO BACK TO DRIVING\">"))));
         break;
 
       default:
