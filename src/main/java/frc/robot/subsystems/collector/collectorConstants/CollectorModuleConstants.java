@@ -9,6 +9,8 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
 
 import com.ctre.phoenix6.CANBus;
+import com.ctre.phoenix6.signals.InvertedValue;
+
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -35,13 +37,18 @@ public class CollectorModuleConstants {
   // Gear ratio's
   public double turnMotorGearRatio;
 
-  // Slot 1 devisiable
-  public double slot1Divisiable;
-
   // Real Turn PID
   public double turnkP;
   public double turnkD;
   public double turnkI;
+
+  // Real turn invert
+  public InvertedValue turnInvert;
+
+  // Real Turn PID
+  public double turnkPSlot1;
+  public double turnkDSlot1;
+  public double turnkISlot1;
 
   // Real intake PID
   public double intakekP;
@@ -75,7 +82,7 @@ public class CollectorModuleConstants {
   public LoggedTunableNumber CollectorDownPos;
 
   // Collector Manual pivot velocity
-  public double CollectorPivotVelocity;
+  public double CollectorPivotDutyCycle;
 
   // Collector Intake Speeds
   public AngularVelocity CollectorIntakeSpeed;
@@ -86,6 +93,10 @@ public class CollectorModuleConstants {
 
   // Collector Position Tolerance
   public Angle CollectorPosTolerance;
+
+  // Collector SupplyCurrents
+  public double turnSupplyCurrent;
+  public double intakeSupplyCurrent;
 
   public CollectorModuleConstants() {
 
@@ -101,9 +112,6 @@ public class CollectorModuleConstants {
 
     // Gear ratio's
     turnMotorGearRatio = 0.0;
-
-    // Slot 1 divisiable
-    slot1Divisiable = 10;
 
     // Real Turn PID
     turnkP = 0.0;
@@ -142,7 +150,7 @@ public class CollectorModuleConstants {
     // CollectorDownPos = Degrees
 
     // Pivot Velocity
-    CollectorPivotVelocity = 0.15;
+    CollectorPivotDutyCycle = 0.15;
 
     // Collector Intake Speeds
     CollectorIntakeSpeed = RotationsPerSecond.of(0);
@@ -153,5 +161,9 @@ public class CollectorModuleConstants {
 
     // Collector Position Tolerance
     CollectorPosTolerance = Degrees.of(0);
+
+    // Supply currents
+    turnSupplyCurrent = 80;
+    intakeSupplyCurrent = 120;
   }
 }

@@ -170,7 +170,7 @@ public class CollectorModule {
    * @param velocity -Angular Velocity
    */
   public void setCollectorVelocity(AngularVelocity velocity) {
-    collectorIO.setCollectorVelocity(velocity);
+    collectorIO.setCollectorIntakeVelocity(velocity);
   }
 
   /** sets Just the encoder pos */

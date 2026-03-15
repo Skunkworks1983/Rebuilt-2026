@@ -23,12 +23,12 @@ public class ManualCollectorUp extends Command {
     collector
         .getLeftCollector()
         .setCollectorPivotDutyCycle(
-            -collector.getLeftCollector().getConstants().CollectorPivotVelocity);
+            -collector.getLeftCollector().getConstants().CollectorPivotDutyCycle);
 
     collector
         .getRightCollector()
         .setCollectorPivotDutyCycle(
-            -collector.getLeftCollector().getConstants().CollectorPivotVelocity);
+            -collector.getLeftCollector().getConstants().CollectorPivotDutyCycle);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
