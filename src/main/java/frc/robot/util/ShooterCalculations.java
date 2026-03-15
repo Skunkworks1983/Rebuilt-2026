@@ -331,6 +331,7 @@ public class ShooterCalculations {
       }
     }
 
+    // Hub avoidance logic
     boolean hubIsCloser = minDistToHub.lt(distanceToTarget);
     boolean lineOfSightBlocked =
         hubFurthestCWAngle.lt(Radians.of(0)) && hubFurthestCCWAngle.gt(Radians.of(0));
