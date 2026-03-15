@@ -36,12 +36,6 @@ public class LeftCollectorDownState extends Command {
   @Override
   public void initialize() {
     Logger.recordOutput("Commands/Collector/LeftCollectorDownState", true);
-    if (collector.getLeftCollector().isCollectorUp()) {
-      collector.getLeftCollector().setCollectorEncoderPos(Rotations.of(0));
-    }
-    if (collector.getRightCollector().isCollectorUp()) {
-      collector.getRightCollector().setCollectorEncoderPos(Rotations.of(0));
-    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
