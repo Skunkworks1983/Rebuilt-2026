@@ -265,7 +265,7 @@ public class ShooterCalculations {
    *
    * @param speeds Current robot chassis speeds.
    * @param odometryPose Current robot pose.
-   * @param flywheelLinearVelocity Current flywheel surface linear velocity.
+   * @param flywheelLinearVelocity Current flywheel tangential linear velocity.
    * @return Calculated {@link ShooterControls}.
    */
   public static ShooterControls getShooterControlsTransfer(

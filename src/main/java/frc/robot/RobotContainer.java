@@ -244,21 +244,8 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Auto Aimed Shoot", new AutonomousAimedShoot(drive, shooter, indexer));
 
-    // NamedCommands.registerCommand(
-    //     "Shoot Preset Setpoits ", new ShootPresetSetpoints(shooter, TargetType.GOAL));
-    // NamedCommands.registerCommand("Index", new IndexerCommand(indexer));
-    // new EventTrigger("Index").onTrue(new IndexerCommand(indexer));
-    // NamedCommands.registerCommand(
-    //     "YawControlledShoot", new ShootPresetSetpoints(shooter, TargetType.GOAL));
-
-    // NamedCommands.registerCommand("Index", new IndexerCommand(indexer));
-
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
-    // new EventTrigger("FIRE")
-    //     .onTrue(Commands.print("LEBRON!").andThen(new InstantCommand(this::launchSimFuel)));
-    // new PointTowardsZoneTrigger("Aim Hub").whileTrue(new NoYawShootHub(shooter, drive));
-    // new EventTrigger("NoYawShoot").whileTrue(new NoYawShootHub(shooter, drive));
     // Set up SysId routines
     autoChooserAddOption(
         "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
@@ -347,9 +334,6 @@ public class RobotContainer {
     JoystickButton autoModeSwitch =
         new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorAutoModeID);
 
-    // autoModeSwitch.whileTrue(new AutomaticStateChange(collector,
-    // drive::getDirection));
-
     manualModeSwitch
         .negate()
         .and(autoModeSwitch.negate())
@@ -370,20 +354,16 @@ public class RobotContainer {
 
     // Left Collector Down
     new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorLeftDownID)
-        // .and(manualModeSwitch)
         .onTrue(new LeftCollectorDownState(collector));
 
     // Both Collectors Up
     new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualUpID)
-        // .and(manualModeSwitch)
         .onTrue(new BothCollectorsUpState(collector));
 
     new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualPivotDown)
-        // .and(manualModeSwitch)
         .whileTrue(new ManualCollectorDown(collector));
 
     new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualPivotUp)
-        // .and(manualModeSwitch)
         .whileTrue(new ManualCollectorUp(collector));
 
     new JoystickButton(buttonJoystick, Constants.OIConstants.ShooterShootTransferID)
