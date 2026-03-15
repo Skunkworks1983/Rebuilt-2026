@@ -28,16 +28,15 @@ public class DriveAimedAutoShoot extends Command {
       Drive drive,
       Shooter shooter,
       DoubleSupplier xSupplier,
-      DoubleSupplier ySupplier,
-      DoubleSupplier rotationSupplier) {
+      DoubleSupplier ySupplier) {
     this.drive = drive;
     this.shooter = shooter;
     goalCommand =
         new DriveAimedShoot(
-            drive, shooter, xSupplier, ySupplier, rotationSupplier, TargetType.GOAL);
+            drive, shooter, xSupplier, ySupplier, TargetType.GOAL);
     transferCommand =
         new DriveAimedShoot(
-            drive, shooter, xSupplier, ySupplier, rotationSupplier, TargetType.TRANSFER);
+            drive, shooter, xSupplier, ySupplier, TargetType.TRANSFER);
   }
 
   @Override

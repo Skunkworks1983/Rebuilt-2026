@@ -51,7 +51,7 @@ public class ShooterConstants {
   // FLYWHEEL CONSTANTS
 
   /** CAN ID for the primary flywheel motor. */
-  public static final int upperFlywheelMotorID = 26; // TODO: Motor IDS
+  public static final int upperFlywheelMotorID = 26;
 
   /** CAN ID for the secondary flywheel motor. */
   public static final int lowerFlywheelMotorID = 25;
@@ -134,7 +134,7 @@ public class ShooterConstants {
   public static final Angle pivotPositionTolerence = Degrees.of(4);
 
   // PID for pivot
-  public static final double pivotkP = 175; // TODO: SET VALUES
+  public static final double pivotkP = 175;
   public static final double pivotkD = 0;
 
   // Feedforwards for pivot
@@ -180,6 +180,8 @@ public class ShooterConstants {
 
   public static final AngularAcceleration pivotMaxAcceleration =
       RotationsPerSecondPerSecond.of(195);
+
+  public static final Angle pivotTrenchAngle = Degrees.of(79.5);
 
   public enum FlywheelLevel {
     Upper,
