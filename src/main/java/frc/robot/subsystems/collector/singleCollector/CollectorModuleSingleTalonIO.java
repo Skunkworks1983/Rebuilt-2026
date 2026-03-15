@@ -254,7 +254,7 @@ public class CollectorModuleSingleTalonIO implements CollectorModuleSingleIO {
         BaseStatusSignal.refreshAll(
             intakeUpperPosition, intakeUpperVelocity, intakeUpperAppliedVolts, intakeUpperCurrent);
 
-    var LowerStatus =
+    var lowerStatus =
         BaseStatusSignal.refreshAll(
             intakeLowerPosition, intakeLowerVelocity, intakeLowerAppliedVolts, intakeLowerCurrent);
 
