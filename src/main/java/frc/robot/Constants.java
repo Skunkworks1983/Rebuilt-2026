@@ -44,7 +44,8 @@ public final class Constants {
   public static enum RobotHardware {
     Swerveles,
     Reefscape,
-    Rebuilt
+    Rebuilt,
+    RebuiltTwo
   }
 
   /** OI constants */
