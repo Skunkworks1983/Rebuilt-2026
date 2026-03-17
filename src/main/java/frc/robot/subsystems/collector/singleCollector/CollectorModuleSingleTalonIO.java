@@ -27,6 +27,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstants;
 import frc.robot.util.LoggedTunableNumber;
@@ -41,25 +42,14 @@ import org.littletonrobotics.junction.Logger;
 public class CollectorModuleSingleTalonIO implements CollectorModuleSingleIO {
   // Motors and Hardware objects
   protected final TalonFX turnMotor;
-<<<<<<< HEAD:src/main/java/frc/robot/subsystems/collector/CollectorModuleSingleTalonIO.java
-  protected final TalonFX intakeUpperMotor;
-  protected final TalonFX intakeLowerMotor;
-  // protected final DigitalInput upperLimitSwitch;
-  // protected final DigitalInput lowerLimitSwitch;
-=======
   protected final TalonFX intakeMotor;
   protected final DigitalInput upperLimitSwitch;
   protected final DigitalInput lowerLimitSwitch;
->>>>>>> 1aab8cad2d893bb0bdaf3559a7a23b07534ce9ac:src/main/java/frc/robot/subsystems/collector/singleCollector/CollectorModuleSingleTalonIO.java
 
   // Constants
   public final CollectorModuleConstants constants;
 
   // Helper variables
-<<<<<<< HEAD:src/main/java/frc/robot/subsystems/collector/CollectorModuleSingleTalonIO.java
-  // private Side side;
-=======
->>>>>>> 1aab8cad2d893bb0bdaf3559a7a23b07534ce9ac:src/main/java/frc/robot/subsystems/collector/singleCollector/CollectorModuleSingleTalonIO.java
   private boolean setUpRunning;
   private boolean setDownRunning;
   private AngularVelocity lastVelocity;
@@ -94,28 +84,15 @@ public class CollectorModuleSingleTalonIO implements CollectorModuleSingleIO {
     // Constants
     this.constants = constants;
 
-<<<<<<< HEAD:src/main/java/frc/robot/subsystems/collector/CollectorModuleSingleTalonIO.java
-    // Collector side
-    // side = constants.collectorSide;
-
-=======
->>>>>>> 1aab8cad2d893bb0bdaf3559a7a23b07534ce9ac:src/main/java/frc/robot/subsystems/collector/singleCollector/CollectorModuleSingleTalonIO.java
     // isRunning Variables
     setUpRunning = false;
     setDownRunning = false;
 
     // Instantiates all motors and hardware objects
     turnMotor = new TalonFX(constants.turnMotorID, constants.canbus);
-<<<<<<< HEAD:src/main/java/frc/robot/subsystems/collector/CollectorModuleSingleTalonIO.java
-    intakeUpperMotor = new TalonFX(constants.intakeMotorID, constants.canbus);
-    intakeLowerMotor = new TalonFX(constants.intakeMotorLowerID, constants.canbus);
-    // upperLimitSwitch = new DigitalInput(constants.UpperLimitChannel);
-    // lowerLimitSwitch = new DigitalInput(constants.LowerLimitChannel);
-=======
     intakeMotor = new TalonFX(constants.intakeMotorID, constants.canbus);
     upperLimitSwitch = new DigitalInput(constants.UpperLimitChannel);
     lowerLimitSwitch = new DigitalInput(constants.LowerLimitChannel);
->>>>>>> 1aab8cad2d893bb0bdaf3559a7a23b07534ce9ac:src/main/java/frc/robot/subsystems/collector/singleCollector/CollectorModuleSingleTalonIO.java
     turnMotor.setPosition(Degrees.of(0));
 
     // Config for turnMotor
@@ -204,11 +181,6 @@ public class CollectorModuleSingleTalonIO implements CollectorModuleSingleIO {
     intakeCurrent = intakeMotor.getStatorCurrent();
 
     // Configure periodic frames
-<<<<<<< HEAD:src/main/java/frc/robot/subsystems/collector/CollectorModuleSingleTalonIO.java
-    BaseStatusSignal.setUpdateFrequencyForAll(
-        50.0, turnPosition, intakeUpperPosition, intakeLowerPosition);
-=======
->>>>>>> 1aab8cad2d893bb0bdaf3559a7a23b07534ce9ac:src/main/java/frc/robot/subsystems/collector/singleCollector/CollectorModuleSingleTalonIO.java
     BaseStatusSignal.setUpdateFrequencyForAll(
         50.0,
         intakeVelocity,

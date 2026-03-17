@@ -40,6 +40,7 @@ import frc.robot.commands.collectorCommands.doubleCollectorCommands.ManualCollec
 import frc.robot.commands.collectorCommands.doubleCollectorCommands.RightCollectorDownState;
 import frc.robot.commands.collectorCommands.singleCollectorCommands.SingleCollectorDown;
 import frc.robot.commands.collectorCommands.singleCollectorCommands.SingleCollectorIntake;
+import frc.robot.commands.hopperCommands.HopperVelocityCommand;
 import frc.robot.commands.indexerCommands.IndexerAutoUnjam;
 import frc.robot.commands.indexerCommands.IndexerReverseCommand;
 import frc.robot.subsystems.collector.collectorConstants.CollectorTalonLeftConstants;
@@ -61,6 +62,7 @@ import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.drive.ModuleIOTalonFXSim;
 import frc.robot.subsystems.hopper.Hopper;
 import frc.robot.subsystems.hopper.HopperConstants;
+import frc.robot.subsystems.hopper.HopperIO;
 import frc.robot.subsystems.hopper.HopperIOSim;
 import frc.robot.subsystems.hopper.HopperIOTalonFX;
 import frc.robot.subsystems.indexer.Indexer;
@@ -170,6 +172,8 @@ public class RobotContainer {
 
         singleCollector = new SingleCollector(new CollectorModuleSingleIO() {});
 
+        hopper = new Hopper(new HopperIO() {});
+
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
         // implementations
@@ -272,8 +276,6 @@ public class RobotContainer {
         singleCollector =
             new SingleCollector(
                 new CollectorModuleSingleTalonIO(new CollectorTalonSingleConstants()));
-
-        collector = new Collector(new CollectorModuleTalonIO(new CollectorTalonSingleConstants()));
 
         hopper = new Hopper(new HopperIOTalonFX());
 

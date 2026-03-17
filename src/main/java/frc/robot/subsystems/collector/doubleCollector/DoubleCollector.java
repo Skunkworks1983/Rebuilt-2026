@@ -83,11 +83,7 @@ public class DoubleCollector extends SubsystemBase {
    *
    * @param collector
    */
-<<<<<<< HEAD:src/main/java/frc/robot/subsystems/collector/Collector.java
-  public Collector(CollectorModuleIO collector) {}
-=======
   public DoubleCollector(CollectorModuleIO collector) {}
->>>>>>> 1aab8cad2d893bb0bdaf3559a7a23b07534ce9ac:src/main/java/frc/robot/subsystems/collector/doubleCollector/DoubleCollector.java
 
   @Override
   public void periodic() {
