@@ -88,9 +88,6 @@ public interface CollectorModuleIO {
   /** sets Just the encoder pos */
   public default void setCollectorEncoderPos(Angle angle) {}
 
-  /** sets Just the encoder pos */
-  public default void setCollectorEncoderPos(Angle angle) {}
-
   /**
    * Sets the collectors position
    *

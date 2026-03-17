@@ -1,7 +1,6 @@
 package frc.robot.commands.Shooter;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.Shooter.ShooterSetpoints;
@@ -12,8 +11,6 @@ import org.littletonrobotics.junction.Logger;
 public class NoYawShootHub extends Command {
   private final Shooter shooter;
   private final Drive drive;
-  private final Trigger readyToShoot;
-  private boolean commandStarted = false;
 
   /**
    * Sets shooter to correct flywheel velocity and pivot pitch to shoot into the hub without
@@ -24,7 +21,7 @@ public class NoYawShootHub extends Command {
    * @param shooter The shooter..
    * @param drive The drivetrain....
    */
-  public NoYawShootHub(Shooter shooter, Drive drive, Command indexerCommand) {
+  public NoYawShootHub(Shooter shooter, Drive drive) {
     this.shooter = shooter;
     this.drive = drive;
   }
@@ -32,7 +29,6 @@ public class NoYawShootHub extends Command {
   @Override
   public void initialize() {
     Logger.recordOutput("Commands/Auto Shoot/Drive Aimed Goal No Yaw", true);
-    commandStarted = true;
   }
 
   @Override
@@ -58,6 +54,5 @@ public class NoYawShootHub extends Command {
     shooter.stopFlywheels();
     shooter.setPivotHome();
     Logger.recordOutput("Commands/Auto Shoot/Drive Aimed Goal No Yaw", false);
-    commandStarted = false;
   }
 }

@@ -37,9 +37,6 @@ public class CollectorModuleConstants {
   // Gear ratio's
   public double turnMotorGearRatio;
 
-  // Slot 1 devisiable
-  public double slot1Divisiable;
-
   // Real Turn PID
   public double turnkP;
   public double turnkD;
@@ -101,6 +98,9 @@ public class CollectorModuleConstants {
   public double turnSupplyCurrent;
   public double intakeSupplyCurrent;
 
+  // Inverted Value
+  public InvertedValue intakeInvertedValue;
+
   public CollectorModuleConstants() {
 
     // Collector Side
@@ -115,9 +115,6 @@ public class CollectorModuleConstants {
 
     // Gear ratio's
     turnMotorGearRatio = 0.0;
-
-    // Slot 1 divisiable
-    slot1Divisiable = 10;
 
     // Real Turn PID
     turnkP = 0.0;

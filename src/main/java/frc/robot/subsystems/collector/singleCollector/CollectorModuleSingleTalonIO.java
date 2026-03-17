@@ -120,9 +120,9 @@ public class CollectorModuleSingleTalonIO implements CollectorModuleSingleIO {
 
     var turnSlot1Configs = turnConfig.Slot1;
 
-    turnSlot1Configs.kP = constants.turnkP / constants.slot1Divisiable;
-    turnSlot1Configs.kD = constants.turnkD / constants.slot1Divisiable;
-    turnSlot1Configs.kI = constants.turnkI / constants.slot1Divisiable;
+    turnSlot1Configs.kP = constants.turnkPSlot1;
+    turnSlot1Configs.kD = constants.turnkDSlot1;
+    turnSlot1Configs.kI = constants.turnkISlot1;
 
     turnSlot0Configs.kS = constants.turnkS;
     turnSlot0Configs.kV = constants.turnkV;
@@ -145,7 +145,7 @@ public class CollectorModuleSingleTalonIO implements CollectorModuleSingleIO {
     // PID config for intakeMotor // TODO: make config for lower intake
     var intakeConfig = new TalonFXConfiguration();
     intakeConfig.CurrentLimits.SupplyCurrentLimit = 120;
-    intakeConfig.MotorOutput.Inverted = constants.upperIntakInvertedValue;
+    intakeConfig.MotorOutput.Inverted = constants.intakeInvertedValue;
 
     if (RobotBase.isReal()) {
       intakeConfig.Slot0.kP = constants.intakekP;

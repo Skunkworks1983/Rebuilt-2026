@@ -9,8 +9,6 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.events.EventTrigger;
-import com.pathplanner.lib.events.PointTowardsZoneTrigger;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -27,8 +25,6 @@ import frc.robot.commands.DriveAimedAutoShoot;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.Shooter.AutonomousAimedShoot;
 import frc.robot.commands.Shooter.NoYawShootHub;
-import frc.robot.commands.Shooter.ShootPresetSetpoints;
-import frc.robot.commands.Shooter.ShootPresetSetpoints.TargetType;
 import frc.robot.commands.Shooter.ShootPresetSetpoints;
 import frc.robot.commands.Shooter.ShootPresetSetpoints.TargetType;
 import frc.robot.commands.TestPathCommands;
@@ -65,7 +61,6 @@ import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.IndexerIO;
 import frc.robot.subsystems.indexer.IndexerIOSim;
 import frc.robot.subsystems.indexer.IndexerIOTalonFX;
-import frc.robot.subsystems.indexer.IndexerIOTalonFX;
 import frc.robot.subsystems.shooter.BeamBreakIO;
 import frc.robot.subsystems.shooter.BeamBreakIOSensor;
 import frc.robot.subsystems.shooter.FlywheelIO;
@@ -77,15 +72,11 @@ import frc.robot.subsystems.shooter.PivotIOTalonFX;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterConstants;
 import frc.robot.subsystems.shooter.ShooterConstants.FlywheelLevel;
-import frc.robot.subsystems.shooter.ShooterConstants.FlywheelLevel;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
-import frc.robot.util.Elastic;
-import frc.robot.util.Elastic.Notification;
-import frc.robot.util.Elastic.NotificationLevel;
 import frc.robot.util.sim.SimProjectile;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
@@ -251,7 +242,6 @@ public class RobotContainer {
                 new ModuleIOTalonFX(Constants.tunerConstants.getFrontRight()),
                 new ModuleIOTalonFX(Constants.tunerConstants.getBackLeft()),
                 new ModuleIOTalonFX(Constants.tunerConstants.getBackRight()),
-                (pose) -> {},
                 (pose) -> {});
 
         shooter =
@@ -303,7 +293,7 @@ public class RobotContainer {
 
     NamedCommands.registerCommand(
         "Shoot Preset Setpoits ", new ShootPresetSetpoints(shooter, TargetType.GOAL));
-    NamedCommands.registerCommand("Both Collectors Up", new BothCollectorsUpState(collector));
+    NamedCommands.registerCommand("Both Collectors Up", new BothCollectorsUpState(doubleCollector));
     NamedCommands.registerCommand(
         "Auto Aimed Shoot", new AutonomousAimedShoot(drive, shooter, indexer));
 
@@ -444,15 +434,6 @@ public class RobotContainer {
             .onTrue(new SingleCollectorDown(singleCollector));
         new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorIntakeID)
             .whileTrue(new SingleCollectorIntake(singleCollector));
-        new JoystickButton(leftJoystick, Constants.OIConstants.collectorSingleFunButton)
-            .onTrue(
-                new InstantCommand(
-                    () ->
-                        Elastic.sendNotification(
-                            new Notification(
-                                NotificationLevel.INFO,
-                                "They think I'm driving but im actually watching the surfer",
-                                "<img src=\"/deploy/tenor/driverInfo.gif\" alt=\"GO BACK TO DRIVING\">"))));
         break;
 
       default:
@@ -475,16 +456,7 @@ public class RobotContainer {
    * @return the command to run in teleop init
    */
   public Command getTeleopInitCommand() {
-    return new HoldPosition(doubleCollector);
-  }
-
-  /**
-   * Use this to pass the teleop beggining command to the main {@link Robot} class.
-   *
-   * @return the command to run in teleop init
-   */
-  public Command getTeleopInitCommand() {
-    return new BothCollectorsUpState(collector);
+    return new BothCollectorsUpState(doubleCollector);
   }
 
   /**
@@ -550,6 +522,6 @@ public class RobotContainer {
   }
 
   public void scheduleBothCollectorsUp() {
-    CommandScheduler.getInstance().schedule(new BothCollectorsUpState(collector));
+    CommandScheduler.getInstance().schedule(new BothCollectorsUpState(doubleCollector));
   }
 }

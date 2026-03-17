@@ -7,8 +7,6 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.Shooter.ShooterSetpoints;
@@ -25,7 +23,6 @@ public class DriveAimedShoot extends Command {
 
   private final Drive drive;
   private final Shooter shooter;
-  private final Command indexerCommand;
   private final DoubleSupplier xSupplier;
   private final DoubleSupplier ySupplier;
   private ProfiledPIDController yawController;
@@ -37,24 +34,14 @@ public class DriveAimedShoot extends Command {
   public DriveAimedShoot(
       Drive drive,
       Shooter shooter,
-      Command indexerCommand,
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
-      DoubleSupplier rotationSupplier,
       TargetType targetType) {
     this.drive = drive;
     this.shooter = shooter;
     this.xSupplier = xSupplier;
     this.ySupplier = ySupplier;
-    this.rotationSupplier = rotationSupplier;
     this.targetType = targetType;
-    this.indexerCommand = indexerCommand;
-
-    // profile =
-    // new TrapezoidProfile(
-    // new TrapezoidProfile.Constraints(
-    // DriveControlConstants.YAW_MAX_VELOCITY.get(),
-    // DriveControlConstants.YAW_MAX_ACCELERATION.get()));
 
     yawController =
         new ProfiledPIDController(

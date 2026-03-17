@@ -37,6 +37,11 @@ public class CollectorTalonSingleConstants extends CollectorModuleConstants {
     turnkD = 0;
     turnkI = 0;
 
+    // Real Turn PID
+    turnkPSlot1 = 8;
+    turnkDSlot1 = .1;
+    turnkISlot1 = 0.0;
+
     // Real intake upper PID
     intakekP = 0;
     intakekD = 0.0;
@@ -44,7 +49,7 @@ public class CollectorTalonSingleConstants extends CollectorModuleConstants {
     intakekV = 0;
     intakekA = 0;
     intakekS = 0;
-    upperIntakInvertedValue = InvertedValue.Clockwise_Positive;
+    intakeInvertedValue = InvertedValue.Clockwise_Positive;
 
     // Feed forward
     turnkS = 0.25;
