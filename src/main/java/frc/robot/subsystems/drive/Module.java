@@ -73,6 +73,10 @@ public class Module {
 
   /** Runs the module with the specified setpoint state. Mutates the state to optimize it. */
   public void runSetpoint(SwerveModuleState state) {
+    state.optimize(getAngle());
+    state.cosineScale(inputs.turnPosition);
+
+    // Apply setpoints
     io.setDriveVelocity(state.speedMetersPerSecond / constants.WheelRadius);
     io.setTurnPosition(state.angle);
   }
@@ -81,6 +85,9 @@ public class Module {
   public void runCharacterization(double output) {
     io.setDriveOpenLoop(output);
     io.setTurnPosition(Rotation2d.kZero);
+
+    // Switches between drive and spin motors for sysId
+    // io.setTurnOpenLoop(output);
   }
 
   /** Disables all outputs to motors. */

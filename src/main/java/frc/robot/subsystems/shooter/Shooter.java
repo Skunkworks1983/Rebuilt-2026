@@ -7,6 +7,7 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.SignalLogger;
@@ -17,6 +18,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -56,7 +58,13 @@ public class Shooter extends SubsystemBase {
   private final PivotIOInputsAutoLogged pivotInputs = new PivotIOInputsAutoLogged();
   private final BeamBreakIOInputsAutoLogged beamBreakInputs = new BeamBreakIOInputsAutoLogged();
 
-  private AngularVelocity flywheelSetpoint = RadiansPerSecond.of(0.);
+  @AutoLogOutput(key = "Shooter/Upper Flywheel/Setpoint")
+  private AngularVelocity upperFlywheelSetpoint = RadiansPerSecond.of(0.);
+
+  @AutoLogOutput(key = "Shooter/Lower Flywheel/Setpoint")
+  private AngularVelocity lowerFlywheelSetpoint = RadiansPerSecond.of(0.);
+
+  @AutoLogOutput(key = "Shooter/Pivot/Setpoint")
   private Angle pivotSetpoint = Radians.of(0.);
 
   private final SysIdRoutine sysId;
@@ -93,6 +101,15 @@ public class Shooter extends SubsystemBase {
       new LoggedTunableNumber("Shooter/Pivot/kV", ShooterConstants.pivotkV);
   private static final LoggedTunableNumber pivotKA =
       new LoggedTunableNumber("Shooter/Pivot/kA", ShooterConstants.pivotkA);
+
+  private static final LoggedTunableNumber pivotMaxVelocity =
+      new LoggedTunableNumber(
+          "Shooter/Pivot/Max Velocity [rps]",
+          ShooterConstants.pivotMaxVelocity.in(RotationsPerSecond));
+  private static final LoggedTunableNumber pivotMaxAcceleration =
+      new LoggedTunableNumber(
+          "Shooter/Pivot/Max Acceleration [rps^2]",
+          ShooterConstants.pivotMaxAcceleration.in(RotationsPerSecondPerSecond));
 
   private final Alert upperFlywheelDisconnectedAlert =
       new Alert("Forward Flywheel disconnected", AlertType.kError);
@@ -165,67 +182,83 @@ public class Shooter extends SubsystemBase {
     lowerFlywheelDisconnectedAlert.set(!lowerFlywheelInputs.connected);
 
     pivotDisconnectedAlert.set(
-        (!pivotInputs.connected) && Constants.currentMode != Constants.Mode.SIM);
+        (!pivotInputs.motorConnected) && Constants.currentMode != Constants.Mode.SIM);
+    if (Constants.tuningMode) {
+      int hash = hashCode();
+      if (upperFlywheelKP.hasChanged(hash)
+          || upperFlywheelKD.hasChanged(hash)
+          || upperFlywheelKS.hasChanged(hash)
+          || upperFlywheelKV.hasChanged(hash)
+          || upperFlywheelKA.hasChanged(hash)) {
+        Slot0Configs gains = new Slot0Configs();
+        gains.kP = upperFlywheelKP.get();
+        gains.kD = upperFlywheelKD.get();
+        gains.kS = upperFlywheelKS.get();
+        gains.kV = upperFlywheelKV.get();
+        gains.kA = upperFlywheelKA.get();
+        upperFlywheel.setPID(gains);
 
-    if (upperFlywheelKP.hasChanged(hashCode())
-        || upperFlywheelKD.hasChanged(hashCode())
-        || upperFlywheelKS.hasChanged(hashCode())
-        || upperFlywheelKV.hasChanged(hashCode())
-        || upperFlywheelKA.hasChanged(hashCode())) {
-      Slot0Configs gains = new Slot0Configs();
-      gains.kP = upperFlywheelKP.get();
-      gains.kD = upperFlywheelKD.get();
-      gains.kS = upperFlywheelKS.get();
-      gains.kV = upperFlywheelKV.get();
-      gains.kA = upperFlywheelKA.get();
-      upperFlywheel.setPID(gains);
+        Elastic.sendNotification(
+            new Elastic.Notification(
+                Elastic.NotificationLevel.INFO,
+                "Shooter PID Update",
+                "Upper flywheel PID gains have been updated."));
+      }
 
-      Elastic.sendNotification(
-          new Elastic.Notification(
-              Elastic.NotificationLevel.INFO,
-              "Shooter PID Update",
-              "Upper flywheel PID gains have been updated."));
+      if (lowerFlywheelKP.hasChanged(hash)
+          || lowerFlywheelKD.hasChanged(hash)
+          || lowerFlywheelKS.hasChanged(hash)
+          || lowerFlywheelKV.hasChanged(hash)
+          || lowerFlywheelKA.hasChanged(hash)) {
+        Slot0Configs gains = new Slot0Configs();
+        gains.kP = lowerFlywheelKP.get();
+        gains.kD = lowerFlywheelKD.get();
+        gains.kS = lowerFlywheelKS.get();
+        gains.kV = lowerFlywheelKV.get();
+        gains.kA = lowerFlywheelKA.get();
+        lowerFlywheel.setPID(gains);
+
+        Elastic.sendNotification(
+            new Elastic.Notification(
+                Elastic.NotificationLevel.INFO,
+                "Shooter PID Update",
+                "Lower flywheel PID gains have been updated."));
+      }
+
+      if (pivotKP.hasChanged(hash)
+          || pivotKD.hasChanged(hash)
+          || pivotKS.hasChanged(hash)
+          || pivotKV.hasChanged(hash)
+          || pivotKA.hasChanged(hash)) {
+        Slot0Configs gains = new Slot0Configs();
+        gains.kP = pivotKP.get();
+        gains.kD = pivotKD.get();
+        gains.kS = pivotKS.get();
+        gains.kV = pivotKV.get();
+        gains.kA = pivotKA.get();
+        pivot.setPID(gains);
+
+        Elastic.sendNotification(
+            new Elastic.Notification(
+                Elastic.NotificationLevel.INFO,
+                "Shooter PID Update",
+                "Pivot PID gains have been updated."));
+      }
+
+      if (pivotMaxAcceleration.hasChanged(hash) || pivotMaxVelocity.hasChanged(hash)) {
+        pivot.setMotionConstraints(
+            RotationsPerSecond.of(pivotMaxVelocity.get()),
+            RotationsPerSecondPerSecond.of(pivotMaxAcceleration.get()));
+
+        Elastic.sendNotification(
+            new Elastic.Notification(
+                Elastic.NotificationLevel.INFO,
+                "Shooter Motion Constraints Update",
+                "Pivot motion constraints have been updated."));
+      }
     }
 
-    if (lowerFlywheelKP.hasChanged(hashCode())
-        || lowerFlywheelKD.hasChanged(hashCode())
-        || lowerFlywheelKS.hasChanged(hashCode())
-        || lowerFlywheelKV.hasChanged(hashCode())
-        || lowerFlywheelKA.hasChanged(hashCode())) {
-      Slot0Configs gains = new Slot0Configs();
-      gains.kP = lowerFlywheelKP.get();
-      gains.kD = lowerFlywheelKD.get();
-      gains.kS = lowerFlywheelKS.get();
-      gains.kV = lowerFlywheelKV.get();
-      gains.kA = lowerFlywheelKA.get();
-      lowerFlywheel.setPID(gains);
-
-      Elastic.sendNotification(
-          new Elastic.Notification(
-              Elastic.NotificationLevel.INFO,
-              "Shooter PID Update",
-              "Lower flywheel PID gains have been updated."));
-    }
-
-    if (pivotKP.hasChanged(hashCode())
-        || pivotKD.hasChanged(hashCode())
-        || pivotKS.hasChanged(hashCode())
-        || pivotKV.hasChanged(hashCode())
-        || pivotKA.hasChanged(hashCode())) {
-      Slot0Configs gains = new Slot0Configs();
-      gains.kP = pivotKP.get();
-      gains.kD = pivotKD.get();
-      gains.kS = pivotKS.get();
-      gains.kV = pivotKV.get();
-      gains.kA = pivotKA.get();
-      pivot.setPID(gains);
-
-      Elastic.sendNotification(
-          new Elastic.Notification(
-              Elastic.NotificationLevel.INFO,
-              "Shooter PID Update",
-              "Pivot PID gains have been updated."));
-    }
+    SmartDashboard.putBoolean("Shooter/Pivot/Trenchable", isPivotTrenchable());
   }
 
   /**
@@ -279,18 +312,31 @@ public class Shooter extends SubsystemBase {
    */
   @AutoLogOutput(key = "Shooter/canShoot")
   public boolean canShoot() {
+    return isUpperFlywheelAtSetpoint() && isLowerFlywheelAtSetpoint() && isPivotAtSetpoint();
+  }
+
+  @AutoLogOutput(key = "Shooter/UpperFlywheelAtSetpoint")
+  public boolean isUpperFlywheelAtSetpoint() {
     return MathUtil.isNear(
-            flywheelSetpoint.in(RotationsPerSecond),
-            upperFlywheelInputs.angularVelocity.in(RotationsPerSecond),
-            ShooterConstants.flywheelVelocityTolerance.in(RotationsPerSecond))
-        && MathUtil.isNear(
-            flywheelSetpoint.in(RotationsPerSecond),
-            lowerFlywheelInputs.angularVelocity.in(RotationsPerSecond),
-            ShooterConstants.flywheelVelocityTolerance.in(RotationsPerSecond))
-        && MathUtil.isNear(
-            pivotSetpoint.in(Degrees),
-            pivotInputs.pivotPosition.in(Degrees),
-            ShooterConstants.pivotPositionTolerence.in(Degrees));
+        upperFlywheelSetpoint.in(RotationsPerSecond),
+        upperFlywheelInputs.angularVelocity.in(RotationsPerSecond),
+        ShooterConstants.flywheelVelocityTolerance.in(RotationsPerSecond));
+  }
+
+  @AutoLogOutput(key = "Shooter/LowerFlywheelAtSetpoint")
+  public boolean isLowerFlywheelAtSetpoint() {
+    return MathUtil.isNear(
+        lowerFlywheelSetpoint.in(RotationsPerSecond),
+        lowerFlywheelInputs.angularVelocity.in(RotationsPerSecond),
+        ShooterConstants.flywheelVelocityTolerance.in(RotationsPerSecond));
+  }
+
+  @AutoLogOutput(key = "Shooter/PivotAtSetpoint")
+  public boolean isPivotAtSetpoint() {
+    return MathUtil.isNear(
+        pivotSetpoint.in(Degrees),
+        pivotInputs.pivotPosition.in(Degrees),
+        ShooterConstants.pivotPositionTolerence.in(Degrees));
   }
 
   /**
@@ -317,15 +363,19 @@ public class Shooter extends SubsystemBase {
    * @param setpoints The calculated shooter controls containing pitch and velocity.
    */
   public void setShooterSetpoints(ShooterSetpoints setpoints) {
-    AngularVelocity upperFlywheelSetpoint = setpoints.upperFlywheelVelocity();
-    AngularVelocity lowerFlywheelSetpoint = setpoints.lowerFlywheelVelocity();
-    Angle pivotSetpoint = setpoints.shooterPitch();
+    AngularVelocity targetUpperFlywheelSetpoint = setpoints.upperFlywheelVelocity();
+    AngularVelocity targetLowerFlywheelSetpoint = setpoints.lowerFlywheelVelocity();
+    Angle targetPivotSetpoint = setpoints.shooterPitch();
 
     Logger.recordOutput("Shooter/Setpoints", setpoints);
 
-    pivot.setPosition(pivotSetpoint);
-    upperFlywheel.setVelocity(upperFlywheelSetpoint);
-    lowerFlywheel.setVelocity(lowerFlywheelSetpoint);
+    upperFlywheelSetpoint = targetUpperFlywheelSetpoint;
+    lowerFlywheelSetpoint = targetLowerFlywheelSetpoint;
+    pivotSetpoint = targetPivotSetpoint;
+
+    pivot.setPosition(targetPivotSetpoint);
+    upperFlywheel.setVelocity(targetUpperFlywheelSetpoint);
+    lowerFlywheel.setVelocity(targetLowerFlywheelSetpoint);
   }
 
   public void stopFlywheels() {
@@ -335,5 +385,23 @@ public class Shooter extends SubsystemBase {
 
   public boolean getBeamBreak() {
     return beamBreakInputs.beamBroken;
+  }
+
+  public void setManualAngle(Angle angle) {
+    pivot.setPosition(angle);
+  }
+
+  /** Returns pivot to its default position (all the way back). */
+  public void setPivotHome() {
+    setManualAngle(ShooterConstants.pivotStartAngle);
+  }
+
+  public void stop() {
+    stopFlywheels();
+    setPivotHome();
+  }
+
+  public boolean isPivotTrenchable() {
+    return pivotInputs.pivotPosition.gte(Degrees.of(ShooterConstants.pivotTrenchAngle.in(Degrees)));
   }
 }

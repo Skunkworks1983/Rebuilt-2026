@@ -11,6 +11,7 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import frc.robot.Constants;
 import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstants;
 import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstants.Side;
 import frc.robot.util.LoggedTunableNumber;
@@ -37,6 +38,12 @@ public class CollectorModule {
   private final LoggedTunableNumber collectorPivotCruiseVelocity;
   private final LoggedTunableNumber collectorPivotMaxAcceleration;
 
+  private final LoggedTunableNumber collectorIntakeKV;
+  private final LoggedTunableNumber collectorIntakeKP;
+  private final LoggedTunableNumber collectorIntakeKS;
+  private final LoggedTunableNumber collectorIntakeKA;
+  private final LoggedTunableNumber collectorIntakeVelocity;
+
   /**
    * This is the collector module subsystem
    *
@@ -48,51 +55,80 @@ public class CollectorModule {
    */
   public CollectorModule(CollectorModuleIO collectorIO) {
     this.collectorIO = collectorIO;
+    String modulePrefix = "Collector/" + collectorIO.getSide() + "/";
     collectorPivotKP =
-        new LoggedTunableNumber("Collector/Pivot/kP", collectorIO.getConstants().turnkP);
+        new LoggedTunableNumber(modulePrefix + "Pivot/kP", collectorIO.getConstants().turnkP);
     collectorPivotKD =
-        new LoggedTunableNumber("Collector/Pivot/kD", collectorIO.getConstants().turnkD);
+        new LoggedTunableNumber(modulePrefix + "Pivot/kD", collectorIO.getConstants().turnkD);
     collectorPivotKS =
-        new LoggedTunableNumber("Collector/Pivot/kS", collectorIO.getConstants().turnkS);
+        new LoggedTunableNumber(modulePrefix + "Pivot/kS", collectorIO.getConstants().turnkS);
     collectorPivotKV =
-        new LoggedTunableNumber("Collector/Pivot/kV", collectorIO.getConstants().turnkV);
+        new LoggedTunableNumber(modulePrefix + "Pivot/kV", collectorIO.getConstants().turnkV);
     collectorPivotKA =
-        new LoggedTunableNumber("Collector/Pivot/kA", collectorIO.getConstants().turnkA);
+        new LoggedTunableNumber(modulePrefix + "Pivot/kA", collectorIO.getConstants().turnkA);
 
     collectorPivotCruiseVelocity =
         new LoggedTunableNumber(
-            "Collector/Pivot/CruiseVelocity [Rot/s]",
-            collectorIO.getConstants().pivotMaxVelocity.in(RotationsPerSecond));
+            modulePrefix + "Pivot/CruiseVelocity [Rots]",
+            collectorIO.getConstants().motionMagicCruiseVelocity.in(RotationsPerSecond));
     collectorPivotMaxAcceleration =
         new LoggedTunableNumber(
-            "Collector/Pivot/MaxAcceleration [Rot/s/s]",
-            collectorIO.getConstants().pivotMaxAcceleration.in(RotationsPerSecondPerSecond));
+            modulePrefix + "Pivot/MaxAcceleration [Rots^2]",
+            collectorIO.getConstants().motionMagicAcceleration.in(RotationsPerSecondPerSecond));
+
+    collectorIntakeKP =
+        new LoggedTunableNumber(modulePrefix + "Intake/kP", collectorIO.getConstants().intakekP);
+
+    collectorIntakeKV =
+        new LoggedTunableNumber(modulePrefix + "Intake/kV", collectorIO.getConstants().intakekV);
+    collectorIntakeKA =
+        new LoggedTunableNumber(modulePrefix + "Intake/kA", collectorIO.getConstants().intakekA);
+    collectorIntakeKS =
+        new LoggedTunableNumber(modulePrefix + "Intake/kS", collectorIO.getConstants().intakekS);
+    collectorIntakeVelocity =
+        new LoggedTunableNumber(
+            modulePrefix + "Intake/Velocity",
+            collectorIO.getConstants().CollectorIntakeSpeed.baseUnitMagnitude());
   }
 
   public void periodic() {
     collectorIO.updateInputs(inputs);
     Logger.processInputs("Collector/Module/ " + collectorIO.getSide(), inputs);
 
-    if (collectorPivotKP.hasChanged(hashCode())
-        || collectorPivotKD.hasChanged(hashCode())
-        || collectorPivotKS.hasChanged(hashCode())
-        || collectorPivotKV.hasChanged(hashCode())
-        || collectorPivotKA.hasChanged(hashCode())) {
-      Slot0Configs gains = new Slot0Configs();
-      gains.kP = collectorPivotKP.get();
-      gains.kD = collectorPivotKD.get();
-      gains.kS = collectorPivotKS.get();
-      gains.kV = collectorPivotKV.get();
-      gains.kA = collectorPivotKA.get();
-      collectorIO.setPivotGains(gains);
-    }
+    if (Constants.tuningMode) {
+      int hash = hashCode();
+      if (collectorPivotKP.hasChanged(hash)
+          || collectorPivotKD.hasChanged(hash)
+          || collectorPivotKS.hasChanged(hash)
+          || collectorPivotKV.hasChanged(hash)
+          || collectorPivotKA.hasChanged(hash)) {
+        Slot0Configs gains = new Slot0Configs();
+        gains.kP = collectorPivotKP.get();
+        gains.kD = collectorPivotKD.get();
+        gains.kS = collectorPivotKS.get();
+        gains.kV = collectorPivotKV.get();
+        gains.kA = collectorPivotKA.get();
 
-    if (collectorPivotCruiseVelocity.hasChanged(hashCode())
-        || collectorPivotMaxAcceleration.hasChanged(hashCode())) {
-      MotionMagicConfigs motionMagicConfigs = new MotionMagicConfigs();
-      motionMagicConfigs.MotionMagicCruiseVelocity = collectorPivotCruiseVelocity.get();
-      motionMagicConfigs.MotionMagicAcceleration = collectorPivotMaxAcceleration.get();
-      collectorIO.setMotionConstraints(motionMagicConfigs);
+        collectorIO.setPivotGains(gains);
+      }
+
+      if (collectorIntakeKP.hasChanged(hash)
+          || collectorIntakeKV.hasChanged(hash)
+          || collectorIntakeVelocity.hasChanged(hash)) {
+        Slot0Configs gains = new Slot0Configs();
+        gains.kP = collectorIntakeKP.get();
+        gains.kV = collectorIntakeKV.get();
+
+        collectorIO.setIntakeGains(gains);
+      }
+
+      if (collectorPivotCruiseVelocity.hasChanged(hash)
+          || collectorPivotMaxAcceleration.hasChanged(hash)) {
+        MotionMagicConfigs motionMagicConfigs = new MotionMagicConfigs();
+        motionMagicConfigs.MotionMagicCruiseVelocity = collectorPivotCruiseVelocity.get();
+        motionMagicConfigs.MotionMagicAcceleration = collectorPivotMaxAcceleration.get();
+        collectorIO.setMotionConstraints(motionMagicConfigs);
+      }
     }
   }
 
@@ -134,7 +170,12 @@ public class CollectorModule {
    * @param velocity -Angular Velocity
    */
   public void setCollectorVelocity(AngularVelocity velocity) {
-    collectorIO.setCollectorVelocity(velocity);
+    collectorIO.setCollectorIntakeVelocity(velocity);
+  }
+
+  /** sets Just the encoder pos */
+  public void setCollectorEncoderPos(Angle angle) {
+    collectorIO.setCollectorEncoderPos(angle);
   }
 
   /**
@@ -142,8 +183,17 @@ public class CollectorModule {
    *
    * @param angle WPILib angle
    */
-  public void setCollectorPos(Angle angle) {
-    collectorIO.setCollectorPos(angle);
+  public void setCollectorPos(Angle angle, int slot) {
+    collectorIO.setCollectorPos(angle, slot);
+  }
+
+  /**
+   * Sets the velocity of our pivot motor collector motors
+   *
+   * @param velocity -Angular Velocity
+   */
+  public void setCollectorPivotDutyCycle(double dutyCycle) {
+    collectorIO.setCollectorPivotDutyCycle(dutyCycle);
   }
 
   /**
@@ -152,7 +202,7 @@ public class CollectorModule {
    * @param dutyCycle double between -1.0 and 1.0
    */
   public void setCollectorDutyCycle(double dutyCycle) {
-    collectorIO.setCollectorDutyCycle(dutyCycle);
+    collectorIO.setCollectorIntakeDutyCycle(dutyCycle);
   }
 
   /**

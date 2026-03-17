@@ -6,12 +6,13 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
+import frc.robot.subsystems.shooter.ShooterConstants.FlywheelLevel;
 
 public class FlywheelIOSim extends FlywheelIOTalonFX {
   private final FlywheelSim flywheelSim;
 
-  public FlywheelIOSim(int motorId) {
-    super(motorId);
+  public FlywheelIOSim(int motorId, FlywheelLevel level) {
+    super(motorId, level);
     flywheelSim =
         new FlywheelSim(
             LinearSystemId.createFlywheelSystem(

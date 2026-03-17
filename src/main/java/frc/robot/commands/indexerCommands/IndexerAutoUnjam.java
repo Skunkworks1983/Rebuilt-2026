@@ -4,61 +4,94 @@
 
 package frc.robot.commands.indexerCommands;
 
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.indexer.Indexer;
+import frc.robot.subsystems.indexer.IndexerConstants;
 import java.util.function.BooleanSupplier;
+import org.littletonrobotics.junction.Logger;
 
 public class IndexerAutoUnjam extends Command {
-  Indexer indexer;
-  Timer timer;
-  BooleanSupplier beamBroken;
-  IndexerReverseCommand indexerReverseCommand;
-  IndexerCommand indexerCommand;
+  private static final String logKey = "Index/AutoUnjam";
+
+  private enum AutoUnjamState {
+    FEED,
+    REVERSE
+  }
+
+  private final Indexer indexer;
+  private final Timer timer = new Timer();
+  private final BooleanSupplier beamBroken;
+
+  private AutoUnjamState state = AutoUnjamState.FEED;
 
   public IndexerAutoUnjam(Indexer indexer, BooleanSupplier beamBroken) {
     this.indexer = indexer;
     this.beamBroken = beamBroken;
-    timer = new Timer();
-    indexerReverseCommand = new IndexerReverseCommand(indexer);
-    indexerCommand = new IndexerCommand(indexer);
+    addRequirements(indexer);
   }
 
   @Override
   public void initialize() {
-    timer.start();
+    Logger.recordOutput(logKey + "/Running", true);
+    Logger.recordOutput(logKey + "Index/Unjamming", false);
+    state = AutoUnjamState.FEED;
+    timer.restart();
+    applyStateOutput();
   }
 
   @Override
   public void execute() {
-
-    if (beamBroken.getAsBoolean()) {
-      timer.reset();
-      return;
-    }
-
-    if (timer.get() > 1) {
-      CommandScheduler.getInstance().cancel(indexerCommand);
-      CommandScheduler.getInstance().schedule(indexerReverseCommand);
-    } else {
-      CommandScheduler.getInstance().cancel(indexerReverseCommand);
-      CommandScheduler.getInstance().schedule(indexerCommand);
-    }
-
-    if (timer.get() > 2) {
-      timer.reset();
+    switch (state) {
+      case FEED:
+        if (!beamBroken.getAsBoolean()) {
+          timer.restart();
+        } else if (timer.hasElapsed(IndexerConstants.autoUnjamNoBeamBreakTimeoutSeconds.get())) {
+          setState(AutoUnjamState.REVERSE);
+        }
+        break;
+      case REVERSE:
+        if (timer.hasElapsed(IndexerConstants.autoUnjamReverseDurationSeconds.get())) {
+          setState(AutoUnjamState.FEED);
+        }
+        break;
     }
   }
 
   @Override
   public void end(boolean interrupted) {
-    CommandScheduler.getInstance().cancel(indexerCommand);
-    CommandScheduler.getInstance().cancel(indexerReverseCommand);
+    timer.stop();
+    indexer.setIndexerDutyCycle(0.0);
+    Logger.recordOutput(logKey + "/Running", false);
+    Logger.recordOutput(logKey + "/Unjamming", false);
   }
 
   @Override
   public boolean isFinished() {
     return false;
+  }
+
+  private void setState(AutoUnjamState nextState) {
+    if (state == nextState) {
+      return;
+    }
+
+    state = nextState;
+    timer.restart();
+    applyStateOutput();
+  }
+
+  private void applyStateOutput() {
+    double speedRps = IndexerConstants.indexerAngularVelocityRotationsPerSecond.get();
+
+    if (state == AutoUnjamState.FEED) {
+      indexer.setIndexerVelocity(RotationsPerSecond.of(speedRps));
+      Logger.recordOutput(logKey + "/Unjamming", false);
+    } else {
+      indexer.setIndexerVelocity(RotationsPerSecond.of(-speedRps));
+      Logger.recordOutput(logKey + "/Unjamming", true);
+    }
   }
 }

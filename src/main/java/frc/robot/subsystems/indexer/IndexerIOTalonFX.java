@@ -13,8 +13,8 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.InvertedValue;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.units.measure.Angle;
@@ -41,9 +41,9 @@ public class IndexerIOTalonFX implements IndexerIO {
   private final TorqueCurrentFOC torqueCurrentRequest = new TorqueCurrentFOC(0);
   private final DutyCycleOut dutyCycleOut = new DutyCycleOut(0);
 
-  public IndexerIOTalonFX(int motorID) {
+  public IndexerIOTalonFX() {
 
-    indexerMotor = new TalonFX(motorID, IndexerConstants.indexerCanBus);
+    indexerMotor = new TalonFX(IndexerConstants.indexerMotorID, IndexerConstants.indexerCanBus);
 
     // assigns values to the statussignals
     indexerPosition = indexerMotor.getPosition();
@@ -58,7 +58,14 @@ public class IndexerIOTalonFX implements IndexerIO {
     slot0Configs.kD = IndexerConstants.indexerKD;
     slot0Configs.kS = IndexerConstants.indexerKS;
     slot0Configs.kV = IndexerConstants.indexerKV;
-    configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    configs.MotorOutput.Inverted = IndexerConstants.indexerMotorAlignment;
+
+    tryUntilOk(5, () -> indexerMotor.getConfigurator().apply(configs, 0.25));
+    slot0Configs.kP = IndexerConstants.indexerKP;
+    slot0Configs.kD = IndexerConstants.indexerKD;
+    slot0Configs.kS = IndexerConstants.indexerKS;
+    slot0Configs.kV = IndexerConstants.indexerKV;
+    configs.MotorOutput.Inverted = IndexerConstants.indexerMotorAlignment;
 
     tryUntilOk(5, () -> indexerMotor.getConfigurator().apply(configs, 0.25));
 
@@ -83,7 +90,7 @@ public class IndexerIOTalonFX implements IndexerIO {
   /** sets the control for the indexer motor to the defined velocity */
   @Override
   public void setIndexerVelocity(AngularVelocity velocity) {
-    indexerMotor.setControl(velocityTorqueCurrentRequest.withVelocity(velocity));
+    indexerMotor.setControl(new VelocityVoltage(velocity));
   }
 
   @Override

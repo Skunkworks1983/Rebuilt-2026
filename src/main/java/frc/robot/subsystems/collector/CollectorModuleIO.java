@@ -38,6 +38,7 @@ public interface CollectorModuleIO {
     public Voltage turnAppliedVolts = Volts.of(0.0);
     public Current turnCurrentAmps = Amps.of(0.0);
     public double turnClosedLoopError = 0.0;
+    public double turnSetPoint = 0.0;
 
     // Intake Motor Inputs
     public boolean intakeConnected = false;
@@ -50,8 +51,12 @@ public interface CollectorModuleIO {
     public boolean upperTriggered = false;
     public boolean lowerTriggered = false;
 
-    //
+    // When were on our way down
     public boolean goingDown = false;
+
+    // up and down
+    public boolean isUp = true;
+    public boolean isDown = false;
   }
 
   /**
@@ -63,7 +68,7 @@ public interface CollectorModuleIO {
 
   /** Gets Constants */
   public default CollectorModuleConstants getConstants() {
-    return null;
+    return new CollectorModuleConstants();
   }
 
   /**
@@ -71,21 +76,31 @@ public interface CollectorModuleIO {
    *
    * @param velocity -Angular Velocity
    */
-  public default void setCollectorVelocity(AngularVelocity velocity) {}
+  public default void setCollectorIntakeVelocity(AngularVelocity velocity) {}
+
+  /** sets Just the encoder pos */
+  public default void setCollectorEncoderPos(Angle angle) {}
 
   /**
    * Sets the collectors position
    *
    * @param angle WPILib angle
    */
-  public default void setCollectorPos(Angle angle) {}
+  public default void setCollectorPos(Angle angle, int slot) {}
+
+  /**
+   * Sets the velocity of our pivot motor collector motors
+   *
+   * @param velocity -Angular Velocity
+   */
+  public default void setCollectorPivotDutyCycle(double dutyCycle) {}
 
   /**
    * Sets the duty cycle of the intake motors
    *
    * @param dutyCycle double between -1.0 and 1.0
    */
-  public default void setCollectorDutyCycle(double dutyCycle) {}
+  public default void setCollectorIntakeDutyCycle(double dutyCycle) {}
 
   /**
    * Checks to see if the collector is down
@@ -121,6 +136,8 @@ public interface CollectorModuleIO {
   public default void goDown() {}
 
   public default void setPivotGains(Slot0Configs slotConfigs) {}
+
+  public default void setIntakeGains(Slot0Configs slot0Configs) {}
 
   public default void setMotionConstraints(MotionMagicConfigs motionMagicConfigs) {}
   ;

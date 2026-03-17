@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants;
 import frc.robot.util.Elastic;
 import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
@@ -67,24 +68,28 @@ public class Indexer extends SubsystemBase {
     Logger.processInputs("Indexer/Indexer Motor", inputs);
     indexerDisconnectAlert.set(!inputs.connected);
 
-    if (indexerlKP.hasChanged(hashCode())
-        || indexerlKD.hasChanged(hashCode())
-        || indexerlKS.hasChanged(hashCode())
-        || indexerlKV.hasChanged(hashCode())
-        || indexerlKA.hasChanged(hashCode())) {
-      Slot0Configs gains = new Slot0Configs();
-      gains.kP = indexerlKP.get();
-      gains.kD = indexerlKD.get();
-      gains.kS = indexerlKS.get();
-      gains.kV = indexerlKV.get();
-      gains.kA = indexerlKA.get();
-      indexer.setPID(gains);
+    if (Constants.tuningMode) {
 
-      Elastic.sendNotification(
-          new Elastic.Notification(
-              Elastic.NotificationLevel.INFO,
-              "Indexer PID Update",
-              "Indexer motor PID gains have been updated."));
+      int hash = hashCode();
+      if (indexerlKP.hasChanged(hash)
+          || indexerlKD.hasChanged(hash)
+          || indexerlKS.hasChanged(hash)
+          || indexerlKV.hasChanged(hash)
+          || indexerlKA.hasChanged(hash)) {
+        Slot0Configs gains = new Slot0Configs();
+        gains.kP = indexerlKP.get();
+        gains.kD = indexerlKD.get();
+        gains.kS = indexerlKS.get();
+        gains.kV = indexerlKV.get();
+        gains.kA = indexerlKA.get();
+        indexer.setPID(gains);
+
+        Elastic.sendNotification(
+            new Elastic.Notification(
+                Elastic.NotificationLevel.INFO,
+                "Indexer PID Update",
+                "Indexer motor PID gains have been updated."));
+      }
     }
   }
 

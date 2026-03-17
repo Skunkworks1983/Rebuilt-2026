@@ -5,8 +5,13 @@
 package frc.robot.subsystems.collector.collectorConstants;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
+
+import com.ctre.phoenix6.signals.InvertedValue;
+import frc.robot.util.LoggedTunableNumber;
 
 /**
  * This class is a grouping of constants
@@ -28,14 +33,25 @@ public class CollectorTalonLeftConstants extends CollectorModuleConstants {
     turnMotorGearRatio = 39.375;
 
     // Real Turn PID
-    turnkP = 1;
-    turnkD = 0.0;
+    turnkP = 80;
+    turnkD = 1.0;
     turnkI = 0.0;
 
+    // Real Turn PID
+    turnkPSlot1 = 80;
+    turnkDSlot1 = 1.0;
+    turnkISlot1 = 0.0;
+
+    // Inverted value
+    turnInvert = InvertedValue.CounterClockwise_Positive;
+
     // Real intake PID
-    intakekP = 0.0;
+    intakekP = 4.5;
     intakekD = 0.0;
     intakekI = 0.0;
+    intakekV = 0;
+    intakekA = 9;
+    intakekS = 8;
 
     // Sim Turn PID
     SimTurnkP = 13.5;
@@ -49,21 +65,25 @@ public class CollectorTalonLeftConstants extends CollectorModuleConstants {
 
     // feed forward
     turnkS = 0.25;
-    turnkV = 0.12;
-    turnkA = 0.01;
+    turnkV = 0.4;
+    turnkA = 0.03;
+
+    // Motion Magic constraints
+    motionMagicCruiseVelocity = RotationsPerSecond.of(7);
+    motionMagicAcceleration = RotationsPerSecondPerSecond.of(9);
 
     // Position
     CollectorUpPos = Rotations.of(0);
-    CollectorDownPos = Rotations.of(.25);
+    CollectorDownPos = new LoggedTunableNumber("Collector/Left/Downpose", 1.55);
 
     // Collector Intake Speeds
-    CollectorIntakeSpeed = RotationsPerSecond.of(0);
+    CollectorIntakeSpeed = RadiansPerSecond.of(80);
 
     // Limit Switch Constants
-    UpperLimitChannel = 24;
-    LowerLimitChannel = 23;
+    UpperLimitChannel = 6;
+    LowerLimitChannel = 8;
 
     // Collector Position Tolerance
-    CollectorPosTolerance = Degrees.of(3);
+    CollectorPosTolerance = Degrees.of(2);
   }
 }

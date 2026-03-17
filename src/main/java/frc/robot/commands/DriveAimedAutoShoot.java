@@ -5,24 +5,24 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.DriveAimedShoot.TargetType;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.util.FieldConstants;
 import frc.robot.util.FieldConstants.AllianceZone;
 import java.util.function.DoubleSupplier;
+import org.littletonrobotics.junction.Logger;
 
 public class DriveAimedAutoShoot extends Command {
+  private static final String logKey = "Commands/Auto Shoot/Drive Aimed Auto";
+
   private final Drive drive;
   private final Shooter shooter;
   private final DriveAimedShoot goalCommand;
   private final DriveAimedShoot transferCommand;
 
-  private final Trigger allianceZoneTrigger;
-
   private DriveAimedShoot activeCommand;
+  private boolean wasInAllianceZone;
 
   public DriveAimedAutoShoot(
       Drive drive, Shooter shooter, DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
@@ -31,15 +31,26 @@ public class DriveAimedAutoShoot extends Command {
     goalCommand = new DriveAimedShoot(drive, shooter, xSupplier, ySupplier, TargetType.GOAL);
     transferCommand =
         new DriveAimedShoot(drive, shooter, xSupplier, ySupplier, TargetType.TRANSFER);
-
-    allianceZoneTrigger = new Trigger(this::isInAllianceZone);
-    allianceZoneTrigger.onTrue(Commands.runOnce(() -> switchTo(goalCommand)));
-    allianceZoneTrigger.onFalse(Commands.runOnce(() -> switchTo(transferCommand)));
   }
 
   @Override
   public void initialize() {
-    switchTo(isInAllianceZone() ? goalCommand : transferCommand);
+    boolean inAllianceZone = isInAllianceZone();
+    wasInAllianceZone = inAllianceZone;
+    Logger.recordOutput(logKey, true);
+    Logger.recordOutput(logKey + "/InAllianceZone", inAllianceZone);
+    switchTo(inAllianceZone ? goalCommand : transferCommand);
+  }
+
+  @Override
+  public void execute() {
+    boolean inAllianceZone = isInAllianceZone();
+    Logger.recordOutput(logKey + "/InAllianceZone", inAllianceZone);
+
+    if (inAllianceZone != wasInAllianceZone) {
+      switchTo(inAllianceZone ? goalCommand : transferCommand);
+      wasInAllianceZone = inAllianceZone;
+    }
   }
 
   @Override
@@ -52,6 +63,10 @@ public class DriveAimedAutoShoot extends Command {
     CommandScheduler.getInstance().cancel(transferCommand);
 
     shooter.stopFlywheels();
+    shooter.setPivotHome();
+    Logger.recordOutput(logKey, false);
+    Logger.recordOutput(logKey + "/InAllianceZone", false);
+    Logger.recordOutput(logKey + "/ActiveTarget", "NONE");
   }
 
   @Override
@@ -76,5 +91,6 @@ public class DriveAimedAutoShoot extends Command {
     }
     activeCommand = nextCommand;
     CommandScheduler.getInstance().schedule(activeCommand);
+    Logger.recordOutput(logKey + "/ActiveTarget", nextCommand == goalCommand ? "GOAL" : "TRANSFER");
   }
 }

@@ -24,8 +24,6 @@ public class NoYawShootHub extends Command {
   public NoYawShootHub(Shooter shooter, Drive drive) {
     this.shooter = shooter;
     this.drive = drive;
-
-    addRequirements(shooter);
   }
 
   @Override
@@ -54,6 +52,7 @@ public class NoYawShootHub extends Command {
   @Override
   public void end(boolean interrupted) {
     shooter.stopFlywheels();
+    shooter.setPivotHome();
     Logger.recordOutput("Commands/Auto Shoot/Drive Aimed Goal No Yaw", false);
   }
 }

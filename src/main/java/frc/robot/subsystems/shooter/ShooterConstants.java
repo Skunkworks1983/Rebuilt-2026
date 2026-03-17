@@ -7,6 +7,7 @@ import static edu.wpi.first.units.Units.KilogramSquareMeters;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Second;
@@ -16,7 +17,6 @@ import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.signals.ForwardLimitSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.ReverseLimitSourceValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -51,26 +51,28 @@ public class ShooterConstants {
   // FLYWHEEL CONSTANTS
 
   /** CAN ID for the primary flywheel motor. */
-  public static final int upperFlywheelMotorID = 26; // TODO: Motor IDS
+  public static final int upperFlywheelMotorID = 26;
 
   /** CAN ID for the secondary flywheel motor. */
   public static final int lowerFlywheelMotorID = 25;
 
   // PID for flywheel
-  public static final double upperFlywheelKP = 3.5; // TODO: Flywheel Tuning
+  public static final double upperFlywheelKP = 8.35;
   public static final double upperFlywheelKD = 0.0;
 
   // Feed forwards for the flywheel
-  public static final double upperFlywheelKS = 1.0;
-  public static final double upperFlywheelKV = 0.50;
-  public static final double upperFlywheelKA = 0.0;
+  public static final double upperFlywheelKS = 0.027988;
+  public static final double upperFlywheelKV = 0.071044;
+  public static final double upperFlywheelKA = 3.60181;
 
-  public static final double lowerFlywheelKP = 0;
-  public static final double lowerFlywheelKD = 0;
+  // PID for flywheel
+  public static final double lowerFlywheelKP = 9.75;
+  public static final double lowerFlywheelKD = 0.0;
 
-  public static final double lowerFlywheelKS = 0;
-  public static final double lowerFlywheelKV = 0;
-  public static final double lowerFlywheelKA = 0;
+  // Feed forwards for the flywheel
+  public static final double lowerFlywheelKS = 0.027988;
+  public static final double lowerFlywheelKV = 0.075044;
+  public static final double lowerFlywheelKA = 3.6181;
 
   /** Maximum velocity of the flywheel in rotations per second. */
   public static final AngularVelocity flywheelMaxVelocityRotationsPerSec =
@@ -83,26 +85,23 @@ public class ShooterConstants {
   /** Gear ratio of the flywheel mechanism. */
   public static final double flywheelGearRatio = 1.;
 
-  /** Alignment configuration for the follower flywheel motor against the primary motor. */
-  public static final MotorAlignmentValue flywheelFollowerMotorAlignment =
-      MotorAlignmentValue.Opposed;
-
   /** Stator current limit in Amps for the flywheel motors. */
   public static final Current flywheelStatorCurrentLimitAmps = Amps.of(120);
 
   /** Invert configuration for the primary flywheel motor. */
-  public static final InvertedValue flywheelMotorInverted = InvertedValue.Clockwise_Positive;
+  public static final InvertedValue flywheelMotorInverted = InvertedValue.CounterClockwise_Positive;
 
   /** Minimum physical pitch angle of the shooter. */
-  public static final Angle minShooterPitch = Degrees.of(0); // TODO: Acutal Vals
+  public static final Angle minShooterPitch = Degrees.of(55.5);
 
   /** Maximum physical pitch angle of the shooter. */
-  public static final Angle maxShooterPitch = Degrees.of(80);
+  public static final Angle maxShooterPitch = Degrees.of(84);
 
   /** Moment of inertia of the flywheel mechanism. */
   public static final MomentOfInertia flywheelInertia = KilogramSquareMeters.of(0.01);
 
-  // This isn't used in the code, but I want to keep it for reference when setting magnet offset
+  // This isn't used in the code, but I want to keep it for reference when setting
+  // magnet offset
   public static final Angle pivotStartAngle = Degrees.of(83);
 
   /** Initial pose of the shooter on the robot in WPILIb robot coordinate system. */
@@ -124,7 +123,7 @@ public class ShooterConstants {
           flywheelMaxVelocityRotationsPerSec.in(RadiansPerSecond) * flywheelRadius.in(Meters));
 
   /** Allowable error tolerance for the flywheel velocity. */
-  public static final AngularVelocity flywheelVelocityTolerance = RotationsPerSecond.of(0.5);
+  public static final AngularVelocity flywheelVelocityTolerance = RotationsPerSecond.of(2);
 
   // PIVOT CONSTANTS
 
@@ -132,10 +131,10 @@ public class ShooterConstants {
   public static final int pivotMotorId = 27;
 
   /** Allowable error tolerance for the pivot position. */
-  public static final Angle pivotPositionTolerence = Degrees.of(3);
+  public static final Angle pivotPositionTolerence = Degrees.of(4);
 
   // PID for pivot
-  public static final double pivotkP = 90; // TODO: SET VALUES
+  public static final double pivotkP = 175;
   public static final double pivotkD = 0;
 
   // Feedforwards for pivot
@@ -147,24 +146,26 @@ public class ShooterConstants {
 
   public static final Current pivotStatorCurrentLimit = Amps.of(120);
 
-  public static final double pivotSensorToMechanismRatio = 4;
+  public static final double pivotSensorToMechanismRatio = 4.;
   public static final double pivotMotorToSensorRatio = 100;
 
-  public static final AngularVelocity defaultUpperFlywheelVelocityGoal = RotationsPerSecond.of(50);
+  public static final AngularVelocity defaultUpperFlywheelVelocityGoal = RotationsPerSecond.of(55);
   public static final AngularVelocity defaultLowerFlywheelVelocityGoal =
       defaultUpperFlywheelVelocityGoal.times(1.15);
   public static final Angle defaultPitchGoal = Degrees.of(70);
 
-  public static final AngularVelocity defaultVelocityTransfer = RotationsPerSecond.of(60);
+  public static final AngularVelocity defaultVelocityTransfer = RotationsPerSecond.of(65);
   public static final AngularVelocity defaultLowerFlywheelVelocityTransfer =
       defaultVelocityTransfer.times(1.15);
-  public static final Angle defaultPitchTransfer = Degrees.of(50);
+  public static final Angle defaultPitchTransfer = Degrees.of(58);
 
   // SENSOR CONSTANTS
   public static final int pivotEncoderId = 43;
-  public static final double pivotEncoderOffset = 0;
+  public static final double pivotEncoderAbsoluteOffset = -0.958496;
+  public static final double pivotEncoderTotalOffset =
+      pivotEncoderAbsoluteOffset + (pivotStartAngle.in(Rotations) * (pivotSensorToMechanismRatio));
   public static final SensorDirectionValue pivotEncoderDirection =
-      SensorDirectionValue.Clockwise_Positive;
+      SensorDirectionValue.CounterClockwise_Positive;
 
   public static final int beamBreakSensorChannel = 0;
 
@@ -174,4 +175,16 @@ public class ShooterConstants {
       ReverseLimitSourceValue.RemoteCANdiS1;
   public static final ForwardLimitSourceValue pivotForwardLimitSource =
       ForwardLimitSourceValue.RemoteCANdiS2;
+
+  public static final AngularVelocity pivotMaxVelocity = RotationsPerSecond.of(55);
+
+  public static final AngularAcceleration pivotMaxAcceleration =
+      RotationsPerSecondPerSecond.of(195);
+
+  public static final Angle pivotTrenchAngle = Degrees.of(79.5);
+
+  public enum FlywheelLevel {
+    Upper,
+    Lower
+  }
 }

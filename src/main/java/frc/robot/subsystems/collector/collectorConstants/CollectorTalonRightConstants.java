@@ -5,8 +5,13 @@
 package frc.robot.subsystems.collector.collectorConstants;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
+
+import com.ctre.phoenix6.signals.InvertedValue;
+import frc.robot.util.LoggedTunableNumber;
 
 /**
  * This class is a grouping of constants
@@ -28,14 +33,25 @@ public class CollectorTalonRightConstants extends CollectorModuleConstants {
     turnMotorGearRatio = 39.375;
 
     // Real Turn PID
-    turnkP = 1;
-    turnkD = 0.0;
-    turnkI = 0.0;
+    turnkP = 80;
+    turnkD = 1.0;
+    turnkI = 0;
+
+    // Real Turn PID
+    turnkPSlot1 = 8;
+    turnkDSlot1 = .1;
+    turnkISlot1 = 0.0;
+
+    // Inverted value
+    turnInvert = InvertedValue.Clockwise_Positive;
 
     // Real intake PID
-    intakekP = 0.0;
+    intakekP = 4.5;
     intakekD = 0.0;
     intakekI = 0.0;
+    intakekV = 0;
+    intakekA = 9;
+    intakekS = 8;
 
     // Sim Turn PID
     SimTurnkP = 13.5;
@@ -49,21 +65,26 @@ public class CollectorTalonRightConstants extends CollectorModuleConstants {
 
     // Feed forward
     turnkS = 0.25;
-    turnkV = 0.12;
-    turnkA = 0.01;
+    turnkV = 0.4;
+    turnkA = 0.03;
+
+    // Motion Magic constraints
+    motionMagicCruiseVelocity = RotationsPerSecond.of(7);
+    motionMagicAcceleration = RotationsPerSecondPerSecond.of(9);
 
     // Position
-    CollectorUpPos = Rotations.of(0);
-    CollectorDownPos = Rotations.of(.25);
+    CollectorUpPos = Rotations.of(-0.02);
+
+    CollectorDownPos = new LoggedTunableNumber("Collector/Right/Downpose rad", 1.55);
 
     // Collector Intake Speeds
-    CollectorIntakeSpeed = RotationsPerSecond.of(0);
+    CollectorIntakeSpeed = RadiansPerSecond.of(80);
 
     // Limit Switch Constants
-    UpperLimitChannel = 22;
-    LowerLimitChannel = 21;
+    UpperLimitChannel = 9;
+    LowerLimitChannel = 7;
 
     // Collector Position Tolerance
-    CollectorPosTolerance = Degrees.of(3);
+    CollectorPosTolerance = Degrees.of(2);
   }
 }
