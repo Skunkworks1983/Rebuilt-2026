@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.collector;
+package frc.robot.subsystems.collector.singleCollector;
 
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Degrees;
@@ -28,9 +28,9 @@ import org.littletonrobotics.junction.AutoLog;
  *
  * @author Liam B
  */
-public interface CollectorModuleIO {
+public interface CollectorModuleSingleIO {
   @AutoLog
-  public static class CollectorIOInputs {
+  public static class CollectorIOSingleInputs {
     // Turn Motor Inputs
     public boolean turnConnected = false;
     public Rotation2d turnPosition = Rotation2d.kZero;
@@ -71,7 +71,7 @@ public interface CollectorModuleIO {
    *
    * @param
    */
-  public default void updateInputs(CollectorIOInputs inputs) {}
+  public default void updateInputs(CollectorIOSingleInputs inputs) {}
 
   /** Gets Constants */
   public default CollectorModuleConstants getConstants() {
@@ -147,5 +147,4 @@ public interface CollectorModuleIO {
   public default void setIntakeGains(Slot0Configs slot0Configs) {}
 
   public default void setMotionConstraints(MotionMagicConfigs motionMagicConfigs) {}
-  ;
 }

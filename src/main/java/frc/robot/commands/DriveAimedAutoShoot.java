@@ -25,32 +25,12 @@ public class DriveAimedAutoShoot extends Command {
   private boolean wasInAllianceZone;
 
   public DriveAimedAutoShoot(
-      Drive drive,
-      Shooter shooter,
-      Command indexerCommand,
-      DoubleSupplier xSupplier,
-      DoubleSupplier ySupplier,
-      DoubleSupplier rotationSupplier) {
+      Drive drive, Shooter shooter, DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
     this.drive = drive;
     this.shooter = shooter;
-    goalCommand =
-        new DriveAimedShoot(
-            drive,
-            shooter,
-            indexerCommand,
-            xSupplier,
-            ySupplier,
-            rotationSupplier,
-            TargetType.GOAL);
+    goalCommand = new DriveAimedShoot(drive, shooter, xSupplier, ySupplier, TargetType.GOAL);
     transferCommand =
-        new DriveAimedShoot(
-            drive,
-            shooter,
-            indexerCommand,
-            xSupplier,
-            ySupplier,
-            rotationSupplier,
-            TargetType.TRANSFER);
+        new DriveAimedShoot(drive, shooter, xSupplier, ySupplier, TargetType.TRANSFER);
   }
 
   @Override

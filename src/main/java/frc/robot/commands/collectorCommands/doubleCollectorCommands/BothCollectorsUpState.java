@@ -2,20 +2,20 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.collectorCommands;
+package frc.robot.commands.collectorCommands.doubleCollectorCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.collector.Collector;
+import frc.robot.subsystems.collector.doubleCollector.DoubleCollector;
 import org.littletonrobotics.junction.Logger;
 
 /** The Both Collectors Up state */
 public class BothCollectorsUpState extends Command {
-  private Collector collector;
+  private DoubleCollector collector;
 
   /**
    * Creates a new BothCollectorUpState.
    *
-   * <h2>Implementation </h2>
+   * <h2>Implementation</h2>
    *
    * <ol>
    *   <li>Sends both collectors up, whether they already are or not (Though if it is up it wont
@@ -24,7 +24,7 @@ public class BothCollectorsUpState extends Command {
    *
    * @param collector The collector subsystem
    */
-  public BothCollectorsUpState(Collector collector) {
+  public BothCollectorsUpState(DoubleCollector collector) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.collector = collector;
     addRequirements(collector);
@@ -51,6 +51,10 @@ public class BothCollectorsUpState extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    Logger.recordOutput(
+        "Commands/Collector/Collector IsFinished",
+        collector.getLeftCollector().isCollectorUp()
+            && collector.getRightCollector().isCollectorUp());
     return collector.getLeftCollector().isCollectorUp()
         && collector.getRightCollector().isCollectorUp();
   }

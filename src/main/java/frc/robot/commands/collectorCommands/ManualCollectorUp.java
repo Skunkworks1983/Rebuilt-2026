@@ -5,13 +5,13 @@
 package frc.robot.commands.collectorCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.collector.Collector;
+import frc.robot.subsystems.collector.doubleCollector.DoubleCollector;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ManualCollectorUp extends Command {
-  Collector collector;
+  DoubleCollector collector;
   /** Creates a new ManualCollectorUp. */
-  public ManualCollectorUp(Collector collector) {
+  public ManualCollectorUp(DoubleCollector collector) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.collector = collector;
     addRequirements(collector);
@@ -23,12 +23,12 @@ public class ManualCollectorUp extends Command {
     collector
         .getLeftCollector()
         .setCollectorPivotDutyCycle(
-            -collector.getLeftCollector().getConstants().CollectorPivotVelocity);
+            -collector.getLeftCollector().getConstants().CollectorPivotDutyCycle);
 
     collector
         .getRightCollector()
         .setCollectorPivotDutyCycle(
-            -collector.getLeftCollector().getConstants().CollectorPivotVelocity);
+            -collector.getLeftCollector().getConstants().CollectorPivotDutyCycle);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
