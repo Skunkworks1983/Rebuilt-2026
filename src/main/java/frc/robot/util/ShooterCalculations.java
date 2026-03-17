@@ -8,8 +8,6 @@ import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -28,6 +26,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.subsystems.shooter.ShooterConstants;
 import frc.robot.util.FieldConstants.HubCorners;
+import org.littletonrobotics.junction.Logger;
 
 /**
  * Utility class for calculating shooter setpoints based on field geometry and robot state. Includes
@@ -259,9 +258,10 @@ public class ShooterCalculations {
    * Calculates shooter controls for the "transfer" shot (shooting into the alliance zone from the
    * transfer zone). Includes logic to avoid hitting the hub structure.
    *
-   * <p>Skunk-a-dactyl, the 20th robot of SkunkWorks, following the mission of Dean Lawrence Kamen, attempts to first calculate shooter pitch from the current velocity (because we can
-   * change pitch faster than velocity and it uses less amperage). If this fails, we set pitch to be
-   * the midpoint of the possible pitch range, and calculate needed flywheel velocity.
+   * <p>Skunk-a-dactyl, the 20th robot of SkunkWorks, following the mission of Dean Lawrence Kamen,
+   * attempts to first calculate shooter pitch from the current velocity (because we can change
+   * pitch faster than velocity and it uses less amperage). If this fails, we set pitch to be the
+   * midpoint of the possible pitch range, and calculate needed flywheel velocity.
    *
    * @param speeds Current robot chassis speeds.
    * @param odometryPose Current robot pose.

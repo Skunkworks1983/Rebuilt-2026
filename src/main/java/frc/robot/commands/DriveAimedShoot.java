@@ -1,7 +1,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
@@ -66,7 +65,10 @@ public class DriveAimedShoot extends Command {
 
     yawController.setP(DriveControlConstants.YAW_CONTROL_KP.get());
     yawController.setD(DriveControlConstants.YAW_CONTROL_KD.get());
-    yawController.setConstraints(new Constraints(DriveControlConstants.YAW_MAX_VELOCITY.get(), DriveControlConstants.YAW_MAX_ACCELERATION.get()));
+    yawController.setConstraints(
+        new Constraints(
+            DriveControlConstants.YAW_MAX_VELOCITY.get(),
+            DriveControlConstants.YAW_MAX_ACCELERATION.get()));
     yawController.enableContinuousInput(-Math.PI, Math.PI);
     yawController.setTolerance(DriveControlConstants.YAW_SETPOINT_TOLERANCE_RADIANS.get());
     yawController.reset(drive.getRotation().getRadians());
@@ -99,8 +101,8 @@ public class DriveAimedShoot extends Command {
     Logger.recordOutput("Auto Shoot/Target Yaw", targetYawRadians);
     Logger.recordOutput("Auto Shoot/Current Yaw", currentYawRadians);
 
-     double omegaCalculated = yawController.calculate(currentYawRadians, targetYawRadians);
- 
+    double omegaCalculated = yawController.calculate(currentYawRadians, targetYawRadians);
+
     Logger.recordOutput("Auto Shoot/Omega Calculated", omegaCalculated);
 
     ChassisSpeeds targetSpeeds =
