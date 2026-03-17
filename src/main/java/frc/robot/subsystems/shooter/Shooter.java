@@ -258,7 +258,7 @@ public class Shooter extends SubsystemBase {
       }
     }
 
-    SmartDashboard.putBoolean("Shooter/Pivot/Trenchable", isPivotHomed());
+    SmartDashboard.putBoolean("Shooter/Pivot/Trenchable", isPivotTrenchable());
   }
 
   /**
@@ -396,7 +396,12 @@ public class Shooter extends SubsystemBase {
     setManualAngle(ShooterConstants.pivotStartAngle);
   }
 
-  public boolean isPivotHomed() {
-    return pivotInputs.pivotPosition.gte(Degrees.of(79.5));
+  public void stop() {
+    stopFlywheels();
+    setPivotHome();
+  }
+
+  public boolean isPivotTrenchable() {
+    return pivotInputs.pivotPosition.gte(Degrees.of(ShooterConstants.pivotTrenchAngle.in(Degrees)));
   }
 }

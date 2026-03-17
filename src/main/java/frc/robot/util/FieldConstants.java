@@ -7,20 +7,24 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.units.measure.Distance;
 
 public class FieldConstants {
-  private static final Distance FIELD_LENGTH_INCHES = Inches.of(651.25);
-  private static final Distance FIELD_WIDTH_INCHES = Inches.of(317.69);
-  private static final Distance ALLIANCE_ZONE_LENGTH_INCHES = Inches.of(182.11);
+  public static final Distance FIELD_LENGTH_INCHES = Inches.of(651.25);
+  public static final Distance FIELD_WIDTH_INCHES = Inches.of(317.69);
+  public static final Distance ALLIANCE_ZONE_LENGTH_INCHES = Inches.of(182.11);
 
   public static final Translation3d blueGoal =
       new Translation3d(Inches.of(182.11), Inches.of(158.845), Inches.of(72));
   public static final Translation3d redGoal =
       new Translation3d(Inches.of(469.09), Inches.of(158.845), Inches.of(72));
 
-  public static final Translation2d redFuelTransferTarget =
-      new Translation2d(Inches.of(651.25 - 60), Inches.of(158.845)); // TODO :SET ACTUAL
+  public static final Translation2d redLeftFuelTransferTarget =
+      new Translation2d(Inches.of(651.25 - 50), Inches.of(158.845 + 50));
+  public static final Translation2d redRightFuelTransferTarget =
+      new Translation2d(Inches.of(651.25 - 50), Inches.of(158.845 - 50));
 
-  public static final Translation2d blueFuelTransferTarget =
-      new Translation2d(Inches.of(60), Inches.of(158.845));
+  public static final Translation2d blueLeftFuelTransferTarget =
+      new Translation2d(Inches.of(50), Inches.of(158.845 + 50));
+  public static final Translation2d blueRightFuelTransferTarget =
+      new Translation2d(Inches.of(50), Inches.of(158.845 - 50));
 
   public static interface HubCorners {
     Translation2d getAllianceSideLeft();

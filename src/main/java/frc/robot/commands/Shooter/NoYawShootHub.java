@@ -27,9 +27,6 @@ public class NoYawShootHub extends Command {
   public NoYawShootHub(Shooter shooter, Drive drive, Command indexerCommand) {
     this.shooter = shooter;
     this.drive = drive;
-    readyToShoot = new Trigger(() -> shooter.canShoot() && commandStarted);
-    readyToShoot.whileTrue(indexerCommand);
-    addRequirements(shooter);
   }
 
   @Override

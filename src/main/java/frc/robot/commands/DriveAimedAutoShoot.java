@@ -43,14 +43,7 @@ public class DriveAimedAutoShoot extends Command {
             rotationSupplier,
             TargetType.GOAL);
     transferCommand =
-        new DriveAimedShoot(
-            drive,
-            shooter,
-            indexerCommand,
-            xSupplier,
-            ySupplier,
-            rotationSupplier,
-            TargetType.TRANSFER);
+        new DriveAimedShoot(drive, shooter, xSupplier, ySupplier, TargetType.TRANSFER);
   }
 
   @Override

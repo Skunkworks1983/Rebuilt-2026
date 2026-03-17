@@ -21,7 +21,7 @@ public final class Constants {
   public static final RobotHardware robotHardware = RobotHardware.Rebuilt;
   public static final TunerConstants tunerConstants = TunerConstants.getTunerConstants();
 
-  public static final boolean tuningMode = false;
+  public static final boolean tuningMode = true;
   public static final boolean disableHAL = false;
 
   public static enum Mode {
@@ -67,14 +67,12 @@ public final class Constants {
     public static final int CollectorReverseIntakeID = 22;
     public static final int CollectorManualPivotDown = 11;
     public static final int CollectorManualPivotUp = 4;
-    public static final int collectorSingleFunButton = 3;
 
     // Shooter button joystick ID's
     public static final int ShooterShootHubID = 15;
     public static final int ShooterShootTransferID = 13;
 
     public static final int ShooterIndexID = 12;
-
     // public static final int ShooterFlywheelSwitchID = 6;
     public static final int ShooterHoldToAimID = 1; // Jotstick trigger
     public static final int ShooterReverseIndexID = 18;

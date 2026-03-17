@@ -1,6 +1,7 @@
 package frc.robot.util;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Radians;
@@ -326,26 +327,38 @@ public class ShooterCalculations {
    * Calculates shooter controls for the "transfer" shot (shooting into the alliance zone from the
    * transfer zone). Includes logic to avoid hitting the hub structure.
    *
-   * <p>It is attempted to first calculate shooter pitch from the current velocity (because we can
-   * change pitch faster than velocity and it uses less amperage). If this fails, we set pitch to be
-   * the midpoint of the possible pitch range, and calculate needed flywheel velocity.
+   * <p>Skunk-a-dactyl, the 20th robot of SkunkWorks, following the mission of Dean Lawrence Kamen,
+   * attempts to first calculate shooter pitch from the current velocity (because we can change
+   * pitch faster than velocity and it uses less amperage). If this fails, we set pitch to be the
+   * midpoint of the possible pitch range, and calculate needed flywheel velocity.
    *
    * @param speeds Current robot chassis speeds.
    * @param odometryPose Current robot pose.
-   * @param flywheelLinearVelocity Current flywheel surface linear velocity.
+   * @param flywheelLinearVelocity Current flywheel tangential linear velocity.
    * @return Calculated {@link ShooterControls}.
    */
   public static ShooterControls getShooterControlsTransfer(
       ChassisSpeeds speeds, Pose2d odometryPose, LinearVelocity flywheelLinearVelocity) {
-    Translation2d target =
-        DriverStation.getAlliance().get() == Alliance.Red
-            ? FieldConstants.redFuelTransferTarget
-            : FieldConstants.blueFuelTransferTarget;
+    boolean isLeft =
+        odometryPose.getTranslation().getY() > FieldConstants.FIELD_WIDTH_INCHES.in(Inches) / 2.0;
+
+    Translation2d target;
+    Alliance alliance =
+        DriverStation.getAlliance().isPresent() ? DriverStation.getAlliance().get() : Alliance.Red;
+    if (alliance == Alliance.Red) {
+      target =
+          isLeft
+              ? FieldConstants.redLeftFuelTransferTarget
+              : FieldConstants.redRightFuelTransferTarget;
+    } else {
+      target =
+          isLeft
+              ? FieldConstants.blueLeftFuelTransferTarget
+              : FieldConstants.blueRightFuelTransferTarget;
+    }
 
     HubCorners hubCorners =
-        DriverStation.getAlliance().get() == Alliance.Red
-            ? FieldConstants.redHubCorners
-            : FieldConstants.blueHubCorners;
+        alliance == Alliance.Red ? FieldConstants.redHubCorners : FieldConstants.blueHubCorners;
 
     Translation2d targetVector = target.minus(odometryPose.getTranslation());
     Logger.recordOutput("TransferShot/TargetVector", targetVector);
@@ -387,6 +400,7 @@ public class ShooterCalculations {
       }
     }
 
+    // Hub avoidance logic
     boolean hubIsCloser = minDistToHub.lt(distanceToTarget);
     boolean lineOfSightBlocked =
         hubFurthestCWAngle.lt(Radians.of(0)) && hubFurthestCCWAngle.gt(Radians.of(0));
@@ -459,17 +473,6 @@ public class ShooterCalculations {
         calculatedPitch,
         finalYaw,
         true);
-  }
-
-  /**
-   * Checks if a calculated pitch is within the allowed shooter pitch range.
-   *
-   * @param pitch Pitch angle to validate.
-   * @return True if the pitch is within the mechanical limits of the shooter.
-   */
-  private static boolean isValidPitch(Angle pitch) {
-    return pitch.gte(ShooterConstants.minShooterPitch)
-        && pitch.lte(ShooterConstants.maxShooterPitch);
   }
 
   public static ShooterControls getInterpolatedShooterControls(

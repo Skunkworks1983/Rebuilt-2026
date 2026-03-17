@@ -72,8 +72,6 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
   private final StatusSignal<Current> intakeCurrent;
   private final LoggedTunableNumber collectorIntakeVelocity;
 
-  // private final Trigger upperLimitTrigger;
-
   // Connection debouncers
   private final Debouncer driveConnectedDebounce =
       new Debouncer(0.5, Debouncer.DebounceType.kFalling);
@@ -105,13 +103,9 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
 
     // Config for turnMotor
     var turnConfig = new TalonFXConfiguration();
-    turnConfig.CurrentLimits.SupplyCurrentLimit = 80;
+    turnConfig.CurrentLimits.SupplyCurrentLimit = constants.turnSupplyCurrent;
     turnConfig.Feedback.SensorToMechanismRatio = constants.turnMotorGearRatio;
-    if (constants.collectorSide.equals(Side.LEFT)) {
-      turnConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    } else {
-      turnConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-    }
+    turnConfig.MotorOutput.Inverted = constants.turnInvert;
 
     // Pid Configs for Turn Motor
     var turnSlot0Configs = turnConfig.Slot0;
@@ -132,9 +126,9 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
 
     var turnSlot1Configs = turnConfig.Slot1;
 
-    turnSlot1Configs.kP = constants.turnkP / constants.slot1Divisiable;
-    turnSlot1Configs.kD = constants.turnkD / constants.slot1Divisiable;
-    turnSlot1Configs.kI = constants.turnkI / constants.slot1Divisiable;
+    turnSlot1Configs.kP = constants.turnkPSlot1;
+    turnSlot1Configs.kD = constants.turnkDSlot1;
+    turnSlot1Configs.kI = constants.turnkISlot1;
 
     turnSlot0Configs.kS = constants.turnkS;
     turnSlot0Configs.kV = constants.turnkV;
@@ -156,7 +150,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
 
     // PID config for intakeMotor
     var intakeConfig = new TalonFXConfiguration();
-    intakeConfig.CurrentLimits.SupplyCurrentLimit = 120;
+    intakeConfig.CurrentLimits.SupplyCurrentLimit = constants.intakeSupplyCurrent;
     intakeConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
     if (RobotBase.isReal()) {
@@ -278,7 +272,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
    *
    * @param velocity -Angular Velocity
    */
-  public void setCollectorVelocity(AngularVelocity velocity) {
+  public void setCollectorIntakeVelocity(AngularVelocity velocity) {
     if (velocity.gt(RotationsPerSecond.of(0))) {
       setCollectorPos(Radians.of(constants.CollectorDownPos.get()), 1);
     } else {

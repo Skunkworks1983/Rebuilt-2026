@@ -90,8 +90,8 @@ public class Drive extends SubsystemBase implements VisionConsumer {
                   tunerConstants.getBackRight().LocationY)));
 
   // PathPlanner config constants
-  private static final double ROBOT_MASS_KG = 74.088; // With bumpers and battery
-  private static final double ROBOT_MOI = 6.883;
+  private static final double ROBOT_MASS_KG = 54.8; // With bumpers and battery
+  private static final double ROBOT_MOI = 6.583;
   private static final double WHEEL_COF = 1.2;
   private static final AngularVelocity MAX_MODULE_OMEGA_RAD_PER_SEC = RadiansPerSecond.of(18.0);
   private static final RobotConfig PP_CONFIG =
@@ -142,8 +142,6 @@ public class Drive extends SubsystemBase implements VisionConsumer {
   /** Consumer to also reset the simulation field pose when resetting odometry */
   private final Consumer<Pose2d> resetSimulationPoseCallBack;
 
-  private Consumer<Pose2d> resetLimelightIMUCallback;
-
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
   private Rotation2d rawGyroRotation = Rotation2d.kZero;
   private SwerveModulePosition[] lastModulePositions = // For delta tracking
@@ -162,11 +160,9 @@ public class Drive extends SubsystemBase implements VisionConsumer {
       ModuleIO frModuleIO,
       ModuleIO blModuleIO,
       ModuleIO brModuleIO,
-      Consumer<Pose2d> resetSimulationPoseCallBack,
-      Consumer<Pose2d> resetLimelightIMUCallback) {
+      Consumer<Pose2d> resetSimulationPoseCallBack) {
     this.gyroIO = gyroIO;
     this.resetSimulationPoseCallBack = resetSimulationPoseCallBack;
-    this.resetLimelightIMUCallback = resetLimelightIMUCallback;
 
     modules[0] = new Module(flModuleIO, 0, tunerConstants.getFrontLeft());
     modules[1] = new Module(frModuleIO, 1, tunerConstants.getFrontRight());
@@ -395,11 +391,11 @@ public class Drive extends SubsystemBase implements VisionConsumer {
   }
 
   /** Resets the current odometry pose. */
-  public void setPose(Pose2d pose) {
-    // In simulation also reset the simulation field pose
-    resetSimulationPoseCallBack.accept(pose);
-    // Update camera internal imu
-    resetLimelightIMUCallback.accept(pose);
+  private void setPose(Pose2d pose) {
+    if (Constants.currentMode == Mode.SIM) {
+      // In simulation also reset the simulation field pose
+      resetSimulationPoseCallBack.accept(pose);
+    }
     poseEstimator.resetPosition(rawGyroRotation, getModulePositions(), pose);
   }
 
@@ -435,10 +431,6 @@ public class Drive extends SubsystemBase implements VisionConsumer {
       new Translation2d(
           tunerConstants.getBackRight().LocationX, tunerConstants.getBackRight().LocationY)
     };
-  }
-
-  public void setResetVisionIMUCallback(Consumer<Pose2d> resetIMUCallback) {
-    resetLimelightIMUCallback = resetIMUCallback;
   }
 
   public AngularVelocity getAngularVelocity() {

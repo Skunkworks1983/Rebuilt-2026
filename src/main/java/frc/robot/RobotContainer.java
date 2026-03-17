@@ -18,14 +18,17 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveAimedAutoShoot;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.Shooter.AutonomousAimedShoot;
 import frc.robot.commands.Shooter.NoYawShootHub;
+import frc.robot.commands.Shooter.ShootPresetSetpoints;
+import frc.robot.commands.Shooter.ShootPresetSetpoints.TargetType;
 import frc.robot.commands.Shooter.ShootPresetSetpoints;
 import frc.robot.commands.Shooter.ShootPresetSetpoints.TargetType;
 import frc.robot.commands.TestPathCommands;
@@ -62,6 +65,7 @@ import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.IndexerIO;
 import frc.robot.subsystems.indexer.IndexerIOSim;
 import frc.robot.subsystems.indexer.IndexerIOTalonFX;
+import frc.robot.subsystems.indexer.IndexerIOTalonFX;
 import frc.robot.subsystems.shooter.BeamBreakIO;
 import frc.robot.subsystems.shooter.BeamBreakIOSensor;
 import frc.robot.subsystems.shooter.FlywheelIO;
@@ -72,6 +76,7 @@ import frc.robot.subsystems.shooter.PivotIOSim;
 import frc.robot.subsystems.shooter.PivotIOTalonFX;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterConstants;
+import frc.robot.subsystems.shooter.ShooterConstants.FlywheelLevel;
 import frc.robot.subsystems.shooter.ShooterConstants.FlywheelLevel;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
@@ -140,7 +145,6 @@ public class RobotContainer {
                 new ModuleIOTalonFX(Constants.tunerConstants.getFrontRight()),
                 new ModuleIOTalonFX(Constants.tunerConstants.getBackLeft()),
                 new ModuleIOTalonFX(Constants.tunerConstants.getBackRight()),
-                (pose) -> {},
                 (pose) -> {});
 
         shooter =
@@ -152,7 +156,9 @@ public class RobotContainer {
 
         vision =
             new Vision(
-                drive, new VisionIOLimelight(VisionConstants.camera0Name, drive::getRotation));
+                drive,
+                new VisionIOLimelight(VisionConstants.camera0Name, drive::getRotation),
+                new VisionIOLimelight(VisionConstants.camera1Name, drive::getRotation));
 
         // This is a solution to the vision-drive cross dependency issue that hurts my
         // eys, but it does work
@@ -202,8 +208,7 @@ public class RobotContainer {
                     Constants.tunerConstants.getBackLeft(), simulation.getModules()[2]),
                 new ModuleIOTalonFXSim(
                     Constants.tunerConstants.getBackRight(), simulation.getModules()[3]),
-                simulation::setSimulationWorldPose,
-                (pose) -> {});
+                simulation::setSimulationWorldPose);
 
         shooter =
             new Shooter(
@@ -280,7 +285,6 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {},
-                (pose) -> {},
                 (pose) -> {});
         shooter =
             new Shooter(
@@ -299,44 +303,41 @@ public class RobotContainer {
 
     NamedCommands.registerCommand(
         "Shoot Preset Setpoits ", new ShootPresetSetpoints(shooter, TargetType.GOAL));
+    NamedCommands.registerCommand("Both Collectors Up", new BothCollectorsUpState(collector));
+    NamedCommands.registerCommand(
+        "Auto Aimed Shoot", new AutonomousAimedShoot(drive, shooter, indexer));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
-    new EventTrigger("FIRE")
-        .onTrue(Commands.print("LEBRON!").andThen(new InstantCommand(this::launchSimFuel)));
-    new PointTowardsZoneTrigger("Aim Hub")
-        .whileTrue(new NoYawShootHub(shooter, drive, autoShootIndexerCommand));
-
     // Set up SysId routines
-    autoChooser.addOption(
+    autoChooserAddOption(
         "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
-    autoChooser.addOption(
+    autoChooserAddOption(
         "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
 
-    autoChooser.addOption(
+    autoChooserAddOption(
         "Drive SysId (Quasistatic Forward)",
         drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption(
+    autoChooserAddOption(
         "Drive SysId (Quasistatic Reverse)",
         drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    autoChooser.addOption(
+    autoChooserAddOption(
         "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption(
+    autoChooserAddOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-    autoChooser.addOption(
+    autoChooserAddOption(
         "Shooter SysId (Quasistatic Forward)",
         shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption(
+    autoChooserAddOption(
         "Shooter SysId (Quasistatic Reverse)",
         shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    autoChooser.addOption(
+    autoChooserAddOption(
         "Shooter SysId (Dynamic Forward)", shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption(
+    autoChooserAddOption(
         "Shooter SysId (Dynamic Reverse)", shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-    autoChooser.addOption(
-        "Simple Auto", new NoYawShootHub(shooter, drive, autoShootIndexerCommand));
+    autoChooser.addOption("Simple Auto", new NoYawShootHub(shooter, drive));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -361,16 +362,10 @@ public class RobotContainer {
             () -> -rightJoystick.getX())); // Confirm if negitive or not
 
     shootAutoAim = new JoystickButton(rightJoystick, 1);
-    Command autoShootIndexerCommand = new IndexerAutoUnjam(indexer, shooter::getBeamBreak);
 
     shootAutoAim.whileTrue(
         new DriveAimedAutoShoot(
-            drive,
-            shooter,
-            autoShootIndexerCommand,
-            () -> -leftJoystick.getY(),
-            () -> -leftJoystick.getX(),
-            () -> -rightJoystick.getX()));
+            drive, shooter, () -> -leftJoystick.getY(), () -> -leftJoystick.getX()));
 
     ShootPresetSetpoints shootPresetSetpointsGoal =
         new ShootPresetSetpoints(shooter, TargetType.GOAL);
@@ -391,7 +386,7 @@ public class RobotContainer {
 
     TestPathCommands.publishTestPaths(drive);
 
-    shooter.setDefaultCommand(Commands.run(shooter::setPivotHome, shooter));
+    shooter.setDefaultCommand(Commands.run(shooter::stop, shooter));
 
     switch (Constants.currentMode) {
       case REAL:
@@ -484,6 +479,15 @@ public class RobotContainer {
   }
 
   /**
+   * Use this to pass the teleop beggining command to the main {@link Robot} class.
+   *
+   * @return the command to run in teleop init
+   */
+  public Command getTeleopInitCommand() {
+    return new BothCollectorsUpState(collector);
+  }
+
+  /**
    * This is called at robot initialization during sim
    *
    * <p>It temporarily positions the robot (See {@link #resetSimRobotPose} for actual initial robot
@@ -538,5 +542,14 @@ public class RobotContainer {
                 simulation.getDriveTrainSimulatedChassisSpeedsFieldRelative(),
                 shooter.getShooterForwardLinearVelocity(),
                 shooter.getPivotAngle()));
+  }
+
+  /** auto chooser option that dosent crash robot when ran slong side holdPosition */
+  public void autoChooserAddOption(String key, Command command) {
+    autoChooser.addOption(key, command);
+  }
+
+  public void scheduleBothCollectorsUp() {
+    CommandScheduler.getInstance().schedule(new BothCollectorsUpState(collector));
   }
 }

@@ -15,7 +15,7 @@ public class BothCollectorsUpState extends Command {
   /**
    * Creates a new BothCollectorUpState.
    *
-   * <h2>Implementation </h2>
+   * <h2>Implementation</h2>
    *
    * <ol>
    *   <li>Sends both collectors up, whether they already are or not (Though if it is up it wont
@@ -51,6 +51,10 @@ public class BothCollectorsUpState extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    Logger.recordOutput(
+        "Commands/Collector/Collector IsFinished",
+        collector.getLeftCollector().isCollectorUp()
+            && collector.getRightCollector().isCollectorUp());
     return collector.getLeftCollector().isCollectorUp()
         && collector.getRightCollector().isCollectorUp();
   }

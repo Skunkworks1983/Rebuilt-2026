@@ -28,6 +28,11 @@ public class IndexerCommand extends Command {
   }
 
   @Override
+  public void execute() {
+    // indexer.setIndexerDutyCycle(0.7);
+  }
+
+  @Override
   public void end(boolean interrupted) {
     indexer.setIndexerDutyCycle(0);
     Logger.recordOutput("Index/Command is Running", false);

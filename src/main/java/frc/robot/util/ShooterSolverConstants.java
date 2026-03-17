@@ -16,7 +16,7 @@ public class ShooterSolverConstants {
 
   /** Air drag coefficient approximation. */
   public static LoggedTunableNumber drag =
-      new LoggedTunableNumber("Shooter/Air Drag Coefficient", 0.084);
+      new LoggedTunableNumber("Shooter/Air Drag Coefficient", 0.083);
 
   /** Maximum multiplier to apply for drag compensation. */
   public static final double maxDragMultiplier = 3;
@@ -26,7 +26,7 @@ public class ShooterSolverConstants {
    * half the velocity is converted to spin
    */
   public static final LoggedTunableNumber flywheelEfficiency =
-      new LoggedTunableNumber("Flywheel Efficiency", 0.41);
+      new LoggedTunableNumber("Flywheel Efficiency", 0.47);
 
   // CONSTRAINED HEIGHT SOLVER
   /** Vertical clearance required above the hub for specialized constrained shots. */
@@ -38,7 +38,7 @@ public class ShooterSolverConstants {
 
   // SHOT LATENCY MODEL
   /** Default time delay from code trigger to shot release. */
-  public static double defaultShotLatencySec = 0.1;
+  public static double defaultShotLatencySec = 0.125;
 
   /** Minimum reasonable shot latency. */
   public static final double minShotLatencySec = 0.015;
@@ -49,7 +49,7 @@ public class ShooterSolverConstants {
   /** Learning rate for the shot latency correction model. */
   public static final double shotLatencyModelLearningRate = 0.15;
 
-  public static final Angle transferShotSafetyMargin = Degrees.of(10);
+  public static final Angle transferShotSafetyMargin = Degrees.of(20);
 
   public static final Distance closeShotDistance = Meters.of(1.3);
 
@@ -57,7 +57,7 @@ public class ShooterSolverConstants {
       new LoggedTunableNumber("Shooter/Close Shot Clearance Multiplier", 2.0);
 
   public static final LoggedTunableNumber closeShootVelocity =
-      new LoggedTunableNumber("Shooter/Close Shoot Velocity RPS", 50);
+      new LoggedTunableNumber("Shooter/Close Shoot Velocity RPS", 47);
   public static final LoggedTunableNumber closeShootAngle =
-      new LoggedTunableNumber("Shooter/Close Shoot Angle Deg", 70);
+      new LoggedTunableNumber("Shooter/Close Shoot Angle Deg", 76.5);
 }

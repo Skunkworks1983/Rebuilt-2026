@@ -45,6 +45,14 @@ public class CollectorModuleConstants {
   public double turnkD;
   public double turnkI;
 
+  // Real turn invert
+  public InvertedValue turnInvert;
+
+  // Real Turn PID
+  public double turnkPSlot1;
+  public double turnkDSlot1;
+  public double turnkISlot1;
+
   // Real intake PID
   public double intakekP;
   public double intakekD;
@@ -52,7 +60,6 @@ public class CollectorModuleConstants {
   public double intakekV;
   public double intakekS;
   public double intakekA;
-  public InvertedValue upperIntakInvertedValue;
 
   // Sim Turn PID
   public double SimTurnkP;
@@ -78,7 +85,7 @@ public class CollectorModuleConstants {
   public LoggedTunableNumber CollectorDownPos;
 
   // Collector Manual pivot velocity
-  public double CollectorPivotVelocity;
+  public double CollectorPivotDutyCycle;
 
   // Collector Intake Speeds
   public AngularVelocity CollectorIntakeSpeed;
@@ -89,6 +96,10 @@ public class CollectorModuleConstants {
 
   // Collector Position Tolerance
   public Angle CollectorPosTolerance;
+
+  // Collector SupplyCurrents
+  public double turnSupplyCurrent;
+  public double intakeSupplyCurrent;
 
   public CollectorModuleConstants() {
 
@@ -145,7 +156,7 @@ public class CollectorModuleConstants {
     // CollectorDownPos = Degrees
 
     // Pivot Velocity
-    CollectorPivotVelocity = 0.15;
+    CollectorPivotDutyCycle = 0.15;
 
     // Collector Intake Speeds
     CollectorIntakeSpeed = RotationsPerSecond.of(0);
@@ -156,5 +167,9 @@ public class CollectorModuleConstants {
 
     // Collector Position Tolerance
     CollectorPosTolerance = Degrees.of(0);
+
+    // Supply currents
+    turnSupplyCurrent = 80;
+    intakeSupplyCurrent = 120;
   }
 }

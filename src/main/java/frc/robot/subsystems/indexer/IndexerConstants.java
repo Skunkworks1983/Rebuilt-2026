@@ -36,7 +36,7 @@ public class IndexerConstants {
   /** Stator current limit in Amps for the indexer motor. */
   public static final Current indexerStatorCurrentLimitAmps = Amps.of(120);
 
-  public static final AngularVelocity indexerAngularVelocitySetpoint = RotationsPerSecond.of(5);
+  public static final AngularVelocity indexerAngularVelocitySetpoint = RotationsPerSecond.of(25);
   public static final LoggedTunableNumber indexerAngularVelocityRotationsPerSecond =
       new LoggedTunableNumber(
           "Indexer/AngularVelocity [Rps]", indexerAngularVelocitySetpoint.in(RotationsPerSecond));
@@ -44,7 +44,7 @@ public class IndexerConstants {
   public static final LoggedTunableNumber autoUnjamNoBeamBreakTimeoutSeconds =
       new LoggedTunableNumber("Indexer/AutoUnjam/NoBeamBreakTimeout [sec]", 2.0);
   public static final LoggedTunableNumber autoUnjamReverseDurationSeconds =
-      new LoggedTunableNumber("Indexer/AutoUnjam/ReverseDuration [sec]", 2.0);
+      new LoggedTunableNumber("Indexer/AutoUnjam/ReverseDuration [sec]", 1.0);
 
   public static Velocity<VoltageUnit> sysIdRampRate = Volts.per(Second).of(2);
 
