@@ -31,7 +31,7 @@ public class HopperConstants {
   public static final double hopperKA = 0.0;
 
   /** Alignment configuration for the hopper motor. */
-  public static final InvertedValue hopperMotorAlignment = InvertedValue.CounterClockwise_Positive;
+  public static final InvertedValue hopperMotorAlignment = InvertedValue.Clockwise_Positive;
 
   /** Stator current limit in Amps for the hopper motor. */
   public static final Current hopperStatorCurrentLimitAmps = Amps.of(80);
