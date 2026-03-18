@@ -22,8 +22,8 @@ public class SingleCollectorIntake extends Command {
   public void initialize() {
     Logger.recordOutput("Commands/Collector/SingleCollectorIntake", true);
     collector
-        .getSingleCollector()
-        .setCollectorVelocity(collector.getSingleCollector().getConstants().CollectorIntakeSpeed);
+        .getSingleCollectorIO()
+        .setCollectorVelocity(collector.getSingleCollectorIO().getConstants().CollectorIntakeSpeed);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -34,7 +34,7 @@ public class SingleCollectorIntake extends Command {
   @Override
   public void end(boolean interrupted) {
     Logger.recordOutput("Commands/Collector/SingleCollectorIntake", false);
-    collector.getSingleCollector().setCollectorIntakeDutyCycle(0);
+    collector.getSingleCollectorIO().setCollectorIntakeDutyCycle(0);
   }
 
   // Returns true when the command should end.

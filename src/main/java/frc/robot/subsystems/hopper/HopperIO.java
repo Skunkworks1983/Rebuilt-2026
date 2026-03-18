@@ -4,6 +4,11 @@
 
 package frc.robot.subsystems.hopper;
 
+import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.Volts;
+
 import com.ctre.phoenix6.configs.Slot0Configs;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -16,10 +21,10 @@ public interface HopperIO {
   @AutoLog
   public static class HopperIOInputs {
     public boolean connected = false;
-    public Angle position;
-    public AngularVelocity angularVelocity;
-    public Voltage appliedVolts;
-    public Current currentAmps;
+    public Angle position = Rotations.of(0);
+    public AngularVelocity angularVelocity = RotationsPerSecond.of(0);
+    public Voltage appliedVolts = Volts.of(0);
+    public Current currentAmps = Amps.of(0);
   }
 
   public default void updateInputs(HopperIOInputs inputs) {}

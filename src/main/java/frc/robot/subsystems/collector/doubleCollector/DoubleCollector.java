@@ -8,8 +8,6 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
-import frc.robot.Constants.Mode;
 import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
@@ -25,7 +23,7 @@ import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
  */
 public class DoubleCollector extends SubsystemBase {
 
-  @AutoLogOutput(key = "collectorRight/mechanism")
+  @AutoLogOutput(key = "collectorLeft/mechanism")
   private LoggedMechanism2d loggedMechanism2dLeft = new LoggedMechanism2d(0, 0);
 
   LoggedMechanismRoot2d rootLeft =
@@ -35,7 +33,7 @@ public class DoubleCollector extends SubsystemBase {
           CollectorConstants.collectorLeftOriginTranslation.getY());
   LoggedMechanismLigament2d collectorLigamentLeft;
 
-  @AutoLogOutput(key = "collectorLeft/mechanism")
+  @AutoLogOutput(key = "collectorRight/mechanism")
   private LoggedMechanism2d loggedMechanism2dRight = new LoggedMechanism2d(0, 0);
 
   LoggedMechanismRoot2d rootRight =
@@ -47,7 +45,6 @@ public class DoubleCollector extends SubsystemBase {
 
   private CollectorModule leftCollector;
   private CollectorModule rightCollector;
-  private CollectorModule singleCollector;
 
   /**
    * Collector subsystem.
@@ -73,18 +70,6 @@ public class DoubleCollector extends SubsystemBase {
             new LoggedMechanismLigament2d("collector body right", Meters.of(0.25), Degrees.of(90)));
   }
 
-  /**
-   * Collector subsystem.
-   *
-   * <p><hl>
-   * <li>Takes in a collector module IO </hl>
-   *
-   *     <p><img src="https://media.giphy.com/media/jVFgWDtkY5v2M/giphy.gif" alt="Our Collector">
-   *
-   * @param collector
-   */
-  public DoubleCollector(CollectorModuleIO collector) {}
-
   @Override
   public void periodic() {
     leftCollector.periodic();
@@ -95,9 +80,6 @@ public class DoubleCollector extends SubsystemBase {
    * @return -Left collector Module
    */
   public CollectorModule getLeftCollector() {
-    if (Constants.currentMode.equals(Mode.SINGLEREAL)) {
-      return null;
-    }
     return leftCollector;
   }
 
@@ -105,19 +87,6 @@ public class DoubleCollector extends SubsystemBase {
    * @return -Right collector module
    */
   public CollectorModule getRightCollector() {
-    if (Constants.currentMode.equals(Mode.SINGLEREAL)) {
-      return null;
-    }
     return rightCollector;
-  }
-
-  /**
-   * @return - The Collector
-   */
-  public CollectorModule getSingleCollector() {
-    if (Constants.currentMode.equals(Mode.SINGLEREAL)) {
-      return singleCollector;
-    }
-    return null;
   }
 }

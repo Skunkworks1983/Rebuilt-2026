@@ -21,14 +21,14 @@ import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
 public class SingleCollector extends SubsystemBase {
 
   @AutoLogOutput(key = "collectorSingle/mechanism")
-  private LoggedMechanism2d loggedMechanism2dLeft = new LoggedMechanism2d(0, 0);
+  private LoggedMechanism2d loggedMechanism2d = new LoggedMechanism2d(0, 0);
 
-  LoggedMechanismRoot2d rootLeft =
-      loggedMechanism2dLeft.getRoot(
+  LoggedMechanismRoot2d root =
+      loggedMechanism2d.getRoot(
           "collector",
           CollectorConstants.collectorLeftOriginTranslation.getX(),
           CollectorConstants.collectorLeftOriginTranslation.getY());
-  LoggedMechanismLigament2d collectorLigamentLeft;
+  LoggedMechanismLigament2d collectorLigament;
 
   private CollectorModuleSingleIO singleCollector;
 
@@ -52,7 +52,7 @@ public class SingleCollector extends SubsystemBase {
   /**
    * @return - The Collector
    */
-  public CollectorModuleSingleIO getSingleCollector() {
+  public CollectorModuleSingleIO getSingleCollectorIO() {
     return singleCollector;
   }
 }

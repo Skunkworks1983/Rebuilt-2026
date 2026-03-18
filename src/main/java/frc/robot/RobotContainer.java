@@ -30,26 +30,12 @@ import frc.robot.commands.Shooter.NoYawShootHub;
 import frc.robot.commands.Shooter.ShootPresetSetpoints;
 import frc.robot.commands.Shooter.ShootPresetSetpoints.TargetType;
 import frc.robot.commands.TestPathCommands;
-import frc.robot.commands.collectorCommands.doubleCollectorCommands.BothCollectorsUpState;
-import frc.robot.commands.collectorCommands.doubleCollectorCommands.CollectorExpel;
-import frc.robot.commands.collectorCommands.doubleCollectorCommands.CollectorIntake;
-import frc.robot.commands.collectorCommands.doubleCollectorCommands.HoldPosition;
-import frc.robot.commands.collectorCommands.doubleCollectorCommands.LeftCollectorDownState;
-import frc.robot.commands.collectorCommands.doubleCollectorCommands.ManualCollectorDown;
-import frc.robot.commands.collectorCommands.doubleCollectorCommands.ManualCollectorUp;
-import frc.robot.commands.collectorCommands.doubleCollectorCommands.RightCollectorDownState;
 import frc.robot.commands.collectorCommands.singleCollectorCommands.SingleCollectorDown;
 import frc.robot.commands.collectorCommands.singleCollectorCommands.SingleCollectorIntake;
 import frc.robot.commands.hopperCommands.HopperVelocityCommand;
 import frc.robot.commands.indexerCommands.IndexerAutoUnjam;
 import frc.robot.commands.indexerCommands.IndexerReverseCommand;
-import frc.robot.subsystems.collector.collectorConstants.CollectorTalonLeftConstants;
-import frc.robot.subsystems.collector.collectorConstants.CollectorTalonRightConstants;
 import frc.robot.subsystems.collector.collectorConstants.CollectorTalonSingleConstants;
-import frc.robot.subsystems.collector.doubleCollector.CollectorModuleIO;
-import frc.robot.subsystems.collector.doubleCollector.CollectorModuleSimIO;
-import frc.robot.subsystems.collector.doubleCollector.CollectorModuleTalonIO;
-import frc.robot.subsystems.collector.doubleCollector.DoubleCollector;
 import frc.robot.subsystems.collector.singleCollector.CollectorModuleSingleIO;
 import frc.robot.subsystems.collector.singleCollector.CollectorModuleSingleTalonIO;
 import frc.robot.subsystems.collector.singleCollector.SingleCollector;
@@ -103,7 +89,6 @@ public class RobotContainer {
   private final Vision vision;
   private final Shooter shooter;
   private final Indexer indexer;
-  private final DoubleCollector doubleCollector;
   private final SingleCollector singleCollector;
   private final Hopper hopper;
 
@@ -164,11 +149,6 @@ public class RobotContainer {
         // eys, but it does work
 
         indexer = new Indexer(new IndexerIOTalonFX());
-
-        doubleCollector =
-            new DoubleCollector(
-                new CollectorModuleTalonIO(new CollectorTalonLeftConstants()),
-                new CollectorModuleTalonIO(new CollectorTalonRightConstants()));
 
         singleCollector = new SingleCollector(new CollectorModuleSingleIO() {});
 
@@ -231,11 +211,6 @@ public class RobotContainer {
                     VisionConstants.robotToCamera1,
                     simulation::getSimulatedDriveTrainPose));
 
-        doubleCollector =
-            new DoubleCollector(
-                new CollectorModuleSimIO(simulation, new CollectorTalonLeftConstants()),
-                new CollectorModuleSimIO(simulation, new CollectorTalonRightConstants()));
-
         singleCollector = new SingleCollector(new CollectorModuleSingleIO() {});
 
         indexer = new Indexer(new IndexerIOSim());
@@ -270,9 +245,6 @@ public class RobotContainer {
 
         indexer = new Indexer(new IndexerIOTalonFX());
 
-        doubleCollector =
-            new DoubleCollector(new CollectorModuleIO() {}, new CollectorModuleIO() {});
-
         singleCollector =
             new SingleCollector(
                 new CollectorModuleSingleTalonIO(new CollectorTalonSingleConstants()));
@@ -306,8 +278,6 @@ public class RobotContainer {
 
         vision = new Vision(drive, new VisionIO() {}, new VisionIO() {});
 
-        doubleCollector =
-            new DoubleCollector(new CollectorModuleIO() {}, new CollectorModuleIO() {});
         singleCollector = new SingleCollector(new CollectorModuleSingleIO() {});
 
         indexer = new Indexer(new IndexerIO() {});
@@ -320,7 +290,6 @@ public class RobotContainer {
 
     NamedCommands.registerCommand(
         "Shoot Preset Setpoits ", new ShootPresetSetpoints(shooter, TargetType.GOAL));
-    NamedCommands.registerCommand("Both Collectors Up", new BothCollectorsUpState(doubleCollector));
     NamedCommands.registerCommand(
         "Auto Aimed Shoot", new AutonomousAimedShoot(drive, shooter, indexer));
 
@@ -413,57 +382,11 @@ public class RobotContainer {
 
     switch (Constants.currentMode) {
       case REAL:
-        // State Buttons
-        JoystickButton manualModeSwitch =
-            new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualModeID);
-        JoystickButton autoModeSwitch =
-            new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorAutoModeID);
-
-        manualModeSwitch
-            .negate()
-            .and(autoModeSwitch.negate())
-            .onTrue(new BothCollectorsUpState(doubleCollector));
-
-        // Collector Intake Button
-        new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorIntakeID)
-            .whileTrue(new CollectorIntake(doubleCollector, indexer));
-
-        // Collector Reverse Intake Button
-        new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID)
-            .whileTrue(new CollectorExpel(doubleCollector));
-
-        // Right Collector Down
-        new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorRightDownID)
-            .and(manualModeSwitch)
-            .onTrue(new RightCollectorDownState(doubleCollector));
-
-        // Left Collector Down
-        new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorLeftDownID)
-            // .and(manualModeSwitch)
-            .onTrue(new LeftCollectorDownState(doubleCollector));
-
-        // Both Collectors Up
-        new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualUpID)
-            // .and(manualModeSwitch)
-            .onTrue(new BothCollectorsUpState(doubleCollector));
-
-        new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualPivotDown)
-            // .and(manualModeSwitch)
-            .whileTrue(new ManualCollectorDown(doubleCollector));
-
-        new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualPivotUp)
-            // .and(manualModeSwitch)
-            .whileTrue(new ManualCollectorUp(doubleCollector));
-
-        new JoystickButton(buttonJoystick, Constants.OIConstants.ShooterShootTransferID)
-            .whileTrue(shootPresetSetpointsTransfer);
-
-        new JoystickButton(buttonJoystick, Constants.OIConstants.ShooterShootHubID)
-            .whileTrue(shootPresetSetpointsGoal);
         break;
-
       case SINGLEREAL:
-        new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorRightDownID)
+        new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualPivotDown)
+            .onTrue(new SingleCollectorDown(singleCollector));
+        new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualPivotUp)
             .onTrue(new SingleCollectorDown(singleCollector));
         new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorIntakeID)
             .whileTrue(new SingleCollectorIntake(singleCollector));
@@ -480,18 +403,8 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return autoChooser.get().alongWith(new HoldPosition(doubleCollector));
+    return autoChooser.get();
   }
-
-  /**
-   * Use this to pass the teleop beggining command to the main {@link Robot} class.
-   *
-   * @return the command to run in teleop init
-   */
-  public Command getTeleopInitCommand() {
-    return new BothCollectorsUpState(doubleCollector);
-  }
-
   /**
    * This is called at robot initialization during sim
    *
@@ -555,6 +468,6 @@ public class RobotContainer {
   }
 
   public void scheduleBothCollectorsUp() {
-    CommandScheduler.getInstance().schedule(new BothCollectorsUpState(doubleCollector));
+    CommandScheduler.getInstance();
   }
 }

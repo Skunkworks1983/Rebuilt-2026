@@ -70,7 +70,7 @@ public class CollectorModuleSingleTalonIO implements CollectorModuleSingleIO {
   private final LoggedTunableNumber collectorIntakeVelocity;
 
   // Connection debouncers
-  private final Debouncer driveConnectedDebounce =
+  private final Debouncer intakeConnectedDebounce =
       new Debouncer(0.5, Debouncer.DebounceType.kFalling);
   private final Debouncer turnConnectedDebounce =
       new Debouncer(0.5, Debouncer.DebounceType.kFalling);
@@ -97,7 +97,7 @@ public class CollectorModuleSingleTalonIO implements CollectorModuleSingleIO {
 
     // Config for turnMotor
     var turnConfig = new TalonFXConfiguration();
-    turnConfig.CurrentLimits.SupplyCurrentLimit = 80;
+    turnConfig.CurrentLimits.SupplyCurrentLimit = constants.turnSupplyCurrent;
     turnConfig.Feedback.SensorToMechanismRatio = constants.turnMotorGearRatio;
     turnConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
@@ -128,9 +128,9 @@ public class CollectorModuleSingleTalonIO implements CollectorModuleSingleIO {
     turnSlot0Configs.kV = constants.turnkV;
     turnSlot0Configs.kA = constants.turnkA;
 
-    turnSlot1Configs.kS = 0;
-    turnSlot1Configs.kV = 0;
-    turnSlot1Configs.kA = 0;
+    turnSlot1Configs.kS = constants.turnkSSlot1;
+    turnSlot1Configs.kV = constants.turnkVSlot1;
+    turnSlot1Configs.kA = constants.turnkASlot1;
 
     // Motion Magic Configs for Turn Motor
     var turnMotionMagicConfig = turnConfig.MotionMagic;
@@ -144,7 +144,7 @@ public class CollectorModuleSingleTalonIO implements CollectorModuleSingleIO {
 
     // PID config for intakeMotor // TODO: make config for lower intake
     var intakeConfig = new TalonFXConfiguration();
-    intakeConfig.CurrentLimits.SupplyCurrentLimit = 120;
+    intakeConfig.CurrentLimits.SupplyCurrentLimit = constants.intakeSupplyCurrent;
     intakeConfig.MotorOutput.Inverted = constants.intakeInvertedValue;
 
     if (RobotBase.isReal()) {
@@ -223,7 +223,7 @@ public class CollectorModuleSingleTalonIO implements CollectorModuleSingleIO {
     inputs.turnSetPoint = turnSetPoint.getValueAsDouble();
 
     // Update intake inputs
-    inputs.intakeConnected = driveConnectedDebounce.calculate(upperStatus.isOK());
+    inputs.intakeConnected = intakeConnectedDebounce.calculate(upperStatus.isOK());
     inputs.intakePositionRad = intakePosition.getValue();
     inputs.intakeVelocity = intakeVelocity.getValue();
     inputs.intakeAppliedVolts = intakeAppliedVolts.getValue();
