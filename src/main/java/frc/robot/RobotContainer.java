@@ -278,16 +278,6 @@ public class RobotContainer {
                 new CollectorModuleSingleTalonIO(new CollectorTalonSingleConstants()));
 
         hopper = new Hopper(new HopperIOTalonFX());
-
-        // The ModuleIOTalonFXS implementation provides an example implementation for
-        // TalonFXS controller connected to a CANdi with a PWM encoder. The
-        // implementations
-        // of ModuleIOTalonFX, ModuleIOTalonFXS, and ModuleIOSpark (from the Spark
-        // swerve
-        // template) can be freely intermixed to support alternative hardware
-        // arrangements.
-        // Please see the AdvantageKit template documentation for more information:
-        // https://docs.advantagekit.org/getting-started/template-projects/talonfx-swerve-template#custom-module-implementations
         break;
 
       default:
