@@ -161,7 +161,7 @@ public class ShooterConstants {
 
   // SENSOR CONSTANTS
   public static final int pivotEncoderId = 43;
-  public static final double pivotEncoderAbsoluteOffset = -0.958496;
+  public static final double pivotEncoderAbsoluteOffset = -0.108887;
   public static final double pivotEncoderTotalOffset =
       pivotEncoderAbsoluteOffset + (pivotStartAngle.in(Rotations) * (pivotSensorToMechanismRatio));
   public static final SensorDirectionValue pivotEncoderDirection =
