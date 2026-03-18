@@ -22,8 +22,6 @@ import frc.robot.util.LoggedTunableNumber;
 public class CollectorTalonSingleConstants extends CollectorModuleConstants {
 
   public CollectorTalonSingleConstants() { // TODO: do constants
-    // Collector Side
-    collectorSide = Side.SINGLE;
 
     // Hardware ID's
     turnMotorID = 0;

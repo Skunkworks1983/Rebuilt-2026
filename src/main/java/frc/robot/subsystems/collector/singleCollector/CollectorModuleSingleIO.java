@@ -17,7 +17,6 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstants;
-import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstants.Side;
 import org.littletonrobotics.junction.AutoLog;
 
 /**
@@ -41,18 +40,11 @@ public interface CollectorModuleSingleIO {
     public double turnSetPoint = 0.0;
 
     // Intake Motor Inputs for lower or double collector
-    public boolean intakeUpperConnected = false;
-    public Angle intakeUpperPositionRad = Degrees.of(0.0);
-    public AngularVelocity intakeUpperVelocity = DegreesPerSecond.of(0.0);
-    public Voltage intakeUpperAppliedVolts = Volts.of(0.0);
-    public Current intakeUpperCurrentAmps = Amps.of(0.0);
-
-    // Intake Motor Inputs for lower (will be null if using double collector)
-    public boolean intakeLowerConnected = false;
-    public Angle intakeLowerPositionRad = Degrees.of(0.0);
-    public AngularVelocity intakeLowerVelocity = DegreesPerSecond.of(0.0);
-    public Voltage intakeLowerAppliedVolts = Volts.of(0.0);
-    public Current intakeLowerCurrentAmps = Amps.of(0.0);
+    public boolean intakeConnected = false;
+    public Angle intakePositionRad = Degrees.of(0.0);
+    public AngularVelocity intakeVelocity = DegreesPerSecond.of(0.0);
+    public Voltage intakeAppliedVolts = Volts.of(0.0);
+    public Current intakeCurrentAmps = Amps.of(0.0);
 
     // Magnet Switch Inputs
     public boolean upperTriggered = false;
@@ -129,11 +121,6 @@ public interface CollectorModuleSingleIO {
    */
   public default boolean isCollectorUp() {
     return false;
-  }
-
-  // gets side i.e: left
-  public default Side getSide() {
-    return null;
   }
 
   // Sets collector up

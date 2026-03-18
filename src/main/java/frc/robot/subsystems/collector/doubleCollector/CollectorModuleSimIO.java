@@ -150,11 +150,11 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
     input.turnCurrentAmps = Current.ofBaseUnits(turnMotorSim.getCurrentDrawAmps(), Amps);
 
     // Lower Intake Motor Inputs
-    input.intakeUpperConnected = true;
-    input.intakeUpperPositionRad = intakeMotorSim.getAngularPosition();
-    input.intakeUpperVelocity = intakeMotorSim.getAngularVelocity();
-    input.intakeUpperAppliedVolts = intakeMotorTalonFX.getMotorVoltageMeasure();
-    input.intakeUpperCurrentAmps = Current.ofBaseUnits(intakeMotorSim.getCurrentDrawAmps(), Amps);
+    input.intakeConnected = true;
+    input.intakePositionRad = intakeMotorSim.getAngularPosition();
+    input.intakeVelocity = intakeMotorSim.getAngularVelocity();
+    input.intakeAppliedVolts = intakeMotorTalonFX.getMotorVoltageMeasure();
+    input.intakeCurrentAmps = Current.ofBaseUnits(intakeMotorSim.getCurrentDrawAmps(), Amps);
 
     // limit switches inputs
     upperLimitSim.setValue(isUpperLimitTrue());

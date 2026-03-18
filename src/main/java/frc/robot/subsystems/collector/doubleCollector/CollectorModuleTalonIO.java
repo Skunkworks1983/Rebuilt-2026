@@ -228,11 +228,11 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     inputs.turnSetPoint = turnSetPoint.getValueAsDouble();
 
     // Update intake inputs
-    inputs.intakeUpperConnected = driveConnectedDebounce.calculate(upperStatus.isOK());
-    inputs.intakeUpperPositionRad = intakePosition.getValue();
-    inputs.intakeUpperVelocity = intakeVelocity.getValue();
-    inputs.intakeUpperAppliedVolts = intakeAppliedVolts.getValue();
-    inputs.intakeUpperCurrentAmps = intakeCurrent.getValue();
+    inputs.intakeConnected = driveConnectedDebounce.calculate(upperStatus.isOK());
+    inputs.intakePositionRad = intakePosition.getValue();
+    inputs.intakeVelocity = intakeVelocity.getValue();
+    inputs.intakeAppliedVolts = intakeAppliedVolts.getValue();
+    inputs.intakeCurrentAmps = intakeCurrent.getValue();
 
     // Update sensor inputs
     inputs.upperTriggered = !upperLimitSwitch.get();

@@ -13,7 +13,6 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.Constants;
 import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstants;
-import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstants.Side;
 import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
 
@@ -55,7 +54,7 @@ public class CollectorModuleSingle {
    */
   public CollectorModuleSingle(CollectorModuleSingleIO collectorIO) {
     this.collectorIO = collectorIO;
-    String modulePrefix = "Collector/" + collectorIO.getSide() + "/";
+    String modulePrefix = "Collector/Single/";
     collectorPivotKP =
         new LoggedTunableNumber(modulePrefix + "Pivot/kP", collectorIO.getConstants().turnkP);
     collectorPivotKD =
@@ -93,7 +92,7 @@ public class CollectorModuleSingle {
 
   public void periodic() {
     collectorIO.updateInputs(inputs);
-    Logger.processInputs("Collector/Module/ " + collectorIO.getSide(), inputs);
+    Logger.processInputs("Collector/Single", inputs);
 
     if (Constants.tuningMode) {
       int hash = hashCode();
@@ -152,7 +151,7 @@ public class CollectorModuleSingle {
    * @return -Angular Velocity
    */
   public AngularVelocity getVelocityOfIntake() {
-    return inputs.intakeUpperVelocity;
+    return inputs.intakeVelocity;
   }
 
   /**
@@ -235,10 +234,5 @@ public class CollectorModuleSingle {
   // Sets collector down
   public void goDown() {
     collectorIO.goDown();
-  }
-
-  // Gets collector side
-  public Side getSide() {
-    return collectorIO.getSide();
   }
 }

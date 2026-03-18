@@ -20,8 +20,7 @@ public class CollectorModuleConstants {
   // Collector side
   public static enum Side {
     LEFT,
-    RIGHT,
-    SINGLE
+    RIGHT
   }
 
   // Collectors side
