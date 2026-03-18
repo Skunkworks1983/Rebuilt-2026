@@ -30,8 +30,8 @@ import frc.robot.commands.Shooter.NoYawShootHub;
 import frc.robot.commands.Shooter.ShootPresetSetpoints;
 import frc.robot.commands.Shooter.ShootPresetSetpoints.TargetType;
 import frc.robot.commands.TestPathCommands;
-import frc.robot.commands.collectorCommands.singleCollectorCommands.SingleCollectorDown;
-import frc.robot.commands.collectorCommands.singleCollectorCommands.SingleCollectorIntake;
+import frc.robot.commands.collectorCommands.singleCollectorCommands.singleCollectorDown;
+import frc.robot.commands.collectorCommands.singleCollectorCommands.singleCollectorIntake;
 import frc.robot.commands.hopperCommands.HopperVelocityCommand;
 import frc.robot.commands.indexerCommands.IndexerAutoUnjam;
 import frc.robot.commands.indexerCommands.IndexerReverseCommand;
@@ -375,11 +375,11 @@ public class RobotContainer {
         break;
       case SINGLEREAL:
         new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualPivotDown)
-            .onTrue(new SingleCollectorDown(singleCollector));
+            .onTrue(new singleCollectorDown(singleCollector));
         new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualPivotUp)
-            .onTrue(new SingleCollectorDown(singleCollector));
+            .onTrue(new singleCollectorDown(singleCollector));
         new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorIntakeID)
-            .whileTrue(new SingleCollectorIntake(singleCollector));
+            .whileTrue(new singleCollectorIntake(singleCollector));
         break;
 
       default:

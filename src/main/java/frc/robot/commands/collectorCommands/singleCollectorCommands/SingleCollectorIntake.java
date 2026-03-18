@@ -9,10 +9,10 @@ import frc.robot.subsystems.collector.singleCollector.SingleCollector;
 import org.littletonrobotics.junction.Logger;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class SingleCollectorIntake extends Command {
+public class singleCollectorIntake extends Command {
   SingleCollector collector;
   /** Creates a new singleCollectorIntake. */
-  public SingleCollectorIntake(SingleCollector collector) {
+  public singleCollectorIntake(SingleCollector collector) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.collector = collector;
   }
