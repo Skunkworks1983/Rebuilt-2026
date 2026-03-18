@@ -149,7 +149,7 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
     input.turnAppliedVolts = turnMotorTalonFX.getMotorVoltageMeasure();
     input.turnCurrentAmps = Current.ofBaseUnits(turnMotorSim.getCurrentDrawAmps(), Amps);
 
-    // Lower Intake Motor Inputs
+    // Intake Motor Inputs
     input.intakeConnected = true;
     input.intakePositionRad = intakeMotorSim.getAngularPosition();
     input.intakeVelocity = intakeMotorSim.getAngularVelocity();

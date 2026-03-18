@@ -142,7 +142,7 @@ public class CollectorModuleSingleTalonIO implements CollectorModuleSingleIO {
     // Applying Turn Motor Configs
     tryUntilOk(5, () -> turnMotor.getConfigurator().apply(turnConfig, 0.25));
 
-    // PID config for intakeMotor // TODO: make config for lower intake
+    // PID config for intakeMotor
     var intakeConfig = new TalonFXConfiguration();
     intakeConfig.CurrentLimits.SupplyCurrentLimit = constants.intakeSupplyCurrent;
     intakeConfig.MotorOutput.Inverted = constants.intakeInvertedValue;

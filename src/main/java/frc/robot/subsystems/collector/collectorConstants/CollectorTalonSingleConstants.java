@@ -65,7 +65,7 @@ public class CollectorTalonSingleConstants extends CollectorModuleConstants {
 
     // Position
     CollectorUpPos = Rotations.of(0);
-    CollectorDownPos = new LoggedTunableNumber("Collector/Right/Downpose rad", 1.55);
+    CollectorDownPos = new LoggedTunableNumber("Collector/Single/Downpose rad", 1.55);
 
     // Collector Intake Speeds
     CollectorIntakeSpeed = RadiansPerSecond.of(0);
