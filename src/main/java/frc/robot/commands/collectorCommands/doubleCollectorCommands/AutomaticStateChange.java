@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.collectorCommands;
+package frc.robot.commands.collectorCommands.doubleCollectorCommands;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
@@ -10,13 +10,13 @@ import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.collector.Collector;
+import frc.robot.subsystems.collector.doubleCollector.DoubleCollector;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 
 /** The Automatic State for the collector */
 public class AutomaticStateChange extends Command {
-  private Collector collector;
+  private DoubleCollector collector;
   private double currDirection;
   private Supplier<LinearVelocity> direction;
   private Debouncer debouncer;
@@ -41,7 +41,7 @@ public class AutomaticStateChange extends Command {
    * @param collector The collector subsystem
    * @param direction The {@link LinearVelocity} of the robot (+ = left, - = right)
    */
-  public AutomaticStateChange(Collector collector, Supplier<LinearVelocity> direction) {
+  public AutomaticStateChange(DoubleCollector collector, Supplier<LinearVelocity> direction) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.collector = collector;
     addRequirements(collector);

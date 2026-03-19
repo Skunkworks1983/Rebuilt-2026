@@ -126,7 +126,6 @@ public class Robot extends LoggedRobot {
     }
 
     autonomousCommand = robotContainer.getAutonomousCommand();
-    teleInitCommand = robotContainer.getTeleopInitCommand();
     robotContainer.scheduleBothCollectorsUp();
 
     // schedule the autonomous command (example)

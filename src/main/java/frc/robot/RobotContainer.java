@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -28,21 +30,16 @@ import frc.robot.commands.Shooter.NoYawShootHub;
 import frc.robot.commands.Shooter.ShootPresetSetpoints;
 import frc.robot.commands.Shooter.ShootPresetSetpoints.TargetType;
 import frc.robot.commands.TestPathCommands;
-import frc.robot.commands.collectorCommands.BothCollectorsUpState;
-import frc.robot.commands.collectorCommands.CollectorExpel;
-import frc.robot.commands.collectorCommands.CollectorIntake;
-import frc.robot.commands.collectorCommands.LeftCollectorDownState;
-import frc.robot.commands.collectorCommands.ManualCollectorDown;
-import frc.robot.commands.collectorCommands.ManualCollectorUp;
-import frc.robot.commands.collectorCommands.RightCollectorDownState;
+import frc.robot.commands.collectorCommands.singleCollectorCommands.SingleCollectorDown;
+import frc.robot.commands.collectorCommands.singleCollectorCommands.SingleCollectorIntake;
+import frc.robot.commands.collectorCommands.singleCollectorCommands.SingleCollectorUp;
+import frc.robot.commands.hopperCommands.HopperVelocityCommand;
 import frc.robot.commands.indexerCommands.IndexerAutoUnjam;
 import frc.robot.commands.indexerCommands.IndexerReverseCommand;
-import frc.robot.subsystems.collector.Collector;
-import frc.robot.subsystems.collector.CollectorModuleIO;
-import frc.robot.subsystems.collector.CollectorModuleSimIO;
-import frc.robot.subsystems.collector.CollectorModuleTalonIO;
-import frc.robot.subsystems.collector.collectorConstants.CollectorTalonLeftConstants;
-import frc.robot.subsystems.collector.collectorConstants.CollectorTalonRightConstants;
+import frc.robot.subsystems.collector.collectorConstants.CollectorTalonSingleConstants;
+import frc.robot.subsystems.collector.singleCollector.CollectorModuleSingleIO;
+import frc.robot.subsystems.collector.singleCollector.CollectorModuleSingleTalonIO;
+import frc.robot.subsystems.collector.singleCollector.SingleCollector;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -50,6 +47,11 @@ import frc.robot.subsystems.drive.GyroIOSim;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.drive.ModuleIOTalonFXSim;
+import frc.robot.subsystems.hopper.Hopper;
+import frc.robot.subsystems.hopper.HopperConstants;
+import frc.robot.subsystems.hopper.HopperIO;
+import frc.robot.subsystems.hopper.HopperIOSim;
+import frc.robot.subsystems.hopper.HopperIOTalonFX;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.IndexerIO;
 import frc.robot.subsystems.indexer.IndexerIOSim;
@@ -88,7 +90,8 @@ public class RobotContainer {
   private final Vision vision;
   private final Shooter shooter;
   private final Indexer indexer;
-  private final Collector collector;
+  private final SingleCollector singleCollector;
+  private final Hopper hopper;
 
   // Controller
   private final Joystick leftJoystick;
@@ -148,10 +151,9 @@ public class RobotContainer {
 
         indexer = new Indexer(new IndexerIOTalonFX());
 
-        collector =
-            new Collector(
-                new CollectorModuleTalonIO(new CollectorTalonLeftConstants()),
-                new CollectorModuleTalonIO(new CollectorTalonRightConstants()));
+        singleCollector = new SingleCollector(new CollectorModuleSingleIO() {});
+
+        hopper = new Hopper(new HopperIO() {});
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
@@ -210,13 +212,45 @@ public class RobotContainer {
                     VisionConstants.robotToCamera1,
                     simulation::getSimulatedDriveTrainPose));
 
-        collector =
-            new Collector(
-                new CollectorModuleSimIO(simulation, new CollectorTalonLeftConstants()),
-                new CollectorModuleSimIO(simulation, new CollectorTalonRightConstants()));
+        singleCollector = new SingleCollector(new CollectorModuleSingleIO() {});
 
         indexer = new Indexer(new IndexerIOSim());
 
+        hopper = new Hopper(new HopperIOSim());
+
+        break;
+
+      case SINGLEREAL:
+        // Real robot with single collector, instantiate hardware IO implementations
+        // ModuleIOTalonFX is intended for modules with TalonFX drive, TalonFX turn, and
+        // a CANcoder
+        drive =
+            new Drive(
+                new GyroIOPigeon2(),
+                new ModuleIOTalonFX(Constants.tunerConstants.getFrontLeft()),
+                new ModuleIOTalonFX(Constants.tunerConstants.getFrontRight()),
+                new ModuleIOTalonFX(Constants.tunerConstants.getBackLeft()),
+                new ModuleIOTalonFX(Constants.tunerConstants.getBackRight()),
+                (pose) -> {});
+
+        shooter =
+            new Shooter(
+                new FlywheelIOTalonFX(ShooterConstants.upperFlywheelMotorID, FlywheelLevel.Upper),
+                new FlywheelIOTalonFX(ShooterConstants.lowerFlywheelMotorID, FlywheelLevel.Lower),
+                new PivotIOTalonFX(),
+                new BeamBreakIOSensor());
+
+        vision =
+            new Vision(
+                drive, new VisionIOLimelight(VisionConstants.camera0Name, drive::getRotation));
+
+        indexer = new Indexer(new IndexerIOTalonFX());
+
+        singleCollector =
+            new SingleCollector(
+                new CollectorModuleSingleTalonIO(new CollectorTalonSingleConstants()));
+
+        hopper = new Hopper(new HopperIOTalonFX());
         break;
 
       default:
@@ -235,12 +269,18 @@ public class RobotContainer {
 
         vision = new Vision(drive, new VisionIO() {}, new VisionIO() {});
 
-        collector = new Collector(new CollectorModuleIO() {}, new CollectorModuleIO() {});
+        singleCollector = new SingleCollector(new CollectorModuleSingleIO() {});
 
         indexer = new Indexer(new IndexerIO() {});
+
+        hopper = new Hopper(new HopperIOTalonFX() {});
+
         break;
     }
-    NamedCommands.registerCommand("Both Collectors Up", new BothCollectorsUpState(collector));
+    Command autoShootIndexerCommand = new IndexerAutoUnjam(indexer, shooter::getBeamBreak, hopper);
+
+    NamedCommands.registerCommand(
+        "Shoot Preset Setpoits ", new ShootPresetSetpoints(shooter, TargetType.GOAL));
     NamedCommands.registerCommand(
         "Auto Aimed Shoot", new AutonomousAimedShoot(drive, shooter, indexer));
 
@@ -288,8 +328,6 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     Trigger shootAutoAim;
-    JoystickButton runIndexer;
-    JoystickButton runIndexerReverse;
     // Default command, normal field-relative drive
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
@@ -309,12 +347,20 @@ public class RobotContainer {
     ShootPresetSetpoints shootPresetSetpointsTransfer =
         new ShootPresetSetpoints(shooter, TargetType.TRANSFER);
 
-    runIndexer = new JoystickButton(leftJoystick, 1);
-    runIndexerReverse =
+    JoystickButton runIndexer = new JoystickButton(leftJoystick, 1);
+    JoystickButton runIndexerReverse =
         new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID);
 
-    runIndexer.whileTrue(new IndexerAutoUnjam(indexer, shooter::getBeamBreak));
-    runIndexerReverse.whileTrue(new IndexerReverseCommand(indexer));
+    runIndexer.whileTrue(new IndexerAutoUnjam(indexer, shooter::getBeamBreak, hopper));
+
+    runIndexerReverse.whileTrue(
+        new IndexerReverseCommand(indexer)
+            .alongWith(
+                new HopperVelocityCommand(
+                    hopper,
+                    RotationsPerSecond.of(
+                        HopperConstants.hopperReverseAngularVelocityRotationsPerSecond.get()))));
+
     // if the index button is hed and more than a second elapses before the beam
     // break is broken the
     // indexer will reverse for 1 second before attempting to intake again
@@ -325,49 +371,21 @@ public class RobotContainer {
 
     shooter.setDefaultCommand(Commands.run(shooter::stop, shooter));
 
-    // State Buttons
-    JoystickButton manualModeSwitch =
-        new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualModeID);
-    JoystickButton autoModeSwitch =
-        new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorAutoModeID);
+    switch (Constants.currentMode) {
+      case REAL:
+        break;
+      case SINGLEREAL:
+        new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualPivotDown)
+            .onTrue(new SingleCollectorDown(singleCollector));
+        new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualPivotUp)
+            .onTrue(new SingleCollectorUp(singleCollector));
+        new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorIntakeID)
+            .whileTrue(new SingleCollectorIntake(singleCollector));
+        break;
 
-    manualModeSwitch
-        .negate()
-        .and(autoModeSwitch.negate())
-        .onTrue(new BothCollectorsUpState(collector));
-
-    // Collector Intake Button
-    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorIntakeID)
-        .whileTrue(new CollectorIntake(collector, indexer));
-
-    // Coolector Reverse Intake Button
-    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID)
-        .whileTrue(new CollectorExpel(collector));
-
-    // Right Collector Down
-    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorRightDownID)
-        .and(manualModeSwitch)
-        .onTrue(new RightCollectorDownState(collector));
-
-    // Left Collector Down
-    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorLeftDownID)
-        .onTrue(new LeftCollectorDownState(collector));
-
-    // Both Collectors Up
-    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualUpID)
-        .onTrue(new BothCollectorsUpState(collector));
-
-    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualPivotDown)
-        .whileTrue(new ManualCollectorDown(collector));
-
-    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualPivotUp)
-        .whileTrue(new ManualCollectorUp(collector));
-
-    new JoystickButton(buttonJoystick, Constants.OIConstants.ShooterShootTransferID)
-        .whileTrue(shootPresetSetpointsTransfer);
-
-    new JoystickButton(buttonJoystick, Constants.OIConstants.ShooterShootHubID)
-        .whileTrue(shootPresetSetpointsGoal);
+      default:
+        break;
+    }
   }
 
   /**
@@ -378,16 +396,6 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     return autoChooser.get();
   }
-
-  /**
-   * Use this to pass the teleop beggining command to the main {@link Robot} class.
-   *
-   * @return the command to run in teleop init
-   */
-  public Command getTeleopInitCommand() {
-    return new BothCollectorsUpState(collector);
-  }
-
   /**
    * This is called at robot initialization during sim
    *
@@ -451,6 +459,6 @@ public class RobotContainer {
   }
 
   public void scheduleBothCollectorsUp() {
-    CommandScheduler.getInstance().schedule(new BothCollectorsUpState(collector));
+    CommandScheduler.getInstance();
   }
 }

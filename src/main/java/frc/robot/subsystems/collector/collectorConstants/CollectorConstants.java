@@ -6,7 +6,6 @@ package frc.robot.subsystems.collector.collectorConstants;
 
 import static edu.wpi.first.units.Units.Inches;
 
-import com.ctre.phoenix6.CANBus;
 import edu.wpi.first.math.geometry.Translation2d;
 
 /** Add your docs here. */
@@ -24,6 +23,4 @@ public class CollectorConstants {
 
   // Collector tick number for auto state change
   public static final double collectorTicksForAuto = 0.0;
-
-  public static final CANBus collectorCan = new CANBus("rio"); // TODO: Enter canbus
 }

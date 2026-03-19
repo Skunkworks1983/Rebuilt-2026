@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.collector;
+package frc.robot.subsystems.collector.singleCollector;
 
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
@@ -13,7 +13,6 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.Constants;
 import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstants;
-import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstants.Side;
 import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
 
@@ -26,9 +25,9 @@ import org.littletonrobotics.junction.Logger;
  *
  * @author Liam B
  */
-public class CollectorModule {
-  private final CollectorModuleIO collectorIO;
-  private final CollectorIOInputsAutoLogged inputs = new CollectorIOInputsAutoLogged();
+public class CollectorModuleSingle {
+  private final CollectorModuleSingleIO collectorIO;
+  private final CollectorIOSingleInputsAutoLogged inputs = new CollectorIOSingleInputsAutoLogged();
 
   private final LoggedTunableNumber collectorPivotKP;
   private final LoggedTunableNumber collectorPivotKD;
@@ -53,9 +52,9 @@ public class CollectorModule {
    *
    * @param collectorIO
    */
-  public CollectorModule(CollectorModuleIO collectorIO) {
+  public CollectorModuleSingle(CollectorModuleSingleIO collectorIO) {
     this.collectorIO = collectorIO;
-    String modulePrefix = "Collector/" + collectorIO.getSide() + "/";
+    String modulePrefix = "Collector/Single/";
     collectorPivotKP =
         new LoggedTunableNumber(modulePrefix + "Pivot/kP", collectorIO.getConstants().turnkP);
     collectorPivotKD =
@@ -93,7 +92,7 @@ public class CollectorModule {
 
   public void periodic() {
     collectorIO.updateInputs(inputs);
-    Logger.processInputs("Collector/Module/ " + collectorIO.getSide(), inputs);
+    Logger.processInputs("Collector/Single", inputs);
 
     if (Constants.tuningMode) {
       int hash = hashCode();
@@ -170,7 +169,7 @@ public class CollectorModule {
    * @param velocity -Angular Velocity
    */
   public void setCollectorVelocity(AngularVelocity velocity) {
-    collectorIO.setCollectorIntakeVelocity(velocity);
+    collectorIO.setCollectorVelocity(velocity);
   }
 
   /** sets Just the encoder pos */
@@ -235,10 +234,5 @@ public class CollectorModule {
   // Sets collector down
   public void goDown() {
     collectorIO.goDown();
-  }
-
-  // Gets collector side
-  public Side getSide() {
-    return collectorIO.getSide();
   }
 }

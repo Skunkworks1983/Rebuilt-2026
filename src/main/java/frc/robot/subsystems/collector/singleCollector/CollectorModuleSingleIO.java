@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.collector;
+package frc.robot.subsystems.collector.singleCollector;
 
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Degrees;
@@ -17,7 +17,6 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstants;
-import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstants.Side;
 import org.littletonrobotics.junction.AutoLog;
 
 /**
@@ -28,9 +27,9 @@ import org.littletonrobotics.junction.AutoLog;
  *
  * @author Liam B
  */
-public interface CollectorModuleIO {
+public interface CollectorModuleSingleIO {
   @AutoLog
-  public static class CollectorIOInputs {
+  public static class CollectorIOSingleInputs {
     // Turn Motor Inputs
     public boolean turnConnected = false;
     public Rotation2d turnPosition = Rotation2d.kZero;
@@ -40,7 +39,7 @@ public interface CollectorModuleIO {
     public double turnClosedLoopError = 0.0;
     public double turnSetPoint = 0.0;
 
-    // Intake Motor Inputs
+    // Intake Motor Inputs for lower
     public boolean intakeConnected = false;
     public Angle intakePositionRad = Degrees.of(0.0);
     public AngularVelocity intakeVelocity = DegreesPerSecond.of(0.0);
@@ -64,7 +63,7 @@ public interface CollectorModuleIO {
    *
    * @param
    */
-  public default void updateInputs(CollectorIOInputs inputs) {}
+  public default void updateInputs(CollectorIOSingleInputs inputs) {}
 
   /** Gets Constants */
   public default CollectorModuleConstants getConstants() {
@@ -76,7 +75,7 @@ public interface CollectorModuleIO {
    *
    * @param velocity -Angular Velocity
    */
-  public default void setCollectorIntakeVelocity(AngularVelocity velocity) {}
+  public default void setCollectorVelocity(AngularVelocity velocity) {}
 
   /** sets Just the encoder pos */
   public default void setCollectorEncoderPos(Angle angle) {}
@@ -124,11 +123,6 @@ public interface CollectorModuleIO {
     return false;
   }
 
-  // gets side i.e: left
-  public default Side getSide() {
-    return null;
-  }
-
   // Sets collector up
   public default void goUp() {}
 
@@ -140,5 +134,4 @@ public interface CollectorModuleIO {
   public default void setIntakeGains(Slot0Configs slot0Configs) {}
 
   public default void setMotionConstraints(MotionMagicConfigs motionMagicConfigs) {}
-  ;
 }

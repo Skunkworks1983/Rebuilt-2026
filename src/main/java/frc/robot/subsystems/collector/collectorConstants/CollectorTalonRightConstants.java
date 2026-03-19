@@ -21,7 +21,7 @@ import frc.robot.util.LoggedTunableNumber;
  */
 public class CollectorTalonRightConstants extends CollectorModuleConstants {
 
-  public CollectorTalonRightConstants() { // TODO: make constants
+  public CollectorTalonRightConstants() {
     // Collector Side
     collectorSide = Side.RIGHT;
 

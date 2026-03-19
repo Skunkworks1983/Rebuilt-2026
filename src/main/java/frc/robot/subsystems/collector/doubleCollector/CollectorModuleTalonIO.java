@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.collector;
+package frc.robot.subsystems.collector.doubleCollector;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Radians;
@@ -41,6 +41,7 @@ import org.littletonrobotics.junction.Logger;
  * @author Liam B
  */
 public class CollectorModuleTalonIO implements CollectorModuleIO {
+
   // Motors and Hardware objects
   protected final TalonFX turnMotor;
   protected final TalonFX intakeMotor;

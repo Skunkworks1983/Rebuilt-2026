@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.collector;
+package frc.robot.subsystems.collector.doubleCollector;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
@@ -21,9 +21,9 @@ import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
  *   <li>It takes in two collector module IO's to assign to two collector modules
  * </ul>
  */
-public class Collector extends SubsystemBase {
+public class DoubleCollector extends SubsystemBase {
 
-  @AutoLogOutput(key = "collectorRight/mechanism")
+  @AutoLogOutput(key = "collectorLeft/mechanism")
   private LoggedMechanism2d loggedMechanism2dLeft = new LoggedMechanism2d(0, 0);
 
   LoggedMechanismRoot2d rootLeft =
@@ -33,7 +33,7 @@ public class Collector extends SubsystemBase {
           CollectorConstants.collectorLeftOriginTranslation.getY());
   LoggedMechanismLigament2d collectorLigamentLeft;
 
-  @AutoLogOutput(key = "collectorLeft/mechanism")
+  @AutoLogOutput(key = "collectorRight/mechanism")
   private LoggedMechanism2d loggedMechanism2dRight = new LoggedMechanism2d(0, 0);
 
   LoggedMechanismRoot2d rootRight =
@@ -57,7 +57,7 @@ public class Collector extends SubsystemBase {
    * @param leftIO left collector
    * @param rightIO right collector
    */
-  public Collector(CollectorModuleIO leftIO, CollectorModuleIO rightIO) {
+  public DoubleCollector(CollectorModuleIO leftIO, CollectorModuleIO rightIO) {
     // Collector Modules
     leftCollector = new CollectorModule(leftIO);
     rightCollector = new CollectorModule(rightIO);

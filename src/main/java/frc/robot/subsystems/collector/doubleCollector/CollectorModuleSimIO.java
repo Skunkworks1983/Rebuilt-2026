@@ -1,4 +1,4 @@
-package frc.robot.subsystems.collector;
+package frc.robot.subsystems.collector.doubleCollector;
 
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Meters;
@@ -149,7 +149,7 @@ public class CollectorModuleSimIO extends CollectorModuleTalonIO {
     input.turnAppliedVolts = turnMotorTalonFX.getMotorVoltageMeasure();
     input.turnCurrentAmps = Current.ofBaseUnits(turnMotorSim.getCurrentDrawAmps(), Amps);
 
-    // Lower Intake Motor Inputs
+    // Intake Motor Inputs
     input.intakeConnected = true;
     input.intakePositionRad = intakeMotorSim.getAngularPosition();
     input.intakeVelocity = intakeMotorSim.getAngularVelocity();

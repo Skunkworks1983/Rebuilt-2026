@@ -2,22 +2,21 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.collectorCommands;
+package frc.robot.commands.collectorCommands.doubleCollectorCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.collector.Collector;
-import frc.robot.subsystems.collector.CollectorModule;
+import frc.robot.subsystems.collector.doubleCollector.CollectorModule;
+import frc.robot.subsystems.collector.doubleCollector.DoubleCollector;
 import org.littletonrobotics.junction.Logger;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class CollectorExpel extends Command {
-  Collector collector;
+  DoubleCollector collector;
   CollectorModule leftCollector;
   CollectorModule rightCollector;
   CollectorModule lastModule;
 
   /** Creates a new CollectorReverseIntake. */
-  public CollectorExpel(Collector collector) {
+  public CollectorExpel(DoubleCollector collector) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.collector = collector;
     leftCollector = collector.getLeftCollector();

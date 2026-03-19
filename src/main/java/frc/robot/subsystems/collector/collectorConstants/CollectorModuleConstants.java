@@ -20,7 +20,7 @@ public class CollectorModuleConstants {
   // Collector side
   public static enum Side {
     LEFT,
-    RIGHT;
+    RIGHT
   }
 
   // Collectors side
@@ -48,6 +48,11 @@ public class CollectorModuleConstants {
   public double turnkPSlot1;
   public double turnkDSlot1;
   public double turnkISlot1;
+
+  // Feed forward
+  public double turnkSSlot1;
+  public double turnkVSlot1;
+  public double turnkASlot1;
 
   // Real intake PID
   public double intakekP;
@@ -96,6 +101,9 @@ public class CollectorModuleConstants {
   // Collector SupplyCurrents
   public double turnSupplyCurrent;
   public double intakeSupplyCurrent;
+
+  // Inverted Value
+  public InvertedValue intakeInvertedValue;
 
   public CollectorModuleConstants() {
 
