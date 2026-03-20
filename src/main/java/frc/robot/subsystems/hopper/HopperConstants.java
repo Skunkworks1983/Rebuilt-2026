@@ -22,7 +22,7 @@ public class HopperConstants {
   public static final int hopperMotorID = 28;
 
   // PID for hopper
-  public static final double hopperKP = 0; // TODO: hopper Tuning
+  public static final double hopperKP = 0.5; // TODO: hopper Tuning
   public static final double hopperKD = 0.0;
 
   // Feed forwards for the hopper
@@ -44,9 +44,7 @@ public class HopperConstants {
   public static final AngularVelocity hopperReverseAngularVelocitySetpoint =
       RotationsPerSecond.of(1);
   public static final LoggedTunableNumber hopperReverseAngularVelocityRotationsPerSecond =
-      new LoggedTunableNumber(
-          "hopper/ReverseAngularVelocity [Rps]",
-          -2);
+      new LoggedTunableNumber("hopper/ReverseAngularVelocity [Rps]", -10);
 
   public static Velocity<VoltageUnit> sysIdRampRate = Volts.per(Second).of(2);
 

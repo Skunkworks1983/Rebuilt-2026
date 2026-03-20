@@ -22,7 +22,7 @@ public class IndexerConstants {
   public static final int indexerMotorID = 40;
 
   // PID for indexer
-  public static final double indexerKP = 0.0; // TODO: Indexer Tuning
+  public static final double indexerKP = 2.0; // TODO: Indexer Tuning
   public static final double indexerKD = 0.0;
 
   // Feed forwards for the indexer
@@ -42,9 +42,9 @@ public class IndexerConstants {
           "Indexer/AngularVelocity [Rps]", indexerAngularVelocitySetpoint.in(RotationsPerSecond));
 
   public static final LoggedTunableNumber autoUnjamNoBeamBreakTimeoutSeconds =
-      new LoggedTunableNumber("Indexer/AutoUnjam/NoBeamBreakTimeout [sec]", .2);
+      new LoggedTunableNumber("Indexer/AutoUnjam/NoBeamBreakTimeout [sec]", 1);
   public static final LoggedTunableNumber autoUnjamReverseDurationSeconds =
-      new LoggedTunableNumber("Indexer/AutoUnjam/ReverseDuration [sec]", .05);
+      new LoggedTunableNumber("Indexer/AutoUnjam/ReverseDuration [sec]", 1);
 
   public static Velocity<VoltageUnit> sysIdRampRate = Volts.per(Second).of(2);
 

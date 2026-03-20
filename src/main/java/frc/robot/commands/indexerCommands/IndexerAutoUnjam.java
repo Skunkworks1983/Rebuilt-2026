@@ -99,7 +99,7 @@ public class IndexerAutoUnjam extends Command {
       hopper.setHopperVelocity(RotationsPerSecond.of(hopperSpeedRps));
       Logger.recordOutput(logKey + "/Unjamming", false);
     } else {
-      //indexer.setIndexerVelocity(RotationsPerSecond.of(-indexerSpeedRps));
+      indexer.setIndexerVelocity(RotationsPerSecond.of(-indexerSpeedRps));
       hopper.setHopperVelocity(RotationsPerSecond.of(hopperReverseSpeedRps));
       Logger.recordOutput(logKey + "/Unjamming", true);
     }
