@@ -13,6 +13,8 @@ import frc.robot.subsystems.hopper.HopperConstants;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.IndexerConstants;
 import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
+
 import org.littletonrobotics.junction.Logger;
 
 public class IndexerAutoUnjam extends Command {
@@ -27,14 +29,18 @@ public class IndexerAutoUnjam extends Command {
   private final Hopper hopper;
   private final Timer timer = new Timer();
   private final BooleanSupplier beamBroken;
+  private DoubleSupplier indexerSpeed;
+  private DoubleSupplier hopperSpeed;
 
   private AutoUnjamState state = AutoUnjamState.FEED;
 
-  public IndexerAutoUnjam(Indexer indexer, BooleanSupplier beamBroken, Hopper hopper) {
+  public IndexerAutoUnjam(Indexer indexer, BooleanSupplier beamBroken, Hopper hopper, DoubleSupplier indexerSpeed, DoubleSupplier hopperSpeed) {
     this.indexer = indexer;
     this.beamBroken = beamBroken;
     this.hopper = hopper;
     addRequirements(indexer);
+    this.indexerSpeed = indexerSpeed;
+    this.hopperSpeed = hopperSpeed;
   }
 
   @Override
@@ -95,12 +101,16 @@ public class IndexerAutoUnjam extends Command {
         HopperConstants.hopperReverseAngularVelocityRotationsPerSecond.get();
 
     if (state == AutoUnjamState.FEED) {
-      indexer.setIndexerVelocity(RotationsPerSecond.of(indexerSpeedRps));
-      hopper.setHopperVelocity(RotationsPerSecond.of(hopperSpeedRps));
+      // indexer.setIndexerVelocity(RotationsPerSecond.of(indexerSpeedRps));
+      // hopper.setHopperVelocity(RotationsPerSecond.of(hopperSpeedRps));
+      indexer.setIndexerVelocity(RotationsPerSecond.of(indexerSpeed.getAsDouble()));
+      hopper.setHopperVelocity(RotationsPerSecond.of(hopperSpeed.getAsDouble()));
       Logger.recordOutput(logKey + "/Unjamming", false);
     } else {
-      indexer.setIndexerVelocity(RotationsPerSecond.of(-indexerSpeedRps));
-      hopper.setHopperVelocity(RotationsPerSecond.of(hopperReverseSpeedRps));
+      // indexer.setIndexerVelocity(RotationsPerSecond.of(-indexerSpeedRps));
+      // hopper.setHopperVelocity(RotationsPerSecond.of(hopperReverseSpeedRps));
+            indexer.setIndexerVelocity(RotationsPerSecond.of(-indexerSpeed.getAsDouble()));
+      hopper.setHopperVelocity(RotationsPerSecond.of(-hopperSpeed.getAsDouble()));
       Logger.recordOutput(logKey + "/Unjamming", true);
     }
   }
