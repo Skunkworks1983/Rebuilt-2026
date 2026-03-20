@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.653965277377831,
-        "y": 7.437071942528285
+        "x": 4.615153165185056,
+        "y": 7.391845342766654
       },
       "isLocked": false,
       "linkedName": "Far Trench"
@@ -20,8 +20,8 @@
         "y": 7.346096385542169
       },
       "prevControl": {
-        "x": 5.189010174132227,
-        "y": 7.340329837456997
+        "x": 4.939660239421586,
+        "y": 7.4382414053962735
       },
       "nextControl": null,
       "isLocked": false,
@@ -41,13 +41,13 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 1.0,
     "rotation": 0.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
-    "velocity": 0,
+    "velocity": 0.0,
     "rotation": 0.0
   },
   "useDefaultConstraints": true

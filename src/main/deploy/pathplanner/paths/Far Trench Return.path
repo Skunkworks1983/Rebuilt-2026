@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.341373493975904,
-        "y": 7.44444578313253
+        "x": 5.555701212156731,
+        "y": 7.24480101260276
       },
       "isLocked": false,
       "linkedName": "Outside Far Trench"
@@ -20,8 +20,8 @@
         "y": 7.198502139800285
       },
       "prevControl": {
-        "x": 3.057481927710843,
-        "y": 7.673927710843374
+        "x": 3.0567135433663393,
+        "y": 7.564831574497307
       },
       "nextControl": null,
       "isLocked": false,
@@ -66,7 +66,7 @@
   "reversed": false,
   "folder": null,
   "idealStartingState": {
-    "velocity": 0,
+    "velocity": 1.0,
     "rotation": 0.0
   },
   "useDefaultConstraints": true
