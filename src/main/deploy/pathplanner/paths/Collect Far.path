@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.975180722891566,
-        "y": 7.346096385542169
+        "x": 5.941077777777777,
+        "y": 7.533255555555556
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.598060240963856,
-        "y": 7.357024096385541
+        "x": 6.563957295850067,
+        "y": 7.544183266398928
       },
       "isLocked": false,
       "linkedName": "Outside Far Trench"
@@ -32,16 +32,16 @@
     },
     {
       "anchor": {
-        "x": 5.975180722891566,
-        "y": 7.346096385542169
+        "x": 5.941077777777777,
+        "y": 7.533255555555556
       },
       "prevControl": {
-        "x": 6.857055555555556,
-        "y": 7.3675999999999995
+        "x": 6.822952610441767,
+        "y": 7.554759170013386
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Outside Far Trench"
     }
   ],
   "rotationTargets": [
