@@ -157,7 +157,7 @@ public class RobotContainer {
                 new CollectorModuleSingle(
                     new CollectorModuleSingleTalonIO(new CollectorTalonSingleConstants())));
 
-        hopper = new Hopper(new HopperIO() {});
+        hopper = new Hopper(new HopperIOTalonFX());
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The

@@ -60,7 +60,7 @@ public class CollectorTalonSingleConstants extends CollectorModuleConstants {
     turnkASlot1 = 0;
 
     // Motion Magic constraints
-    motionMagicCruiseVelocity = RotationsPerSecond.of(0.25);
+    motionMagicCruiseVelocity = RotationsPerSecond.of(0.5);
     motionMagicAcceleration = RotationsPerSecondPerSecond.of(2);
 
     // Position
