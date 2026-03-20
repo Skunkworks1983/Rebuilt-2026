@@ -286,7 +286,7 @@ public class RobotContainer {
     Command autoShootIndexerCommand = new IndexerAutoUnjam(indexer, shooter::getBeamBreak, hopper);
 
     NamedCommands.registerCommand(
-        "Shoot Preset Setpoits ", new ShootPresetSetpoints(shooter, TargetType.GOAL));
+        "Shoot Preset Setpoits", new ShootPresetSetpoints(shooter, TargetType.GOAL));
     NamedCommands.registerCommand(
         "Auto Aimed Shoot", new AutonomousAimedShoot(drive, shooter, indexer));
     NamedCommands.registerCommand(

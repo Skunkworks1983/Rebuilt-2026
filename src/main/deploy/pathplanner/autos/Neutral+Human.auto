@@ -36,12 +36,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Lower Collector"
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
