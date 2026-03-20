@@ -24,14 +24,14 @@ public class CollectorTalonSingleConstants extends CollectorModuleConstants {
   public CollectorTalonSingleConstants() { // TODO: do constants
 
     // Hardware ID's
-    turnMotorID = 0;
-    intakeMotorID = 0;
+    turnMotorID = 32;
+    intakeMotorID = 21;
 
     // Gear ratio's
-    turnMotorGearRatio = 0;
+    turnMotorGearRatio = 29.07160494;
 
     // Real Turn PID
-    turnkP = 0;
+    turnkP = 15;
     turnkD = 0;
     turnkI = 0;
 
@@ -41,13 +41,13 @@ public class CollectorTalonSingleConstants extends CollectorModuleConstants {
     turnkISlot1 = 0.0;
 
     // Real intake upper PID
-    intakekP = 0;
+    intakekP = 15;
     intakekD = 0.0;
     intakekI = 0.0;
     intakekV = 0;
     intakekA = 0;
     intakekS = 0;
-    intakeInvertedValue = InvertedValue.Clockwise_Positive;
+    intakeInvertedValue = InvertedValue.CounterClockwise_Positive;
 
     // Feed forward
     turnkS = 0.25;
@@ -60,19 +60,19 @@ public class CollectorTalonSingleConstants extends CollectorModuleConstants {
     turnkASlot1 = 0;
 
     // Motion Magic constraints
-    motionMagicCruiseVelocity = RotationsPerSecond.of(0);
-    motionMagicAcceleration = RotationsPerSecondPerSecond.of(0);
+    motionMagicCruiseVelocity = RotationsPerSecond.of(0.25);
+    motionMagicAcceleration = RotationsPerSecondPerSecond.of(2);
 
     // Position
     CollectorUpPos = Rotations.of(0);
-    CollectorDownPos = new LoggedTunableNumber("Collector/Single/Downpose rad", 1.55);
+    CollectorDownPos = new LoggedTunableNumber("Collector/Single/Downpose rad", 2.198);
 
     // Collector Intake Speeds
-    CollectorIntakeSpeed = RadiansPerSecond.of(0);
+    CollectorIntakeSpeed = RadiansPerSecond.of(60);
 
     // Limit Switch Constants
-    UpperLimitChannel = 0;
-    LowerLimitChannel = 0;
+    UpperLimitChannel = 1;
+    LowerLimitChannel = 2;
 
     // Collector Position Tolerance
     CollectorPosTolerance = Degrees.of(2);

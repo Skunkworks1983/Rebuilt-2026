@@ -58,6 +58,8 @@ public interface CollectorModuleSingleIO {
     public boolean isDown = false;
   }
 
+  // public default void periodic() {}
+
   /**
    * Updates our inputs for all motors
    *

@@ -22,7 +22,7 @@ public class HopperConstants {
   public static final int hopperMotorID = 28;
 
   // PID for hopper
-  public static final double hopperKP = 0.0; // TODO: hopper Tuning
+  public static final double hopperKP = 1; // TODO: hopper Tuning
   public static final double hopperKD = 0.0;
 
   // Feed forwards for the hopper

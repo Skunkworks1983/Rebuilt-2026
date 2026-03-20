@@ -99,7 +99,7 @@ public class CollectorModuleSingleTalonIO implements CollectorModuleSingleIO {
     var turnConfig = new TalonFXConfiguration();
     turnConfig.CurrentLimits.SupplyCurrentLimit = constants.turnSupplyCurrent;
     turnConfig.Feedback.SensorToMechanismRatio = constants.turnMotorGearRatio;
-    turnConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    turnConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive; // TODO: make constant
 
     // Pid Configs for Turn Motor
     var turnSlot0Configs = turnConfig.Slot0;
@@ -160,8 +160,7 @@ public class CollectorModuleSingleTalonIO implements CollectorModuleSingleIO {
 
     collectorIntakeVelocity =
         new LoggedTunableNumber(
-            "Collector/Single/IntakeUpper/Velocity",
-            constants.CollectorIntakeSpeed.baseUnitMagnitude());
+            "Collector/Single/Intake/Velocity", constants.CollectorIntakeSpeed.baseUnitMagnitude());
 
     // Applying Intake Configs
     tryUntilOk(5, () -> intakeMotor.getConfigurator().apply(intakeConfig, 0.25));

@@ -30,7 +30,7 @@ public class SingleCollector extends SubsystemBase {
           CollectorConstants.collectorLeftOriginTranslation.getY());
   LoggedMechanismLigament2d collectorLigament;
 
-  private CollectorModuleSingleIO singleCollector;
+  private CollectorModuleSingle singleCollector;
 
   /**
    * Collector subsystem.
@@ -42,17 +42,19 @@ public class SingleCollector extends SubsystemBase {
    *
    * @param collector
    */
-  public SingleCollector(CollectorModuleSingleIO collector) {
+  public SingleCollector(CollectorModuleSingle collector) {
     this.singleCollector = collector;
   }
 
   @Override
-  public void periodic() {}
+  public void periodic() {
+    this.singleCollector.periodic();
+  }
 
   /**
    * @return - The Collector
    */
-  public CollectorModuleSingleIO getSingleCollectorIO() {
+  public CollectorModuleSingle getSingleCollector() {
     return singleCollector;
   }
 }

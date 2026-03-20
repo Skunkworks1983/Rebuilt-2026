@@ -37,6 +37,7 @@ import frc.robot.commands.hopperCommands.HopperVelocityCommand;
 import frc.robot.commands.indexerCommands.IndexerAutoUnjam;
 import frc.robot.commands.indexerCommands.IndexerReverseCommand;
 import frc.robot.subsystems.collector.collectorConstants.CollectorTalonSingleConstants;
+import frc.robot.subsystems.collector.singleCollector.CollectorModuleSingle;
 import frc.robot.subsystems.collector.singleCollector.CollectorModuleSingleIO;
 import frc.robot.subsystems.collector.singleCollector.CollectorModuleSingleTalonIO;
 import frc.robot.subsystems.collector.singleCollector.SingleCollector;
@@ -151,7 +152,10 @@ public class RobotContainer {
 
         indexer = new Indexer(new IndexerIOTalonFX());
 
-        singleCollector = new SingleCollector(new CollectorModuleSingleIO() {});
+        singleCollector =
+            new SingleCollector(
+                new CollectorModuleSingle(
+                    new CollectorModuleSingleTalonIO(new CollectorTalonSingleConstants())));
 
         hopper = new Hopper(new HopperIO() {});
 
@@ -212,7 +216,8 @@ public class RobotContainer {
                     VisionConstants.robotToCamera1,
                     simulation::getSimulatedDriveTrainPose));
 
-        singleCollector = new SingleCollector(new CollectorModuleSingleIO() {});
+        singleCollector =
+            new SingleCollector(new CollectorModuleSingle(new CollectorModuleSingleIO() {}));
 
         indexer = new Indexer(new IndexerIOSim());
 
@@ -248,7 +253,8 @@ public class RobotContainer {
 
         singleCollector =
             new SingleCollector(
-                new CollectorModuleSingleTalonIO(new CollectorTalonSingleConstants()));
+                new CollectorModuleSingle(
+                    new CollectorModuleSingleTalonIO(new CollectorTalonSingleConstants())));
 
         hopper = new Hopper(new HopperIOTalonFX());
         break;
@@ -269,7 +275,8 @@ public class RobotContainer {
 
         vision = new Vision(drive, new VisionIO() {}, new VisionIO() {});
 
-        singleCollector = new SingleCollector(new CollectorModuleSingleIO() {});
+        singleCollector =
+            new SingleCollector(new CollectorModuleSingle(new CollectorModuleSingleIO() {}));
 
         indexer = new Indexer(new IndexerIO() {});
 
@@ -370,22 +377,12 @@ public class RobotContainer {
     TestPathCommands.publishTestPaths(drive);
 
     shooter.setDefaultCommand(Commands.run(shooter::stop, shooter));
-
-    switch (Constants.currentMode) {
-      case REAL:
-        break;
-      case SINGLEREAL:
-        new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualPivotDown)
-            .onTrue(new SingleCollectorDown(singleCollector));
-        new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualPivotUp)
-            .onTrue(new SingleCollectorUp(singleCollector));
-        new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorIntakeID)
-            .whileTrue(new SingleCollectorIntake(singleCollector));
-        break;
-
-      default:
-        break;
-    }
+    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualPivotDown)
+        .onTrue(new SingleCollectorDown(singleCollector));
+    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualPivotUp)
+        .onTrue(new SingleCollectorUp(singleCollector));
+    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorIntakeID)
+        .whileTrue(new SingleCollectorIntake(singleCollector));
   }
 
   /**
