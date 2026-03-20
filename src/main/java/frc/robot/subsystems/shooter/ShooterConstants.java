@@ -172,9 +172,9 @@ public class ShooterConstants {
   public static final int shooterCandiId = 7;
 
   public static final ReverseLimitSourceValue pivotReverseLimitSource =
-      ReverseLimitSourceValue.RemoteCANdiS2;
+      ReverseLimitSourceValue.RemoteCANdiS1;
   public static final ForwardLimitSourceValue pivotForwardLimitSource =
-      ForwardLimitSourceValue.RemoteCANdiS1;
+      ForwardLimitSourceValue.RemoteCANdiS2;
 
   public static final AngularVelocity pivotMaxVelocity = RotationsPerSecond.of(55);
 
