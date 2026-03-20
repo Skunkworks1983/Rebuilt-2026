@@ -13,7 +13,6 @@ import frc.robot.subsystems.hopper.HopperConstants;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.IndexerConstants;
 import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
 public class IndexerAutoUnjam extends Command {
@@ -31,10 +30,7 @@ public class IndexerAutoUnjam extends Command {
 
   private AutoUnjamState state = AutoUnjamState.FEED;
 
-  public IndexerAutoUnjam(
-      Indexer indexer,
-      BooleanSupplier beamBroken,
-      Hopper hopper) {
+  public IndexerAutoUnjam(Indexer indexer, BooleanSupplier beamBroken, Hopper hopper) {
     this.indexer = indexer;
     this.beamBroken = beamBroken;
     this.hopper = hopper;

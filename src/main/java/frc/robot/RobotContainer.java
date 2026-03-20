@@ -36,7 +36,6 @@ import frc.robot.commands.collectorCommands.singleCollectorCommands.SingleCollec
 import frc.robot.commands.hopperCommands.HopperVelocityCommand;
 import frc.robot.commands.indexerCommands.IndexerAutoUnjam;
 import frc.robot.commands.indexerCommands.IndexerReverseCommand;
-import frc.robot.commands.indexerCommands.setIndexToJoystick;
 import frc.robot.subsystems.collector.collectorConstants.CollectorTalonSingleConstants;
 import frc.robot.subsystems.collector.singleCollector.CollectorModuleSingle;
 import frc.robot.subsystems.collector.singleCollector.CollectorModuleSingleIO;
@@ -284,22 +283,15 @@ public class RobotContainer {
 
         break;
     }
-    Command autoShootIndexerCommand =
-        new IndexerAutoUnjam(
-            indexer,
-            shooter::getBeamBreak,
-            hopper);
+    Command autoShootIndexerCommand = new IndexerAutoUnjam(indexer, shooter::getBeamBreak, hopper);
 
     NamedCommands.registerCommand(
         "Shoot Preset Setpoits", new ShootPresetSetpoints(shooter, TargetType.GOAL));
     NamedCommands.registerCommand(
         "Auto Aimed Shoot", new AutonomousAimedShoot(drive, shooter, indexer));
-    NamedCommands.registerCommand(
-        "Lower Collector", new SingleCollectorDown(singleCollector));
-    NamedCommands.registerCommand(
-        "Raise Collector", new SingleCollectorUp(singleCollector));
-    NamedCommands.registerCommand(
-        "Run Collector", new SingleCollectorIntake(singleCollector));
+    NamedCommands.registerCommand("Lower Collector", new SingleCollectorDown(singleCollector));
+    NamedCommands.registerCommand("Raise Collector", new SingleCollectorUp(singleCollector));
+    NamedCommands.registerCommand("Run Collector", new SingleCollectorIntake(singleCollector));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -345,7 +337,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     Trigger shootAutoAim;
-    //Default command, normal field-relative drive
+    // Default command, normal field-relative drive
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
@@ -368,11 +360,7 @@ public class RobotContainer {
     JoystickButton runIndexerReverse =
         new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID);
 
-    runIndexer.whileTrue(
-        new IndexerAutoUnjam(
-            indexer,
-            shooter::getBeamBreak,
-            hopper));
+    runIndexer.whileTrue(new IndexerAutoUnjam(indexer, shooter::getBeamBreak, hopper));
 
     runIndexerReverse.whileTrue(
         new IndexerReverseCommand(indexer)
