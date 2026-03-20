@@ -23,7 +23,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.commands.DriveAimedAutoShoot;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.Shooter.AutonomousAimedShoot;
 import frc.robot.commands.Shooter.NoYawShootHub;
@@ -351,9 +350,9 @@ public class RobotContainer {
 
     shootAutoAim = new JoystickButton(rightJoystick, 1);
 
-    shootAutoAim.whileTrue(
-        new DriveAimedAutoShoot(
-            drive, shooter, () -> -leftJoystick.getY(), () -> -leftJoystick.getX()));
+    // shootAutoAim.whileTrue(
+    //     new DriveAimedAutoShoot(
+    //         drive, shooter, () -> -leftJoystick.getY(), () -> -leftJoystick.getX()));
 
     ShootPresetSetpoints shootPresetSetpointsGoal =
         new ShootPresetSetpoints(shooter, TargetType.GOAL);
@@ -373,11 +372,7 @@ public class RobotContainer {
     //         () -> (rightJoystick.getY() * 10)));
     runIndexer.whileTrue(
         new setIndexToJoystick(
-            hopper,
-            indexer,
-            () -> (leftJoystick.getY() * 10),
-            () -> (rightJoystick.getY() * 10),
-            shooter));
+            hopper, indexer, () -> (leftJoystick.getY()), () -> (rightJoystick.getY()), shooter));
 
     runIndexerReverse.whileTrue(
         new IndexerReverseCommand(indexer)
