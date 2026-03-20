@@ -30,12 +30,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Raise Collector"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "Through Close Tunnel"
