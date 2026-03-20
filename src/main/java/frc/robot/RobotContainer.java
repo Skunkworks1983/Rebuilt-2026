@@ -293,9 +293,15 @@ public class RobotContainer {
             () -> (rightJoystick.getY() * 10));
 
     NamedCommands.registerCommand(
-        "Shoot Preset Setpoits ", new ShootPresetSetpoints(shooter, TargetType.GOAL));
+        "Shoot Preset Setpoits", new ShootPresetSetpoints(shooter, TargetType.GOAL));
     NamedCommands.registerCommand(
         "Auto Aimed Shoot", new AutonomousAimedShoot(drive, shooter, indexer));
+    NamedCommands.registerCommand(
+        "Lower Collector", new SingleCollectorDown(singleCollector));
+    NamedCommands.registerCommand(
+        "Raise Collector", new SingleCollectorUp(singleCollector));
+    NamedCommands.registerCommand(
+        "Run Collector", new SingleCollectorIntake(singleCollector));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
