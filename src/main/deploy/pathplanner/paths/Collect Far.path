@@ -32,16 +32,32 @@
     },
     {
       "anchor": {
+        "x": 7.734055555555555,
+        "y": 6.3931555555555555
+      },
+      "prevControl": {
+        "x": 7.909455555555555,
+        "y": 5.545388888888888
+      },
+      "nextControl": {
+        "x": 7.555642471548294,
+        "y": 7.255485461590649
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
         "x": 5.941077777777777,
         "y": 7.533255555555556
       },
       "prevControl": {
-        "x": 6.822952610441767,
-        "y": 7.554759170013386
+        "x": 6.53548888888889,
+        "y": 7.581977777777778
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Outside Far Trench"
+      "linkedName": "Far Collect End"
     }
   ],
   "rotationTargets": [
@@ -66,13 +82,13 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 1.0,
-    "rotation": 0.0
+    "velocity": 2.5,
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
-    "velocity": 1.0,
+    "velocity": 2.5,
     "rotation": 0.0
   },
   "useDefaultConstraints": true

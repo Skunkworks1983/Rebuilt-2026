@@ -12,7 +12,7 @@
         "y": 7.533255555555556
       },
       "isLocked": false,
-      "linkedName": "Outside Far Trench"
+      "linkedName": "Far Collect End"
     },
     {
       "anchor": {
@@ -30,8 +30,8 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.7460580912863068,
-      "rotationDegrees": 0.0
+      "waypointRelativePos": 0.7996850393700681,
+      "rotationDegrees": 180.0
     }
   ],
   "constraintZones": [
@@ -67,7 +67,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 1.0,
-    "rotation": 0.0
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }
