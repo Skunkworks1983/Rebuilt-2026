@@ -15,7 +15,7 @@ import edu.wpi.first.units.measure.Voltage;
 import frc.robot.util.LoggedTunableNumber;
 
 public class IndexerConstants {
-  public static CANBus indexerCanBus = new CANBus("rio");
+  public static CANBus indexerCanBus = new CANBus("peripherals_2026");
   public static final double disconnectedDebounceTimeSec = 0.5;
 
   /** CAN ID for the indexer. */
