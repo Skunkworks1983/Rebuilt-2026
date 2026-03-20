@@ -371,7 +371,13 @@ public class RobotContainer {
     //         hopper,
     //         () -> (leftJoystick.getY() * 10),
     //         () -> (rightJoystick.getY() * 10)));
-        runIndexer.whileTrue(new setIndexToJoystick(hopper, indexer, () -> (leftJoystick.getY() * 10), () -> (rightJoystick.getY() * 10), shooter));
+    runIndexer.whileTrue(
+        new setIndexToJoystick(
+            hopper,
+            indexer,
+            () -> (leftJoystick.getY() * 10),
+            () -> (rightJoystick.getY() * 10),
+            shooter));
 
     runIndexerReverse.whileTrue(
         new IndexerReverseCommand(indexer)

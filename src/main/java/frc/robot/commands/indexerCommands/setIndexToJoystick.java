@@ -6,12 +6,11 @@ package frc.robot.commands.indexerCommands;
 
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.hopper.Hopper;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.shooter.Shooter;
+import java.util.function.DoubleSupplier;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class setIndexToJoystick extends Command {
@@ -21,7 +20,12 @@ public class setIndexToJoystick extends Command {
   DoubleSupplier hopperSpeed;
   DoubleSupplier indexerSpeed;
   /** Creates a new setIndexToJoystick. */
-  public setIndexToJoystick(Hopper hopper, Indexer indexer, DoubleSupplier hopperSpeed, DoubleSupplier indexerSpeed, Shooter shooter) {
+  public setIndexToJoystick(
+      Hopper hopper,
+      Indexer indexer,
+      DoubleSupplier hopperSpeed,
+      DoubleSupplier indexerSpeed,
+      Shooter shooter) {
     this.hopper = hopper;
     this.indexer = indexer;
     this.shooter = shooter;
