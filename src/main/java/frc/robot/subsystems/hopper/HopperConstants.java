@@ -36,7 +36,7 @@ public class HopperConstants {
   /** Stator current limit in Amps for the hopper motor. */
   public static final Current hopperStatorCurrentLimitAmps = Amps.of(80);
 
-  public static final AngularVelocity hopperAngularVelocitySetpoint = RotationsPerSecond.of(1);
+  public static final AngularVelocity hopperAngularVelocitySetpoint = RotationsPerSecond.of(10);
   public static final LoggedTunableNumber hopperAngularVelocityRotationsPerSecond =
       new LoggedTunableNumber(
           "hopper/AngularVelocity [Rps]", hopperAngularVelocitySetpoint.in(RotationsPerSecond));
@@ -45,7 +45,7 @@ public class HopperConstants {
       RotationsPerSecond.of(1);
   public static final LoggedTunableNumber hopperReverseAngularVelocityRotationsPerSecond =
       new LoggedTunableNumber(
-          "hopper/AngularVelocity [Rps]", hopperAngularVelocitySetpoint.in(RotationsPerSecond));
+          "hopper/ReverseAngularVelocity [Rps]", -hopperAngularVelocitySetpoint.in(RotationsPerSecond));
 
   public static Velocity<VoltageUnit> sysIdRampRate = Volts.per(Second).of(2);
 
