@@ -36,6 +36,7 @@ import frc.robot.commands.collectorCommands.singleCollectorCommands.SingleCollec
 import frc.robot.commands.hopperCommands.HopperVelocityCommand;
 import frc.robot.commands.indexerCommands.IndexerAutoUnjam;
 import frc.robot.commands.indexerCommands.IndexerReverseCommand;
+import frc.robot.commands.indexerCommands.setIndexToJoystick;
 import frc.robot.subsystems.collector.collectorConstants.CollectorTalonSingleConstants;
 import frc.robot.subsystems.collector.singleCollector.CollectorModuleSingle;
 import frc.robot.subsystems.collector.singleCollector.CollectorModuleSingleIO;
@@ -363,13 +364,14 @@ public class RobotContainer {
     JoystickButton runIndexerReverse =
         new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID);
 
-    runIndexer.whileTrue(
-        new IndexerAutoUnjam(
-            indexer,
-            shooter::getBeamBreak,
-            hopper,
-            () -> (leftJoystick.getY() * 10),
-            () -> (rightJoystick.getY() * 10)));
+    // runIndexer.whileTrue(
+    //     new IndexerAutoUnjam(
+    //         indexer,
+    //         shooter::getBeamBreak,
+    //         hopper,
+    //         () -> (leftJoystick.getY() * 10),
+    //         () -> (rightJoystick.getY() * 10)));
+        runIndexer.whileTrue(new setIndexToJoystick(hopper, indexer, () -> (leftJoystick.getY() * 10), () -> (rightJoystick.getY() * 10), shooter));
 
     runIndexerReverse.whileTrue(
         new IndexerReverseCommand(indexer)

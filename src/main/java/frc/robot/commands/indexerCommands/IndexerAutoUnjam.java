@@ -89,9 +89,9 @@ public class IndexerAutoUnjam extends Command {
   }
 
   private void setState(AutoUnjamState nextState) {
-    if (state == nextState) {
-      return;
-    }
+    // if (state == nextState) {
+    //   return;
+    // }
 
     state = nextState;
     timer.restart();
