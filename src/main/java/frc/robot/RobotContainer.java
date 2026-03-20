@@ -288,9 +288,7 @@ public class RobotContainer {
         new IndexerAutoUnjam(
             indexer,
             shooter::getBeamBreak,
-            hopper,
-            () -> (leftJoystick.getY() * 10),
-            () -> (rightJoystick.getY() * 10));
+            hopper);
 
     NamedCommands.registerCommand(
         "Shoot Preset Setpoits", new ShootPresetSetpoints(shooter, TargetType.GOAL));
@@ -347,13 +345,13 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     Trigger shootAutoAim;
-    // Default command, normal field-relative drive
-    // drive.setDefaultCommand(
-    //     DriveCommands.joystickDrive(
-    //         drive,
-    //         () -> -leftJoystick.getY(), // -X (used to be)
-    //         () -> -leftJoystick.getX(), // -Y (used to be)
-    //         () -> -rightJoystick.getX())); // Confirm if negitive or not
+    //Default command, normal field-relative drive
+    drive.setDefaultCommand(
+        DriveCommands.joystickDrive(
+            drive,
+            () -> -leftJoystick.getY(), // -X (used to be)
+            () -> -leftJoystick.getX(), // -Y (used to be)
+            () -> -rightJoystick.getX())); // Confirm if negitive or not
 
     shootAutoAim = new JoystickButton(rightJoystick, 1);
 
@@ -370,14 +368,11 @@ public class RobotContainer {
     JoystickButton runIndexerReverse =
         new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID);
 
-    // runIndexer.whileTrue(
-    //     new IndexerAutoUnjam(
-    //         indexer,
-    //         shooter::getBeamBreak,
-    //         hopper,
-    //         () -> (leftJoystick.getY() * 10),
-    //         () -> (rightJoystick.getY() * 10)));
-        runIndexer.whileTrue(new setIndexToJoystick(hopper, indexer, () -> (leftJoystick.getY() * 10), () -> (rightJoystick.getY() * 10), shooter));
+    runIndexer.whileTrue(
+        new IndexerAutoUnjam(
+            indexer,
+            shooter::getBeamBreak,
+            hopper));
 
     runIndexerReverse.whileTrue(
         new IndexerReverseCommand(indexer)

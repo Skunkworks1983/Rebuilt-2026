@@ -28,23 +28,17 @@ public class IndexerAutoUnjam extends Command {
   private final Hopper hopper;
   private final Timer timer = new Timer();
   private final BooleanSupplier beamBroken;
-  private DoubleSupplier indexerSpeed;
-  private DoubleSupplier hopperSpeed;
 
   private AutoUnjamState state = AutoUnjamState.FEED;
 
   public IndexerAutoUnjam(
       Indexer indexer,
       BooleanSupplier beamBroken,
-      Hopper hopper,
-      DoubleSupplier indexerSpeed,
-      DoubleSupplier hopperSpeed) {
+      Hopper hopper) {
     this.indexer = indexer;
     this.beamBroken = beamBroken;
     this.hopper = hopper;
     addRequirements(indexer);
-    this.indexerSpeed = indexerSpeed;
-    this.hopperSpeed = hopperSpeed;
   }
 
   @Override
@@ -105,16 +99,12 @@ public class IndexerAutoUnjam extends Command {
         HopperConstants.hopperReverseAngularVelocityRotationsPerSecond.get();
 
     if (state == AutoUnjamState.FEED) {
-      // indexer.setIndexerVelocity(RotationsPerSecond.of(indexerSpeedRps));
-      // hopper.setHopperVelocity(RotationsPerSecond.of(hopperSpeedRps));
-      indexer.setIndexerVelocity(RotationsPerSecond.of(indexerSpeed.getAsDouble()));
-      hopper.setHopperVelocity(RotationsPerSecond.of(hopperSpeed.getAsDouble()));
+      indexer.setIndexerVelocity(RotationsPerSecond.of(indexerSpeedRps));
+      hopper.setHopperVelocity(RotationsPerSecond.of(hopperSpeedRps));
       Logger.recordOutput(logKey + "/Unjamming", false);
     } else {
-      // indexer.setIndexerVelocity(RotationsPerSecond.of(-indexerSpeedRps));
-      // hopper.setHopperVelocity(RotationsPerSecond.of(hopperReverseSpeedRps));
-      indexer.setIndexerVelocity(RotationsPerSecond.of(-indexerSpeed.getAsDouble()));
-      hopper.setHopperVelocity(RotationsPerSecond.of(-hopperSpeed.getAsDouble()));
+      indexer.setIndexerVelocity(RotationsPerSecond.of(-indexerSpeedRps));
+      hopper.setHopperVelocity(RotationsPerSecond.of(hopperReverseSpeedRps));
       Logger.recordOutput(logKey + "/Unjamming", true);
     }
   }
