@@ -4,8 +4,6 @@
 
 package frc.robot.commands.indexerCommands;
 
-import static edu.wpi.first.units.Units.RotationsPerSecond;
-
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.hopper.Hopper;
@@ -79,9 +77,9 @@ public class IndexerAutoUnjam extends Command {
   }
 
   private void setState(AutoUnjamState nextState) {
-    // if (state == nextState) {
-    //   return;
-    // }
+    if (state == nextState) {
+      return;
+    }
 
     state = nextState;
     timer.restart();
@@ -95,12 +93,12 @@ public class IndexerAutoUnjam extends Command {
         HopperConstants.hopperReverseAngularVelocityRotationsPerSecond.get();
 
     if (state == AutoUnjamState.FEED) {
-      indexer.setIndexerVelocity(RotationsPerSecond.of(indexerSpeedRps));
-      hopper.setHopperVelocity(RotationsPerSecond.of(hopperSpeedRps));
+      indexer.setIndexerDutyCycle(1);
+      hopper.setHopperDutyCycle(1);
       Logger.recordOutput(logKey + "/Unjamming", false);
     } else {
-      indexer.setIndexerVelocity(RotationsPerSecond.of(-indexerSpeedRps));
-      hopper.setHopperVelocity(RotationsPerSecond.of(hopperReverseSpeedRps));
+      indexer.setIndexerDutyCycle(-1);
+      hopper.setHopperDutyCycle(-1);
       Logger.recordOutput(logKey + "/Unjamming", true);
     }
   }
