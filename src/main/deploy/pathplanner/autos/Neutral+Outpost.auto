@@ -5,9 +5,77 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "Lower Collector"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Run Collector"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 2.0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Raise Collector"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "FarBumpCircle"
+            "pathName": "Through Far Trench"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Lower Collector"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Run Collector"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Collect Far"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Raise Collector"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Far Trench Return"
           }
         },
         {

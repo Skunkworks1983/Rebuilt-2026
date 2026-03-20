@@ -5,9 +5,71 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "Lower Collector"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Run Collector"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 2.0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Raise Collector"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "CloseBumpCircle"
+            "pathName": "Through Close Tunnel"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Lower Collector"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Collect Close"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Run Collector"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Close Trench Return"
           }
         },
         {
