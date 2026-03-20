@@ -136,11 +136,11 @@ public class AutonomousAimedShoot extends Command {
       autoUnjamState = AutoUnjamState.FEED;
       autoUnjamTimer.restart();
       Logger.recordOutput("Auto Shoot/Feed Enabled", true);
-      //applyAutoUnjamOutput();
+      // applyAutoUnjamOutput();
     }
 
     if (feedEnabled) {
-      //handleAutoUnjam(shooter.getBeamBreak());
+      // handleAutoUnjam(shooter.getBeamBreak());
     } else {
       indexer.setIndexerDutyCycle(0.0);
     }

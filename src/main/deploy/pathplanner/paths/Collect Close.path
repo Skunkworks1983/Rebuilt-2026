@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.321777088992349,
-        "y": 1.0243628123152217
+        "x": 7.363800699314605,
+        "y": 0.6515406562054205
       },
       "isLocked": false,
       "linkedName": "Outside Close Trench"
@@ -36,8 +36,8 @@
         "y": 0.6515406562054205
       },
       "prevControl": {
-        "x": 6.110706720038392,
-        "y": 0.9190126864880284
+        "x": 6.140056559934595,
+        "y": 0.6515406562054205
       },
       "nextControl": null,
       "isLocked": false,
@@ -68,7 +68,7 @@
   "reversed": false,
   "folder": null,
   "idealStartingState": {
-    "velocity": 0,
+    "velocity": 1.0,
     "rotation": 0.0
   },
   "useDefaultConstraints": true
