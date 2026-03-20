@@ -40,6 +40,10 @@ public class IndexerConstants {
   public static final LoggedTunableNumber indexerAngularVelocityRotationsPerSecond =
       new LoggedTunableNumber(
           "Indexer/AngularVelocity [Rps]", indexerAngularVelocitySetpoint.in(RotationsPerSecond));
+  public static final LoggedTunableNumber indexerDutyCycleSpeedFeed =
+        new LoggedTunableNumber("Indexer/DutyCycleOutFeed", 1);
+  public static final LoggedTunableNumber indexerDutyCycleSpeedReverse =
+        new LoggedTunableNumber("Indexer/DutyCycleOutReverse", -1);
 
   public static final LoggedTunableNumber autoUnjamNoBeamBreakTimeoutSeconds =
       new LoggedTunableNumber("Indexer/AutoUnjam/NoBeamBreakTimeout [sec]", 1);
