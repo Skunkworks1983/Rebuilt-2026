@@ -23,7 +23,8 @@ public class SingleCollectorIntake extends Command {
   @Override
   public void initialize() {
     Logger.recordOutput("Commands/Collector/SingleCollectorIntake", true);
-    collector.getSingleCollector().goDown();
+    collector.getSingleCollector().setCollectorPos(
+            Radians.of(collector.getSingleCollector().getConstants().CollectorDownPos.get()), 0);
     collector
         .getSingleCollector()
         .setCollectorVelocity(collector.getSingleCollector().getConstants().CollectorIntakeSpeed);
