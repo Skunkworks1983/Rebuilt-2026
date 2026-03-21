@@ -6,6 +6,9 @@ package frc.robot.commands.collectorCommands.singleCollectorCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.collector.singleCollector.SingleCollector;
+
+import static edu.wpi.first.units.Units.Radians;
+
 import org.littletonrobotics.junction.Logger;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -23,6 +26,9 @@ public class SingleCollectorIntake extends Command {
     Logger.recordOutput("Commands/Collector/SingleCollectorIntake", true);
     collector
         .getSingleCollector()
+        .setCollectorPos(Radians.of(collector.getSingleCollector().getConstants().CollectorHalfPos.get()), 0);
+    collector
+        .getSingleCollector()
         .setCollectorVelocity(collector.getSingleCollector().getConstants().CollectorIntakeSpeed);
   }
 
@@ -34,6 +40,9 @@ public class SingleCollectorIntake extends Command {
   @Override
   public void end(boolean interrupted) {
     Logger.recordOutput("Commands/Collector/SingleCollectorIntake", false);
+    collector
+        .getSingleCollector()
+        .goDown();
     collector.getSingleCollector().setCollectorDutyCycle(0);
   }
 

@@ -41,14 +41,14 @@ public class IndexerConstants {
       new LoggedTunableNumber(
           "Indexer/AngularVelocity [Rps]", indexerAngularVelocitySetpoint.in(RotationsPerSecond));
   public static final LoggedTunableNumber indexerDutyCycleSpeedFeed =
-        new LoggedTunableNumber("Indexer/DutyCycleOutFeed", 1);
+      new LoggedTunableNumber("Indexer/DutyCycleOutFeed", .6);
   public static final LoggedTunableNumber indexerDutyCycleSpeedReverse =
-        new LoggedTunableNumber("Indexer/DutyCycleOutReverse", -1);
+      new LoggedTunableNumber("Indexer/DutyCycleOutReverse", -.2);
 
   public static final LoggedTunableNumber autoUnjamNoBeamBreakTimeoutSeconds =
-      new LoggedTunableNumber("Indexer/AutoUnjam/NoBeamBreakTimeout [sec]", 1);
+      new LoggedTunableNumber("Indexer/AutoUnjam/NoBeamBreakTimeout [sec]", 1.25);
   public static final LoggedTunableNumber autoUnjamReverseDurationSeconds =
-      new LoggedTunableNumber("Indexer/AutoUnjam/ReverseDuration [sec]", 1);
+      new LoggedTunableNumber("Indexer/AutoUnjam/ReverseDuration [sec]", .5);
 
   public static Velocity<VoltageUnit> sysIdRampRate = Volts.per(Second).of(2);
 

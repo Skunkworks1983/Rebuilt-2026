@@ -46,9 +46,9 @@ public class HopperConstants {
   public static final LoggedTunableNumber hopperReverseAngularVelocityRotationsPerSecond =
       new LoggedTunableNumber("hopper/ReverseAngularVelocity [Rps]", -10);
   public static final LoggedTunableNumber hopperDutyCycleSpeedFeed =
-        new LoggedTunableNumber("hopper/DutyCycleOutFeed", 1);
+      new LoggedTunableNumber("hopper/DutyCycleOutFeed", .4);
   public static final LoggedTunableNumber hopperDutyCycleSpeedReverse =
-        new LoggedTunableNumber("hopper/DutyCycleOutReverse", -1);
+      new LoggedTunableNumber("hopper/DutyCycleOutReverse", -.2);
 
   public static Velocity<VoltageUnit> sysIdRampRate = Volts.per(Second).of(2);
 
