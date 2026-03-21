@@ -50,7 +50,7 @@ public class IndexerAutoUnjam extends Command {
       case FEED:
         if (!beamBroken.getAsBoolean()) {
           timer.restart();
-        } else if (timer.hasElapsed(IndexerConstants.autoUnjamNoBeamBreakTimeoutSeconds.get())) {
+        } else if (timer.hasElapsed(IndexerConstants.autoUnjamNoBeamBreakTimeoutSeconds.get()) && indexer.inputs.currentAmps.magnitude() >= 60) {
           setState(AutoUnjamState.REVERSE);
         }
         break;
