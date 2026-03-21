@@ -41,7 +41,7 @@ public class IndexerConstants {
       new LoggedTunableNumber(
           "Indexer/AngularVelocity [Rps]", indexerAngularVelocitySetpoint.in(RotationsPerSecond));
   public static final LoggedTunableNumber indexerDutyCycleSpeedFeed =
-      new LoggedTunableNumber("Indexer/DutyCycleOutFeed", .6);
+      new LoggedTunableNumber("Indexer/DutyCycleOutFeed", 1);
   public static final LoggedTunableNumber indexerDutyCycleSpeedReverse =
       new LoggedTunableNumber("Indexer/DutyCycleOutReverse", -.2);
 
