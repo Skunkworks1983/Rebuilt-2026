@@ -59,7 +59,7 @@ public final class Constants {
 
     // Collector button joystick ID's
     public static final int CollectorManualModeID = 8;
-    public static final int CollectorAutoModeID = 3;
+    public static final int runForward = 3;
 
     public static final int CollectorIntakeID = 23;
     public static final int CollectorRightDownID = 17;
