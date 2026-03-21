@@ -1,11 +1,14 @@
 package frc.robot.commands.Shooter;
 
+import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -85,21 +88,19 @@ public class AutonomousAimedShoot extends Command {
             controls.shooterPitch()));
     double currentYawRadians = drive.getRotation().getRadians();
     double targetYawRadians = controls.driveYaw().getRadians();
-    // double targetYawDelta = MathUtil.angleModulus(targetYawRadians -
-    // lastFilteredYaw);
+    // double targetYawDelta = MathUtil.angleModulus(targetYawRadians - lastFilteredYaw);
 
     // TrapezoidProfile.State setpoint =
-    // profile.calculate(
-    // 0.02,
-    // new TrapezoidProfile.State(
-    // currentYawRadians, drive.getAngularVelocity().in(RadiansPerSecond)),
-    // new TrapezoidProfile.State(targetYawRadians, 0));
+    //     profile.calculate(
+    //         0.02,
+    //         new TrapezoidProfile.State(
+    //             currentYawRadians, drive.getAngularVelocity().in(RadiansPerSecond)),
+    //         new TrapezoidProfile.State(targetYawRadians, 0));
 
-    // if (Math.abs(targetYawDelta) >
-    // DriveControlConstants.largeAngleJumpThreshold.in(Radians)) {
-    // lastFilteredYaw = targetYawRadians;
+    // if (Math.abs(targetYawDelta) > DriveControlConstants.largeAngleJumpThreshold.in(Radians)) {
+    //   lastFilteredYaw = targetYawRadians;
     // } else {
-    // lastFilteredYaw += yawFilterAlpha * targetYawDelta;
+    //   lastFilteredYaw += yawFilterAlpha * targetYawDelta;
     // }
     // double filteredTargetYaw = MathUtil.angleModulus(lastFilteredYaw);
     Logger.recordOutput("Auto Shoot/Target Yaw", targetYawRadians);
@@ -136,11 +137,11 @@ public class AutonomousAimedShoot extends Command {
       autoUnjamState = AutoUnjamState.FEED;
       autoUnjamTimer.restart();
       Logger.recordOutput("Auto Shoot/Feed Enabled", true);
-      // applyAutoUnjamOutput();
+      applyAutoUnjamOutput();
     }
 
     if (feedEnabled) {
-      // handleAutoUnjam(shooter.getBeamBreak());
+      handleAutoUnjam(shooter.getBeamBreak());
     } else {
       indexer.setIndexerDutyCycle(0.0);
     }

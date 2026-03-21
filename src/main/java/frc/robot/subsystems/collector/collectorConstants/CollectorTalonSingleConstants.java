@@ -67,10 +67,9 @@ public class CollectorTalonSingleConstants extends CollectorModuleConstants {
     CollectorUpPos = Rotations.of(0);
     CollectorDownPos = new LoggedTunableNumber("Collector/Single/Downpose rad", 2.198);
     CollectorHalfPos = new LoggedTunableNumber("Collector/Single/Halfpose rad", 1.1);
-    
 
     // Collector Intake Speeds
-    CollectorIntakeSpeed = RadiansPerSecond.of(60);
+    CollectorIntakeSpeed = RadiansPerSecond.of(80);
 
     // Limit Switch Constants
     UpperLimitChannel = 1;
