@@ -52,7 +52,7 @@ public class Robot extends LoggedRobot {
         break;
     }
 
-    WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
+    //WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
 
     // Set up data receivers & replay source
     switch (Constants.currentMode) {
@@ -106,7 +106,7 @@ public class Robot extends LoggedRobot {
   /** This function is called once when the robot is disabled. */
   @Override
   public void disabledInit() {
-    NetworkTableInstance.getDefault().getTable("limelight").getEntry("throttle_set").setNumber(200);
+    //NetworkTableInstance.getDefault().getTable("limelight").getEntry("throttle_set").setNumber(200);
     if (Constants.currentMode == Mode.SIM) {
       robotContainer.resetSimulationField();
     }
@@ -123,7 +123,7 @@ public class Robot extends LoggedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    NetworkTableInstance.getDefault().getTable("limelight").getEntry("throttle_set").setNumber(0);
+    //NetworkTableInstance.getDefault().getTable("limelight").getEntry("throttle_set").setNumber(0);
     if (Constants.currentMode == Mode.SIM) {
       SimulatedArena.getInstance().resetFieldForAuto();
     }
@@ -144,7 +144,7 @@ public class Robot extends LoggedRobot {
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
-    NetworkTableInstance.getDefault().getTable("limelight").getEntry("throttle_set").setNumber(0);
+    //NetworkTableInstance.getDefault().getTable("limelight").getEntry("throttle_set").setNumber(0);
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove

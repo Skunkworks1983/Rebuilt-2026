@@ -347,25 +347,16 @@ public class CollectorModuleSingleTalonIO implements CollectorModuleSingleIO {
 
   /** Sets Collector to its up position */
   public void goUp() {
-    if (!setUpRunning) {
-      setCollectorPos(constants.CollectorUpPos, 0);
-      Logger.recordOutput(
-          "Collector/" + constants.turnMotorID + "/setpoint", constants.CollectorUpPos);
-      setUpRunning = true;
-      setDownRunning = false;
-    }
+    setCollectorPos(constants.CollectorUpPos, 0);
+    Logger.recordOutput(
+        "Collector/" + constants.turnMotorID + "/setpoint", constants.CollectorUpPos);
   }
 
   /** Sets Collector to its up position */
   public void goDown() {
-    if (!setDownRunning) {
-      setCollectorPos(Radians.of(constants.CollectorDownPos.get()), 0);
-      Logger.recordOutput(
-          "Collector/" + constants.turnMotorID + "/setpoint", constants.CollectorDownPos);
-
-      setDownRunning = true;
-      setUpRunning = false;
-    }
+    setCollectorPos(Radians.of(constants.CollectorDownPos.get()), 0);
+    Logger.recordOutput(
+        "Collector/" + constants.turnMotorID + "/setpoint", constants.CollectorDownPos);
   }
 
   @Override
