@@ -19,6 +19,5 @@ public class BeamBreakIOSensor implements BeamBreakIO {
   @Override
   public void updateInputs(BeamBreakIOInputs inputs) {
     inputs.beamBroken = beamBreakSensor.get();
-    SmartDashboard.putBoolean("BEAMBREAK VALUE", beamBreakSensor.get());
   }
 }
