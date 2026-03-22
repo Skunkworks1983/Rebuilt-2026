@@ -290,6 +290,8 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Shoot Preset Setpoits", new ShootPresetSetpoints(shooter, TargetType.GOAL));
     NamedCommands.registerCommand(
+        "Intake Shooter/ Index", new IndexerAutoUnjam(indexer, shooter::getBeamBreak, hopper));
+    NamedCommands.registerCommand(
         "Auto Aimed Shoot", new AutonomousAimedShoot(drive, shooter, indexer));
     NamedCommands.registerCommand("Lower Collector", new SingleCollectorDown(singleCollector));
     NamedCommands.registerCommand("Raise Collector", new SingleCollectorUp(singleCollector));
@@ -399,6 +401,10 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     return autoChooser.get();
+  }
+
+  public Command getTeleopCommand() {
+    return new SingleCollectorUp(singleCollector);
   }
   /**
    * This is called at robot initialization during sim

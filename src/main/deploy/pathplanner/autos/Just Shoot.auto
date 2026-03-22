@@ -11,7 +11,32 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Auto Aimed Shoot"
+                  "name": "Shoot Preset Setpoits"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 2.0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Shoot Preset Setpoits"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake Shooter/ Index"
                 }
               },
               {

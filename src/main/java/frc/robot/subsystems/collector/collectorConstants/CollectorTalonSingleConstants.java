@@ -31,7 +31,7 @@ public class CollectorTalonSingleConstants extends CollectorModuleConstants {
     turnMotorGearRatio = 29.07160494;
 
     // Real Turn PID
-    turnkP = 15;
+    turnkP = 20;
     turnkD = 0;
     turnkI = 0;
 
