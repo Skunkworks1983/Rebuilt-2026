@@ -112,7 +112,6 @@ public class Robot extends LoggedRobot {
   /** This function is called periodically when disabled. */
   @Override
   public void disabledPeriodic() {
-    System.out.println("BEAMBREAK: " + robotContainer.beamBreak());
     if (Constants.currentMode == Mode.SIM) {
       robotContainer.resetSimRobotPose();
     }

@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class BeamBreakIOSensor implements BeamBreakIO {
 
   private final DigitalInput beamBreakSensor;
-  private int counter = 0;
 
   public BeamBreakIOSensor() {
     beamBreakSensor = new DigitalInput(ShooterConstants.beamBreakSensorChannel);
@@ -21,7 +20,5 @@ public class BeamBreakIOSensor implements BeamBreakIO {
   public void updateInputs(BeamBreakIOInputs inputs) {
     inputs.beamBroken = beamBreakSensor.get();
     SmartDashboard.putBoolean("BEAMBREAK VALUE", beamBreakSensor.get());
-    counter++;
-    SmartDashboard.putNumber("BEAMBREAK COUNT", counter);
   }
 }

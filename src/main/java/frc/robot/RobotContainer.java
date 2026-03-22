@@ -13,7 +13,6 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
@@ -93,7 +92,7 @@ public class RobotContainer {
   private final Indexer indexer;
   private final SingleCollector singleCollector;
   private final Hopper hopper;
-  //private final DigitalInput beamBreak;
+  // private final DigitalInput beamBreak;
 
   // Controller
   private final Joystick leftJoystick;
@@ -120,7 +119,7 @@ public class RobotContainer {
     leftJoystick = new Joystick(Constants.OIConstants.LeftJoystick);
     rightJoystick = new Joystick(Constants.OIConstants.RightJoystick);
     buttonJoystick = new Joystick(Constants.OIConstants.ButtonJoystick);
-    //beamBreak = new DigitalInput(0);
+    // beamBreak = new DigitalInput(0);
 
     switch (Constants.currentMode) {
       case REAL:
@@ -413,10 +412,6 @@ public class RobotContainer {
     simulation.setSimulationWorldPose(new Pose2d(12, 1, new Rotation2d()));
 
     SimulatedArena.getInstance().resetFieldForAuto();
-  }
-
-  public boolean beamBreak() {
-    return shooter.getBeamBreak();
   }
 
   /**
