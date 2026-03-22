@@ -93,7 +93,7 @@ public class RobotContainer {
   private final Indexer indexer;
   private final SingleCollector singleCollector;
   private final Hopper hopper;
-  private final DigitalInput beamBreak;
+  //private final DigitalInput beamBreak;
 
   // Controller
   private final Joystick leftJoystick;
@@ -120,7 +120,7 @@ public class RobotContainer {
     leftJoystick = new Joystick(Constants.OIConstants.LeftJoystick);
     rightJoystick = new Joystick(Constants.OIConstants.RightJoystick);
     buttonJoystick = new Joystick(Constants.OIConstants.ButtonJoystick);
-    beamBreak = new DigitalInput(0);
+    //beamBreak = new DigitalInput(0);
 
     switch (Constants.currentMode) {
       case REAL:
@@ -416,7 +416,7 @@ public class RobotContainer {
   }
 
   public boolean beamBreak() {
-    return beamBreak.get();
+    return shooter.getBeamBreak();
   }
 
   /**
