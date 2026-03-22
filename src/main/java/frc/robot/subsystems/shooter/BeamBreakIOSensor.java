@@ -5,7 +5,6 @@
 package frc.robot.subsystems.shooter;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /** Add your docs here. */
 public class BeamBreakIOSensor implements BeamBreakIO {
