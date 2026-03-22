@@ -11,6 +11,7 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.StaticBrake;
 import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -84,6 +85,10 @@ public class HopperIOTalonFX implements HopperIO {
   @Override
   public void setHopperVelocity(AngularVelocity velocity) {
     hopperMotor.setControl(new VelocityVoltage(velocity));
+  }
+
+  public void setHopperBrake() {
+    hopperMotor.setControl(new StaticBrake());
   }
 
   @Override

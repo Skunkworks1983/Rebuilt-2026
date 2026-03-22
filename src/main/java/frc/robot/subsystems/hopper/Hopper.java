@@ -9,6 +9,8 @@ import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.controls.StaticBrake;
+
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
@@ -92,6 +94,10 @@ public class Hopper extends SubsystemBase {
   /** sets the velocity of the hopper to the defined velocity */
   public void setHopperVelocity(AngularVelocity velocity) {
     hopper.setHopperVelocity(velocity);
+  }
+
+  public void setHopperBrake() {
+    hopper.setHopperBrake();
   }
 
   public void setHopperDutyCycle(double dutyCycle) {

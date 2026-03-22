@@ -37,6 +37,7 @@ public class IndexerAutoUnjam extends Command {
 
   @Override
   public void initialize() {
+    //hopper.setHopperBrake();
     Logger.recordOutput(logKey + "/Running", true);
     Logger.recordOutput(logKey + "Index/Unjamming", false);
     state = AutoUnjamState.FEED;
@@ -50,6 +51,7 @@ public class IndexerAutoUnjam extends Command {
       case FEED:
         if (!beamBroken.getAsBoolean()) {
           timer.restart();
+          System.out.println("BEAMBROKEN");
         } else if (timer.hasElapsed(IndexerConstants.autoUnjamNoBeamBreakTimeoutSeconds.get())
         // && indexer.inputs.currentAmps.magnitude() >= 30
         ) {
