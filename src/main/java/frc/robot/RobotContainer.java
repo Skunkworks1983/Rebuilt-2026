@@ -327,7 +327,7 @@ public class RobotContainer {
     autoChooserAddOption(
         "Shooter SysId (Dynamic Reverse)", shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-    autoChooser.addOption("Simple Auto", new NoYawShootHub(shooter, drive));
+    //autoChooser.addOption("Simple Auto", new NoYawShootHub(shooter, drive));
 
     // Configure the button bindings
     configureButtonBindings();
