@@ -15,7 +15,7 @@ import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
  * This is the collector Subsystem
  *
  * <ul>
- *   <li>It takes in two collector module IO's to assign to two collector modules
+ *   <li>It takes in a collector module IO's to assign to a collector module
  * </ul>
  */
 public class SingleCollector extends SubsystemBase {

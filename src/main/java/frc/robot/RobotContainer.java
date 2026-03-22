@@ -36,7 +36,6 @@ import frc.robot.commands.collectorCommands.singleCollectorCommands.SingleCollec
 import frc.robot.commands.hopperCommands.HopperVelocityCommand;
 import frc.robot.commands.indexerCommands.IndexerAutoUnjam;
 import frc.robot.commands.indexerCommands.IndexerReverseCommand;
-import frc.robot.commands.runForward;
 import frc.robot.subsystems.collector.collectorConstants.CollectorTalonSingleConstants;
 import frc.robot.subsystems.collector.singleCollector.CollectorModuleSingle;
 import frc.robot.subsystems.collector.singleCollector.CollectorModuleSingleIO;
