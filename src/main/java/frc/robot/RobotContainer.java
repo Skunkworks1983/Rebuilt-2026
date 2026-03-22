@@ -9,8 +9,6 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
-import java.util.function.BooleanSupplier;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -75,6 +73,7 @@ import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import frc.robot.util.sim.SimProjectile;
+import java.util.function.BooleanSupplier;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
@@ -414,8 +413,8 @@ public class RobotContainer {
     SimulatedArena.getInstance().resetFieldForAuto();
   }
 
-  public BooleanSupplier beamBreak() {
-    return () -> shooter.getBeamBreak();
+  public boolean beamBreak() {
+    return shooter.getBeamBreak();
   }
 
   /**
