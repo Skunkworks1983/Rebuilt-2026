@@ -106,6 +106,8 @@ public class ModuleIOTalonFX implements ModuleIO {
 
     // Configure drive motor
     var driveConfig = constants.DriveMotorInitialConfigs;
+    driveConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.1;
+    driveConfig.ClosedLoopRamps.TorqueClosedLoopRampPeriod = 0.1;
     driveConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     driveConfig.Slot0 = constants.DriveMotorGains;
     driveConfig.Feedback.SensorToMechanismRatio = constants.DriveMotorGearRatio;
