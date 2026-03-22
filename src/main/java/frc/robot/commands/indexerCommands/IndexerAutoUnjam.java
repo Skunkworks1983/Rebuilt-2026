@@ -37,7 +37,7 @@ public class IndexerAutoUnjam extends Command {
 
   @Override
   public void initialize() {
-    //hopper.setHopperBrake();
+    // hopper.setHopperBrake();
     Logger.recordOutput(logKey + "/Running", true);
     Logger.recordOutput(logKey + "Index/Unjamming", false);
     state = AutoUnjamState.FEED;

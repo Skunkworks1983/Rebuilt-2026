@@ -46,7 +46,7 @@ public class IndexerConstants {
       new LoggedTunableNumber("Indexer/DutyCycleOutReverse", -.2);
 
   public static final LoggedTunableNumber autoUnjamNoBeamBreakTimeoutSeconds =
-      new LoggedTunableNumber("Indexer/AutoUnjam/NoBeamBreakTimeout [sec]", 1.25);
+      new LoggedTunableNumber("Indexer/AutoUnjam/NoBeamBreakTimeout [sec]", 1.5);
   public static final LoggedTunableNumber autoUnjamReverseDurationSeconds =
       new LoggedTunableNumber("Indexer/AutoUnjam/ReverseDuration [sec]", .5);
 
