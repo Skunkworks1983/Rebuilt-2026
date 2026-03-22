@@ -9,6 +9,8 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
+import java.util.function.BooleanSupplier;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -410,6 +412,10 @@ public class RobotContainer {
     simulation.setSimulationWorldPose(new Pose2d(12, 1, new Rotation2d()));
 
     SimulatedArena.getInstance().resetFieldForAuto();
+  }
+
+  public BooleanSupplier beamBreak() {
+    return () -> shooter.getBeamBreak();
   }
 
   /**
