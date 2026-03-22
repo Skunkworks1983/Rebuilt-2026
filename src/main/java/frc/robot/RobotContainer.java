@@ -13,6 +13,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
@@ -73,7 +74,6 @@ import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import frc.robot.util.sim.SimProjectile;
-import java.util.function.BooleanSupplier;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
@@ -93,6 +93,7 @@ public class RobotContainer {
   private final Indexer indexer;
   private final SingleCollector singleCollector;
   private final Hopper hopper;
+  private final DigitalInput beamBreak;
 
   // Controller
   private final Joystick leftJoystick;
@@ -119,6 +120,7 @@ public class RobotContainer {
     leftJoystick = new Joystick(Constants.OIConstants.LeftJoystick);
     rightJoystick = new Joystick(Constants.OIConstants.RightJoystick);
     buttonJoystick = new Joystick(Constants.OIConstants.ButtonJoystick);
+    beamBreak = new DigitalInput(0);
 
     switch (Constants.currentMode) {
       case REAL:
@@ -414,7 +416,7 @@ public class RobotContainer {
   }
 
   public boolean beamBreak() {
-    return shooter.getBeamBreak();
+    return beamBreak.get();
   }
 
   /**
