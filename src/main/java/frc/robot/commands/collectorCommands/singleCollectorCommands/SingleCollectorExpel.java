@@ -4,8 +4,6 @@
 
 package frc.robot.commands.collectorCommands.singleCollectorCommands;
 
-import static edu.wpi.first.units.Units.Radians;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.collector.singleCollector.SingleCollector;
 import org.littletonrobotics.junction.Logger;
@@ -25,7 +23,8 @@ public class SingleCollectorExpel extends Command {
     Logger.recordOutput("Commands/Collector/SingleCollectorIntake", true);
     collector
         .getSingleCollector()
-        .setCollectorVelocity(collector.getSingleCollector().getConstants().CollectorIntakeSpeed.unaryMinus());
+        .setCollectorVelocity(
+            collector.getSingleCollector().getConstants().CollectorIntakeSpeed.unaryMinus());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
