@@ -334,9 +334,13 @@ public class RobotContainer {
           DriveCommands.joystickDrive(drive, () -> 0, () -> 0, () -> .7)
               .withTimeout(Seconds.of(10)));
 
-        autoChooserAddOption(
-            "Drive Back and Forth",
-            Commands.repeatingSequence(DriveCommands.joystickDrive(drive, () -> .7, () -> 0, () -> 0).withTimeout(Seconds.of(3)), DriveCommands.joystickDrive(drive, () -> -.7, () -> 0, () -> 0).withTimeout(Seconds.of(3))));
+      autoChooserAddOption(
+          "Drive Back and Forth",
+          Commands.repeatingSequence(
+              DriveCommands.joystickDrive(drive, () -> .7, () -> 0, () -> 0)
+                  .withTimeout(Seconds.of(3)),
+              DriveCommands.joystickDrive(drive, () -> -.7, () -> 0, () -> 0)
+                  .withTimeout(Seconds.of(3))));
     }
 
     // autoChooser.addOption("Simple Auto", new NoYawShootHub(shooter, drive));
