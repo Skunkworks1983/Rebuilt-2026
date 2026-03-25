@@ -299,34 +299,34 @@ public class RobotContainer {
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
-    if(Constants.tuningMode) {
-        // Set up SysId routines
-        autoChooserAddOption(
-            "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
-        autoChooserAddOption(
-            "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
+    if (Constants.tuningMode) {
+      // Set up SysId routines
+      autoChooserAddOption(
+          "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
+      autoChooserAddOption(
+          "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
 
-        autoChooserAddOption(
-            "Drive SysId (Quasistatic Forward)",
-            drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-        autoChooserAddOption(
-            "Drive SysId (Quasistatic Reverse)",
-            drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-        autoChooserAddOption(
-            "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-        autoChooserAddOption(
-            "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+      autoChooserAddOption(
+          "Drive SysId (Quasistatic Forward)",
+          drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+      autoChooserAddOption(
+          "Drive SysId (Quasistatic Reverse)",
+          drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+      autoChooserAddOption(
+          "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+      autoChooserAddOption(
+          "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-        autoChooserAddOption(
-            "Shooter SysId (Quasistatic Forward)",
-            shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-        autoChooserAddOption(
-            "Shooter SysId (Quasistatic Reverse)",
-            shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-        autoChooserAddOption(
-            "Shooter SysId (Dynamic Forward)", shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
-        autoChooserAddOption(
-            "Shooter SysId (Dynamic Reverse)", shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+      autoChooserAddOption(
+          "Shooter SysId (Quasistatic Forward)",
+          shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+      autoChooserAddOption(
+          "Shooter SysId (Quasistatic Reverse)",
+          shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+      autoChooserAddOption(
+          "Shooter SysId (Dynamic Forward)", shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
+      autoChooserAddOption(
+          "Shooter SysId (Dynamic Reverse)", shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
     }
 
     // autoChooser.addOption("Simple Auto", new NoYawShootHub(shooter, drive));
