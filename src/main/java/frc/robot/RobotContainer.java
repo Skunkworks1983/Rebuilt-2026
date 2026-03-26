@@ -337,9 +337,9 @@ public class RobotContainer {
       autoChooserAddOption(
           "Drive Back and Forth",
           Commands.repeatingSequence(
-              DriveCommands.joystickDrive(drive, () -> .7, () -> 0, () -> 0)
-                  .withTimeout(Seconds.of(0.5)),
               DriveCommands.joystickDrive(drive, () -> -.7, () -> 0, () -> 0)
+                  .withTimeout(Seconds.of(0.5)),
+              DriveCommands.joystickDrive(drive, () -> .7, () -> 0, () -> 0)
                   .withTimeout(Seconds.of(0.5))));
     }
 
