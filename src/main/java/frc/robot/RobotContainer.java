@@ -338,9 +338,9 @@ public class RobotContainer {
           "Drive Back and Forth",
           Commands.repeatingSequence(
               DriveCommands.joystickDrive(drive, () -> .7, () -> 0, () -> 0)
-                  .withTimeout(Seconds.of(3)),
+                  .withTimeout(Seconds.of(0.5)),
               DriveCommands.joystickDrive(drive, () -> -.7, () -> 0, () -> 0)
-                  .withTimeout(Seconds.of(3))));
+                  .withTimeout(Seconds.of(0.5))));
     }
 
     // autoChooser.addOption("Simple Auto", new NoYawShootHub(shooter, drive));
