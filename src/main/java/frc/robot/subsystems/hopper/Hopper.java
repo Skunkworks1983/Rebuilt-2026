@@ -94,10 +94,6 @@ public class Hopper extends SubsystemBase {
     hopper.setHopperVelocity(velocity);
   }
 
-  public void setHopperBrake() {
-    hopper.setHopperBrake();
-  }
-
   public void setHopperDutyCycle(double dutyCycle) {
     hopper.setDutyCycle(dutyCycle);
   }

@@ -49,11 +49,6 @@ public class CollectorModuleConstants {
   public double turnkDSlot1;
   public double turnkISlot1;
 
-  // Feed forward
-  public double turnkSSlot1;
-  public double turnkVSlot1;
-  public double turnkASlot1;
-
   // Real intake PID
   public double intakekP;
   public double intakekD;

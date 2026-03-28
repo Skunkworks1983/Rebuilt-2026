@@ -34,7 +34,7 @@ public class HopperConstants {
   public static final InvertedValue hopperMotorAlignment = InvertedValue.Clockwise_Positive;
 
   /** Stator current limit in Amps for the hopper motor. */
-  public static final Current hopperStatorCurrentLimitAmps = Amps.of(80);
+  public static final Current hopperStatorCurrentLimitAmps = Amps.of(40);
 
   public static final AngularVelocity hopperAngularVelocitySetpoint = RotationsPerSecond.of(10);
   public static final LoggedTunableNumber hopperAngularVelocityRotationsPerSecond =

@@ -32,8 +32,6 @@ public interface HopperIO {
   /** sets velocity at which to run the hopper */
   public default void setHopperVelocity(AngularVelocity velocity) {}
 
-  public default void setHopperBrake() {}
-
   /**
    * Reconfigure PID/FF gains used by the hopper controller on the fly.
    *

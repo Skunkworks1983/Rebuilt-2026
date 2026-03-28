@@ -29,10 +29,9 @@ public class setIndexToJoystick extends Command {
     this.hopper = hopper;
     this.indexer = indexer;
     this.shooter = shooter;
-    addRequirements(hopper, indexer, shooter);
     this.hopperSpeed = hopperSpeed;
     this.indexerSpeed = indexerSpeed;
-    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(hopper, indexer, shooter);
   }
 
   // Called when the command is initially scheduled.
