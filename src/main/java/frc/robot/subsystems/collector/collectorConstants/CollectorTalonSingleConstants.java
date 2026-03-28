@@ -17,9 +17,8 @@ import frc.robot.util.LoggedTunableNumber;
  * This class is a grouping of constants
  *
  * <ul>
- *   Only to be used with The talonFX collector IO for the right collector
-/**
- * This class is a grouping of constants for the single collector
+ *   Only to be used with The talonFX collector IO for the right collector /** This class is a
+ *   grouping of constants for the single collector
  */
 public class CollectorTalonSingleConstants extends CollectorModuleConstants {
 

@@ -143,7 +143,7 @@ public class CollectorModuleSingleTalonIO implements CollectorModuleSingleIO {
       turnSlot0Configs.kP = constants.SimTurnkP;
       turnSlot0Configs.kD = constants.SimTurnkD;
       turnSlot0Configs.kI = constants.SimTurnkI;
-    }  else {
+    } else {
       turnSlot0Configs.kP = constants.turnkP;
       turnSlot0Configs.kD = constants.turnkD;
       turnSlot0Configs.kI = constants.turnkI;
@@ -265,8 +265,7 @@ public class CollectorModuleSingleTalonIO implements CollectorModuleSingleIO {
    */
   public void setCollectorPos(Angle angle, int slot) {
     turnMotor.setControl(new MotionMagicVoltage(angle).withSlot(slot));
-    Logger.recordOutput(
-        "Collector/" + constants.turnMotorID + "/setpoint", angle);
+    Logger.recordOutput("Collector/" + constants.turnMotorID + "/setpoint", angle);
   }
 
   /**

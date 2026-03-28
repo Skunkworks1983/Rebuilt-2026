@@ -32,10 +32,7 @@ public final class Constants {
     SIM,
 
     /** Replaying from a log file. */
-    REPLAY,
-
-    /** Using Real Robot but with Single Collector */
-    SINGLEREAL
+    REPLAY
   }
 
   public static enum ControlScheme {

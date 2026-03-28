@@ -225,40 +225,6 @@ public class RobotContainer {
 
         break;
 
-      case SINGLEREAL:
-        // Real robot with single collector, instantiate hardware IO implementations
-        // ModuleIOTalonFX is intended for modules with TalonFX drive, TalonFX turn, and
-        // a CANcoder
-        drive =
-            new Drive(
-                new GyroIOPigeon2(),
-                new ModuleIOTalonFX(Constants.tunerConstants.getFrontLeft()),
-                new ModuleIOTalonFX(Constants.tunerConstants.getFrontRight()),
-                new ModuleIOTalonFX(Constants.tunerConstants.getBackLeft()),
-                new ModuleIOTalonFX(Constants.tunerConstants.getBackRight()),
-                (pose) -> {});
-
-        shooter =
-            new Shooter(
-                new FlywheelIOTalonFX(ShooterConstants.upperFlywheelMotorID, FlywheelLevel.Upper),
-                new FlywheelIOTalonFX(ShooterConstants.lowerFlywheelMotorID, FlywheelLevel.Lower),
-                new PivotIOTalonFX(),
-                new BeamBreakIOSensor());
-
-        vision =
-            new Vision(
-                drive, new VisionIOLimelight(VisionConstants.camera0Name, drive::getRotation));
-
-        indexer = new Indexer(new IndexerIOTalonFX());
-
-        singleCollector =
-            new SingleCollector(
-                new CollectorModuleSingle(
-                    new CollectorModuleSingleTalonIO(new CollectorTalonSingleConstants())));
-
-        hopper = new Hopper(new HopperIOTalonFX());
-        break;
-
       default:
         // Replayed robot, disable IO implementations
         drive =

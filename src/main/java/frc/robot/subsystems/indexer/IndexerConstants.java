@@ -33,6 +33,8 @@ public class IndexerConstants {
   /** Alignment configuration for the indexer motor. */
   public static final InvertedValue indexerMotorAlignment = InvertedValue.CounterClockwise_Positive;
 
+  public static final double indexerGearRatio = 19.2;
+
   /** Stator current limit in Amps for the indexer motor. */
   public static final Current indexerStatorCurrentLimitAmps = Amps.of(120);
 

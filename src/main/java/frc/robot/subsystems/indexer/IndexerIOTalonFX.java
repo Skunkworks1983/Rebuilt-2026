@@ -53,13 +53,13 @@ public class IndexerIOTalonFX implements IndexerIO {
 
     // creates and applies slot0 configs
     TalonFXConfiguration configs = new TalonFXConfiguration();
-    configs.Feedback.SensorToMechanismRatio = 19.2;
     Slot0Configs slot0Configs = configs.Slot0;
     slot0Configs.kP = IndexerConstants.indexerKP;
     slot0Configs.kD = IndexerConstants.indexerKD;
     slot0Configs.kS = IndexerConstants.indexerKS;
     slot0Configs.kV = IndexerConstants.indexerKV;
     configs.MotorOutput.Inverted = IndexerConstants.indexerMotorAlignment;
+    configs.Feedback.SensorToMechanismRatio = IndexerConstants.indexerGearRatio;
 
     tryUntilOk(5, () -> indexerMotor.getConfigurator().apply(configs, 0.25));
     slot0Configs.kP = IndexerConstants.indexerKP;
