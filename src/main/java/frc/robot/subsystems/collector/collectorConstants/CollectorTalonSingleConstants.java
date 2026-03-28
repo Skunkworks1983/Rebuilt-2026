@@ -18,10 +18,12 @@ import frc.robot.util.LoggedTunableNumber;
  *
  * <ul>
  *   Only to be used with The talonFX collector IO for the right collector
+/**
+ * This class is a grouping of constants for the single collector
  */
 public class CollectorTalonSingleConstants extends CollectorModuleConstants {
 
-  public CollectorTalonSingleConstants() { // TODO: do constants
+  public CollectorTalonSingleConstants() {
 
     // Hardware ID's
     turnMotorID = 32;

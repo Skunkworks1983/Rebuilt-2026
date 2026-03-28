@@ -22,7 +22,7 @@ public class IndexerConstants {
   public static final int indexerMotorID = 40;
 
   // PID for indexer
-  public static final double indexerKP = 2.0; // TODO: Indexer Tuning
+  public static final double indexerKP = 2.0;
   public static final double indexerKD = 0.0;
 
   // Feed forwards for the indexer
