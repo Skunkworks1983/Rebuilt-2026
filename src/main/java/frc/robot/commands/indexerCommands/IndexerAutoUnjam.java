@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.hopper.Hopper;
 import frc.robot.subsystems.hopper.HopperConstants;
+import frc.robot.subsystems.hopper.Hopper;
+import frc.robot.subsystems.hopper.HopperConstants;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.IndexerConstants;
 import java.util.function.BooleanSupplier;
@@ -23,14 +25,17 @@ public class IndexerAutoUnjam extends Command {
 
   private final Indexer indexer;
   private final Hopper hopper;
+  private final Hopper hopper;
   private final Timer timer = new Timer();
   private final BooleanSupplier beamBroken;
 
   private AutoUnjamState state = AutoUnjamState.FEED;
 
   public IndexerAutoUnjam(Indexer indexer, BooleanSupplier beamBroken, Hopper hopper) {
+  public IndexerAutoUnjam(Indexer indexer, BooleanSupplier beamBroken, Hopper hopper) {
     this.indexer = indexer;
     this.beamBroken = beamBroken;
+    this.hopper = hopper;
     this.hopper = hopper;
     addRequirements(indexer);
   }
@@ -68,6 +73,7 @@ public class IndexerAutoUnjam extends Command {
     timer.stop();
     indexer.setIndexerDutyCycle(0.0);
     hopper.setHopperDutyCycle(0);
+    hopper.setHopperDutyCycle(0);
     Logger.recordOutput(logKey + "/Running", false);
     Logger.recordOutput(logKey + "/Unjamming", false);
   }
@@ -88,6 +94,10 @@ public class IndexerAutoUnjam extends Command {
   }
 
   private void applyStateOutput() {
+    double indexerSpeedRps = IndexerConstants.indexerAngularVelocityRotationsPerSecond.get();
+    double hopperSpeedRps = HopperConstants.hopperAngularVelocityRotationsPerSecond.get();
+    double hopperReverseSpeedRps =
+        HopperConstants.hopperReverseAngularVelocityRotationsPerSecond.get();
     double indexerSpeedRps = IndexerConstants.indexerAngularVelocityRotationsPerSecond.get();
     double hopperSpeedRps = HopperConstants.hopperAngularVelocityRotationsPerSecond.get();
     double hopperReverseSpeedRps =

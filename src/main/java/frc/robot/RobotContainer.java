@@ -34,6 +34,10 @@ import frc.robot.commands.collectorCommands.singleCollectorCommands.SingleCollec
 import frc.robot.commands.collectorCommands.singleCollectorCommands.SingleCollectorIntake;
 import frc.robot.commands.collectorCommands.singleCollectorCommands.SingleCollectorUp;
 import frc.robot.commands.hopperCommands.HopperVelocityCommand;
+import frc.robot.commands.collectorCommands.singleCollectorCommands.SingleCollectorDown;
+import frc.robot.commands.collectorCommands.singleCollectorCommands.SingleCollectorIntake;
+import frc.robot.commands.collectorCommands.singleCollectorCommands.SingleCollectorUp;
+import frc.robot.commands.hopperCommands.HopperVelocityCommand;
 import frc.robot.commands.indexerCommands.IndexerAutoUnjam;
 import frc.robot.commands.indexerCommands.IndexerReverseCommand;
 import frc.robot.subsystems.collector.collectorConstants.CollectorTalonSingleConstants;
@@ -90,6 +94,8 @@ public class RobotContainer {
   private final Vision vision;
   private final Shooter shooter;
   private final Indexer indexer;
+  private final SingleCollector singleCollector;
+  private final Hopper hopper;
   private final SingleCollector singleCollector;
   private final Hopper hopper;
 
@@ -247,6 +253,9 @@ public class RobotContainer {
 
         hopper = new Hopper(new HopperIOTalonFX() {});
 
+
+        hopper = new Hopper(new HopperIOTalonFX() {});
+
         break;
     }
     Command autoShootIndexerCommand = new IndexerAutoUnjam(indexer, shooter::getBeamBreak, hopper);
@@ -341,7 +350,19 @@ public class RobotContainer {
 
     JoystickButton runIndexer = new JoystickButton(leftJoystick, 1);
     JoystickButton runIndexerReverse =
+    JoystickButton runIndexer = new JoystickButton(leftJoystick, 1);
+    JoystickButton runIndexerReverse =
         new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID);
+
+    runIndexer.whileTrue(new IndexerAutoUnjam(indexer, shooter::getBeamBreak, hopper));
+
+    runIndexerReverse.whileTrue(
+        new IndexerReverseCommand(indexer)
+            .alongWith(
+                new HopperVelocityCommand(
+                    hopper,
+                    RotationsPerSecond.of(
+                        HopperConstants.hopperReverseAngularVelocityRotationsPerSecond.get()))));
 
     runIndexer.whileTrue(new IndexerAutoUnjam(indexer, shooter::getBeamBreak, hopper));
 
@@ -445,6 +466,7 @@ public class RobotContainer {
   }
 
   public void scheduleBothCollectorsUp() {
+    CommandScheduler.getInstance();
     CommandScheduler.getInstance();
   }
 }
