@@ -7,7 +7,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.generated.TunerConstants;
 
 /**
@@ -17,7 +16,7 @@ import frc.robot.generated.TunerConstants;
  */
 public final class Constants {
   public static final Mode simMode = Mode.SIM;
-  public static final Mode currentMode = RobotBase.isReal() ? Mode.SINGLEREAL : simMode;
+  public static final Mode currentMode = Mode.REAL;
   public static final ControlScheme controlScheme = ControlScheme.OI;
   public static final RobotHardware robotHardware = RobotHardware.Rebuilt;
   public static final TunerConstants tunerConstants = TunerConstants.getTunerConstants();
@@ -59,14 +58,13 @@ public final class Constants {
 
     // Collector button joystick ID's
     public static final int CollectorManualModeID = 8;
-    public static final int CollectorAutoModeID = 3;
 
     public static final int CollectorIntakeID = 23;
     public static final int CollectorRightDownID = 17;
     public static final int CollectorLeftDownID = 24;
     public static final int CollectorManualUpID = 5;
     public static final int CollectorReverseIntakeID = 22;
-    public static final int CollectorManualPivotDown = 11;
+    public static final int CollectorManualPivotDown = 2;
     public static final int CollectorManualPivotUp = 4;
 
     // Shooter button joystick ID's

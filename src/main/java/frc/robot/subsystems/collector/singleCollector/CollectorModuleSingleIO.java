@@ -52,11 +52,11 @@ public interface CollectorModuleSingleIO {
 
     // When were on our way down
     public boolean goingDown = false;
-
-    // up and down
     public boolean isUp = true;
     public boolean isDown = false;
   }
+
+  // public default void periodic() {}
 
   /**
    * Updates our inputs for all motors

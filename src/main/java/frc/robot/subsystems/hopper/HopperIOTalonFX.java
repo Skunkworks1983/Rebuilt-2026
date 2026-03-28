@@ -22,7 +22,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 
-/** This is the motor for the hopper. it takes in a ID */
+/** This is the motor for the hopper */
 public class HopperIOTalonFX implements HopperIO {
 
   protected final TalonFX hopperMotor;

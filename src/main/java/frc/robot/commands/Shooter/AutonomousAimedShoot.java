@@ -85,21 +85,19 @@ public class AutonomousAimedShoot extends Command {
             controls.shooterPitch()));
     double currentYawRadians = drive.getRotation().getRadians();
     double targetYawRadians = controls.driveYaw().getRadians();
-    // double targetYawDelta = MathUtil.angleModulus(targetYawRadians -
-    // lastFilteredYaw);
+    // double targetYawDelta = MathUtil.angleModulus(targetYawRadians - lastFilteredYaw);
 
     // TrapezoidProfile.State setpoint =
-    // profile.calculate(
-    // 0.02,
-    // new TrapezoidProfile.State(
-    // currentYawRadians, drive.getAngularVelocity().in(RadiansPerSecond)),
-    // new TrapezoidProfile.State(targetYawRadians, 0));
+    //     profile.calculate(
+    //         0.02,
+    //         new TrapezoidProfile.State(
+    //             currentYawRadians, drive.getAngularVelocity().in(RadiansPerSecond)),
+    //         new TrapezoidProfile.State(targetYawRadians, 0));
 
-    // if (Math.abs(targetYawDelta) >
-    // DriveControlConstants.largeAngleJumpThreshold.in(Radians)) {
-    // lastFilteredYaw = targetYawRadians;
+    // if (Math.abs(targetYawDelta) > DriveControlConstants.largeAngleJumpThreshold.in(Radians)) {
+    //   lastFilteredYaw = targetYawRadians;
     // } else {
-    // lastFilteredYaw += yawFilterAlpha * targetYawDelta;
+    //   lastFilteredYaw += yawFilterAlpha * targetYawDelta;
     // }
     // double filteredTargetYaw = MathUtil.angleModulus(lastFilteredYaw);
     Logger.recordOutput("Auto Shoot/Target Yaw", targetYawRadians);

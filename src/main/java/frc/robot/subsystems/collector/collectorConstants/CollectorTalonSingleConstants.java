@@ -17,62 +17,49 @@ import frc.robot.util.LoggedTunableNumber;
  * This class is a grouping of constants
  *
  * <ul>
- *   Only to be used with The talonFX collector IO for the right collector
+ *   Only to be used with The talonFX collector IO for the right collector /** This class is a
+ *   grouping of constants for the single collector
  */
 public class CollectorTalonSingleConstants extends CollectorModuleConstants {
 
-  public CollectorTalonSingleConstants() { // TODO: do constants
+  public CollectorTalonSingleConstants() {
 
-    // Hardware ID's
-    turnMotorID = 0;
-    intakeMotorID = 0;
+    // Hardware IDs
+    turnMotorID = 32;
+    intakeMotorID = 21;
 
     // Gear ratio's
-    turnMotorGearRatio = 0;
+    turnMotorGearRatio = 29.07160494;
 
     // Real Turn PID
-    turnkP = 0;
+    turnkP = 20;
     turnkD = 0;
     turnkI = 0;
 
-    // Real Turn PID
-    turnkPSlot1 = 8;
-    turnkDSlot1 = .1;
-    turnkISlot1 = 0.0;
-
     // Real intake upper PID
-    intakekP = 0;
+    intakekP = 15;
     intakekD = 0.0;
     intakekI = 0.0;
     intakekV = 0;
     intakekA = 0;
     intakekS = 0;
-    intakeInvertedValue = InvertedValue.Clockwise_Positive;
-
-    // Feed forward
-    turnkS = 0.25;
-    turnkV = 0.4;
-    turnkA = 0.03;
-
-    // Feed forward slot 1
-    turnkSSlot1 = 0;
-    turnkVSlot1 = 0;
-    turnkASlot1 = 0;
+    intakeInvertedValue = InvertedValue.CounterClockwise_Positive;
 
     // Motion Magic constraints
-    motionMagicCruiseVelocity = RotationsPerSecond.of(0);
-    motionMagicAcceleration = RotationsPerSecondPerSecond.of(0);
+    motionMagicCruiseVelocity = RotationsPerSecond.of(0.5);
+    motionMagicAcceleration = RotationsPerSecondPerSecond.of(2);
 
     // Position
     CollectorUpPos = Rotations.of(0);
-    CollectorDownPos = new LoggedTunableNumber("Collector/Single/Downpose rad", 1.55);
+    CollectorDownPos = new LoggedTunableNumber("Collector/Single/Downpose rad", 2.198);
+    CollectorHalfPos = new LoggedTunableNumber("Collector/Single/Halfpose rad", 1);
 
     // Collector Intake Speeds
-    CollectorIntakeSpeed = RadiansPerSecond.of(0);
+    CollectorIntakeSpeed = RadiansPerSecond.of(80);
 
     // Limit Switch Constants
-    UpperLimitChannel = 0;
-    LowerLimitChannel = 0;
+    UpperLimitChannel = 1;
+    LowerLimitChannel = 2;
 
     // Collector Position Tolerance
     CollectorPosTolerance = Degrees.of(2);

@@ -61,7 +61,7 @@ public class Hopper extends SubsystemBase {
   @Override
   public void periodic() {
     hopper.updateInputs(inputs);
-    Logger.processInputs("Hopper/Hopper Motor", inputs);
+    Logger.processInputs("Hopper", inputs);
     hopperDisconnectAlert.set(!inputs.connected);
 
     if (Constants.tuningMode) {

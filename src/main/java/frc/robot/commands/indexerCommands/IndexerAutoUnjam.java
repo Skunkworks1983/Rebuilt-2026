@@ -4,8 +4,6 @@
 
 package frc.robot.commands.indexerCommands;
 
-import static edu.wpi.first.units.Units.RotationsPerSecond;
-
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.hopper.Hopper;
@@ -39,6 +37,7 @@ public class IndexerAutoUnjam extends Command {
 
   @Override
   public void initialize() {
+    // hopper.setHopperBrake();
     Logger.recordOutput(logKey + "/Running", true);
     Logger.recordOutput(logKey + "Index/Unjamming", false);
     state = AutoUnjamState.FEED;
@@ -69,6 +68,7 @@ public class IndexerAutoUnjam extends Command {
     timer.stop();
     indexer.setIndexerDutyCycle(0.0);
     hopper.setHopperDutyCycle(0);
+    hopper.setHopperDutyCycle(0);
     Logger.recordOutput(logKey + "/Running", false);
     Logger.recordOutput(logKey + "/Unjamming", false);
   }
@@ -95,12 +95,12 @@ public class IndexerAutoUnjam extends Command {
         HopperConstants.hopperReverseAngularVelocityRotationsPerSecond.get();
 
     if (state == AutoUnjamState.FEED) {
-      indexer.setIndexerVelocity(RotationsPerSecond.of(indexerSpeedRps));
-      hopper.setHopperVelocity(RotationsPerSecond.of(hopperSpeedRps));
+      indexer.setIndexerDutyCycle(IndexerConstants.indexerDutyCycleSpeedFeed.get());
+      hopper.setHopperDutyCycle(HopperConstants.hopperDutyCycleSpeedFeed.get());
       Logger.recordOutput(logKey + "/Unjamming", false);
     } else {
-      indexer.setIndexerVelocity(RotationsPerSecond.of(-indexerSpeedRps));
-      hopper.setHopperVelocity(RotationsPerSecond.of(hopperReverseSpeedRps));
+      indexer.setIndexerDutyCycle(IndexerConstants.indexerDutyCycleSpeedReverse.get());
+      hopper.setHopperDutyCycle(HopperConstants.hopperDutyCycleSpeedReverse.get());
       Logger.recordOutput(logKey + "/Unjamming", true);
     }
   }

@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.7544613469578766,
-        "y": 1.1708142482248638
+        "x": 0.67796962897383,
+        "y": 0.8212273699163181
       },
       "isLocked": false,
       "linkedName": "HumanPlayerStation"
@@ -20,8 +20,8 @@
         "y": 0.8197432239657632
       },
       "prevControl": {
-        "x": 1.0592231044726212,
-        "y": 0.8302688986918978
+        "x": 0.9070921459911208,
+        "y": 0.6820989047774607
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,7 +33,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 2.5,
     "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -48,7 +48,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -178.06941255883305
+    "rotation": 90.0
   },
   "useDefaultConstraints": true
 }

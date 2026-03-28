@@ -1,0 +1,73 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 5.941077777777777,
+        "y": 7.533255555555556
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.258688310763993,
+        "y": 7.533255555555556
+      },
+      "isLocked": false,
+      "linkedName": "Far Collect End"
+    },
+    {
+      "anchor": {
+        "x": 2.5122967189728955,
+        "y": 7.198502139800285
+      },
+      "prevControl": {
+        "x": 3.0567135433663393,
+        "y": 7.564831574497307
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Far Trench Shoot"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.7996850393700681,
+      "rotationDegrees": 180.0
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.38014888337469227,
+      "maxWaypointRelativePos": 0.7513647642679875,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 4.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 2.5,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -56.309932474020236
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 1.0,
+    "rotation": 180.0
+  },
+  "useDefaultConstraints": true
+}

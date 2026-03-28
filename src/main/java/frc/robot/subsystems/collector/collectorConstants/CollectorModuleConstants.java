@@ -84,6 +84,7 @@ public class CollectorModuleConstants {
   // Position
   public Angle CollectorUpPos;
   public LoggedTunableNumber CollectorDownPos;
+  public LoggedTunableNumber CollectorHalfPos;
 
   // Collector Manual pivot velocity
   public double CollectorPivotDutyCycle;
