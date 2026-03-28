@@ -16,8 +16,7 @@ import frc.robot.generated.TunerConstants;
  */
 public final class Constants {
   public static final Mode simMode = Mode.SIM;
-  public static final Mode currentMode =
-      Mode.REAL; // RobotBase.isReal() ? Mode.SINGLEREAL : simMode;
+  public static final Mode currentMode = Mode.REAL;
   public static final ControlScheme controlScheme = ControlScheme.OI;
   public static final RobotHardware robotHardware = RobotHardware.Rebuilt;
   public static final TunerConstants tunerConstants = TunerConstants.getTunerConstants();
