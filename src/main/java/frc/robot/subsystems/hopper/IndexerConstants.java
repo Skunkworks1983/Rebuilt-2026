@@ -19,9 +19,9 @@ public class IndexerConstants {
   public static final double disconnectedDebounceTimeSec = 0.5;
 
   /** CAN ID for the indexer. */
-  public static final int leftIndexerMotorID = 40;
-
-  public static final int rightIndexerMotorID = 0; // TODO get the real ID
+  public static final int leftIndexerMotorID = 34;
+  public static final int rightIndexerMotorID = 35; 
+  // Correct ID's but order unknown which is lef and right
 
   // PID for indexer
   public static final double indexerKP = 2.0; // TODO: Indexer Tuning
