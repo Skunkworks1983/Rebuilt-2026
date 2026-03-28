@@ -118,7 +118,6 @@ public class RobotContainer {
     leftJoystick = new Joystick(Constants.OIConstants.LeftJoystick);
     rightJoystick = new Joystick(Constants.OIConstants.RightJoystick);
     buttonJoystick = new Joystick(Constants.OIConstants.ButtonJoystick);
-    // beamBreak = new DigitalInput(0);
 
     switch (Constants.currentMode) {
       case REAL:
@@ -354,8 +353,6 @@ public class RobotContainer {
                     RotationsPerSecond.of(
                         HopperConstants.hopperReverseAngularVelocityRotationsPerSecond.get()))));
 
-    // new JoystickButton(buttonJoystick, Constants.OIConstants.runForward)
-    //     .onTrue(new runForward(drive));
 
     // if the index button is hed and more than a second elapses before the beam
     // break is broken the
