@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.indexer;
+package frc.robot.subsystems.hopper;
 
 import com.ctre.phoenix6.sim.ChassisReference;
 import edu.wpi.first.math.system.LinearSystem;
@@ -18,8 +18,8 @@ public class IndexerIOSim extends IndexerIOTalonFX {
   DCMotorSim indexerMotorSim;
   Voltage voltage;
 
-  public IndexerIOSim() {
-    super();
+  public IndexerIOSim(int motorID) {
+    super(motorID);
     LinearSystem linearSystem = LinearSystemId.createDCMotorSystem(0.002, 0.02);
 
     double[] stdevs = {0.00, 0.00};

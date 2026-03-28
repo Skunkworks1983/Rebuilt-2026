@@ -7,14 +7,14 @@ package frc.robot.commands.collectorCommands.doubleCollectorCommands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.collector.doubleCollector.CollectorModule;
 import frc.robot.subsystems.collector.doubleCollector.DoubleCollector;
-import frc.robot.subsystems.indexer.Indexer;
-import frc.robot.subsystems.indexer.IndexerConstants;
+import frc.robot.subsystems.hopper.Hopper;
+import frc.robot.subsystems.hopper.IndexerConstants;
 import org.littletonrobotics.junction.Logger;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class CollectorIntake extends Command {
   DoubleCollector collector;
-  Indexer indexer;
+  Hopper hopper;
   CollectorModule leftCollector;
   CollectorModule rightCollector;
 
@@ -31,11 +31,11 @@ public class CollectorIntake extends Command {
    *
    * @param collector The collector subsystem WARNING: Not Required!!
    */
-  public CollectorIntake(DoubleCollector collector, Indexer indexer) {
+  public CollectorIntake(DoubleCollector collector, Hopper hopper) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.collector = collector;
-    this.indexer = indexer;
-    addRequirements(indexer);
+    this.hopper = hopper;
+    addRequirements(hopper);
     leftCollector = collector.getLeftCollector();
     rightCollector = collector.getRightCollector();
   }
@@ -43,7 +43,7 @@ public class CollectorIntake extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    indexer.setIndexerVelocity(IndexerConstants.indexerAngularVelocitySetpoint.unaryMinus().div(2));
+    hopper.setIndexerVelocity(IndexerConstants.indexerAngularVelocitySetpoint.unaryMinus().div(2));
     Logger.recordOutput("Commands/Collector/CollectorIntake", true);
   }
 
@@ -63,7 +63,7 @@ public class CollectorIntake extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    indexer.setIndexerDutyCycle(0);
+    hopper.setIndexerDutyCycle(0);
     leftCollector.setCollectorDutyCycle(0);
     rightCollector.setCollectorDutyCycle(0);
     Logger.recordOutput("Commands/Collector/CollectorIntake", false);
