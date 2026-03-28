@@ -48,12 +48,12 @@ import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.drive.ModuleIOTalonFXSim;
 import frc.robot.subsystems.hopper.Hopper;
 import frc.robot.subsystems.hopper.HopperConstants;
+import frc.robot.subsystems.hopper.HopperIO;
 import frc.robot.subsystems.hopper.HopperIOSim;
 import frc.robot.subsystems.hopper.HopperIOTalonFX;
-import frc.robot.subsystems.indexer.Indexer;
-import frc.robot.subsystems.indexer.IndexerIO;
-import frc.robot.subsystems.indexer.IndexerIOSim;
-import frc.robot.subsystems.indexer.IndexerIOTalonFX;
+import frc.robot.subsystems.hopper.IndexerConstants;
+import frc.robot.subsystems.hopper.IndexerIO;
+import frc.robot.subsystems.hopper.IndexerIOTalonFX;
 import frc.robot.subsystems.shooter.BeamBreakIO;
 import frc.robot.subsystems.shooter.BeamBreakIOSensor;
 import frc.robot.subsystems.shooter.FlywheelIO;
@@ -87,7 +87,6 @@ public class RobotContainer {
   private final Drive drive;
   private final Vision vision;
   private final Shooter shooter;
-  private final Indexer indexer;
   private final Collector collector;
   private final Hopper hopper;
 
@@ -147,11 +146,13 @@ public class RobotContainer {
         // This is a solution to the vision-drive cross dependency issue that hurts my
         // eys, but it does work
 
-        indexer = new Indexer(new IndexerIOTalonFX());
-
         collector = new Collector(new CollectorModuleTalonIO());
 
-        hopper = new Hopper(new HopperIOTalonFX());
+        hopper =
+            new Hopper(
+                new HopperIOTalonFX(),
+                new IndexerIOTalonFX(IndexerConstants.leftIndexerMotorID),
+                new IndexerIOTalonFX(IndexerConstants.rightIndexerMotorID));
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
@@ -212,9 +213,7 @@ public class RobotContainer {
 
         collector = new Collector(new CollectorModuleIO() {});
 
-        indexer = new Indexer(new IndexerIOSim());
-
-        hopper = new Hopper(new HopperIOSim());
+        hopper = new Hopper(new HopperIOSim(), new IndexerIOTalonFX(0), new IndexerIOTalonFX(0));
 
         break;
 
@@ -236,20 +235,18 @@ public class RobotContainer {
 
         collector = new Collector(new CollectorModuleTalonIO());
 
-        indexer = new Indexer(new IndexerIO() {});
-
-        hopper = new Hopper(new HopperIOTalonFX() {});
+        hopper = new Hopper(new HopperIO() {}, new IndexerIO() {}, new IndexerIO() {});
 
         break;
     }
-    Command autoShootIndexerCommand = new IndexerAutoUnjam(indexer, shooter::getBeamBreak, hopper);
+    Command autoShootIndexerCommand = new IndexerAutoUnjam(shooter::getBeamBreak, hopper);
 
     NamedCommands.registerCommand(
         "Shoot Preset Setpoits", new ShootPresetSetpoints(shooter, TargetType.GOAL));
     NamedCommands.registerCommand(
-        "Intake Shooter/ Index", new IndexerAutoUnjam(indexer, shooter::getBeamBreak, hopper));
+        "Intake Shooter/ Index", new IndexerAutoUnjam(shooter::getBeamBreak, hopper));
     NamedCommands.registerCommand(
-        "Auto Aimed Shoot", new AutonomousAimedShoot(drive, shooter, indexer));
+        "Auto Aimed Shoot", new AutonomousAimedShoot(drive, shooter, hopper));
     NamedCommands.registerCommand("Lower Collector", new CollectorDown(collector));
     NamedCommands.registerCommand("Raise Collector", new CollectorUp(collector));
     NamedCommands.registerCommand("Run Collector", new CollectorIntake(collector));
@@ -336,25 +333,28 @@ public class RobotContainer {
     JoystickButton runIndexerReverse =
         new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID);
 
-    runIndexer.whileTrue(new IndexerAutoUnjam(indexer, shooter::getBeamBreak, hopper));
+    runIndexer.whileTrue(new IndexerAutoUnjam(shooter::getBeamBreak, hopper));
 
     runIndexerReverse.whileTrue(
-        new IndexerReverseCommand(indexer)
+        new IndexerReverseCommand(hopper)
             .alongWith(
                 new HopperVelocityCommand(
                     hopper,
                     RotationsPerSecond.of(
                         HopperConstants.hopperReverseAngularVelocityRotationsPerSecond.get()))));
 
-    runIndexer.whileTrue(new IndexerAutoUnjam(indexer, shooter::getBeamBreak, hopper));
+    runIndexer.whileTrue(new IndexerAutoUnjam(shooter::getBeamBreak, hopper));
 
     runIndexerReverse.whileTrue(
-        new IndexerReverseCommand(indexer)
+        new IndexerReverseCommand(hopper)
             .alongWith(
                 new HopperVelocityCommand(
                     hopper,
                     RotationsPerSecond.of(
                         HopperConstants.hopperReverseAngularVelocityRotationsPerSecond.get()))));
+
+    // new JoystickButton(buttonJoystick, Constants.OIConstants.runForward)
+    //     .onTrue(new runForward(drive));
 
     // if the index button is hed and more than a second elapses before the beam
     // break is broken the

@@ -1,4 +1,4 @@
-package frc.robot.subsystems.indexer;
+package frc.robot.subsystems.hopper;
 
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
@@ -19,7 +19,9 @@ public class IndexerConstants {
   public static final double disconnectedDebounceTimeSec = 0.5;
 
   /** CAN ID for the indexer. */
-  public static final int indexerMotorID = 40;
+  public static final int leftIndexerMotorID = 40;
+
+  public static final int rightIndexerMotorID = 0; // TODO get the real ID
 
   // PID for indexer
   public static final double indexerKP = 2.0;
@@ -33,7 +35,7 @@ public class IndexerConstants {
   /** Alignment configuration for the indexer motor. */
   public static final InvertedValue indexerMotorAlignment = InvertedValue.CounterClockwise_Positive;
 
-  public static final double indexerGearRatio = 19.2;
+  public static final double indexerSensorToMechanismRatio = 19.2;
 
   /** Stator current limit in Amps for the indexer motor. */
   public static final Current indexerStatorCurrentLimitAmps = Amps.of(120);

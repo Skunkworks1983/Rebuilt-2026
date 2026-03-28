@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.indexer;
+package frc.robot.subsystems.hopper;
 
 import static frc.robot.util.PhoenixUtil.tryUntilOk;
 
@@ -14,6 +14,7 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
@@ -41,9 +42,9 @@ public class IndexerIOTalonFX implements IndexerIO {
   private final TorqueCurrentFOC torqueCurrentRequest = new TorqueCurrentFOC(0);
   private final DutyCycleOut dutyCycleOut = new DutyCycleOut(0);
 
-  public IndexerIOTalonFX() {
+  public IndexerIOTalonFX(int motorID) {
 
-    indexerMotor = new TalonFX(IndexerConstants.indexerMotorID, IndexerConstants.indexerCanBus);
+    indexerMotor = new TalonFX(motorID, IndexerConstants.indexerCanBus);
 
     // assigns values to the statussignals
     indexerPosition = indexerMotor.getPosition();
@@ -53,6 +54,7 @@ public class IndexerIOTalonFX implements IndexerIO {
 
     // creates and applies slot0 configs
     TalonFXConfiguration configs = new TalonFXConfiguration();
+    configs.Feedback.SensorToMechanismRatio = IndexerConstants.indexerSensorToMechanismRatio;
     Slot0Configs slot0Configs = configs.Slot0;
     slot0Configs.kP = IndexerConstants.indexerKP;
     slot0Configs.kD = IndexerConstants.indexerKD;
@@ -107,5 +109,10 @@ public class IndexerIOTalonFX implements IndexerIO {
   @Override
   public void setDutyCycle(double dutyCycle) {
     indexerMotor.setControl(dutyCycleOut.withOutput(dutyCycle));
+  }
+
+  @Override
+  public void setVoltageOut(Voltage voltage) {
+    indexerMotor.setControl(new VoltageOut(voltage));
   }
 }
