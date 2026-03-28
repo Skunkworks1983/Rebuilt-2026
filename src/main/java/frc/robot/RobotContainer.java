@@ -353,7 +353,6 @@ public class RobotContainer {
                     RotationsPerSecond.of(
                         HopperConstants.hopperReverseAngularVelocityRotationsPerSecond.get()))));
 
-
     // if the index button is hed and more than a second elapses before the beam
     // break is broken the
     // indexer will reverse for 1 second before attempting to intake again
