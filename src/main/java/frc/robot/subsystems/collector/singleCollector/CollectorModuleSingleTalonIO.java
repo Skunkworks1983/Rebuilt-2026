@@ -76,7 +76,7 @@ public class CollectorModuleSingleTalonIO implements CollectorModuleSingleIO {
       new Debouncer(0.5, Debouncer.DebounceType.kFalling);
 
   /**
-   * Instanciates, configures, and sets up the IO inputs for motors
+   * Instantiates, configures, and sets up the IO inputs for motors
    *
    * @param constants left <h7> OR </h7> right constants
    */
