@@ -9,24 +9,26 @@ import static frc.robot.util.PhoenixUtil.tryUntilOk;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
-import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.hardware.TalonFXS;
+import com.ctre.phoenix6.signals.MotorArrangementValue;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /** This is the motor for the Indexer. it takes in a ID */
 public class IndexerIOTalonFX implements IndexerIO {
 
-  protected final TalonFX indexerMotor;
+  protected final TalonFXS indexerMotor;
 
   private final Debouncer indexerDebouncer =
       new Debouncer(IndexerConstants.disconnectedDebounceTimeSec, DebounceType.kFalling);
@@ -44,7 +46,7 @@ public class IndexerIOTalonFX implements IndexerIO {
 
   public IndexerIOTalonFX(int motorID) {
 
-    indexerMotor = new TalonFX(motorID, IndexerConstants.indexerCanBus);
+    indexerMotor = new TalonFXS(motorID, IndexerConstants.indexerCanBus);
 
     // assigns values to the statussignals
     indexerPosition = indexerMotor.getPosition();
@@ -53,15 +55,16 @@ public class IndexerIOTalonFX implements IndexerIO {
     indexerCurrent = indexerMotor.getStatorCurrent();
 
     // creates and applies slot0 configs
-    TalonFXConfiguration configs = new TalonFXConfiguration();
-    configs.Feedback.SensorToMechanismRatio = IndexerConstants.indexerSensorToMechanismRatio;
+    TalonFXSConfiguration configs = new TalonFXSConfiguration();
+    configs.ExternalFeedback.SensorToMechanismRatio =
+        IndexerConstants.indexerSensorToMechanismRatio;
     Slot0Configs slot0Configs = configs.Slot0;
     slot0Configs.kP = IndexerConstants.indexerKP;
     slot0Configs.kD = IndexerConstants.indexerKD;
     slot0Configs.kS = IndexerConstants.indexerKS;
     slot0Configs.kV = IndexerConstants.indexerKV;
     configs.MotorOutput.Inverted = IndexerConstants.indexerMotorAlignment;
-    configs.Feedback.SensorToMechanismRatio = IndexerConstants.indexerSensorToMechanismRatio;
+    configs.Commutation.MotorArrangement = MotorArrangementValue.Minion_JST;
 
     tryUntilOk(5, () -> indexerMotor.getConfigurator().apply(configs, 0.25));
     slot0Configs.kP = IndexerConstants.indexerKP;
@@ -109,6 +112,7 @@ public class IndexerIOTalonFX implements IndexerIO {
   @Override
   public void setDutyCycle(double dutyCycle) {
     indexerMotor.setControl(dutyCycleOut.withOutput(dutyCycle));
+    SmartDashboard.putNumber("setting duty cyle to", dutyCycle);
   }
 
   @Override

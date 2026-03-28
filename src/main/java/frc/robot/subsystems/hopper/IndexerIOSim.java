@@ -31,7 +31,7 @@ public class IndexerIOSim extends IndexerIOTalonFX {
   public void updateInputs(IndexerIOInputs input) {
     var talonFXSim = super.indexerMotor.getSimState();
 
-    talonFXSim.Orientation = ChassisReference.Clockwise_Positive;
+    talonFXSim.MotorOrientation = ChassisReference.Clockwise_Positive;
     talonFXSim.setSupplyVoltage(RobotController.getBatteryVoltage());
 
     Voltage primaryAppliedVolts = talonFXSim.getMotorVoltageMeasure();
