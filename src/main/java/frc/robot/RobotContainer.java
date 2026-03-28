@@ -92,7 +92,6 @@ public class RobotContainer {
   private final Indexer indexer;
   private final SingleCollector singleCollector;
   private final Hopper hopper;
-  // private final DigitalInput beamBreak;
 
   // Controller
   private final Joystick leftJoystick;
