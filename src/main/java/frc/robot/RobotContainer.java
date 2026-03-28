@@ -30,17 +30,15 @@ import frc.robot.commands.Shooter.AutonomousAimedShoot;
 import frc.robot.commands.Shooter.ShootPresetSetpoints;
 import frc.robot.commands.Shooter.ShootPresetSetpoints.TargetType;
 import frc.robot.commands.TestPathCommands;
-import frc.robot.commands.collectorCommands.singleCollectorCommands.SingleCollectorDown;
-import frc.robot.commands.collectorCommands.singleCollectorCommands.SingleCollectorIntake;
-import frc.robot.commands.collectorCommands.singleCollectorCommands.SingleCollectorUp;
+import frc.robot.commands.collectorCommands.CollectorDown;
+import frc.robot.commands.collectorCommands.CollectorIntake;
+import frc.robot.commands.collectorCommands.CollectorUp;
 import frc.robot.commands.hopperCommands.HopperVelocityCommand;
 import frc.robot.commands.indexerCommands.IndexerAutoUnjam;
 import frc.robot.commands.indexerCommands.IndexerReverseCommand;
-import frc.robot.subsystems.collector.collectorConstants.CollectorTalonSingleConstants;
-import frc.robot.subsystems.collector.singleCollector.CollectorModuleSingle;
-import frc.robot.subsystems.collector.singleCollector.CollectorModuleSingleIO;
-import frc.robot.subsystems.collector.singleCollector.CollectorModuleSingleTalonIO;
-import frc.robot.subsystems.collector.singleCollector.SingleCollector;
+import frc.robot.subsystems.collector.Collector;
+import frc.robot.subsystems.collector.CollectorModuleIO;
+import frc.robot.subsystems.collector.CollectorModuleTalonIO;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -90,7 +88,7 @@ public class RobotContainer {
   private final Vision vision;
   private final Shooter shooter;
   private final Indexer indexer;
-  private final SingleCollector singleCollector;
+  private final Collector collector;
   private final Hopper hopper;
 
   // Controller
@@ -151,10 +149,7 @@ public class RobotContainer {
 
         indexer = new Indexer(new IndexerIOTalonFX());
 
-        singleCollector =
-            new SingleCollector(
-                new CollectorModuleSingle(
-                    new CollectorModuleSingleTalonIO(new CollectorTalonSingleConstants())));
+        collector = new Collector(new CollectorModuleTalonIO());
 
         hopper = new Hopper(new HopperIOTalonFX());
 
@@ -215,8 +210,7 @@ public class RobotContainer {
                     VisionConstants.robotToCamera1,
                     simulation::getSimulatedDriveTrainPose));
 
-        singleCollector =
-            new SingleCollector(new CollectorModuleSingle(new CollectorModuleSingleIO() {}));
+        collector = new Collector(new CollectorModuleIO() {});
 
         indexer = new Indexer(new IndexerIOSim());
 
@@ -240,8 +234,7 @@ public class RobotContainer {
 
         vision = new Vision(drive, new VisionIO() {}, new VisionIO() {});
 
-        singleCollector =
-            new SingleCollector(new CollectorModuleSingle(new CollectorModuleSingleIO() {}));
+        collector = new Collector(new CollectorModuleTalonIO());
 
         indexer = new Indexer(new IndexerIO() {});
 
@@ -257,9 +250,9 @@ public class RobotContainer {
         "Intake Shooter/ Index", new IndexerAutoUnjam(indexer, shooter::getBeamBreak, hopper));
     NamedCommands.registerCommand(
         "Auto Aimed Shoot", new AutonomousAimedShoot(drive, shooter, indexer));
-    NamedCommands.registerCommand("Lower Collector", new SingleCollectorDown(singleCollector));
-    NamedCommands.registerCommand("Raise Collector", new SingleCollectorUp(singleCollector));
-    NamedCommands.registerCommand("Run Collector", new SingleCollectorIntake(singleCollector));
+    NamedCommands.registerCommand("Lower Collector", new CollectorDown(collector));
+    NamedCommands.registerCommand("Raise Collector", new CollectorUp(collector));
+    NamedCommands.registerCommand("Run Collector", new CollectorIntake(collector));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -373,11 +366,11 @@ public class RobotContainer {
 
     shooter.setDefaultCommand(Commands.run(shooter::stop, shooter));
     new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualPivotDown)
-        .onTrue(new SingleCollectorDown(singleCollector));
+        .onTrue(new CollectorDown(collector));
     new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualPivotUp)
-        .onTrue(new SingleCollectorUp(singleCollector));
+        .onTrue(new CollectorUp(collector));
     new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorIntakeID)
-        .whileTrue(new SingleCollectorIntake(singleCollector));
+        .whileTrue(new CollectorIntake(collector));
   }
 
   /**
@@ -390,7 +383,7 @@ public class RobotContainer {
   }
 
   public Command getTeleopCommand() {
-    return new SingleCollectorUp(singleCollector);
+    return new CollectorUp(collector);
   }
   /**
    * This is called at robot initialization during sim

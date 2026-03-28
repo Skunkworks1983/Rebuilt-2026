@@ -2,26 +2,27 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.collectorCommands.doubleCollectorCommands;
+package frc.robot.commands.collectorCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.collector.doubleCollector.DoubleCollector;
+import frc.robot.subsystems.collector.Collector;
+import org.littletonrobotics.junction.Logger;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class HoldPosition extends Command {
-  DoubleCollector collector;
-  /** Creates a new HoldPosition. */
-  public HoldPosition(DoubleCollector collector) {
+public class CollectorExpel extends Command {
+  Collector collector;
+  /** Creates a new CollectorExpel. */
+  public CollectorExpel(Collector collector) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.collector = collector;
-    addRequirements(collector);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    collector.getLeftCollector().setCollectorPos(collector.getLeftCollector().getPosition(), 0);
-    collector.getRightCollector().setCollectorPos(collector.getRightCollector().getPosition(), 0);
+    Logger.recordOutput("Commands/Collector/CollectorExpel", true);
+    collector.setCollectorIntakeVelocity(
+        collector.getConstants().CollectorIntakeSpeed.unaryMinus());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -30,11 +31,14 @@ public class HoldPosition extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    Logger.recordOutput("Commands/Collector/CollectorExpel", false);
+    collector.setCollectorIntakeDutyCycle(0);
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    return false;
   }
 }
