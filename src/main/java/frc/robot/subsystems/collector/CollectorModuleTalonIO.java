@@ -146,7 +146,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
 
     collectorIntakeVelocity =
         new LoggedTunableNumber(
-            "Collector/Single/Intake/Velocity", constants.CollectorIntakeSpeed.baseUnitMagnitude());
+            "Collector/Intake/Velocity", constants.CollectorIntakeSpeed.baseUnitMagnitude());
 
     // Applying Intake Configs
     tryUntilOk(5, () -> intakeMotor.getConfigurator().apply(intakeConfig, 0.25));
@@ -187,7 +187,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
    *
    * @param inputs
    */
-  public void updateInputs(CollectorIOSingleInputs inputs) {
+  public void updateInputs(CollectorIOInputs inputs) {
     // Refresh all signals
     var turnStatus =
         BaseStatusSignal.refreshAll(

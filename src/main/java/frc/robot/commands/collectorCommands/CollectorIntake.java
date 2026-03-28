@@ -13,7 +13,7 @@ import org.littletonrobotics.junction.Logger;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class CollectorIntake extends Command {
   Collector collector;
-  /** Creates a new singleCollectorIntake. */
+  /** Creates a new CollectorIntake. */
   public CollectorIntake(Collector collector) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.collector = collector;
@@ -22,7 +22,7 @@ public class CollectorIntake extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    Logger.recordOutput("Commands/Collector/SingleCollectorIntake", true);
+    Logger.recordOutput("Commands/Collector/CollectorIntake", true);
     collector.setCollectorPos(Radians.of(collector.getConstants().CollectorDownPos.get()), 0);
     collector.setCollectorVelocity(collector.getConstants().CollectorIntakeSpeed);
   }
@@ -34,7 +34,7 @@ public class CollectorIntake extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    Logger.recordOutput("Commands/Collector/SingleCollectorIntake", false);
+    Logger.recordOutput("Commands/Collector/CollectorIntake", false);
     collector.setCollectorPos(Radians.of(collector.getConstants().CollectorHalfPos.get()), 0);
     collector.setCollectorDutyCycle(0);
   }

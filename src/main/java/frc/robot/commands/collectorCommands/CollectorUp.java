@@ -11,7 +11,7 @@ import org.littletonrobotics.junction.Logger;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class CollectorUp extends Command {
   Collector collector;
-  /** Creates a new SingleCollectorUp. */
+  /** Creates a new CollectorUp. */
   public CollectorUp(Collector collector) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.collector = collector;
@@ -21,7 +21,7 @@ public class CollectorUp extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    Logger.recordOutput("Commands/Collector/SingleCollectorUp", true);
+    Logger.recordOutput("Commands/Collector/CollectorUp", true);
     collector.goUp();
   }
 
@@ -32,7 +32,7 @@ public class CollectorUp extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    Logger.recordOutput("Commands/Collector/SingleCollectorUp", false);
+    Logger.recordOutput("Commands/Collector/CollectorUp", false);
   }
 
   // Returns true when the command should end.

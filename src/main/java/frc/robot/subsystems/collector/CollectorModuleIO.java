@@ -29,7 +29,7 @@ import org.littletonrobotics.junction.AutoLog;
  */
 public interface CollectorModuleIO {
   @AutoLog
-  public static class CollectorIOSingleInputs {
+  public static class CollectorIOInputs {
     // Turn Motor Inputs
     public boolean turnConnected = false;
     public Rotation2d turnPosition = Rotation2d.kZero;
@@ -63,7 +63,7 @@ public interface CollectorModuleIO {
    *
    * @param
    */
-  public default void updateInputs(CollectorIOSingleInputs inputs) {}
+  public default void updateInputs(CollectorIOInputs inputs) {}
 
   /** Gets Constants */
   public default CollectorModuleConstants getConstants() {

@@ -22,7 +22,7 @@ import frc.robot.util.LoggedTunableNumber;
  *
  * <ul>
  *   Only to be used with The talonFX collector IO for the right collector /** This class is a
- *   grouping of constants for the single collector
+ *   grouping of constants for the collector
  */
 public class CollectorModuleConstants {
   // Collector CanBus
@@ -124,8 +124,8 @@ public class CollectorModuleConstants {
 
     // Position
     CollectorUpPos = Rotations.of(0);
-    CollectorDownPos = new LoggedTunableNumber("Collector/Single/Downpose rad", 2.198);
-    CollectorHalfPos = new LoggedTunableNumber("Collector/Single/Halfpose rad", 1);
+    CollectorDownPos = new LoggedTunableNumber("Collector/Downpose rad", 2.198);
+    CollectorHalfPos = new LoggedTunableNumber("Collector/Halfpose rad", 1);
 
     // Collector Intake Speeds
     CollectorIntakeSpeed = RadiansPerSecond.of(80);

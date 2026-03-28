@@ -31,7 +31,7 @@ import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
  */
 public class Collector extends SubsystemBase {
 
-  private final CollectorIOSingleInputsAutoLogged inputs = new CollectorIOSingleInputsAutoLogged();
+  private final CollectorIOInputsAutoLogged inputs = new CollectorIOInputsAutoLogged();
 
   private final LoggedTunableNumber collectorPivotKP;
   private final LoggedTunableNumber collectorPivotKD;
@@ -47,7 +47,7 @@ public class Collector extends SubsystemBase {
   private final LoggedTunableNumber collectorIntakeKA;
   private final LoggedTunableNumber collectorIntakeVelocity;
 
-  @AutoLogOutput(key = "collectorSingle/mechanism")
+  @AutoLogOutput(key = "collector/mechanism")
   private LoggedMechanism2d loggedMechanism2d = new LoggedMechanism2d(0, 0);
 
   LoggedMechanismRoot2d root =
@@ -71,7 +71,7 @@ public class Collector extends SubsystemBase {
    */
   public Collector(CollectorModuleIO collector) {
     this.collectorIO = collector;
-    String modulePrefix = "Collector/Single/";
+    String modulePrefix = "Collector/";
     collectorPivotKP =
         new LoggedTunableNumber(modulePrefix + "Pivot/kP", collectorIO.getConstants().turnkP);
     collectorPivotKD =
@@ -110,7 +110,7 @@ public class Collector extends SubsystemBase {
   @Override
   public void periodic() {
     collectorIO.updateInputs(inputs);
-    Logger.processInputs("Collector/Single", inputs);
+    Logger.processInputs("Collector", inputs);
 
     if (Constants.tuningMode) {
       int hash = hashCode();
