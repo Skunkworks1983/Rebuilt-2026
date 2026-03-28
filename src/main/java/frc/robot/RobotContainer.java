@@ -387,8 +387,6 @@ public class RobotContainer {
                     RotationsPerSecond.of(
                         HopperConstants.hopperReverseAngularVelocityRotationsPerSecond.get()))));
 
-    // new JoystickButton(buttonJoystick, Constants.OIConstants.runForward)
-    //     .onTrue(new runForward(drive));
 
     // if the index button is hed and more than a second elapses before the beam
     // break is broken the
