@@ -61,7 +61,7 @@ public class IndexerIOTalonFX implements IndexerIO {
     slot0Configs.kS = IndexerConstants.indexerKS;
     slot0Configs.kV = IndexerConstants.indexerKV;
     configs.MotorOutput.Inverted = IndexerConstants.indexerMotorAlignment;
-    configs.Feedback.SensorToMechanismRatio = IndexerConstants.indexerGearRatio;
+    configs.Feedback.SensorToMechanismRatio = IndexerConstants.indexerSensorToMechanismRatio;
 
     tryUntilOk(5, () -> indexerMotor.getConfigurator().apply(configs, 0.25));
     slot0Configs.kP = IndexerConstants.indexerKP;
