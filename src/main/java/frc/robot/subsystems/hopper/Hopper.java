@@ -163,18 +163,18 @@ public class Hopper extends SubsystemBase {
 
   /** sets the velocity of the indexer to the defined velocity */
   public void setIndexerVelocity(AngularVelocity velocity) {
-    leftIndexer.setIndexerVelocity(velocity);
+    leftIndexer.setIndexerVelocity(velocity.unaryMinus());
     rightIndexer.setIndexerVelocity(velocity);
   }
 
-  /** sets */
+  /** sets both indexers duty cycle */
   public void setIndexerDutyCycle(double dutyCycle) {
     leftIndexer.setDutyCycle(dutyCycle);
-    rightIndexer.setDutyCycle(dutyCycle);
+    rightIndexer.setDutyCycle(-dutyCycle);
   }
 
   public void setIndexerVoltageOut(Voltage voltage) {
-    leftIndexer.setVoltageOut(voltage);
+    leftIndexer.setVoltageOut(voltage.unaryMinus());
     rightIndexer.setVoltageOut(voltage);
   }
 

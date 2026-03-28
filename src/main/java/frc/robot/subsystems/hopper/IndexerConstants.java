@@ -19,8 +19,9 @@ public class IndexerConstants {
   public static final double disconnectedDebounceTimeSec = 0.5;
 
   /** CAN ID for the indexer. */
-  public static final int leftIndexerMotorID = 34;
-  public static final int rightIndexerMotorID = 35; 
+  public static final int leftIndexerMotorID = 35;
+
+  public static final int rightIndexerMotorID = 34;
   // Correct ID's but order unknown which is lef and right
 
   // PID for indexer
@@ -45,9 +46,9 @@ public class IndexerConstants {
       new LoggedTunableNumber(
           "Indexer/AngularVelocity [Rps]", indexerAngularVelocitySetpoint.in(RotationsPerSecond));
   public static final LoggedTunableNumber indexerDutyCycleSpeedFeed =
-      new LoggedTunableNumber("Indexer/DutyCycleOutFeed", 1);
+      new LoggedTunableNumber("Indexer/DutyCycleOutFeed", -1);
   public static final LoggedTunableNumber indexerDutyCycleSpeedReverse =
-      new LoggedTunableNumber("Indexer/DutyCycleOutReverse", -.2);
+      new LoggedTunableNumber("Indexer/DutyCycleOutReverse", .2);
 
   public static final LoggedTunableNumber autoUnjamNoBeamBreakTimeoutSeconds =
       new LoggedTunableNumber("Indexer/AutoUnjam/NoBeamBreakTimeout [sec]", 1.5);

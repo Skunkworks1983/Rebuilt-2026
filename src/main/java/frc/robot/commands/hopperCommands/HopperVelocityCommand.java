@@ -17,7 +17,6 @@ public class HopperVelocityCommand extends Command {
   public HopperVelocityCommand(Hopper hopper, AngularVelocity velocity) {
     this.hopper = hopper;
     this.velocity = velocity;
-    addRequirements(hopper);
   }
 
   @Override
