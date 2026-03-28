@@ -49,7 +49,6 @@ public class Robot extends LoggedRobot {
         break;
     }
 
-    // WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
 
     // Set up data receivers & replay source
     switch (Constants.currentMode) {
