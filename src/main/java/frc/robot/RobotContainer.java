@@ -96,8 +96,6 @@ public class RobotContainer {
   private final Indexer indexer;
   private final SingleCollector singleCollector;
   private final Hopper hopper;
-  private final SingleCollector singleCollector;
-  private final Hopper hopper;
 
   // Controller
   private final Joystick leftJoystick;
@@ -253,9 +251,6 @@ public class RobotContainer {
 
         hopper = new Hopper(new HopperIOTalonFX() {});
 
-
-        hopper = new Hopper(new HopperIOTalonFX() {});
-
         break;
     }
     Command autoShootIndexerCommand = new IndexerAutoUnjam(indexer, shooter::getBeamBreak, hopper);
@@ -348,8 +343,6 @@ public class RobotContainer {
     ShootPresetSetpoints shootPresetSetpointsTransfer =
         new ShootPresetSetpoints(shooter, TargetType.TRANSFER);
 
-    JoystickButton runIndexer = new JoystickButton(leftJoystick, 1);
-    JoystickButton runIndexerReverse =
     JoystickButton runIndexer = new JoystickButton(leftJoystick, 1);
     JoystickButton runIndexerReverse =
         new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID);

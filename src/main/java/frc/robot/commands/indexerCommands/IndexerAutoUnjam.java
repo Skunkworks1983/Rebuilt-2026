@@ -25,17 +25,14 @@ public class IndexerAutoUnjam extends Command {
 
   private final Indexer indexer;
   private final Hopper hopper;
-  private final Hopper hopper;
   private final Timer timer = new Timer();
   private final BooleanSupplier beamBroken;
 
   private AutoUnjamState state = AutoUnjamState.FEED;
 
   public IndexerAutoUnjam(Indexer indexer, BooleanSupplier beamBroken, Hopper hopper) {
-  public IndexerAutoUnjam(Indexer indexer, BooleanSupplier beamBroken, Hopper hopper) {
     this.indexer = indexer;
     this.beamBroken = beamBroken;
-    this.hopper = hopper;
     this.hopper = hopper;
     addRequirements(indexer);
   }
@@ -94,10 +91,6 @@ public class IndexerAutoUnjam extends Command {
   }
 
   private void applyStateOutput() {
-    double indexerSpeedRps = IndexerConstants.indexerAngularVelocityRotationsPerSecond.get();
-    double hopperSpeedRps = HopperConstants.hopperAngularVelocityRotationsPerSecond.get();
-    double hopperReverseSpeedRps =
-        HopperConstants.hopperReverseAngularVelocityRotationsPerSecond.get();
     double indexerSpeedRps = IndexerConstants.indexerAngularVelocityRotationsPerSecond.get();
     double hopperSpeedRps = HopperConstants.hopperAngularVelocityRotationsPerSecond.get();
     double hopperReverseSpeedRps =
