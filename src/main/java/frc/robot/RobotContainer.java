@@ -31,6 +31,7 @@ import frc.robot.commands.Shooter.ShootPresetSetpoints;
 import frc.robot.commands.Shooter.ShootPresetSetpoints.TargetType;
 import frc.robot.commands.TestPathCommands;
 import frc.robot.commands.collectorCommands.singleCollectorCommands.SingleCollectorDown;
+import frc.robot.commands.collectorCommands.singleCollectorCommands.SingleCollectorExpel;
 import frc.robot.commands.collectorCommands.singleCollectorCommands.SingleCollectorIntake;
 import frc.robot.commands.collectorCommands.singleCollectorCommands.SingleCollectorUp;
 import frc.robot.commands.collectorCommands.singleCollectorCommands.agitate;
@@ -250,8 +251,9 @@ public class RobotContainer {
 
         break;
     }
-    Command autoShootIndexerCommand = new IndexerAutoUnjam(indexer, shooter::getBeamBreak, hopper)
-        .alongWith(new agitate(singleCollector));
+    Command autoShootIndexerCommand =
+        new IndexerAutoUnjam(indexer, shooter::getBeamBreak, hopper)
+            .alongWith(new agitate(singleCollector));
 
     NamedCommands.registerCommand(
         "Shoot Preset Setpoits", new ShootPresetSetpoints(shooter, TargetType.GOAL));
@@ -380,6 +382,8 @@ public class RobotContainer {
         .onTrue(new SingleCollectorUp(singleCollector));
     new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorIntakeID)
         .whileTrue(new SingleCollectorIntake(singleCollector));
+    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID)
+        .whileTrue(new SingleCollectorExpel(singleCollector));
   }
 
   /**
