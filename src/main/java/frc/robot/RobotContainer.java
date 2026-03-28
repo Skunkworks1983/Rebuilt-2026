@@ -33,6 +33,7 @@ import frc.robot.commands.TestPathCommands;
 import frc.robot.commands.collectorCommands.singleCollectorCommands.SingleCollectorDown;
 import frc.robot.commands.collectorCommands.singleCollectorCommands.SingleCollectorIntake;
 import frc.robot.commands.collectorCommands.singleCollectorCommands.SingleCollectorUp;
+import frc.robot.commands.collectorCommands.singleCollectorCommands.agitate;
 import frc.robot.commands.hopperCommands.HopperVelocityCommand;
 import frc.robot.commands.indexerCommands.IndexerAutoUnjam;
 import frc.robot.commands.indexerCommands.IndexerReverseCommand;
@@ -277,7 +278,8 @@ public class RobotContainer {
 
         break;
     }
-    Command autoShootIndexerCommand = new IndexerAutoUnjam(indexer, shooter::getBeamBreak, hopper);
+    Command autoShootIndexerCommand = new IndexerAutoUnjam(indexer, shooter::getBeamBreak, hopper)
+        .alongWith(new agitate(singleCollector));
 
     NamedCommands.registerCommand(
         "Shoot Preset Setpoits ", new ShootPresetSetpoints(shooter, TargetType.GOAL));
