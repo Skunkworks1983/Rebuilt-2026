@@ -24,7 +24,7 @@ public class CollectorTalonSingleConstants extends CollectorModuleConstants {
 
   public CollectorTalonSingleConstants() {
 
-    // Hardware ID's
+    // Hardware IDs
     turnMotorID = 32;
     intakeMotorID = 21;
 
@@ -36,11 +36,6 @@ public class CollectorTalonSingleConstants extends CollectorModuleConstants {
     turnkD = 0;
     turnkI = 0;
 
-    // Real Turn PID
-    turnkPSlot1 = 8;
-    turnkDSlot1 = .1;
-    turnkISlot1 = 0.0;
-
     // Real intake upper PID
     intakekP = 15;
     intakekD = 0.0;
@@ -49,11 +44,6 @@ public class CollectorTalonSingleConstants extends CollectorModuleConstants {
     intakekA = 0;
     intakekS = 0;
     intakeInvertedValue = InvertedValue.CounterClockwise_Positive;
-
-    // Feed forward
-    turnkS = 0.25;
-    turnkV = 0.4;
-    turnkA = 0.03;
 
     // Motion Magic constraints
     motionMagicCruiseVelocity = RotationsPerSecond.of(0.5);

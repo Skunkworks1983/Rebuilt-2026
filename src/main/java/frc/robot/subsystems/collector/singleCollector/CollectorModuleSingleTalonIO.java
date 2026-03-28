@@ -103,11 +103,6 @@ public class CollectorModuleSingleTalonIO implements CollectorModuleSingleIO {
 
     // Pid Configs for Turn Motor
     var turnSlot0Configs = turnConfig.Slot0;
-    var turnSlot1Configs = turnConfig.Slot1;
-
-    turnSlot1Configs.kP = constants.turnkPSlot1;
-    turnSlot1Configs.kD = constants.turnkDSlot1;
-    turnSlot1Configs.kI = constants.turnkISlot1;
 
     turnSlot0Configs.kS = constants.turnkS;
     turnSlot0Configs.kV = constants.turnkV;
@@ -226,13 +221,6 @@ public class CollectorModuleSingleTalonIO implements CollectorModuleSingleIO {
     // up and down
     inputs.isUp = this.isCollectorUp();
     inputs.isDown = this.isCollectorDown();
-
-    Logger.recordOutput(
-        "Collector/Single/Collector Up Position",
-        turnMotor
-            .getPosition()
-            .getValue()
-            .lte(constants.CollectorUpPos.plus(constants.CollectorPosTolerance)));
   }
 
   /** Gets The Collector Constants */

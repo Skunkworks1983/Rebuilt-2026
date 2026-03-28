@@ -40,7 +40,7 @@ public interface CollectorModuleIO {
     public double turnClosedLoopError = 0.0;
     public double turnSetPoint = 0.0;
 
-    // Intake Motor Inputs for lower or double collector
+    // Intake Motor Inputs
     public boolean intakeConnected = false;
     public Angle intakePositionRad = Degrees.of(0.0);
     public AngularVelocity intakeVelocity = DegreesPerSecond.of(0.0);

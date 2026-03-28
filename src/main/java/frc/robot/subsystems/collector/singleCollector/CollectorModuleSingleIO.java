@@ -52,8 +52,6 @@ public interface CollectorModuleSingleIO {
 
     // When were on our way down
     public boolean goingDown = false;
-
-    // up and down
     public boolean isUp = true;
     public boolean isDown = false;
   }
