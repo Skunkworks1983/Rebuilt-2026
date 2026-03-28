@@ -8,6 +8,7 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.Seconds;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -26,7 +27,6 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveAimedAutoShoot;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.Shooter.AutonomousAimedShoot;
-import frc.robot.commands.Shooter.NoYawShootHub;
 import frc.robot.commands.Shooter.ShootPresetSetpoints;
 import frc.robot.commands.Shooter.ShootPresetSetpoints.TargetType;
 import frc.robot.commands.TestPathCommands;
@@ -37,6 +37,7 @@ import frc.robot.commands.hopperCommands.HopperVelocityCommand;
 import frc.robot.commands.indexerCommands.IndexerAutoUnjam;
 import frc.robot.commands.indexerCommands.IndexerReverseCommand;
 import frc.robot.subsystems.collector.collectorConstants.CollectorTalonSingleConstants;
+import frc.robot.subsystems.collector.singleCollector.CollectorModuleSingle;
 import frc.robot.subsystems.collector.singleCollector.CollectorModuleSingleIO;
 import frc.robot.subsystems.collector.singleCollector.CollectorModuleSingleTalonIO;
 import frc.robot.subsystems.collector.singleCollector.SingleCollector;
@@ -49,7 +50,6 @@ import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.drive.ModuleIOTalonFXSim;
 import frc.robot.subsystems.hopper.Hopper;
 import frc.robot.subsystems.hopper.HopperConstants;
-import frc.robot.subsystems.hopper.HopperIO;
 import frc.robot.subsystems.hopper.HopperIOSim;
 import frc.robot.subsystems.hopper.HopperIOTalonFX;
 import frc.robot.subsystems.indexer.Indexer;
@@ -151,9 +151,12 @@ public class RobotContainer {
 
         indexer = new Indexer(new IndexerIOTalonFX());
 
-        singleCollector = new SingleCollector(new CollectorModuleSingleIO() {});
+        singleCollector =
+            new SingleCollector(
+                new CollectorModuleSingle(
+                    new CollectorModuleSingleTalonIO(new CollectorTalonSingleConstants())));
 
-        hopper = new Hopper(new HopperIO() {});
+        hopper = new Hopper(new HopperIOTalonFX());
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
@@ -212,45 +215,13 @@ public class RobotContainer {
                     VisionConstants.robotToCamera1,
                     simulation::getSimulatedDriveTrainPose));
 
-        singleCollector = new SingleCollector(new CollectorModuleSingleIO() {});
+        singleCollector =
+            new SingleCollector(new CollectorModuleSingle(new CollectorModuleSingleIO() {}));
 
         indexer = new Indexer(new IndexerIOSim());
 
         hopper = new Hopper(new HopperIOSim());
 
-        break;
-
-      case SINGLEREAL:
-        // Real robot with single collector, instantiate hardware IO implementations
-        // ModuleIOTalonFX is intended for modules with TalonFX drive, TalonFX turn, and
-        // a CANcoder
-        drive =
-            new Drive(
-                new GyroIOPigeon2(),
-                new ModuleIOTalonFX(Constants.tunerConstants.getFrontLeft()),
-                new ModuleIOTalonFX(Constants.tunerConstants.getFrontRight()),
-                new ModuleIOTalonFX(Constants.tunerConstants.getBackLeft()),
-                new ModuleIOTalonFX(Constants.tunerConstants.getBackRight()),
-                (pose) -> {});
-
-        shooter =
-            new Shooter(
-                new FlywheelIOTalonFX(ShooterConstants.upperFlywheelMotorID, FlywheelLevel.Upper),
-                new FlywheelIOTalonFX(ShooterConstants.lowerFlywheelMotorID, FlywheelLevel.Lower),
-                new PivotIOTalonFX(),
-                new BeamBreakIOSensor());
-
-        vision =
-            new Vision(
-                drive, new VisionIOLimelight(VisionConstants.camera0Name, drive::getRotation));
-
-        indexer = new Indexer(new IndexerIOTalonFX());
-
-        singleCollector =
-            new SingleCollector(
-                new CollectorModuleSingleTalonIO(new CollectorTalonSingleConstants()));
-
-        hopper = new Hopper(new HopperIOTalonFX());
         break;
 
       default:
@@ -269,7 +240,8 @@ public class RobotContainer {
 
         vision = new Vision(drive, new VisionIO() {}, new VisionIO() {});
 
-        singleCollector = new SingleCollector(new CollectorModuleSingleIO() {});
+        singleCollector =
+            new SingleCollector(new CollectorModuleSingle(new CollectorModuleSingleIO() {}));
 
         indexer = new Indexer(new IndexerIO() {});
 
@@ -280,42 +252,62 @@ public class RobotContainer {
     Command autoShootIndexerCommand = new IndexerAutoUnjam(indexer, shooter::getBeamBreak, hopper);
 
     NamedCommands.registerCommand(
-        "Shoot Preset Setpoits ", new ShootPresetSetpoints(shooter, TargetType.GOAL));
+        "Shoot Preset Setpoits", new ShootPresetSetpoints(shooter, TargetType.GOAL));
+    NamedCommands.registerCommand(
+        "Intake Shooter/ Index", new IndexerAutoUnjam(indexer, shooter::getBeamBreak, hopper));
     NamedCommands.registerCommand(
         "Auto Aimed Shoot", new AutonomousAimedShoot(drive, shooter, indexer));
+    NamedCommands.registerCommand("Lower Collector", new SingleCollectorDown(singleCollector));
+    NamedCommands.registerCommand("Raise Collector", new SingleCollectorUp(singleCollector));
+    NamedCommands.registerCommand("Run Collector", new SingleCollectorIntake(singleCollector));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
-    // Set up SysId routines
-    autoChooserAddOption(
-        "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
-    autoChooserAddOption(
-        "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
 
-    autoChooserAddOption(
-        "Drive SysId (Quasistatic Forward)",
-        drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    autoChooserAddOption(
-        "Drive SysId (Quasistatic Reverse)",
-        drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    autoChooserAddOption(
-        "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    autoChooserAddOption(
-        "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    if (Constants.tuningMode) {
+      // Set up SysId routines
+      autoChooserAddOption(
+          "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
+      autoChooserAddOption(
+          "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
 
-    autoChooserAddOption(
-        "Shooter SysId (Quasistatic Forward)",
-        shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    autoChooserAddOption(
-        "Shooter SysId (Quasistatic Reverse)",
-        shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    autoChooserAddOption(
-        "Shooter SysId (Dynamic Forward)", shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    autoChooserAddOption(
-        "Shooter SysId (Dynamic Reverse)", shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+      autoChooserAddOption(
+          "Drive SysId (Quasistatic Forward)",
+          drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+      autoChooserAddOption(
+          "Drive SysId (Quasistatic Reverse)",
+          drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+      autoChooserAddOption(
+          "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+      autoChooserAddOption(
+          "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-    autoChooser.addOption("Simple Auto", new NoYawShootHub(shooter, drive));
+      autoChooserAddOption(
+          "Shooter SysId (Quasistatic Forward)",
+          shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+      autoChooserAddOption(
+          "Shooter SysId (Quasistatic Reverse)",
+          shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+      autoChooserAddOption(
+          "Shooter SysId (Dynamic Forward)", shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
+      autoChooserAddOption(
+          "Shooter SysId (Dynamic Reverse)", shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
+      autoChooserAddOption(
+          "Spin In Place",
+          DriveCommands.joystickDrive(drive, () -> 0, () -> 0, () -> .7)
+              .withTimeout(Seconds.of(10)));
+
+      autoChooserAddOption(
+          "Drive Back and Forth",
+          Commands.repeatingSequence(
+              DriveCommands.joystickDrive(drive, () -> .7, () -> 0, () -> 0)
+                  .withTimeout(Seconds.of(3)),
+              DriveCommands.joystickDrive(drive, () -> -.7, () -> 0, () -> 0)
+                  .withTimeout(Seconds.of(3))));
+    }
+
+    // autoChooser.addOption("Simple Auto", new NoYawShootHub(shooter, drive));
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -361,6 +353,16 @@ public class RobotContainer {
                     RotationsPerSecond.of(
                         HopperConstants.hopperReverseAngularVelocityRotationsPerSecond.get()))));
 
+    runIndexer.whileTrue(new IndexerAutoUnjam(indexer, shooter::getBeamBreak, hopper));
+
+    runIndexerReverse.whileTrue(
+        new IndexerReverseCommand(indexer)
+            .alongWith(
+                new HopperVelocityCommand(
+                    hopper,
+                    RotationsPerSecond.of(
+                        HopperConstants.hopperReverseAngularVelocityRotationsPerSecond.get()))));
+
     // if the index button is hed and more than a second elapses before the beam
     // break is broken the
     // indexer will reverse for 1 second before attempting to intake again
@@ -370,22 +372,12 @@ public class RobotContainer {
     TestPathCommands.publishTestPaths(drive);
 
     shooter.setDefaultCommand(Commands.run(shooter::stop, shooter));
-
-    switch (Constants.currentMode) {
-      case REAL:
-        break;
-      case SINGLEREAL:
-        new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualPivotDown)
-            .onTrue(new SingleCollectorDown(singleCollector));
-        new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualPivotUp)
-            .onTrue(new SingleCollectorUp(singleCollector));
-        new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorIntakeID)
-            .whileTrue(new SingleCollectorIntake(singleCollector));
-        break;
-
-      default:
-        break;
-    }
+    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualPivotDown)
+        .onTrue(new SingleCollectorDown(singleCollector));
+    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualPivotUp)
+        .onTrue(new SingleCollectorUp(singleCollector));
+    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorIntakeID)
+        .whileTrue(new SingleCollectorIntake(singleCollector));
   }
 
   /**
@@ -395,6 +387,10 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     return autoChooser.get();
+  }
+
+  public Command getTeleopCommand() {
+    return new SingleCollectorUp(singleCollector);
   }
   /**
    * This is called at robot initialization during sim
@@ -459,6 +455,7 @@ public class RobotContainer {
   }
 
   public void scheduleBothCollectorsUp() {
+    CommandScheduler.getInstance();
     CommandScheduler.getInstance();
   }
 }

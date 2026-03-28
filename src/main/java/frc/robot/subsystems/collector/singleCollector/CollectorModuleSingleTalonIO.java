@@ -76,7 +76,7 @@ public class CollectorModuleSingleTalonIO implements CollectorModuleSingleIO {
       new Debouncer(0.5, Debouncer.DebounceType.kFalling);
 
   /**
-   * Instanciates, configures, and sets up the IO inputs for motors
+   * Instantiates, configures, and sets up the IO inputs for motors
    *
    * @param constants left <h7> OR </h7> right constants
    */
@@ -99,38 +99,14 @@ public class CollectorModuleSingleTalonIO implements CollectorModuleSingleIO {
     var turnConfig = new TalonFXConfiguration();
     turnConfig.CurrentLimits.SupplyCurrentLimit = constants.turnSupplyCurrent;
     turnConfig.Feedback.SensorToMechanismRatio = constants.turnMotorGearRatio;
-    turnConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    turnConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive; // TODO: make constant
 
     // Pid Configs for Turn Motor
     var turnSlot0Configs = turnConfig.Slot0;
 
-    if (RobotBase.isReal()) {
-      turnSlot0Configs.kP = constants.turnkP;
-      turnSlot0Configs.kD = constants.turnkD;
-      turnSlot0Configs.kI = constants.turnkI;
-    } else if (RobotBase.isSimulation()) {
-      turnSlot0Configs.kP = constants.SimTurnkP;
-      turnSlot0Configs.kD = constants.SimTurnkD;
-      turnSlot0Configs.kI = constants.SimTurnkI;
-    } else {
-      turnSlot0Configs.kP = constants.turnkP;
-      turnSlot0Configs.kD = constants.turnkD;
-      turnSlot0Configs.kI = constants.turnkI;
-    }
-
-    var turnSlot1Configs = turnConfig.Slot1;
-
-    turnSlot1Configs.kP = constants.turnkPSlot1;
-    turnSlot1Configs.kD = constants.turnkDSlot1;
-    turnSlot1Configs.kI = constants.turnkISlot1;
-
     turnSlot0Configs.kS = constants.turnkS;
     turnSlot0Configs.kV = constants.turnkV;
     turnSlot0Configs.kA = constants.turnkA;
-
-    turnSlot1Configs.kS = constants.turnkSSlot1;
-    turnSlot1Configs.kV = constants.turnkVSlot1;
-    turnSlot1Configs.kA = constants.turnkASlot1;
 
     // Motion Magic Configs for Turn Motor
     var turnMotionMagicConfig = turnConfig.MotionMagic;
@@ -152,16 +128,25 @@ public class CollectorModuleSingleTalonIO implements CollectorModuleSingleIO {
       intakeConfig.Slot0.kD = constants.intakekP;
       intakeConfig.Slot0.kI = constants.intakekI;
       intakeConfig.Slot0.kV = constants.intakekV;
+      turnSlot0Configs.kP = constants.turnkP;
+      turnSlot0Configs.kD = constants.turnkD;
+      turnSlot0Configs.kI = constants.turnkI;
     } else if (RobotBase.isSimulation()) {
       intakeConfig.Slot0.kP = constants.SimIntakekP;
       intakeConfig.Slot0.kD = constants.SimIntakekP;
       intakeConfig.Slot0.kI = constants.SimIntakekI;
+      turnSlot0Configs.kP = constants.SimTurnkP;
+      turnSlot0Configs.kD = constants.SimTurnkD;
+      turnSlot0Configs.kI = constants.SimTurnkI;
+    } else {
+      turnSlot0Configs.kP = constants.turnkP;
+      turnSlot0Configs.kD = constants.turnkD;
+      turnSlot0Configs.kI = constants.turnkI;
     }
 
     collectorIntakeVelocity =
         new LoggedTunableNumber(
-            "Collector/Single/IntakeUpper/Velocity",
-            constants.CollectorIntakeSpeed.baseUnitMagnitude());
+            "Collector/Single/Intake/Velocity", constants.CollectorIntakeSpeed.baseUnitMagnitude());
 
     // Applying Intake Configs
     tryUntilOk(5, () -> intakeMotor.getConfigurator().apply(intakeConfig, 0.25));
@@ -234,27 +219,8 @@ public class CollectorModuleSingleTalonIO implements CollectorModuleSingleIO {
     inputs.lowerTriggered = !lowerLimitSwitch.get();
 
     // up and down
-    inputs.isUp =
-        !upperLimitSwitch.get()
-            || turnMotor
-                .getPosition()
-                .getValue()
-                .lte(constants.CollectorUpPos.plus(constants.CollectorPosTolerance));
-    inputs.isDown =
-        !lowerLimitSwitch.get()
-            || turnMotor
-                .getPosition()
-                .getValue()
-                .gte(
-                    Radians.of(constants.CollectorDownPos.get())
-                        .minus(constants.CollectorPosTolerance));
-
-    Logger.recordOutput(
-        "Collector/Single/Collector Up Position",
-        turnMotor
-            .getPosition()
-            .getValue()
-            .lte(constants.CollectorUpPos.plus(constants.CollectorPosTolerance)));
+    inputs.isUp = this.isCollectorUp();
+    inputs.isDown = this.isCollectorDown();
   }
 
   /** Gets The Collector Constants */
@@ -287,6 +253,7 @@ public class CollectorModuleSingleTalonIO implements CollectorModuleSingleIO {
    */
   public void setCollectorPos(Angle angle, int slot) {
     turnMotor.setControl(new MotionMagicVoltage(angle).withSlot(slot));
+    Logger.recordOutput("Collector/" + constants.turnMotorID + "/setpoint", angle);
   }
 
   /**
@@ -348,25 +315,12 @@ public class CollectorModuleSingleTalonIO implements CollectorModuleSingleIO {
 
   /** Sets Collector to its up position */
   public void goUp() {
-    if (!setUpRunning) {
-      setCollectorPos(constants.CollectorUpPos, 0);
-      Logger.recordOutput(
-          "Collector/" + constants.turnMotorID + "/setpoint", constants.CollectorUpPos);
-      setUpRunning = true;
-      setDownRunning = false;
-    }
+    setCollectorPos(constants.CollectorUpPos, 0);
   }
 
   /** Sets Collector to its up position */
   public void goDown() {
-    if (!setDownRunning) {
-      setCollectorPos(Radians.of(constants.CollectorDownPos.get()), 0);
-      Logger.recordOutput(
-          "Collector/" + constants.turnMotorID + "/setpoint", constants.CollectorDownPos);
-
-      setDownRunning = true;
-      setUpRunning = false;
-    }
+    setCollectorPos(Radians.of(constants.CollectorDownPos.get()), 0);
   }
 
   @Override

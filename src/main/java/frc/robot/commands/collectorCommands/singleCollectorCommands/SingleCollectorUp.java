@@ -22,7 +22,7 @@ public class SingleCollectorUp extends Command {
   @Override
   public void initialize() {
     Logger.recordOutput("Commands/Collector/SingleCollectorUp", true);
-    collector.getSingleCollectorIO().goUp();
+    collector.getSingleCollector().goUp();
   }
 
   // Called every time the scheduler runs while the command is scheduled.

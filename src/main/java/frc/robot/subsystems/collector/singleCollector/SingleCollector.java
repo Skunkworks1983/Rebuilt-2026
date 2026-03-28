@@ -15,7 +15,7 @@ import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
  * This is the collector Subsystem
  *
  * <ul>
- *   <li>It takes in two collector module IO's to assign to two collector modules
+ *   <li>It takes in a collector module IO's to assign to a collector module
  * </ul>
  */
 public class SingleCollector extends SubsystemBase {
@@ -30,7 +30,7 @@ public class SingleCollector extends SubsystemBase {
           CollectorConstants.collectorLeftOriginTranslation.getY());
   LoggedMechanismLigament2d collectorLigament;
 
-  private CollectorModuleSingleIO singleCollector;
+  private CollectorModuleSingle singleCollector;
 
   /**
    * Collector subsystem.
@@ -42,17 +42,19 @@ public class SingleCollector extends SubsystemBase {
    *
    * @param collector
    */
-  public SingleCollector(CollectorModuleSingleIO collector) {
+  public SingleCollector(CollectorModuleSingle collector) {
     this.singleCollector = collector;
   }
 
   @Override
-  public void periodic() {}
+  public void periodic() {
+    this.singleCollector.periodic();
+  }
 
   /**
    * @return - The Collector
    */
-  public CollectorModuleSingleIO getSingleCollectorIO() {
+  public CollectorModuleSingle getSingleCollector() {
     return singleCollector;
   }
 }

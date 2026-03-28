@@ -5,34 +5,40 @@
     "data": {
       "commands": [
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "BackUpFire"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Shoot Preset Setpoits"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Both Collectors Up"
-                }
-              }
-            ]
+            "pathName": "BackUp"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Auto Aimed Shoot"
+            "name": "Lower Collector"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Run Collector"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Auto Aimed Shoot"
+                }
+              }
+            ]
           }
         }
       ]
