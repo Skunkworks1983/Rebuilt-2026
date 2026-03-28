@@ -118,7 +118,6 @@ public class RobotContainer {
     leftJoystick = new Joystick(Constants.OIConstants.LeftJoystick);
     rightJoystick = new Joystick(Constants.OIConstants.RightJoystick);
     buttonJoystick = new Joystick(Constants.OIConstants.ButtonJoystick);
-    // beamBreak = new DigitalInput(0);
 
     switch (Constants.currentMode) {
       case REAL:
