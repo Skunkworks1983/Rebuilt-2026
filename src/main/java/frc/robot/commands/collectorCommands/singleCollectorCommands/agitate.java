@@ -4,6 +4,8 @@
 
 package frc.robot.commands.collectorCommands.singleCollectorCommands;
 
+import static edu.wpi.first.units.Units.Rotations;
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.collector.singleCollector.SingleCollector;
@@ -25,7 +27,8 @@ public class agitate extends Command {
   public void initialize() {
     time.reset();
     time.start();
-    collector.getSingleCollector().goUp();
+    collector.getSingleCollector().setCollectorPos(Rotations.of(collector.getSingleCollector().getConstants().CollectorHalfPos.get()), 0);;
+    collector.getSingleCollector().setCollectorVelocity(collector.getSingleCollector().getConstants().CollectorIntakeSpeed);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -34,7 +37,7 @@ public class agitate extends Command {
     if (time.hasElapsed(.5)) {
       collector.getSingleCollector().goDown();
     } else {
-      collector.getSingleCollector().goUp();
+      collector.getSingleCollector().setCollectorPos(Rotations.of(collector.getSingleCollector().getConstants().CollectorHalfPos.get()), 0);
     }
   }
 
