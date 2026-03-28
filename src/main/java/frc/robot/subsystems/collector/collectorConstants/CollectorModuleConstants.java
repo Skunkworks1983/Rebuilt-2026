@@ -17,13 +17,7 @@ import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.util.LoggedTunableNumber;
 
-/**
- * This class is a grouping of constants
- *
- * <ul>
- *   Only to be used with The talonFX collector IO for the right collector /** This class is a
- *   grouping of constants for the collector
- */
+/** This class is a grouping of constants */
 public class CollectorModuleConstants {
   // Collector CanBus
   public CANBus canbus;
@@ -116,7 +110,7 @@ public class CollectorModuleConstants {
     intakekV = 0;
     intakekA = 0;
     intakekS = 0;
-    intakeInvertedValue = InvertedValue.CounterClockwise_Positive;
+    intakeInvertedValue = InvertedValue.Clockwise_Positive;
 
     // Motion Magic constraints
     motionMagicCruiseVelocity = RotationsPerSecond.of(0.5);

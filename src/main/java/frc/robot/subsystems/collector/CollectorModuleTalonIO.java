@@ -20,7 +20,6 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.InvertedValue;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
@@ -99,7 +98,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     var turnConfig = new TalonFXConfiguration();
     turnConfig.CurrentLimits.SupplyCurrentLimit = constants.turnSupplyCurrent;
     turnConfig.Feedback.SensorToMechanismRatio = constants.turnMotorGearRatio;
-    turnConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive; // TODO: make constant
+    turnConfig.MotorOutput.Inverted = constants.turnInvert;
 
     // Pid Configs for Turn Motor
     var turnSlot0Configs = turnConfig.Slot0;
@@ -233,7 +232,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
    *
    * @param velocity -Angular Velocity
    */
-  public void setCollectorVelocity(AngularVelocity velocity) {
+  public void setCollectorIntakeVelocity(AngularVelocity velocity) {
     if (!velocity.equals(lastVelocity)) {
       intakeMotor.setControl(
           new VelocityTorqueCurrentFOC(RotationsPerSecond.of(collectorIntakeVelocity.get())));
@@ -253,7 +252,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
    */
   public void setCollectorPos(Angle angle, int slot) {
     turnMotor.setControl(new MotionMagicVoltage(angle).withSlot(slot));
-    Logger.recordOutput("Collector/" + constants.turnMotorID + "/setpoint", angle);
+    Logger.recordOutput("Collector/Pivot/target", angle);
   }
 
   /**
@@ -274,8 +273,6 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     intakeMotor.set(dutyCycle);
     lastVelocity = RotationsPerSecond.of(dutyCycle);
   }
-
-  // Unknown if we need these for now
 
   /**
    * Checks to see if the collector is down

@@ -186,8 +186,8 @@ public class Collector extends SubsystemBase {
    *
    * @param velocity -Angular Velocity
    */
-  public void setCollectorVelocity(AngularVelocity velocity) {
-    collectorIO.setCollectorVelocity(velocity);
+  public void setCollectorIntakeVelocity(AngularVelocity velocity) {
+    collectorIO.setCollectorIntakeVelocity(velocity);
   }
 
   /** sets Just the encoder pos */
@@ -218,7 +218,7 @@ public class Collector extends SubsystemBase {
    *
    * @param dutyCycle double between -1.0 and 1.0
    */
-  public void setCollectorDutyCycle(double dutyCycle) {
+  public void setCollectorIntakeDutyCycle(double dutyCycle) {
     collectorIO.setCollectorIntakeDutyCycle(dutyCycle);
   }
 

@@ -21,7 +21,8 @@ public class CollectorExpel extends Command {
   @Override
   public void initialize() {
     Logger.recordOutput("Commands/Collector/CollectorExpel", true);
-    collector.setCollectorVelocity(collector.getConstants().CollectorIntakeSpeed.unaryMinus());
+    collector.setCollectorIntakeVelocity(
+        collector.getConstants().CollectorIntakeSpeed.unaryMinus());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -32,7 +33,7 @@ public class CollectorExpel extends Command {
   @Override
   public void end(boolean interrupted) {
     Logger.recordOutput("Commands/Collector/CollectorExpel", false);
-    collector.setCollectorDutyCycle(0);
+    collector.setCollectorIntakeDutyCycle(0);
   }
 
   // Returns true when the command should end.
