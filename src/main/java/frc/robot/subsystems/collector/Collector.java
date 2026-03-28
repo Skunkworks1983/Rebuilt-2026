@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.collector.singleCollector;
+package frc.robot.subsystems.collector;
 
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
@@ -11,22 +11,26 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
 import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstants;
 import frc.robot.util.LoggedTunableNumber;
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
+import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
+import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
 
 /**
- * This is the collector module subsystem
+ * This is the collector Subsystem
  *
  * <ul>
- *   <li>Uses IO's to switch between left and right<\li>
- *       <ul>
- *
- * @author Liam B
+ *   <li>It takes in a collector module IO's to assign to a collector module
+ * </ul>
  */
-public class CollectorModuleSingle {
-  private final CollectorModuleSingleIO collectorIO;
+public class Collector extends SubsystemBase {
+
   private final CollectorIOSingleInputsAutoLogged inputs = new CollectorIOSingleInputsAutoLogged();
 
   private final LoggedTunableNumber collectorPivotKP;
@@ -43,17 +47,30 @@ public class CollectorModuleSingle {
   private final LoggedTunableNumber collectorIntakeKA;
   private final LoggedTunableNumber collectorIntakeVelocity;
 
+  @AutoLogOutput(key = "collectorSingle/mechanism")
+  private LoggedMechanism2d loggedMechanism2d = new LoggedMechanism2d(0, 0);
+
+  LoggedMechanismRoot2d root =
+      loggedMechanism2d.getRoot(
+          "collector",
+          CollectorConstants.collectorLeftOriginTranslation.getX(),
+          CollectorConstants.collectorLeftOriginTranslation.getY());
+  LoggedMechanismLigament2d collectorLigament;
+
+  private CollectorModuleIO collectorIO;
+
   /**
-   * This is the collector module subsystem
+   * Collector subsystem.
    *
-   * <ul>
-   *   <li>Uses IO's to switch between left and right
-   * </ul>
+   * <p><hl>
+   * <li>Takes in a collector module IO </hl>
    *
-   * @param collectorIO
+   *     <p><img src="https://media.giphy.com/media/jVFgWDtkY5v2M/giphy.gif" alt="Our Collector">
+   *
+   * @param collector
    */
-  public CollectorModuleSingle(CollectorModuleSingleIO collectorIO) {
-    this.collectorIO = collectorIO;
+  public Collector(CollectorModuleIO collector) {
+    this.collectorIO = collector;
     String modulePrefix = "Collector/Single/";
     collectorPivotKP =
         new LoggedTunableNumber(modulePrefix + "Pivot/kP", collectorIO.getConstants().turnkP);
@@ -90,6 +107,7 @@ public class CollectorModuleSingle {
             collectorIO.getConstants().CollectorIntakeSpeed.baseUnitMagnitude());
   }
 
+  @Override
   public void periodic() {
     collectorIO.updateInputs(inputs);
     Logger.processInputs("Collector/Single", inputs);

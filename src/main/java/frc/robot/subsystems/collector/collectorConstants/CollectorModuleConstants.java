@@ -5,6 +5,8 @@
 package frc.robot.subsystems.collector.collectorConstants;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
 
@@ -15,17 +17,14 @@ import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.util.LoggedTunableNumber;
 
-/** An Interface for collector constants */
+/**
+ * This class is a grouping of constants
+ *
+ * <ul>
+ *   Only to be used with The talonFX collector IO for the right collector /** This class is a
+ *   grouping of constants for the single collector
+ */
 public class CollectorModuleConstants {
-  // Collector side
-  public static enum Side {
-    LEFT,
-    RIGHT
-  }
-
-  // Collectors side
-  public Side collectorSide;
-
   // Collector CanBus
   public CANBus canbus;
 
@@ -43,16 +42,6 @@ public class CollectorModuleConstants {
 
   // Real turn invert
   public InvertedValue turnInvert;
-
-  // Real Turn PID
-  public double turnkPSlot1;
-  public double turnkDSlot1;
-  public double turnkISlot1;
-
-  // Feed forward
-  public double turnkSSlot1;
-  public double turnkVSlot1;
-  public double turnkASlot1;
 
   // Real intake PID
   public double intakekP;
@@ -108,70 +97,44 @@ public class CollectorModuleConstants {
 
   public CollectorModuleConstants() {
 
-    // Collector Side
-    collectorSide = Side.LEFT;
-
-    // Collector canBus
-    canbus = new CANBus("peripherals_2026");
-
-    // Hardware ID's
-    turnMotorID = 0;
-    intakeMotorID = 0;
+    // Hardware IDs
+    turnMotorID = 32;
+    intakeMotorID = 21;
 
     // Gear ratio's
-    turnMotorGearRatio = 0.0;
+    turnMotorGearRatio = 29.07160494;
 
     // Real Turn PID
-    turnkP = 0.0;
-    turnkD = 0.0;
-    turnkI = 0.0;
+    turnkP = 20;
+    turnkD = 0;
+    turnkI = 0;
 
-    // Real intake PID
-    intakekP = 0.0;
+    // Real intake upper PID
+    intakekP = 15;
     intakekD = 0.0;
     intakekI = 0.0;
-    intakekV = 0.0;
-    intakekS = 0.0;
-    intakekA = 0.0;
-
-    // Sim Turn PID
-    SimTurnkP = 0.0;
-    SimTurnkD = 0.0;
-    SimTurnkI = 0.0;
-
-    // Sim intake PID
-    SimIntakekP = 0.0;
-    SimIntakekD = 0.0;
-    SimIntakekI = 0.0;
-
-    // Feed forward
-    turnkS = 0.25;
-    turnkV = 0.12;
-    turnkA = 0.01;
+    intakekV = 0;
+    intakekA = 0;
+    intakekS = 0;
+    intakeInvertedValue = InvertedValue.CounterClockwise_Positive;
 
     // Motion Magic constraints
-    motionMagicCruiseVelocity = RotationsPerSecond.of(1.7);
-    motionMagicAcceleration = RotationsPerSecondPerSecond.of(14);
+    motionMagicCruiseVelocity = RotationsPerSecond.of(0.5);
+    motionMagicAcceleration = RotationsPerSecondPerSecond.of(2);
 
     // Position
-    CollectorUpPos = Degrees.of(0);
-    // CollectorDownPos = Degrees
-
-    // Pivot Velocity
-    CollectorPivotDutyCycle = 0.15;
+    CollectorUpPos = Rotations.of(0);
+    CollectorDownPos = new LoggedTunableNumber("Collector/Single/Downpose rad", 2.198);
+    CollectorHalfPos = new LoggedTunableNumber("Collector/Single/Halfpose rad", 1);
 
     // Collector Intake Speeds
-    CollectorIntakeSpeed = RotationsPerSecond.of(0);
+    CollectorIntakeSpeed = RadiansPerSecond.of(80);
 
     // Limit Switch Constants
-    UpperLimitChannel = 0;
-    LowerLimitChannel = 0;
+    UpperLimitChannel = 1;
+    LowerLimitChannel = 2;
 
     // Collector Position Tolerance
-    CollectorPosTolerance = Degrees.of(0);
-
-    // Supply currents
-    turnSupplyCurrent = 80;
-    intakeSupplyCurrent = 120;
+    CollectorPosTolerance = Degrees.of(2);
   }
 }
