@@ -7,7 +7,6 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -33,9 +32,8 @@ import frc.robot.commands.TestPathCommands;
 import frc.robot.commands.collectorCommands.CollectorDown;
 import frc.robot.commands.collectorCommands.CollectorIntake;
 import frc.robot.commands.collectorCommands.CollectorUp;
-import frc.robot.commands.hopperCommands.HopperVelocityCommand;
 import frc.robot.commands.indexerCommands.IndexerAutoUnjam;
-import frc.robot.commands.indexerCommands.IndexerReverseCommand;
+import frc.robot.commands.indexerCommands.ReverseIndexCommand;
 import frc.robot.subsystems.collector.Collector;
 import frc.robot.subsystems.collector.CollectorModuleIO;
 import frc.robot.subsystems.collector.CollectorModuleTalonIO;
@@ -47,13 +45,12 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.drive.ModuleIOTalonFXSim;
 import frc.robot.subsystems.hopper.Hopper;
-import frc.robot.subsystems.hopper.HopperConstants;
 import frc.robot.subsystems.hopper.HopperIO;
 import frc.robot.subsystems.hopper.HopperIOSim;
 import frc.robot.subsystems.hopper.HopperIOTalonFX;
 import frc.robot.subsystems.hopper.IndexerConstants;
 import frc.robot.subsystems.hopper.IndexerIO;
-import frc.robot.subsystems.hopper.IndexerIOTalonFX;
+import frc.robot.subsystems.hopper.IndexerIOTalonFXS;
 import frc.robot.subsystems.shooter.BeamBreakIO;
 import frc.robot.subsystems.shooter.BeamBreakIOSensor;
 import frc.robot.subsystems.shooter.FlywheelIO;
@@ -151,8 +148,8 @@ public class RobotContainer {
         hopper =
             new Hopper(
                 new HopperIOTalonFX(),
-                new IndexerIOTalonFX(IndexerConstants.leftIndexerMotorID),
-                new IndexerIOTalonFX(IndexerConstants.rightIndexerMotorID));
+                new IndexerIOTalonFXS(IndexerConstants.leftIndexerMotorID),
+                new IndexerIOTalonFXS(IndexerConstants.rightIndexerMotorID));
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
@@ -213,7 +210,7 @@ public class RobotContainer {
 
         collector = new Collector(new CollectorModuleIO() {});
 
-        hopper = new Hopper(new HopperIOSim(), new IndexerIOTalonFX(0), new IndexerIOTalonFX(0));
+        hopper = new Hopper(new HopperIOSim(), new IndexerIOTalonFXS(0), new IndexerIOTalonFXS(0));
 
         break;
 
@@ -336,25 +333,9 @@ public class RobotContainer {
     runIndexer.whileTrue(new IndexerAutoUnjam(shooter::getBeamBreak, hopper));
 
     runIndexerReverse.whileTrue(
-        new IndexerReverseCommand(hopper)
-            .alongWith(
-                new HopperVelocityCommand(
-                    hopper,
-                    RotationsPerSecond.of(
-                        HopperConstants.hopperReverseAngularVelocityRotationsPerSecond.get()))));
+        new ReverseIndexCommand(hopper));
 
     runIndexer.whileTrue(new IndexerAutoUnjam(shooter::getBeamBreak, hopper));
-
-    runIndexerReverse.whileTrue(
-        new IndexerReverseCommand(hopper)
-            .alongWith(
-                new HopperVelocityCommand(
-                    hopper,
-                    RotationsPerSecond.of(
-                        HopperConstants.hopperReverseAngularVelocityRotationsPerSecond.get()))));
-
-    // new JoystickButton(buttonJoystick, Constants.OIConstants.runForward)
-    //     .onTrue(new runForward(drive));
 
     // if the index button is hed and more than a second elapses before the beam
     // break is broken the

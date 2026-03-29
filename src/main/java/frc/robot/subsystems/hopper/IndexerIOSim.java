@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
 /** This is the Indexer IO sim */
-public class IndexerIOSim extends IndexerIOTalonFX {
+public class IndexerIOSim extends IndexerIOTalonFXS {
   DCMotorSim indexerMotorSim;
   Voltage voltage;
 

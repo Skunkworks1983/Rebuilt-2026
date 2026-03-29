@@ -20,9 +20,7 @@ public class IndexerConstants {
 
   /** CAN ID for the indexer. */
   public static final int leftIndexerMotorID = 35;
-
   public static final int rightIndexerMotorID = 34;
-  // Correct ID's but order unknown which is lef and right
 
   // PID for indexer
   public static final double indexerKP = 2.0;
@@ -44,16 +42,16 @@ public class IndexerConstants {
   public static final AngularVelocity indexerAngularVelocitySetpoint = RotationsPerSecond.of(25);
   public static final LoggedTunableNumber indexerAngularVelocityRotationsPerSecond =
       new LoggedTunableNumber(
-          "Indexer/AngularVelocity [Rps]", indexerAngularVelocitySetpoint.in(RotationsPerSecond));
+          "Hopper/Indexer/AngularVelocity [Rps]", indexerAngularVelocitySetpoint.in(RotationsPerSecond));
   public static final LoggedTunableNumber indexerDutyCycleSpeedFeed =
-      new LoggedTunableNumber("Indexer/DutyCycleOutFeed", -1);
+      new LoggedTunableNumber("Hopper/Indexer/DutyCycleOutFeed", -1);
   public static final LoggedTunableNumber indexerDutyCycleSpeedReverse =
-      new LoggedTunableNumber("Indexer/DutyCycleOutReverse", .2);
+      new LoggedTunableNumber("Hopper/Indexer/DutyCycleOutReverse", .2);
 
   public static final LoggedTunableNumber autoUnjamNoBeamBreakTimeoutSeconds =
-      new LoggedTunableNumber("Indexer/AutoUnjam/NoBeamBreakTimeout [sec]", 1.5);
+      new LoggedTunableNumber("Hopper/Indexer/AutoUnjam/NoBeamBreakTimeout [sec]", 1.5);
   public static final LoggedTunableNumber autoUnjamReverseDurationSeconds =
-      new LoggedTunableNumber("Indexer/AutoUnjam/ReverseDuration [sec]", .5);
+      new LoggedTunableNumber("Hopper/Indexer/AutoUnjam/ReverseDuration [sec]", .5);
 
   public static Velocity<VoltageUnit> sysIdRampRate = Volts.per(Second).of(2);
 

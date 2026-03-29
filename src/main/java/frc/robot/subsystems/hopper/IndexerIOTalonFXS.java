@@ -26,7 +26,7 @@ import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /** This is the motor for the Indexer. it takes in a ID */
-public class IndexerIOTalonFX implements IndexerIO {
+public class IndexerIOTalonFXS implements IndexerIO {
 
   protected final TalonFXS indexerMotor;
 
@@ -44,7 +44,7 @@ public class IndexerIOTalonFX implements IndexerIO {
   private final TorqueCurrentFOC torqueCurrentRequest = new TorqueCurrentFOC(0);
   private final DutyCycleOut dutyCycleOut = new DutyCycleOut(0);
 
-  public IndexerIOTalonFX(int motorID) {
+  public IndexerIOTalonFXS(int motorID) {
 
     indexerMotor = new TalonFXS(motorID, IndexerConstants.indexerCanBus);
 
@@ -112,7 +112,6 @@ public class IndexerIOTalonFX implements IndexerIO {
   @Override
   public void setDutyCycle(double dutyCycle) {
     indexerMotor.setControl(dutyCycleOut.withOutput(dutyCycle));
-    SmartDashboard.putNumber("setting duty cyle to", dutyCycle);
   }
 
   @Override
