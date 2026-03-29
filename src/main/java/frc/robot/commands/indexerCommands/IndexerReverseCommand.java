@@ -14,7 +14,6 @@ public class IndexerReverseCommand extends Command {
 
   public IndexerReverseCommand(Hopper hopper) {
     this.hopper = hopper;
-    addRequirements(hopper);
   }
 
   @Override

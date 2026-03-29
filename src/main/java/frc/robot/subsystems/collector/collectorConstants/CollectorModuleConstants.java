@@ -95,6 +95,8 @@ public class CollectorModuleConstants {
     turnMotorID = 32;
     intakeMotorID = 21;
 
+    canbus = new CANBus("peripherals_2026");
+
     // Gear ratio's
     turnMotorGearRatio = 29.07160494;
 
