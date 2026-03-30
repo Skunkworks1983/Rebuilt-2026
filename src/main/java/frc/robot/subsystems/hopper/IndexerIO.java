@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.indexer;
+package frc.robot.subsystems.hopper;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import edu.wpi.first.units.measure.Angle;
@@ -45,4 +45,6 @@ public interface IndexerIO {
   public default void setOpenLoopTorqueCurrent(Current output) {}
 
   public default void setDutyCycle(double dutyCycle) {}
+
+  public default void setVoltageOut(Voltage voltage) {}
 }

@@ -8,8 +8,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.hopper.Hopper;
 import frc.robot.subsystems.hopper.HopperConstants;
-import frc.robot.subsystems.indexer.Indexer;
-import frc.robot.subsystems.indexer.IndexerConstants;
+import frc.robot.subsystems.hopper.IndexerConstants;
 import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.Logger;
 
@@ -21,18 +20,16 @@ public class IndexerAutoUnjam extends Command {
     REVERSE
   }
 
-  private final Indexer indexer;
   private final Hopper hopper;
   private final Timer timer = new Timer();
   private final BooleanSupplier beamBroken;
 
   private AutoUnjamState state = AutoUnjamState.FEED;
 
-  public IndexerAutoUnjam(Indexer indexer, BooleanSupplier beamBroken, Hopper hopper) {
-    this.indexer = indexer;
+  public IndexerAutoUnjam(BooleanSupplier beamBroken, Hopper hopper) {
     this.beamBroken = beamBroken;
     this.hopper = hopper;
-    addRequirements(indexer);
+    addRequirements(hopper);
   }
 
   @Override
@@ -66,7 +63,7 @@ public class IndexerAutoUnjam extends Command {
   @Override
   public void end(boolean interrupted) {
     timer.stop();
-    indexer.setIndexerDutyCycle(0.0);
+    hopper.setIndexerDutyCycle(0.0);
     hopper.setHopperDutyCycle(0);
     hopper.setHopperDutyCycle(0);
     Logger.recordOutput(logKey + "/Running", false);
@@ -95,11 +92,11 @@ public class IndexerAutoUnjam extends Command {
         HopperConstants.hopperReverseAngularVelocityRotationsPerSecond.get();
 
     if (state == AutoUnjamState.FEED) {
-      indexer.setIndexerDutyCycle(IndexerConstants.indexerDutyCycleSpeedFeed.get());
+      hopper.setIndexerDutyCycle(IndexerConstants.indexerDutyCycleSpeedFeed.get());
       hopper.setHopperDutyCycle(HopperConstants.hopperDutyCycleSpeedFeed.get());
       Logger.recordOutput(logKey + "/Unjamming", false);
     } else {
-      indexer.setIndexerDutyCycle(IndexerConstants.indexerDutyCycleSpeedReverse.get());
+      hopper.setIndexerDutyCycle(IndexerConstants.indexerDutyCycleSpeedReverse.get());
       hopper.setHopperDutyCycle(HopperConstants.hopperDutyCycleSpeedReverse.get());
       Logger.recordOutput(logKey + "/Unjamming", true);
     }

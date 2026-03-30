@@ -1,4 +1,4 @@
-package frc.robot.subsystems.indexer;
+package frc.robot.subsystems.hopper;
 
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
@@ -19,7 +19,8 @@ public class IndexerConstants {
   public static final double disconnectedDebounceTimeSec = 0.5;
 
   /** CAN ID for the indexer. */
-  public static final int indexerMotorID = 40;
+  public static final int leftIndexerMotorID = 35;
+  public static final int rightIndexerMotorID = 34;
 
   // PID for indexer
   public static final double indexerKP = 2.0;
@@ -33,7 +34,7 @@ public class IndexerConstants {
   /** Alignment configuration for the indexer motor. */
   public static final InvertedValue indexerMotorAlignment = InvertedValue.CounterClockwise_Positive;
 
-  public static final double indexerGearRatio = 19.2;
+  public static final double indexerSensorToMechanismRatio = 19.2;
 
   /** Stator current limit in Amps for the indexer motor. */
   public static final Current indexerStatorCurrentLimitAmps = Amps.of(120);
@@ -41,16 +42,16 @@ public class IndexerConstants {
   public static final AngularVelocity indexerAngularVelocitySetpoint = RotationsPerSecond.of(25);
   public static final LoggedTunableNumber indexerAngularVelocityRotationsPerSecond =
       new LoggedTunableNumber(
-          "Indexer/AngularVelocity [Rps]", indexerAngularVelocitySetpoint.in(RotationsPerSecond));
+          "Hopper/Indexer/AngularVelocity [Rps]", indexerAngularVelocitySetpoint.in(RotationsPerSecond));
   public static final LoggedTunableNumber indexerDutyCycleSpeedFeed =
-      new LoggedTunableNumber("Indexer/DutyCycleOutFeed", 1);
+      new LoggedTunableNumber("Hopper/Indexer/DutyCycleOutFeed", -1);
   public static final LoggedTunableNumber indexerDutyCycleSpeedReverse =
-      new LoggedTunableNumber("Indexer/DutyCycleOutReverse", -.2);
+      new LoggedTunableNumber("Hopper/Indexer/DutyCycleOutReverse", .2);
 
   public static final LoggedTunableNumber autoUnjamNoBeamBreakTimeoutSeconds =
-      new LoggedTunableNumber("Indexer/AutoUnjam/NoBeamBreakTimeout [sec]", 1.5);
+      new LoggedTunableNumber("Hopper/Indexer/AutoUnjam/NoBeamBreakTimeout [sec]", 1.5);
   public static final LoggedTunableNumber autoUnjamReverseDurationSeconds =
-      new LoggedTunableNumber("Indexer/AutoUnjam/ReverseDuration [sec]", .5);
+      new LoggedTunableNumber("Hopper/Indexer/AutoUnjam/ReverseDuration [sec]", .5);
 
   public static Velocity<VoltageUnit> sysIdRampRate = Volts.per(Second).of(2);
 

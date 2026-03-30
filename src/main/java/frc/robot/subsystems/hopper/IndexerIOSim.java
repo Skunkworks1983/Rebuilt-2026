@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.indexer;
+package frc.robot.subsystems.hopper;
 
 import com.ctre.phoenix6.sim.ChassisReference;
 import edu.wpi.first.math.system.LinearSystem;
@@ -14,12 +14,12 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
 /** This is the Indexer IO sim */
-public class IndexerIOSim extends IndexerIOTalonFX {
+public class IndexerIOSim extends IndexerIOTalonFXS {
   DCMotorSim indexerMotorSim;
   Voltage voltage;
 
-  public IndexerIOSim() {
-    super();
+  public IndexerIOSim(int motorID) {
+    super(motorID);
     LinearSystem linearSystem = LinearSystemId.createDCMotorSystem(0.002, 0.02);
 
     double[] stdevs = {0.00, 0.00};
@@ -31,7 +31,7 @@ public class IndexerIOSim extends IndexerIOTalonFX {
   public void updateInputs(IndexerIOInputs input) {
     var talonFXSim = super.indexerMotor.getSimState();
 
-    talonFXSim.Orientation = ChassisReference.Clockwise_Positive;
+    talonFXSim.MotorOrientation = ChassisReference.Clockwise_Positive;
     talonFXSim.setSupplyVoltage(RobotController.getBatteryVoltage());
 
     Voltage primaryAppliedVolts = talonFXSim.getMotorVoltageMeasure();
