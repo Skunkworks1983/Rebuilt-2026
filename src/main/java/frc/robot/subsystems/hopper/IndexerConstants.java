@@ -20,6 +20,7 @@ public class IndexerConstants {
 
   /** CAN ID for the indexer. */
   public static final int leftIndexerMotorID = 35;
+
   public static final int rightIndexerMotorID = 34;
 
   // PID for indexer
@@ -42,7 +43,8 @@ public class IndexerConstants {
   public static final AngularVelocity indexerAngularVelocitySetpoint = RotationsPerSecond.of(25);
   public static final LoggedTunableNumber indexerAngularVelocityRotationsPerSecond =
       new LoggedTunableNumber(
-          "Hopper/Indexer/AngularVelocity [Rps]", indexerAngularVelocitySetpoint.in(RotationsPerSecond));
+          "Hopper/Indexer/AngularVelocity [Rps]",
+          indexerAngularVelocitySetpoint.in(RotationsPerSecond));
   public static final LoggedTunableNumber indexerDutyCycleSpeedFeed =
       new LoggedTunableNumber("Hopper/Indexer/DutyCycleOutFeed", -1);
   public static final LoggedTunableNumber indexerDutyCycleSpeedReverse =

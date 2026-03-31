@@ -332,8 +332,7 @@ public class RobotContainer {
 
     runIndexer.whileTrue(new IndexerAutoUnjam(shooter::getBeamBreak, hopper));
 
-    runIndexerReverse.whileTrue(
-        new ReverseIndexCommand(hopper));
+    runIndexerReverse.whileTrue(new ReverseIndexCommand(hopper));
 
     runIndexer.whileTrue(new IndexerAutoUnjam(shooter::getBeamBreak, hopper));
 
@@ -346,11 +345,11 @@ public class RobotContainer {
     TestPathCommands.publishTestPaths(drive);
 
     shooter.setDefaultCommand(Commands.run(shooter::stop, shooter));
-    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualPivotDown)
+    new JoystickButton(rightJoystick, Constants.OIConstants.CollectorManualPivotDown)
         .onTrue(new CollectorDown(collector));
-    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualPivotUp)
+    new JoystickButton(rightJoystick, Constants.OIConstants.CollectorManualPivotUp)
         .onTrue(new CollectorUp(collector));
-    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorIntakeID)
+    new JoystickButton(leftJoystick, Constants.OIConstants.CollectorIntakeID)
         .whileTrue(new CollectorIntake(collector));
   }
 
