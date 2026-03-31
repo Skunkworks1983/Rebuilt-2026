@@ -4,11 +4,12 @@
 
 package frc.robot.commands.collectorCommands;
 
-import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.Radians;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.collector.Collector;
+import org.littletonrobotics.junction.Logger;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class agitate extends Command {
@@ -25,25 +26,29 @@ public class agitate extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    Logger.recordOutput("Commands/Collector/Agitate", true);
     time.reset();
     time.start();
-    collector.setCollectorPos(Rotations.of(collector.getConstants().CollectorHalfPos.get()), 0);
+    collector.setCollectorPos(Radians.of(collector.getConstants().CollectorHalfPos.get()), 0);
     collector.setCollectorIntakeVelocity(collector.getConstants().CollectorIntakeSpeed);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (time.hasElapsed(.5)) {
+    if (time.get() <= 1.5) {
       collector.goDown();
+    } else if (time.get() <= 3.0) {
+      collector.setCollectorPos(Radians.of(collector.getConstants().CollectorHalfPos.get()), 0);
     } else {
-      collector.setCollectorPos(Rotations.of(collector.getConstants().CollectorHalfPos.get()), 0);
+      time.reset();
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    Logger.recordOutput("Commands/Collector/Agitate", false);
     collector.goDown();
     collector.setCollectorIntakeDutyCycle(0);
   }

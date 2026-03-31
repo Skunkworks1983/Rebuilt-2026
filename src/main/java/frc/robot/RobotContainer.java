@@ -239,8 +239,7 @@ public class RobotContainer {
         break;
     }
     Command autoShootIndexerCommand =
-        new IndexerAutoUnjam(shooter::getBeamBreak, hopper)
-            .alongWith(new agitate(collector));
+        new IndexerAutoUnjam(shooter::getBeamBreak, hopper).alongWith(new agitate(collector));
 
     NamedCommands.registerCommand(
         "Shoot Preset Setpoits", new ShootPresetSetpoints(shooter, TargetType.GOAL));
@@ -334,11 +333,10 @@ public class RobotContainer {
     JoystickButton runIndexerReverse =
         new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID);
 
-    runIndexer.whileTrue(new IndexerAutoUnjam(shooter::getBeamBreak, hopper));
+    runIndexer.whileTrue(
+        new IndexerAutoUnjam(shooter::getBeamBreak, hopper).alongWith(new agitate(collector)));
 
     runIndexerReverse.whileTrue(new ReverseIndexCommand(hopper));
-
-    runIndexer.whileTrue(new IndexerAutoUnjam(shooter::getBeamBreak, hopper));
 
     // if the index button is hed and more than a second elapses before the beam
     // break is broken the
