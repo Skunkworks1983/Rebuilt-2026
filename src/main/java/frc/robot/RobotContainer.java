@@ -254,9 +254,14 @@ public class RobotContainer {
         "Intake Shooter/ Index", new IndexerAutoUnjam(indexer, shooter::getBeamBreak, hopper));
     NamedCommands.registerCommand(
         "Auto Aimed Shoot", new AutonomousAimedShoot(drive, shooter, indexer));
-    NamedCommands.registerCommand("Lower Collector", new CollectorDown(collector));
-    NamedCommands.registerCommand("Raise Collector", new CollectorUp(collector));
-    NamedCommands.registerCommand("Run Collector", new CollectorIntake(collector));
+    NamedCommands.registerCommand(
+        "Lower Collector", new CollectorDown(collector));
+    NamedCommands.registerCommand(
+        "Raise Collector", new CollectorUp(collector));
+    NamedCommands.registerCommand(
+        "Run Collector", new CollectorIntake(collector));
+    NamedCommands.registerCommand(
+        "Agitate", new agitate(collector));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());

@@ -37,6 +37,12 @@
                 "data": {
                   "name": "Auto Aimed Shoot"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Agitate"
+                }
               }
             ]
           }
