@@ -7,7 +7,6 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -33,9 +32,8 @@ import frc.robot.commands.TestPathCommands;
 import frc.robot.commands.collectorCommands.CollectorDown;
 import frc.robot.commands.collectorCommands.CollectorIntake;
 import frc.robot.commands.collectorCommands.CollectorUp;
-import frc.robot.commands.hopperCommands.HopperVelocityCommand;
 import frc.robot.commands.indexerCommands.IndexerAutoUnjam;
-import frc.robot.commands.indexerCommands.IndexerReverseCommand;
+import frc.robot.commands.indexerCommands.ReverseIndexCommand;
 import frc.robot.subsystems.collector.Collector;
 import frc.robot.subsystems.collector.CollectorModuleIO;
 import frc.robot.subsystems.collector.CollectorModuleTalonIO;
@@ -47,13 +45,12 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.drive.ModuleIOTalonFXSim;
 import frc.robot.subsystems.hopper.Hopper;
-import frc.robot.subsystems.hopper.HopperConstants;
+import frc.robot.subsystems.hopper.HopperIO;
 import frc.robot.subsystems.hopper.HopperIOSim;
 import frc.robot.subsystems.hopper.HopperIOTalonFX;
-import frc.robot.subsystems.indexer.Indexer;
-import frc.robot.subsystems.indexer.IndexerIO;
-import frc.robot.subsystems.indexer.IndexerIOSim;
-import frc.robot.subsystems.indexer.IndexerIOTalonFX;
+import frc.robot.subsystems.hopper.IndexerConstants;
+import frc.robot.subsystems.hopper.IndexerIO;
+import frc.robot.subsystems.hopper.IndexerIOTalonFXS;
 import frc.robot.subsystems.shooter.BeamBreakIO;
 import frc.robot.subsystems.shooter.BeamBreakIOSensor;
 import frc.robot.subsystems.shooter.FlywheelIO;
@@ -87,7 +84,6 @@ public class RobotContainer {
   private final Drive drive;
   private final Vision vision;
   private final Shooter shooter;
-  private final Indexer indexer;
   private final Collector collector;
   private final Hopper hopper;
 
@@ -147,11 +143,13 @@ public class RobotContainer {
         // This is a solution to the vision-drive cross dependency issue that hurts my
         // eys, but it does work
 
-        indexer = new Indexer(new IndexerIOTalonFX());
-
         collector = new Collector(new CollectorModuleTalonIO());
 
-        hopper = new Hopper(new HopperIOTalonFX());
+        hopper =
+            new Hopper(
+                new HopperIOTalonFX(),
+                new IndexerIOTalonFXS(IndexerConstants.leftIndexerMotorID),
+                new IndexerIOTalonFXS(IndexerConstants.rightIndexerMotorID));
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
@@ -212,9 +210,7 @@ public class RobotContainer {
 
         collector = new Collector(new CollectorModuleIO() {});
 
-        indexer = new Indexer(new IndexerIOSim());
-
-        hopper = new Hopper(new HopperIOSim());
+        hopper = new Hopper(new HopperIOSim(), new IndexerIOTalonFXS(0), new IndexerIOTalonFXS(0));
 
         break;
 
@@ -236,20 +232,18 @@ public class RobotContainer {
 
         collector = new Collector(new CollectorModuleTalonIO());
 
-        indexer = new Indexer(new IndexerIO() {});
-
-        hopper = new Hopper(new HopperIOTalonFX() {});
+        hopper = new Hopper(new HopperIO() {}, new IndexerIO() {}, new IndexerIO() {});
 
         break;
     }
-    Command autoShootIndexerCommand = new IndexerAutoUnjam(indexer, shooter::getBeamBreak, hopper);
+    Command autoShootIndexerCommand = new IndexerAutoUnjam(shooter::getBeamBreak, hopper);
 
     NamedCommands.registerCommand(
         "Shoot Preset Setpoits", new ShootPresetSetpoints(shooter, TargetType.GOAL));
     NamedCommands.registerCommand(
-        "Intake Shooter/ Index", new IndexerAutoUnjam(indexer, shooter::getBeamBreak, hopper));
+        "Intake Shooter/ Index", new IndexerAutoUnjam(shooter::getBeamBreak, hopper));
     NamedCommands.registerCommand(
-        "Auto Aimed Shoot", new AutonomousAimedShoot(drive, shooter, indexer));
+        "Auto Aimed Shoot", new AutonomousAimedShoot(drive, shooter, hopper));
     NamedCommands.registerCommand("Lower Collector", new CollectorDown(collector));
     NamedCommands.registerCommand("Raise Collector", new CollectorUp(collector));
     NamedCommands.registerCommand("Run Collector", new CollectorIntake(collector));
@@ -336,25 +330,11 @@ public class RobotContainer {
     JoystickButton runIndexerReverse =
         new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID);
 
-    runIndexer.whileTrue(new IndexerAutoUnjam(indexer, shooter::getBeamBreak, hopper));
+    runIndexer.whileTrue(new IndexerAutoUnjam(shooter::getBeamBreak, hopper));
 
-    runIndexerReverse.whileTrue(
-        new IndexerReverseCommand(indexer)
-            .alongWith(
-                new HopperVelocityCommand(
-                    hopper,
-                    RotationsPerSecond.of(
-                        HopperConstants.hopperReverseAngularVelocityRotationsPerSecond.get()))));
+    runIndexerReverse.whileTrue(new ReverseIndexCommand(hopper));
 
-    runIndexer.whileTrue(new IndexerAutoUnjam(indexer, shooter::getBeamBreak, hopper));
-
-    runIndexerReverse.whileTrue(
-        new IndexerReverseCommand(indexer)
-            .alongWith(
-                new HopperVelocityCommand(
-                    hopper,
-                    RotationsPerSecond.of(
-                        HopperConstants.hopperReverseAngularVelocityRotationsPerSecond.get()))));
+    runIndexer.whileTrue(new IndexerAutoUnjam(shooter::getBeamBreak, hopper));
 
     // if the index button is hed and more than a second elapses before the beam
     // break is broken the
@@ -365,11 +345,11 @@ public class RobotContainer {
     TestPathCommands.publishTestPaths(drive);
 
     shooter.setDefaultCommand(Commands.run(shooter::stop, shooter));
-    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualPivotDown)
+    new JoystickButton(rightJoystick, Constants.OIConstants.CollectorManualPivotDown)
         .onTrue(new CollectorDown(collector));
-    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualPivotUp)
+    new JoystickButton(rightJoystick, Constants.OIConstants.CollectorManualPivotUp)
         .onTrue(new CollectorUp(collector));
-    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorIntakeID)
+    new JoystickButton(leftJoystick, Constants.OIConstants.CollectorIntakeID)
         .whileTrue(new CollectorIntake(collector));
   }
 

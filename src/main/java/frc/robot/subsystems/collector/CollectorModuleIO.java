@@ -7,6 +7,7 @@ package frc.robot.subsystems.collector;
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.DegreesPerSecond;
+import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
@@ -37,12 +38,13 @@ public interface CollectorModuleIO {
     public Voltage turnAppliedVolts = Volts.of(0.0);
     public Current turnCurrentAmps = Amps.of(0.0);
     public double turnClosedLoopError = 0.0;
-    public double turnSetPoint = 0.0;
+    public Angle turnSetPoint = Radians.of(0);
 
     // Intake Motor Inputs for lower
     public boolean intakeConnected = false;
     public Angle intakePositionRad = Degrees.of(0.0);
     public AngularVelocity intakeVelocity = DegreesPerSecond.of(0.0);
+    public AngularVelocity intakeVelocitySetPoint = DegreesPerSecond.of(0.0);
     public Voltage intakeAppliedVolts = Volts.of(0.0);
     public Current intakeCurrentAmps = Amps.of(0.0);
 

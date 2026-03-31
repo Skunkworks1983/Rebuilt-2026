@@ -5,7 +5,10 @@
 package frc.robot.subsystems.collector;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
 import static frc.robot.util.PhoenixUtil.tryUntilOk;
@@ -17,7 +20,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.filter.Debouncer;
@@ -64,6 +67,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
   // Inputs from intake motor
   private final StatusSignal<Angle> intakePosition;
   private final StatusSignal<AngularVelocity> intakeVelocity;
+  private AngularVelocity intakeVelocitySetPoint;
   private final StatusSignal<Voltage> intakeAppliedVolts;
   private final StatusSignal<Current> intakeCurrent;
   private final LoggedTunableNumber collectorIntakeVelocity;
@@ -124,7 +128,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
 
     if (RobotBase.isReal()) {
       intakeConfig.Slot0.kP = constants.intakekP;
-      intakeConfig.Slot0.kD = constants.intakekP;
+      intakeConfig.Slot0.kD = constants.intakekD;
       intakeConfig.Slot0.kI = constants.intakekI;
       intakeConfig.Slot0.kV = constants.intakekV;
       turnSlot0Configs.kP = constants.turnkP;
@@ -132,7 +136,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
       turnSlot0Configs.kI = constants.turnkI;
     } else if (RobotBase.isSimulation()) {
       intakeConfig.Slot0.kP = constants.SimIntakekP;
-      intakeConfig.Slot0.kD = constants.SimIntakekP;
+      intakeConfig.Slot0.kD = constants.SimIntakekD;
       intakeConfig.Slot0.kI = constants.SimIntakekI;
       turnSlot0Configs.kP = constants.SimTurnkP;
       turnSlot0Configs.kD = constants.SimTurnkD;
@@ -161,6 +165,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     // Create upper intake status signals
     intakePosition = intakeMotor.getPosition();
     intakeVelocity = intakeMotor.getVelocity();
+    intakeVelocitySetPoint = DegreesPerSecond.of(0);
     intakeAppliedVolts = intakeMotor.getMotorVoltage();
     intakeCurrent = intakeMotor.getStatorCurrent();
 
@@ -204,12 +209,13 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     inputs.turnAppliedVolts = turnAppliedVolts.getValue();
     inputs.turnCurrentAmps = turnCurrent.getValue();
     inputs.turnClosedLoopError = turnError.getValueAsDouble();
-    inputs.turnSetPoint = turnSetPoint.getValueAsDouble();
+    inputs.turnSetPoint = Rotations.of(turnSetPoint.getValueAsDouble());
 
     // Update intake inputs
     inputs.intakeConnected = intakeConnectedDebounce.calculate(upperStatus.isOK());
     inputs.intakePositionRad = intakePosition.getValue();
     inputs.intakeVelocity = intakeVelocity.getValue();
+    inputs.intakeVelocitySetPoint = intakeVelocitySetPoint;
     inputs.intakeAppliedVolts = intakeAppliedVolts.getValue();
     inputs.intakeCurrentAmps = intakeCurrent.getValue();
 
@@ -233,9 +239,10 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
    * @param velocity -Angular Velocity
    */
   public void setCollectorIntakeVelocity(AngularVelocity velocity) {
+    intakeVelocitySetPoint = velocity;
     if (!velocity.equals(lastVelocity)) {
       intakeMotor.setControl(
-          new VelocityTorqueCurrentFOC(RotationsPerSecond.of(collectorIntakeVelocity.get())));
+          new VelocityVoltage(RadiansPerSecond.of(collectorIntakeVelocity.get())));
       lastVelocity = velocity;
     }
   }
