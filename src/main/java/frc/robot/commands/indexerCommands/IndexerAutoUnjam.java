@@ -91,11 +91,11 @@ public class IndexerAutoUnjam extends Command {
 
     if (state == AutoUnjamState.FEED) {
       hopper.setIndexerDutyCycle(IndexerConstants.indexerDutyCycleSpeedFeed.get());
-      //hopper.setHopperDutyCycle(HopperConstants.hopperDutyCycleSpeedFeed.get());
+      // hopper.setHopperDutyCycle(HopperConstants.hopperDutyCycleSpeedFeed.get());
       Logger.recordOutput(logKey + "/Unjamming", false);
     } else {
       hopper.setIndexerDutyCycle(IndexerConstants.indexerDutyCycleSpeedReverse.get());
-      //hopper.setHopperDutyCycle(HopperConstants.hopperDutyCycleSpeedReverse.get());
+      // hopper.setHopperDutyCycle(HopperConstants.hopperDutyCycleSpeedReverse.get());
       Logger.recordOutput(logKey + "/Unjamming", true);
     }
   }
