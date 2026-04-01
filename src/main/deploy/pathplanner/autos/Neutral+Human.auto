@@ -5,34 +5,22 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "Lower Collector"
-          }
-        },
-        {
-          "type": "race",
+          "type": "parallel",
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "Run Collector"
+                  "pathName": "Through Close Tunnel"
                 }
               },
               {
-                "type": "wait",
+                "type": "named",
                 "data": {
-                  "waitTime": 1.0
+                  "name": "Lower Collector"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Through Close Tunnel"
           }
         },
         {
@@ -55,9 +43,16 @@
           }
         },
         {
-          "type": "path",
+          "type": "sequential",
           "data": {
-            "pathName": "Close Trench Return"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Close Trench Return"
+                }
+              }
+            ]
           }
         },
         {
@@ -67,7 +62,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Auto Aimed Shoot"
+                  "name": "Another Auto Aimed Shoot"
                 }
               },
               {
@@ -92,15 +87,28 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "HumanToClose"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "HumanToClose"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Ramp Shooter"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Auto Aimed Shoot"
+            "name": "Another Auto Aimed Shoot"
           }
         }
       ]

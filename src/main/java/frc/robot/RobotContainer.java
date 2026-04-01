@@ -25,7 +25,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveAimedAutoShoot;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.Shooter.AutonomousAimedShoot;
+import frc.robot.commands.Shooter.AnotherAutoAimedShoot;
 import frc.robot.commands.Shooter.ShootPresetSetpoints;
 import frc.robot.commands.Shooter.ShootPresetSetpoints.TargetType;
 import frc.robot.commands.TestPathCommands;
@@ -238,15 +238,18 @@ public class RobotContainer {
 
         break;
     }
-    Command autoShootIndexerCommand =
-        new IndexerAutoUnjam(shooter::getBeamBreak, hopper).alongWith(new agitate(collector));
-
     NamedCommands.registerCommand(
-        "Shoot Preset Setpoits", new ShootPresetSetpoints(shooter, TargetType.GOAL));
+        "Another Auto Aimed Shoot",
+        new AnotherAutoAimedShoot(
+            drive,
+            shooter,
+            new IndexerAutoUnjam(shooter::getBeamBreak, hopper).alongWith(new agitate(collector))));
     NamedCommands.registerCommand(
-        "Intake Shooter/ Index", new IndexerAutoUnjam(shooter::getBeamBreak, hopper));
-    NamedCommands.registerCommand(
-        "Auto Aimed Shoot", new AutonomousAimedShoot(drive, shooter, hopper));
+        "Ramp Shooter", new ShootPresetSetpoints(shooter, TargetType.GOAL));
+    // NamedCommands.registerCommand(
+    //     "Intake Shooter/ Index", new IndexerAutoUnjam(shooter::getBeamBreak, hopper));
+    // NamedCommands.registerCommand(
+    //     "Auto Aimed Shoot", new AutonomousAimedShoot(drive, shooter, hopper));
     NamedCommands.registerCommand("Lower Collector", new CollectorDown(collector));
     NamedCommands.registerCommand("Raise Collector", new CollectorUp(collector));
     NamedCommands.registerCommand("Run Collector", new CollectorIntake(collector));

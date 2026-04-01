@@ -5,6 +5,7 @@
 package frc.robot.commands.collectorCommands;
 
 import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.Seconds;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -36,12 +37,12 @@ public class agitate extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (time.get() <= 1.5) {
-      collector.goDown();
-    } else if (time.get() <= 3.0) {
+    if (time.hasElapsed(Seconds.of(1.5))) {
+      time.reset();
+    } else if (time.hasElapsed(Seconds.of(.75))) {
       collector.setCollectorPos(Radians.of(collector.getConstants().CollectorHalfPos.get()), 0);
     } else {
-      time.reset();
+      collector.goDown();
     }
   }
 
