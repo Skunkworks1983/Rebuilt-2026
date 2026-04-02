@@ -22,13 +22,13 @@ public class HopperVelocityCommand extends Command {
 
   @Override
   public void initialize() {
-    hopper.setHopperVelocity(velocity);
+    hopper.setHopperBedVelocity(velocity);
     Logger.recordOutput("Hoppper/Command is Running", true);
   }
 
   @Override
   public void end(boolean interrupted) {
-    hopper.setHopperDutyCycle(0);
+    hopper.setHopperBedDutyCycle(0);
     Logger.recordOutput("Hopper/Command is Running", false);
   }
 

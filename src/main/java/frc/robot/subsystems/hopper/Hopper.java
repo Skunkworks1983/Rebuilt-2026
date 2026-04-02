@@ -26,8 +26,8 @@ import org.littletonrobotics.junction.Logger;
  * Hopper motor and two Indexer motors
  */
 public class Hopper extends SubsystemBase {
-  HopperIO hopper;
-  Alert hopperDisconnectAlert = new Alert(getName(), AlertType.kError);
+  HopperIO hopperBed;
+  Alert hopperBedDisconnectAlert = new Alert(getName(), AlertType.kError);
 
   IndexerIO leftIndexer;
   Alert leftIndexerDisconnectAlert = new Alert(getName(), AlertType.kError);
@@ -37,18 +37,18 @@ public class Hopper extends SubsystemBase {
 
   private final SysIdRoutine sysId;
 
-  public final HopperIOInputsAutoLogged hopperInputs = new HopperIOInputsAutoLogged();
+  public final HopperIOInputsAutoLogged hopperBedInputs = new HopperIOInputsAutoLogged();
 
-  private static final LoggedTunableNumber hopperlKP =
-      new LoggedTunableNumber("Hopper/HopperBed/kP", HopperConstants.hopperKP);
-  private static final LoggedTunableNumber hopperlKD =
-      new LoggedTunableNumber("Hopper/HopperBed/kD", HopperConstants.hopperKD);
-  private static final LoggedTunableNumber hopperlKS =
-      new LoggedTunableNumber("Hopper/HopperBed/kS", HopperConstants.hopperKS);
-  private static final LoggedTunableNumber hopperlKV =
-      new LoggedTunableNumber("Hopper/HopperBed/kV", HopperConstants.hopperKV);
-  private static final LoggedTunableNumber hopperlKA =
-      new LoggedTunableNumber("Hopper/HopperBed/kA", HopperConstants.hopperKA);
+  private static final LoggedTunableNumber hopperBedlKP =
+      new LoggedTunableNumber("Hopper/HopperBed/kP", HopperBedConstants.hopperKP);
+  private static final LoggedTunableNumber hopperBedlKD =
+      new LoggedTunableNumber("Hopper/HopperBed/kD", HopperBedConstants.hopperKD);
+  private static final LoggedTunableNumber hopperBedlKS =
+      new LoggedTunableNumber("Hopper/HopperBed/kS", HopperBedConstants.hopperKS);
+  private static final LoggedTunableNumber hopperBedlKV =
+      new LoggedTunableNumber("Hopper/HopperBed/kV", HopperBedConstants.hopperKV);
+  private static final LoggedTunableNumber hopperBedlKA =
+      new LoggedTunableNumber("Hopper/HopperBed/kA", HopperBedConstants.hopperKA);
 
   public final IndexerIOInputsAutoLogged leftIndexerInputs = new IndexerIOInputsAutoLogged();
   public final IndexerIOInputsAutoLogged rightIndexerInputs = new IndexerIOInputsAutoLogged();
@@ -64,16 +64,16 @@ public class Hopper extends SubsystemBase {
   private static final LoggedTunableNumber indexerlKA =
       new LoggedTunableNumber("Hopper/Indexer/kA", IndexerConstants.indexerKA);
 
-  public Hopper(HopperIO hopperMotor, IndexerIO leftIndexerMotor, IndexerIO rightIndexerMotor) {
-    this.hopper = hopperMotor;
+  public Hopper(HopperIO hopperBedMotor, IndexerIO leftIndexerMotor, IndexerIO rightIndexerMotor) {
+    this.hopperBed = hopperBedMotor;
     this.leftIndexer = leftIndexerMotor;
     this.rightIndexer = rightIndexerMotor;
 
     sysId =
         new SysIdRoutine(
             new SysIdRoutine.Config(
-                HopperConstants.sysIdRampRate,
-                HopperConstants.sysIdStepSize,
+                HopperBedConstants.sysIdRampRate,
+                HopperBedConstants.sysIdStepSize,
                 null,
                 (state) -> SignalLogger.writeString("Hopper/SysIdState", state.toString())),
             new SysIdRoutine.Mechanism(
@@ -81,7 +81,7 @@ public class Hopper extends SubsystemBase {
   }
 
   private void runHopperTorqueCurrent(double torqueCurrent) {
-    hopper.setOpenLoopTorqueCurrent(Amps.of(torqueCurrent));
+    hopperBed.setOpenLoopTorqueCurrent(Amps.of(torqueCurrent));
   }
 
   private void runIndexerTorqueCurrent(double torqueCurrent) {
@@ -91,38 +91,38 @@ public class Hopper extends SubsystemBase {
 
   @Override
   public void periodic() {
-    hopper.updateInputs(hopperInputs);
+    hopperBed.updateInputs(hopperBedInputs);
     leftIndexer.updateInputs(leftIndexerInputs);
     rightIndexer.updateInputs(rightIndexerInputs);
 
-    Logger.processInputs("Hopper/HopperBed/Hopper Motor", hopperInputs);
+    Logger.processInputs("Hopper/HopperBed/Hopper Motor", hopperBedInputs);
     Logger.processInputs("Hopper/Indexer/Left Indexer", leftIndexerInputs);
     Logger.processInputs("Hopper/Indexer/Right Indexer", rightIndexerInputs);
-    hopperDisconnectAlert.set(!hopperInputs.connected);
+    hopperBedDisconnectAlert.set(!hopperBedInputs.connected);
     leftIndexerDisconnectAlert.set(!leftIndexerInputs.connected);
     rightIndexerDisconnectAlert.set(!rightIndexerInputs.connected);
 
     if (Constants.tuningMode) {
 
       int hash = hashCode();
-      if (hopperlKP.hasChanged(hash)
-          || hopperlKD.hasChanged(hash)
-          || hopperlKS.hasChanged(hash)
-          || hopperlKV.hasChanged(hash)
-          || hopperlKA.hasChanged(hash)) {
+      if (hopperBedlKP.hasChanged(hash)
+          || hopperBedlKD.hasChanged(hash)
+          || hopperBedlKS.hasChanged(hash)
+          || hopperBedlKV.hasChanged(hash)
+          || hopperBedlKA.hasChanged(hash)) {
         Slot0Configs gains = new Slot0Configs();
-        gains.kP = hopperlKP.get();
-        gains.kD = hopperlKD.get();
-        gains.kS = hopperlKS.get();
-        gains.kV = hopperlKV.get();
-        gains.kA = hopperlKA.get();
-        hopper.setPID(gains);
+        gains.kP = hopperBedlKP.get();
+        gains.kD = hopperBedlKD.get();
+        gains.kS = hopperBedlKS.get();
+        gains.kV = hopperBedlKV.get();
+        gains.kA = hopperBedlKA.get();
+        hopperBed.setPID(gains);
 
         Elastic.sendNotification(
             new Elastic.Notification(
                 Elastic.NotificationLevel.INFO,
-                "Hopper PID Update",
-                "Hopper motor PID gains have been updated."));
+                "Hopper Bed PID Update",
+                "Hopper Bed motor PID gains have been updated."));
       }
 
       if (indexerlKP.hasChanged(hash)
@@ -149,12 +149,12 @@ public class Hopper extends SubsystemBase {
   }
 
   /** sets the velocity of the hopper to the defined velocity */
-  public void setHopperVelocity(AngularVelocity velocity) {
-    hopper.setHopperVelocity(velocity);
+  public void setHopperBedVelocity(AngularVelocity velocity) {
+    hopperBed.setHopperVelocity(velocity);
   }
 
-  public void setHopperDutyCycle(double dutyCycle) {
-    hopper.setDutyCycle(dutyCycle);
+  public void setHopperBedDutyCycle(double dutyCycle) {
+    hopperBed.setDutyCycle(dutyCycle);
   }
 
   /** sets the velocity of the indexer to the defined velocity */

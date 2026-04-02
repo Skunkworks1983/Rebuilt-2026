@@ -37,14 +37,14 @@ public class setIndexToJoystick extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    hopper.setHopperVelocity(RotationsPerSecond.of(hopperSpeed.getAsDouble()));
+    hopper.setHopperBedVelocity(RotationsPerSecond.of(hopperSpeed.getAsDouble()));
     hopper.setIndexerVelocity(RotationsPerSecond.of(indexerSpeed.getAsDouble()));
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    hopper.setHopperDutyCycle(0);
+    hopper.setHopperBedDutyCycle(0);
     hopper.setIndexerDutyCycle(0);
   }
 

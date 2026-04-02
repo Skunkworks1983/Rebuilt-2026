@@ -23,7 +23,6 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /** This is the motor for the Indexer. it takes in a ID */
 public class IndexerIOTalonFXS implements IndexerIO {

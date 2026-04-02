@@ -147,7 +147,7 @@ public class RobotContainer {
 
         hopper =
             new Hopper(
-                new HopperIOTalonFX(),
+                null,
                 new IndexerIOTalonFXS(IndexerConstants.leftIndexerMotorID),
                 new IndexerIOTalonFXS(IndexerConstants.rightIndexerMotorID));
 
@@ -210,7 +210,10 @@ public class RobotContainer {
 
         collector = new Collector(new CollectorModuleIO() {});
 
-        hopper = new Hopper(new HopperIOSim(), new IndexerIOTalonFXS(0), new IndexerIOTalonFXS(0));
+        hopper = new Hopper(
+            new HopperIOSim(), 
+            new IndexerIOTalonFXS(0), 
+            new IndexerIOTalonFXS(0));
 
         break;
 

@@ -7,7 +7,7 @@ package frc.robot.commands.indexerCommands;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.hopper.Hopper;
-import frc.robot.subsystems.hopper.HopperConstants;
+import frc.robot.subsystems.hopper.HopperBedConstants;
 import frc.robot.subsystems.hopper.IndexerConstants;
 import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.Logger;
@@ -64,8 +64,6 @@ public class IndexerAutoUnjam extends Command {
   public void end(boolean interrupted) {
     timer.stop();
     hopper.setIndexerDutyCycle(0.0);
-    hopper.setHopperDutyCycle(0);
-    hopper.setHopperDutyCycle(0);
     Logger.recordOutput(logKey + "/Running", false);
     Logger.recordOutput(logKey + "/Unjamming", false);
   }
@@ -87,17 +85,14 @@ public class IndexerAutoUnjam extends Command {
 
   private void applyStateOutput() {
     double indexerSpeedRps = IndexerConstants.indexerAngularVelocityRotationsPerSecond.get();
-    double hopperSpeedRps = HopperConstants.hopperAngularVelocityRotationsPerSecond.get();
     double hopperReverseSpeedRps =
-        HopperConstants.hopperReverseAngularVelocityRotationsPerSecond.get();
+        HopperBedConstants.hopperReverseAngularVelocityRotationsPerSecond.get();
 
     if (state == AutoUnjamState.FEED) {
       hopper.setIndexerDutyCycle(IndexerConstants.indexerDutyCycleSpeedFeed.get());
-      hopper.setHopperDutyCycle(HopperConstants.hopperDutyCycleSpeedFeed.get());
       Logger.recordOutput(logKey + "/Unjamming", false);
     } else {
       hopper.setIndexerDutyCycle(IndexerConstants.indexerDutyCycleSpeedReverse.get());
-      hopper.setHopperDutyCycle(HopperConstants.hopperDutyCycleSpeedReverse.get());
       Logger.recordOutput(logKey + "/Unjamming", true);
     }
   }

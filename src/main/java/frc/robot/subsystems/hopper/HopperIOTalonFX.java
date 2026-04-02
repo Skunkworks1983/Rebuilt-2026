@@ -28,7 +28,7 @@ public class HopperIOTalonFX implements HopperIO {
   protected final TalonFX hopperMotor;
 
   private final Debouncer hopperDebouncer =
-      new Debouncer(HopperConstants.disconnectedDebounceTimeSec, DebounceType.kFalling);
+      new Debouncer(HopperBedConstants.disconnectedDebounceTimeSec, DebounceType.kFalling);
 
   // create status signals
   public final StatusSignal<Angle> hopperPosition;
@@ -43,7 +43,7 @@ public class HopperIOTalonFX implements HopperIO {
 
   public HopperIOTalonFX() {
 
-    hopperMotor = new TalonFX(HopperConstants.hopperMotorID, HopperConstants.hopperCanBus);
+    hopperMotor = new TalonFX(HopperBedConstants.hopperMotorID, HopperBedConstants.hopperCanBus);
 
     // assigns values to the statussignals
     hopperPosition = hopperMotor.getPosition();
@@ -54,12 +54,12 @@ public class HopperIOTalonFX implements HopperIO {
     // creates and applies slot0 configs
     TalonFXConfiguration configs = new TalonFXConfiguration();
     Slot0Configs slot0Configs = configs.Slot0;
-    slot0Configs.kP = HopperConstants.hopperKP;
-    slot0Configs.kD = HopperConstants.hopperKD;
-    slot0Configs.kS = HopperConstants.hopperKS;
-    slot0Configs.kV = HopperConstants.hopperKV;
-    slot0Configs.kA = HopperConstants.hopperKA;
-    configs.MotorOutput.Inverted = HopperConstants.hopperMotorAlignment;
+    slot0Configs.kP = HopperBedConstants.hopperKP;
+    slot0Configs.kD = HopperBedConstants.hopperKD;
+    slot0Configs.kS = HopperBedConstants.hopperKS;
+    slot0Configs.kV = HopperBedConstants.hopperKV;
+    slot0Configs.kA = HopperBedConstants.hopperKA;
+    configs.MotorOutput.Inverted = HopperBedConstants.hopperMotorAlignment;
     tryUntilOk(5, () -> hopperMotor.getConfigurator().apply(configs, 0.25));
 
     BaseStatusSignal.setUpdateFrequencyForAll(
