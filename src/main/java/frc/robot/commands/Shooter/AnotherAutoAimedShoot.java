@@ -55,6 +55,7 @@ public class AnotherAutoAimedShoot extends Command {
     autoUnjamTimer.stop();
     autoUnjamTimer.reset();
     Logger.recordOutput("Auto Shoot/Feed Enabled", false);
+    Logger.recordOutput("Commands/Another Auto Aimed Shoot", true);
   }
 
   @Override
@@ -135,6 +136,7 @@ public class AnotherAutoAimedShoot extends Command {
     feedEnabled = false;
     Logger.recordOutput("Auto Shoot/Feed Enabled", false);
     Logger.recordOutput("Auto Shoot/Unjamming", false);
+    Logger.recordOutput("Commands/Another Auto Aimed Shoot", false);
     feedCommand.cancel();
   }
 }

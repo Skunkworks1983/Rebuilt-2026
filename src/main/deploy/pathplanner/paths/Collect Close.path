@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 5.689,
-        "y": 0.6515406562054205
+        "y": 0.7695848161328582
       },
       "prevControl": null,
       "nextControl": {
         "x": 7.363800699314605,
-        "y": 0.6515406562054205
+        "y": 0.7695848161328582
       },
       "isLocked": false,
       "linkedName": "Outside Close Trench"
@@ -50,11 +50,25 @@
       "rotationDegrees": 90.0
     }
   ],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.6188271604938193,
+      "maxWaypointRelativePos": 1.3194444444444389,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 4.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 2.0,
+    "maxVelocity": 3.1,
     "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -62,14 +76,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 2.1,
+    "velocity": 3.5,
     "rotation": 0.6106139252430076
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
-    "velocity": 1.0,
+    "velocity": 3.5,
     "rotation": 0.0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

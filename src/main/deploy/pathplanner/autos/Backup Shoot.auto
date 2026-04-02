@@ -22,6 +22,12 @@
               }
             ]
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Another Auto Aimed Shoot"
+          }
         }
       ]
     }

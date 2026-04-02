@@ -21,7 +21,7 @@ public class agitate extends Command {
     // Use addRequirements() here to declare subsystem dependencies.
     this.collector = collector;
     time = new Timer();
-    // addRequirements(collector);
+    addRequirements(collector);
   }
 
   // Called when the command is initially scheduled.
