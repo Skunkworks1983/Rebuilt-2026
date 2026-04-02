@@ -238,6 +238,7 @@ public class RobotContainer {
 
         break;
     }
+    
     NamedCommands.registerCommand(
         "Another Auto Aimed Shoot",
         new AnotherAutoAimedShoot(
@@ -370,9 +371,6 @@ public class RobotContainer {
     return autoChooser.get();
   }
 
-  public Command getTeleopCommand() {
-    return new CollectorUp(collector);
-  }
   /**
    * This is called at robot initialization during sim
    *

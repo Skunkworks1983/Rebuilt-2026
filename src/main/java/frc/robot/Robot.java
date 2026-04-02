@@ -145,7 +145,6 @@ public class Robot extends LoggedRobot {
     if (autonomousCommand != null) {
       autonomousCommand.cancel();
     }
-    teleInitCommand = robotContainer.getTeleopCommand();
     CommandScheduler.getInstance().schedule(teleInitCommand);
 
     HubShiftUtil.initialize();
