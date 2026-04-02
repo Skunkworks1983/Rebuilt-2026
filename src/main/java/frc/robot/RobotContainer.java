@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -240,10 +241,10 @@ public class RobotContainer {
     }
     NamedCommands.registerCommand(
         "Another Auto Aimed Shoot",
-        new AnotherAutoAimedShoot(
-            drive,
-            shooter,
-            new IndexerAutoUnjam(shooter::getBeamBreak, hopper).alongWith(new agitate(collector))));
+        new ParallelCommandGroup(
+            new AnotherAutoAimedShoot(
+                drive, shooter, new IndexerAutoUnjam(shooter::getBeamBreak, hopper)),
+            new agitate(collector)));
 
     NamedCommands.registerCommand(
         "Ramp Shooter", new ShootPresetSetpoints(shooter, TargetType.GOAL));

@@ -5,38 +5,26 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "Lower Collector"
-          }
-        },
-        {
-          "type": "race",
+          "type": "parallel",
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "Run Collector"
+                  "pathName": "Through Far Trench"
                 }
               },
               {
-                "type": "wait",
+                "type": "named",
                 "data": {
-                  "waitTime": 1.0
+                  "name": "Lower Collector"
                 }
               }
             ]
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "Through Far Trench"
-          }
-        },
-        {
-          "type": "deadline",
+          "type": "parallel",
           "data": {
             "commands": [
               {
@@ -80,9 +68,28 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Collect Outpost"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Collect Outpost"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Lower Collector"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Run Collector"
+                }
+              }
+            ]
           }
         },
         {
