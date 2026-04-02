@@ -244,6 +244,7 @@ public class RobotContainer {
             drive,
             shooter,
             new IndexerAutoUnjam(shooter::getBeamBreak, hopper).alongWith(new agitate(collector))));
+
     NamedCommands.registerCommand(
         "Ramp Shooter", new ShootPresetSetpoints(shooter, TargetType.GOAL));
     // NamedCommands.registerCommand(
