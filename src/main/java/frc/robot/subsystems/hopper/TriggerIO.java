@@ -11,10 +11,10 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import org.littletonrobotics.junction.AutoLog;
 
-/** this is the Indexers' IO */
-public interface IndexerIO {
+/** this is the Indexer/Trigger IO */
+public interface TriggerIO {
   @AutoLog
-  public static class IndexerIOInputs {
+  public static class TriggerIOInputs {
     public boolean connected = false;
     public Angle position;
     public AngularVelocity angularVelocity;
@@ -22,10 +22,10 @@ public interface IndexerIO {
     public Current currentAmps;
   }
 
-  public default void updateInputs(IndexerIOInputs inputs) {}
+  public default void updateInputs(TriggerIOInputs inputs) {}
 
-  /** sets velocity at which to run the indexer */
-  public default void setIndexerVelocity(AngularVelocity velocity) {}
+  /** sets velocity at which to run the trigger */
+  public default void setTriggerVelocity(AngularVelocity velocity) {}
 
   /**
    * Reconfigure PID/FF gains used by the flywheel controller on the fly.

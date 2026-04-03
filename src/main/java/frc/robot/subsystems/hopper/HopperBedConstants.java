@@ -36,15 +36,6 @@ public class HopperBedConstants {
   /** Stator current limit in Amps for the hopper motor. */
   public static final Current hopperStatorCurrentLimitAmps = Amps.of(40);
 
-  public static final AngularVelocity hopperAngularVelocitySetpoint = RotationsPerSecond.of(10);
-  public static final LoggedTunableNumber hopperAngularVelocityRotationsPerSecond =
-      new LoggedTunableNumber(
-          "hopper/AngularVelocity [Rps]", hopperAngularVelocitySetpoint.in(RotationsPerSecond));
-
-  public static final AngularVelocity hopperReverseAngularVelocitySetpoint =
-      RotationsPerSecond.of(1);
-  public static final LoggedTunableNumber hopperReverseAngularVelocityRotationsPerSecond =
-      new LoggedTunableNumber("hopper/ReverseAngularVelocity [Rps]", -10);
   public static final LoggedTunableNumber hopperDutyCycleSpeedFeed =
       new LoggedTunableNumber("hopper/DutyCycleOutFeed", .3);
   public static final LoggedTunableNumber hopperDutyCycleSpeedReverse =

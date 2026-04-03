@@ -129,7 +129,7 @@ public class DriveAimedShoot extends Command {
   public void end(boolean interrupted) {
     shooter.setPivotHome();
     Logger.recordOutput(autoShootRequirementsLogKey + "/ReadyToShoot", false);
-    Logger.recordOutput(autoShootRequirementsLogKey + "/IndexerCommandScheduled", false);
+    Logger.recordOutput(autoShootRequirementsLogKey + "/TriggerCommandScheduled", false);
     Logger.recordOutput(logKey, false);
   }
 }
