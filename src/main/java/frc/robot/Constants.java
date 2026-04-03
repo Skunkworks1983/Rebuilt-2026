@@ -18,7 +18,7 @@ public final class Constants {
   public static final Mode simMode = Mode.SIM;
   public static final Mode currentMode = Mode.REAL;
   public static final ControlScheme controlScheme = ControlScheme.OI;
-  public static final RobotHardware robotHardware = RobotHardware.Rebuilt;
+  public static final RobotHardware robotHardware = RobotHardware.RebuiltChassisOne;
   public static final TunerConstants tunerConstants = TunerConstants.getTunerConstants();
 
   public static final boolean tuningMode = false;
@@ -43,7 +43,8 @@ public final class Constants {
   public static enum RobotHardware {
     Swerveles,
     Reefscape,
-    Rebuilt
+    RebuiltChassisOne,
+    RebuiltChassisTwo
   }
 
   /** OI constants */
