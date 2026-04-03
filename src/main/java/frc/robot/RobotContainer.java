@@ -50,7 +50,7 @@ import frc.robot.subsystems.drive.ModuleIOTalonFXSim;
 import frc.robot.subsystems.hopper.BedIO;
 import frc.robot.subsystems.hopper.BedIOTalonFX;
 import frc.robot.subsystems.hopper.Hopper;
-import frc.robot.subsystems.hopper.HopperIOSim;
+import frc.robot.subsystems.hopper.BedIOSim;
 import frc.robot.subsystems.hopper.IndexerIO;
 import frc.robot.subsystems.hopper.IndexerIOSim;
 import frc.robot.subsystems.hopper.IndexerIOTalonFX;
@@ -198,7 +198,7 @@ public class RobotContainer {
 
         collector = new Collector(new CollectorModuleIO() {});
 
-        hopper = new Hopper(new HopperIOSim(), new IndexerIOSim());
+        hopper = new Hopper(new BedIOSim(), new IndexerIOSim());
 
         break;
 

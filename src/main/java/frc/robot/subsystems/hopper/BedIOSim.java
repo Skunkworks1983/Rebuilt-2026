@@ -14,11 +14,11 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
 /** This is the Hopper IO sim */
-public class HopperIOSim extends BedIOTalonFX {
+public class BedIOSim extends BedIOTalonFX {
   DCMotorSim hopperMotorSim;
   Voltage voltage;
 
-  public HopperIOSim() {
+  public BedIOSim() {
     super();
     LinearSystem linearSystem = LinearSystemId.createDCMotorSystem(0.002, 0.02);
 
