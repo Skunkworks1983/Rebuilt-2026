@@ -43,16 +43,9 @@
           }
         },
         {
-          "type": "sequential",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Close Trench Return"
-                }
-              }
-            ]
+            "pathName": "Close Trench Return"
           }
         },
         {
