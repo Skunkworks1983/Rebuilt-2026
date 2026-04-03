@@ -14,19 +14,34 @@ public interface FlywheelIO {
   @AutoLog
   public static class FlywheelIOInputs {
     /** True when the flywheel hardware is connected and responding. */
-    public boolean connected = false;
+    public boolean primaryConnected = false;
 
     /** Current measured angular velocity of the flywheel */
-    public AngularVelocity angularVelocity = RotationsPerSecond.of(0);
+    public AngularVelocity primaryAngularVelocity = RotationsPerSecond.of(0);
 
     /** Voltage currently applied to the flywheel motor. */
-    public Voltage appliedVolts = Volts.of(0);
+    public Voltage primaryAppliedVolts = Volts.of(0);
 
     /** Motor stator current in amps. */
-    public Current statorCurrentAmps = Amps.of(0);
+    public Current primaryStatorCurrentAmps = Amps.of(0);
 
     /** Torque oriented control applied current */
-    public Current torqueCurrentAmps = Amps.of(0);
+    public Current primaryTorqueCurrentAmps = Amps.of(0);
+
+    /** True when the flywheel hardware is connected and responding. */
+    public boolean followerConnected = false;
+
+    /** Current measured angular velocity of the flywheel */
+    public AngularVelocity followerAngularVelocity = RotationsPerSecond.of(0);
+
+    /** Voltage currently applied to the flywheel motor. */
+    public Voltage followerAppliedVolts = Volts.of(0);
+
+    /** Motor stator current in amps. */
+    public Current followerStatorCurrentAmps = Amps.of(0);
+
+    /** Torque oriented control applied current */
+    public Current followerTorqueCurrentAmps = Amps.of(0);
   }
 
   /**

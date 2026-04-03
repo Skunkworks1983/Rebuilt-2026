@@ -44,8 +44,8 @@ public class ShooterCalculations {
    * @param possibleShot Whether the shot is physically possible given the constraints.
    */
   public record ShooterControls(
-      AngularVelocity upperFlywheelVelocity,
-      AngularVelocity lowerFlywheelVelocity,
+      AngularVelocity flywheelVelocity,
+      AngularVelocity deprecatedLowerFlywheelVelocity,
       Angle shooterPitch,
       Rotation2d driveYaw,
       boolean possibleShot) {}

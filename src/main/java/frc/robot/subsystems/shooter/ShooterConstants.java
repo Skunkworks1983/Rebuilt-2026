@@ -17,6 +17,7 @@ import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.signals.ForwardLimitSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.ReverseLimitSourceValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -51,19 +52,21 @@ public class ShooterConstants {
   // FLYWHEEL CONSTANTS
 
   /** CAN ID for the primary flywheel motor. */
-  public static final int upperFlywheelMotorID = 26;
+  public static final int leftFlywheelMotorID = 26;
 
   /** CAN ID for the secondary flywheel motor. */
-  public static final int lowerFlywheelMotorID = 25;
+  public static final int rightFlywheelMotorID = 25;
+
+  public static final MotorAlignmentValue flywheelMotorAlignment = MotorAlignmentValue.Opposed;
 
   // PID for flywheel
-  public static final double upperFlywheelKP = 8.35;
-  public static final double upperFlywheelKD = 0.0;
+  public static final double flywheelKP = 8.35;
+  public static final double flywheelKD = 0.0;
 
   // Feed forwards for the flywheel
-  public static final double upperFlywheelKS = 0.027988;
-  public static final double upperFlywheelKV = 0.071044;
-  public static final double upperFlywheelKA = 3.60181;
+  public static final double flywheelKS = 0.027988;
+  public static final double flywheelKV = 0.071044;
+  public static final double flywheelKA = 3.60181;
 
   // PID for flywheel
   public static final double lowerFlywheelKP = 9.75;
@@ -83,13 +86,13 @@ public class ShooterConstants {
       RotationsPerSecondPerSecond.of(200.0);
 
   /** Gear ratio of the flywheel mechanism. */
-  public static final double flywheelGearRatio = 1.;
+  public static final double flywheelGearRatio = 1.2;
 
   /** Stator current limit in Amps for the flywheel motors. */
   public static final Current flywheelStatorCurrentLimitAmps = Amps.of(120);
 
   /** Invert configuration for the primary flywheel motor. */
-  public static final InvertedValue flywheelMotorInverted = InvertedValue.CounterClockwise_Positive;
+  public static final InvertedValue leftMotorInverted = InvertedValue.CounterClockwise_Positive;
 
   /** Minimum physical pitch angle of the shooter. */
   public static final Angle minShooterPitch = Degrees.of(55.5);
@@ -108,7 +111,7 @@ public class ShooterConstants {
   public static final Pose3d shooterInitalPosition =
       new Pose3d(
           new Translation3d(Inches.of(-4.483162), Meters.of(0), Inches.of(21.311)),
-          new Rotation3d(Degrees.of(0), pivotStartAngle, Degrees.of(0)));
+          new Rotation3d(Degrees.of(0), pivotStartAngle, Degrees.of(180)));
 
   /** Radius of the flywheel. */
   public static final Distance flywheelRadius = Inches.of(2);

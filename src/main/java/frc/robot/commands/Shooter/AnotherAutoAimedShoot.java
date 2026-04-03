@@ -67,10 +67,7 @@ public class AnotherAutoAimedShoot extends Command {
         ShooterCalculations.getApexConstrainedShooterControls(currentPose, currentSpeeds);
 
     shooter.setShooterSetpoints(
-        new ShooterSetpoints(
-            controls.upperFlywheelVelocity(),
-            controls.lowerFlywheelVelocity(),
-            controls.shooterPitch()));
+        new ShooterSetpoints(controls.flywheelVelocity(), controls.shooterPitch()));
     double currentYawRadians = drive.getRotation().getRadians();
     double targetYawRadians = controls.driveYaw().getRadians();
     // double targetYawDelta = MathUtil.angleModulus(targetYawRadians - lastFilteredYaw);
@@ -114,7 +111,7 @@ public class AnotherAutoAimedShoot extends Command {
     Logger.recordOutput(
         "Auto Shoot/Debounced", indexDebounce.calculate(yawController.atSetpoint()));
 
-    boolean readyToFeed = yawController.atGoal() && shooter.isUpperFlywheelAtSetpoint();
+    boolean readyToFeed = yawController.atGoal() && shooter.isFlywheelAtSetpoint();
     Logger.recordOutput("Auto Shoot/Indexer Ready", readyToFeed);
 
     if (readyToFeed && !feedEnabled) {

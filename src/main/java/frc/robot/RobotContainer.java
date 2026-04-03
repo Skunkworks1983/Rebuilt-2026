@@ -63,8 +63,6 @@ import frc.robot.subsystems.shooter.PivotIO;
 import frc.robot.subsystems.shooter.PivotIOSim;
 import frc.robot.subsystems.shooter.PivotIOTalonFX;
 import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.shooter.ShooterConstants;
-import frc.robot.subsystems.shooter.ShooterConstants.FlywheelLevel;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
@@ -131,11 +129,7 @@ public class RobotContainer {
                 (pose) -> {});
 
         shooter =
-            new Shooter(
-                new FlywheelIOTalonFX(ShooterConstants.upperFlywheelMotorID, FlywheelLevel.Upper),
-                new FlywheelIOTalonFX(ShooterConstants.lowerFlywheelMotorID, FlywheelLevel.Lower),
-                new PivotIOTalonFX(),
-                new BeamBreakIOSensor());
+            new Shooter(new FlywheelIOTalonFX(), new PivotIOTalonFX(), new BeamBreakIOSensor());
 
         vision =
             new Vision(
@@ -192,12 +186,7 @@ public class RobotContainer {
                     Constants.tunerConstants.getBackRight(), simulation.getModules()[3]),
                 simulation::setSimulationWorldPose);
 
-        shooter =
-            new Shooter(
-                new FlywheelIOSim(ShooterConstants.upperFlywheelMotorID, FlywheelLevel.Upper),
-                new FlywheelIOSim(ShooterConstants.lowerFlywheelMotorID, FlywheelLevel.Lower),
-                new PivotIOSim(),
-                new BeamBreakIO() {});
+        shooter = new Shooter(new FlywheelIOSim(), new PivotIOSim(), new BeamBreakIO() {});
 
         vision =
             new Vision(
@@ -227,9 +216,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 (pose) -> {});
-        shooter =
-            new Shooter(
-                new FlywheelIO() {}, new FlywheelIO() {}, new PivotIO() {}, new BeamBreakIO() {});
+        shooter = new Shooter(new FlywheelIO() {}, new PivotIO() {}, new BeamBreakIO() {});
 
         vision = new Vision(drive, new VisionIO() {}, new VisionIO() {});
 
@@ -239,7 +226,7 @@ public class RobotContainer {
 
         break;
     }
-    
+
     NamedCommands.registerCommand(
         "Another Auto Aimed Shoot",
         new ParallelCommandGroup(
