@@ -4,8 +4,6 @@
 
 package frc.robot.commands.triggerCommands;
 
-import static edu.wpi.first.units.Units.RotationsPerSecond;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.hopper.Hopper;
 import frc.robot.subsystems.hopper.TriggerConstants;
@@ -22,8 +20,7 @@ public class TriggerCommand extends Command {
 
   @Override
   public void initialize() {
-    hopper.setTriggerDutyCycle(
-        TriggerConstants.triggerDutyCycleSpeedFeed.get());
+    hopper.setTriggerDutyCycle(TriggerConstants.triggerDutyCycleSpeedFeed.get());
     Logger.recordOutput("Trigger/Command is Running", true);
   }
 
