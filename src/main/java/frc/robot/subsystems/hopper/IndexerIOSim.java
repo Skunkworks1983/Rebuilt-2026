@@ -14,12 +14,11 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
 /** This is the Indexer IO sim */
-public class IndexerIOSim extends IndexerIOTalonFXS {
+public class IndexerIOSim extends IndexerIOTalonFX {
   DCMotorSim indexerMotorSim;
   Voltage voltage;
 
-  public IndexerIOSim(int motorID) {
-    super(motorID);
+  public IndexerIOSim() {
     LinearSystem linearSystem = LinearSystemId.createDCMotorSystem(0.002, 0.02);
 
     double[] stdevs = {0.00, 0.00};
@@ -29,9 +28,9 @@ public class IndexerIOSim extends IndexerIOTalonFXS {
 
   @Override
   public void updateInputs(IndexerIOInputs input) {
-    var talonFXSim = super.indexerMotor.getSimState();
+    var talonFXSim = super.primaryIndexerMotor.getSimState();
 
-    talonFXSim.MotorOrientation = ChassisReference.Clockwise_Positive;
+    talonFXSim.Orientation = ChassisReference.Clockwise_Positive;
     talonFXSim.setSupplyVoltage(RobotController.getBatteryVoltage());
 
     Voltage primaryAppliedVolts = talonFXSim.getMotorVoltageMeasure();

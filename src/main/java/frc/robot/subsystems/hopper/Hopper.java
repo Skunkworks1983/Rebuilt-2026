@@ -26,32 +26,28 @@ import org.littletonrobotics.junction.Logger;
  * Hopper motor and two Indexer motors
  */
 public class Hopper extends SubsystemBase {
-  HopperIO hopper;
+  BedIO bed;
   Alert hopperDisconnectAlert = new Alert(getName(), AlertType.kError);
 
-  IndexerIO leftIndexer;
+  IndexerIO indexer;
   Alert leftIndexerDisconnectAlert = new Alert(getName(), AlertType.kError);
-
-  IndexerIO rightIndexer;
-  Alert rightIndexerDisconnectAlert = new Alert(getName(), AlertType.kError);
 
   private final SysIdRoutine sysId;
 
   public final HopperIOInputsAutoLogged hopperInputs = new HopperIOInputsAutoLogged();
 
   private static final LoggedTunableNumber hopperlKP =
-      new LoggedTunableNumber("Hopper/HopperBed/kP", HopperConstants.hopperKP);
+      new LoggedTunableNumber("Hopper/HopperBed/kP", BedConstants.hopperKP);
   private static final LoggedTunableNumber hopperlKD =
-      new LoggedTunableNumber("Hopper/HopperBed/kD", HopperConstants.hopperKD);
+      new LoggedTunableNumber("Hopper/HopperBed/kD", BedConstants.hopperKD);
   private static final LoggedTunableNumber hopperlKS =
-      new LoggedTunableNumber("Hopper/HopperBed/kS", HopperConstants.hopperKS);
+      new LoggedTunableNumber("Hopper/HopperBed/kS", BedConstants.hopperKS);
   private static final LoggedTunableNumber hopperlKV =
-      new LoggedTunableNumber("Hopper/HopperBed/kV", HopperConstants.hopperKV);
+      new LoggedTunableNumber("Hopper/HopperBed/kV", BedConstants.hopperKV);
   private static final LoggedTunableNumber hopperlKA =
-      new LoggedTunableNumber("Hopper/HopperBed/kA", HopperConstants.hopperKA);
+      new LoggedTunableNumber("Hopper/HopperBed/kA", BedConstants.hopperKA);
 
-  public final IndexerIOInputsAutoLogged leftIndexerInputs = new IndexerIOInputsAutoLogged();
-  public final IndexerIOInputsAutoLogged rightIndexerInputs = new IndexerIOInputsAutoLogged();
+  public final IndexerIOInputsAutoLogged indexerInputs = new IndexerIOInputsAutoLogged();
 
   private static final LoggedTunableNumber indexerlKP =
       new LoggedTunableNumber("Hopper/Indexer/kP", IndexerConstants.indexerKP);
@@ -64,16 +60,15 @@ public class Hopper extends SubsystemBase {
   private static final LoggedTunableNumber indexerlKA =
       new LoggedTunableNumber("Hopper/Indexer/kA", IndexerConstants.indexerKA);
 
-  public Hopper(HopperIO hopperMotor, IndexerIO leftIndexerMotor, IndexerIO rightIndexerMotor) {
-    this.hopper = hopperMotor;
-    this.leftIndexer = leftIndexerMotor;
-    this.rightIndexer = rightIndexerMotor;
+  public Hopper(BedIO hopperMotor, IndexerIO indexer) {
+    this.bed = hopperMotor;
+    this.indexer = indexer;
 
     sysId =
         new SysIdRoutine(
             new SysIdRoutine.Config(
-                HopperConstants.sysIdRampRate,
-                HopperConstants.sysIdStepSize,
+                BedConstants.sysIdRampRate,
+                BedConstants.sysIdStepSize,
                 null,
                 (state) -> SignalLogger.writeString("Hopper/SysIdState", state.toString())),
             new SysIdRoutine.Mechanism(
@@ -81,26 +76,22 @@ public class Hopper extends SubsystemBase {
   }
 
   private void runHopperTorqueCurrent(double torqueCurrent) {
-    hopper.setOpenLoopTorqueCurrent(Amps.of(torqueCurrent));
+    bed.setOpenLoopTorqueCurrent(Amps.of(torqueCurrent));
   }
 
   private void runIndexerTorqueCurrent(double torqueCurrent) {
-    leftIndexer.setOpenLoopTorqueCurrent(Amps.of(torqueCurrent));
-    rightIndexer.setOpenLoopTorqueCurrent(Amps.of(torqueCurrent));
+    indexer.setOpenLoopTorqueCurrent(Amps.of(torqueCurrent));
   }
 
   @Override
   public void periodic() {
-    hopper.updateInputs(hopperInputs);
-    leftIndexer.updateInputs(leftIndexerInputs);
-    rightIndexer.updateInputs(rightIndexerInputs);
+    bed.updateInputs(hopperInputs);
+    indexer.updateInputs(indexerInputs);
 
-    Logger.processInputs("Hopper/HopperBed/Hopper Motor", hopperInputs);
-    Logger.processInputs("Hopper/Indexer/Left Indexer", leftIndexerInputs);
-    Logger.processInputs("Hopper/Indexer/Right Indexer", rightIndexerInputs);
+    Logger.processInputs("Hopper/Bed/", hopperInputs);
+    Logger.processInputs("Hopper/Indexer/", indexerInputs);
     hopperDisconnectAlert.set(!hopperInputs.connected);
-    leftIndexerDisconnectAlert.set(!leftIndexerInputs.connected);
-    rightIndexerDisconnectAlert.set(!rightIndexerInputs.connected);
+    leftIndexerDisconnectAlert.set(!indexerInputs.connected);
 
     if (Constants.tuningMode) {
 
@@ -116,7 +107,7 @@ public class Hopper extends SubsystemBase {
         gains.kS = hopperlKS.get();
         gains.kV = hopperlKV.get();
         gains.kA = hopperlKA.get();
-        hopper.setPID(gains);
+        bed.setPID(gains);
 
         Elastic.sendNotification(
             new Elastic.Notification(
@@ -136,8 +127,7 @@ public class Hopper extends SubsystemBase {
         gains.kS = indexerlKS.get();
         gains.kV = indexerlKV.get();
         gains.kA = indexerlKA.get();
-        leftIndexer.setPID(gains);
-        rightIndexer.setPID(gains);
+        indexer.setPID(gains);
 
         Elastic.sendNotification(
             new Elastic.Notification(
@@ -150,28 +140,25 @@ public class Hopper extends SubsystemBase {
 
   /** sets the velocity of the hopper to the defined velocity */
   public void setHopperVelocity(AngularVelocity velocity) {
-    hopper.setHopperVelocity(velocity);
+    bed.setHopperVelocity(velocity);
   }
 
   public void setHopperDutyCycle(double dutyCycle) {
-    hopper.setDutyCycle(dutyCycle);
+    bed.setDutyCycle(dutyCycle);
   }
 
   /** sets the velocity of the indexer to the defined velocity */
   public void setIndexerVelocity(AngularVelocity velocity) {
-    leftIndexer.setIndexerVelocity(velocity.unaryMinus());
-    rightIndexer.setIndexerVelocity(velocity);
+    indexer.setIndexerVelocity(velocity.unaryMinus());
   }
 
   /** sets both indexers duty cycle */
   public void setIndexerDutyCycle(double dutyCycle) {
-    leftIndexer.setDutyCycle(dutyCycle);
-    rightIndexer.setDutyCycle(-dutyCycle);
+    indexer.setDutyCycle(dutyCycle);
   }
 
   public void setIndexerVoltageOut(Voltage voltage) {
-    leftIndexer.setVoltageOut(voltage.unaryMinus());
-    rightIndexer.setVoltageOut(voltage);
+    indexer.setVoltageOut(voltage.unaryMinus());
   }
 
   /** Returns a command to run a quasistatic test in the specified direction. */

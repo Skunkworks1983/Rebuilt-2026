@@ -7,8 +7,8 @@ package frc.robot.commands.indexerCommands;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.hopper.BedConstants;
 import frc.robot.subsystems.hopper.Hopper;
-import frc.robot.subsystems.hopper.HopperConstants;
 import frc.robot.subsystems.hopper.IndexerConstants;
 import org.littletonrobotics.junction.Logger;
 
@@ -25,8 +25,7 @@ public class ReverseIndexCommand extends Command {
   public void initialize() {
     hopper.setIndexerDutyCycle(IndexerConstants.indexerDutyCycleSpeedReverse.get());
     hopper.setHopperVelocity(
-        RotationsPerSecond.of(
-            HopperConstants.hopperReverseAngularVelocityRotationsPerSecond.get()));
+        RotationsPerSecond.of(BedConstants.hopperReverseAngularVelocityRotationsPerSecond.get()));
     Logger.recordOutput("Hopper/Reverse Command is Running", true);
   }
 

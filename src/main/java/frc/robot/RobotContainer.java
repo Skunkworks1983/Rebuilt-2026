@@ -47,13 +47,13 @@ import frc.robot.subsystems.drive.GyroIOSim;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.drive.ModuleIOTalonFXSim;
+import frc.robot.subsystems.hopper.BedIO;
+import frc.robot.subsystems.hopper.BedIOTalonFX;
 import frc.robot.subsystems.hopper.Hopper;
-import frc.robot.subsystems.hopper.HopperIO;
 import frc.robot.subsystems.hopper.HopperIOSim;
-import frc.robot.subsystems.hopper.HopperIOTalonFX;
-import frc.robot.subsystems.hopper.IndexerConstants;
 import frc.robot.subsystems.hopper.IndexerIO;
-import frc.robot.subsystems.hopper.IndexerIOTalonFXS;
+import frc.robot.subsystems.hopper.IndexerIOSim;
+import frc.robot.subsystems.hopper.IndexerIOTalonFX;
 import frc.robot.subsystems.shooter.BeamBreakIO;
 import frc.robot.subsystems.shooter.BeamBreakIOSensor;
 import frc.robot.subsystems.shooter.FlywheelIO;
@@ -142,11 +142,7 @@ public class RobotContainer {
 
         collector = new Collector(new CollectorModuleTalonIO());
 
-        hopper =
-            new Hopper(
-                new HopperIOTalonFX(),
-                new IndexerIOTalonFXS(IndexerConstants.leftIndexerMotorID),
-                new IndexerIOTalonFXS(IndexerConstants.rightIndexerMotorID));
+        hopper = new Hopper(new BedIOTalonFX(), new IndexerIOTalonFX());
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
@@ -202,7 +198,7 @@ public class RobotContainer {
 
         collector = new Collector(new CollectorModuleIO() {});
 
-        hopper = new Hopper(new HopperIOSim(), new IndexerIOTalonFXS(0), new IndexerIOTalonFXS(0));
+        hopper = new Hopper(new HopperIOSim(), new IndexerIOSim());
 
         break;
 
@@ -222,7 +218,7 @@ public class RobotContainer {
 
         collector = new Collector(new CollectorModuleTalonIO());
 
-        hopper = new Hopper(new HopperIO() {}, new IndexerIO() {}, new IndexerIO() {});
+        hopper = new Hopper(new BedIO() {}, new IndexerIO() {});
 
         break;
     }

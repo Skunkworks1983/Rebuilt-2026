@@ -17,7 +17,7 @@ import edu.wpi.first.units.measure.Voltage;
 import org.littletonrobotics.junction.AutoLog;
 
 /** this is the Hoppers' IO */
-public interface HopperIO {
+public interface BedIO {
   @AutoLog
   public static class HopperIOInputs {
     public boolean connected = false;

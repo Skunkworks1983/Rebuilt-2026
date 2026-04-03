@@ -14,7 +14,7 @@ import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.util.LoggedTunableNumber;
 
-public class HopperConstants {
+public class BedConstants {
   public static CANBus hopperCanBus = new CANBus("peripherals_2026");
   public static final double disconnectedDebounceTimeSec = 0.5;
 

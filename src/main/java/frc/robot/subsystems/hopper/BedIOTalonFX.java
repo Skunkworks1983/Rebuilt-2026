@@ -23,12 +23,12 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 
 /** This is the motor for the hopper */
-public class HopperIOTalonFX implements HopperIO {
+public class BedIOTalonFX implements BedIO {
 
   protected final TalonFX hopperMotor;
 
   private final Debouncer hopperDebouncer =
-      new Debouncer(HopperConstants.disconnectedDebounceTimeSec, DebounceType.kFalling);
+      new Debouncer(BedConstants.disconnectedDebounceTimeSec, DebounceType.kFalling);
 
   // create status signals
   public final StatusSignal<Angle> hopperPosition;
@@ -41,9 +41,9 @@ public class HopperIOTalonFX implements HopperIO {
   private final TorqueCurrentFOC torqueCurrentRequest = new TorqueCurrentFOC(0);
   private final DutyCycleOut dutyCycleOut = new DutyCycleOut(0);
 
-  public HopperIOTalonFX() {
+  public BedIOTalonFX() {
 
-    hopperMotor = new TalonFX(HopperConstants.hopperMotorID, HopperConstants.hopperCanBus);
+    hopperMotor = new TalonFX(BedConstants.hopperMotorID, BedConstants.hopperCanBus);
 
     // assigns values to the statussignals
     hopperPosition = hopperMotor.getPosition();
@@ -54,12 +54,12 @@ public class HopperIOTalonFX implements HopperIO {
     // creates and applies slot0 configs
     TalonFXConfiguration configs = new TalonFXConfiguration();
     Slot0Configs slot0Configs = configs.Slot0;
-    slot0Configs.kP = HopperConstants.hopperKP;
-    slot0Configs.kD = HopperConstants.hopperKD;
-    slot0Configs.kS = HopperConstants.hopperKS;
-    slot0Configs.kV = HopperConstants.hopperKV;
-    slot0Configs.kA = HopperConstants.hopperKA;
-    configs.MotorOutput.Inverted = HopperConstants.hopperMotorAlignment;
+    slot0Configs.kP = BedConstants.hopperKP;
+    slot0Configs.kD = BedConstants.hopperKD;
+    slot0Configs.kS = BedConstants.hopperKS;
+    slot0Configs.kV = BedConstants.hopperKV;
+    slot0Configs.kA = BedConstants.hopperKA;
+    configs.MotorOutput.Inverted = BedConstants.hopperMotorAlignment;
     tryUntilOk(5, () -> hopperMotor.getConfigurator().apply(configs, 0.25));
 
     BaseStatusSignal.setUpdateFrequencyForAll(

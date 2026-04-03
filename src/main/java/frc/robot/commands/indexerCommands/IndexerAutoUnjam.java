@@ -6,8 +6,8 @@ package frc.robot.commands.indexerCommands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.hopper.BedConstants;
 import frc.robot.subsystems.hopper.Hopper;
-import frc.robot.subsystems.hopper.HopperConstants;
 import frc.robot.subsystems.hopper.IndexerConstants;
 import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.Logger;
@@ -84,9 +84,9 @@ public class IndexerAutoUnjam extends Command {
 
   private void applyStateOutput() {
     double indexerSpeedRps = IndexerConstants.indexerAngularVelocityRotationsPerSecond.get();
-    double hopperSpeedRps = HopperConstants.hopperAngularVelocityRotationsPerSecond.get();
+    double hopperSpeedRps = BedConstants.hopperAngularVelocityRotationsPerSecond.get();
     double hopperReverseSpeedRps =
-        HopperConstants.hopperReverseAngularVelocityRotationsPerSecond.get();
+        BedConstants.hopperReverseAngularVelocityRotationsPerSecond.get();
 
     if (state == AutoUnjamState.FEED) {
       hopper.setIndexerDutyCycle(IndexerConstants.indexerDutyCycleSpeedFeed.get());

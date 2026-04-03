@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
 /** This is the Hopper IO sim */
-public class HopperIOSim extends HopperIOTalonFX {
+public class HopperIOSim extends BedIOTalonFX {
   DCMotorSim hopperMotorSim;
   Voltage voltage;
 
