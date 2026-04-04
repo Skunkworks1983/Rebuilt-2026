@@ -153,24 +153,6 @@ public class RobotContainer {
                 new HopperIOTalonFX(),
                 new IndexerIOTalonFXS(IndexerConstants.leftIndexerMotorID),
                 new IndexerIOTalonFXS(IndexerConstants.rightIndexerMotorID));
-
-        // The ModuleIOTalonFXS implementation provides an example implementation for
-        // TalonFXS controller connected to a CANdi with a PWM encoder. The
-        // implementations
-        // of ModuleIOTalonFX, ModuleIOTalonFXS, and ModuleIOSpark (from the Spark
-        // swerve
-        // template) can be freely intermixed to support alternative hardware
-        // arrangements.
-        // Please see the AdvantageKit template documentation for more information:
-        // https://docs.advantagekit.org/getting-started/template-projects/talonfx-swerve-template#custom-module-implementations
-        //
-        // drive =
-        // new Drive(
-        // new GyroIOPigeon2(),
-        // new ModuleIOTalonFXS(TunerConstants.FrontLeft),
-        // new ModuleIOTalonFXS(TunerConstants.FrontRight),
-        // new ModuleIOTalonFXS(TunerConstants.BackLeft),
-        // new ModuleIOTalonFXS(TunerConstants.BackRight));
         break;
 
       case SIM:
@@ -249,10 +231,6 @@ public class RobotContainer {
 
     NamedCommands.registerCommand(
         "Ramp Shooter", new ShootPresetSetpoints(shooter, TargetType.GOAL));
-    // NamedCommands.registerCommand(
-    //     "Intake Shooter/ Index", new IndexerAutoUnjam(shooter::getBeamBreak, hopper));
-    // NamedCommands.registerCommand(
-    //     "Auto Aimed Shoot", new AutonomousAimedShoot(drive, shooter, hopper));
     NamedCommands.registerCommand("Lower Collector", new CollectorDown(collector));
     NamedCommands.registerCommand("Raise Collector", new CollectorUp(collector));
     NamedCommands.registerCommand("Run Collector", new CollectorIntake(collector));
@@ -303,7 +281,6 @@ public class RobotContainer {
                   .withTimeout(Seconds.of(3))));
     }
 
-    // autoChooser.addOption("Simple Auto", new NoYawShootHub(shooter, drive));
     // Configure the button bindings
     configureButtonBindings();
   }

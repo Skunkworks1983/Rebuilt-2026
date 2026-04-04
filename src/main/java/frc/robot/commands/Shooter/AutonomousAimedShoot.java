@@ -32,8 +32,8 @@ public class AutonomousAimedShoot extends Command {
   private boolean feedEnabled = false;
 
   /**
-   * Auto-aiming shoot command specifically for auto. It does not allow for driver translation of the
-   * robot and it automatically starts shooting when setpoints are reached
+   * Auto-aiming shoot command specifically for auto. It does not allow for driver translation of
+   * the robot and it automatically starts shooting when setpoints are reached
    *
    * @param feedCommand The command that should be run to feed balls into the shooter
    */
