@@ -30,11 +30,11 @@ import frc.robot.commands.Shooter.AutonomousAimedShoot;
 import frc.robot.commands.Shooter.ShootPresetSetpoints;
 import frc.robot.commands.Shooter.ShootPresetSetpoints.TargetType;
 import frc.robot.commands.TestPathCommands;
+import frc.robot.commands.collectorCommands.Agitate;
 import frc.robot.commands.collectorCommands.CollectorDown;
 import frc.robot.commands.collectorCommands.CollectorExpel;
 import frc.robot.commands.collectorCommands.CollectorIntake;
 import frc.robot.commands.collectorCommands.CollectorUp;
-import frc.robot.commands.collectorCommands.agitate;
 import frc.robot.commands.indexerCommands.IndexerAutoUnjam;
 import frc.robot.commands.indexerCommands.ReverseIndexCommand;
 import frc.robot.subsystems.collector.Collector;
@@ -227,7 +227,7 @@ public class RobotContainer {
         new ParallelCommandGroup(
             new AutonomousAimedShoot(
                 drive, shooter, new IndexerAutoUnjam(shooter::getBeamBreak, hopper)),
-            new agitate(collector)));
+            new Agitate(collector)));
 
     NamedCommands.registerCommand(
         "Ramp Shooter", new ShootPresetSetpoints(shooter, TargetType.GOAL));
@@ -317,7 +317,7 @@ public class RobotContainer {
         new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID);
 
     runIndexer.whileTrue(
-        new IndexerAutoUnjam(shooter::getBeamBreak, hopper).alongWith(new agitate(collector)));
+        new IndexerAutoUnjam(shooter::getBeamBreak, hopper).alongWith(new Agitate(collector)));
 
     runIndexerReverse.whileTrue(new ReverseIndexCommand(hopper));
 

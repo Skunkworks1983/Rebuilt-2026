@@ -13,11 +13,11 @@ import frc.robot.subsystems.collector.Collector;
 import org.littletonrobotics.junction.Logger;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class agitate extends Command {
+public class Agitate extends Command {
   Collector collector;
   Timer time;
   /** Creates a new agitate. */
-  public agitate(Collector collector) {
+  public Agitate(Collector collector) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.collector = collector;
     time = new Timer();
