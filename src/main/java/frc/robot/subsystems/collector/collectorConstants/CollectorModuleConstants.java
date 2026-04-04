@@ -5,7 +5,6 @@
 package frc.robot.subsystems.collector.collectorConstants;
 
 import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
@@ -99,20 +98,23 @@ public class CollectorModuleConstants {
 
     // Gear ratio's
     turnMotorGearRatio = 29.07160494;
+    turnInvert = InvertedValue.Clockwise_Positive;
+    turnSupplyCurrent = 80;
 
     // Real Turn PID
-    turnkP = 20;
+    turnkP = 40;
     turnkD = 0;
     turnkI = 0;
 
     // Real intake upper PID
-    intakekP = 15;
+    intakekP = 0;
     intakekD = 0.0;
     intakekI = 0.0;
-    intakekV = 0;
+    intakekV = (5.0 / 80.0) * 3.5;
     intakekA = 0;
     intakekS = 0;
-    intakeInvertedValue = InvertedValue.Clockwise_Positive;
+    intakeInvertedValue = InvertedValue.CounterClockwise_Positive;
+    intakeSupplyCurrent = 80;
 
     // Motion Magic constraints
     motionMagicCruiseVelocity = RotationsPerSecond.of(0.5);
@@ -124,7 +126,7 @@ public class CollectorModuleConstants {
     CollectorHalfPos = new LoggedTunableNumber("Collector/Halfpose rad", 1);
 
     // Collector Intake Speeds
-    CollectorIntakeSpeed = RadiansPerSecond.of(80);
+    CollectorIntakeSpeed = RotationsPerSecond.of(40);
 
     // Limit Switch Constants
     UpperLimitChannel = 1;

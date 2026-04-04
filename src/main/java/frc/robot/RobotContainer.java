@@ -240,7 +240,7 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Shoot Preset Setpoits", new ShootPresetSetpoints(shooter, TargetType.GOAL));
     NamedCommands.registerCommand(
-        "Intake Shooter/ Index", new TriggerAutoUnjam(shooter::getBeamBreak, hopper));
+        "Intake Shooter/ Trigger", new TriggerAutoUnjam(shooter::getBeamBreak, hopper));
     NamedCommands.registerCommand(
         "Auto Aimed Shoot", new AutonomousAimedShoot(drive, shooter, hopper));
     NamedCommands.registerCommand("Lower Collector", new CollectorDown(collector));
@@ -344,11 +344,11 @@ public class RobotContainer {
     TestPathCommands.publishTestPaths(drive);
 
     shooter.setDefaultCommand(Commands.run(shooter::stop, shooter));
-    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualPivotDown)
+    new JoystickButton(rightJoystick, Constants.OIConstants.CollectorManualPivotDown)
         .onTrue(new CollectorDown(collector));
-    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualPivotUp)
+    new JoystickButton(rightJoystick, Constants.OIConstants.CollectorManualPivotUp)
         .onTrue(new CollectorUp(collector));
-    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorIntakeID)
+    new JoystickButton(leftJoystick, Constants.OIConstants.CollectorIntakeID)
         .whileTrue(new CollectorIntake(collector));
   }
 

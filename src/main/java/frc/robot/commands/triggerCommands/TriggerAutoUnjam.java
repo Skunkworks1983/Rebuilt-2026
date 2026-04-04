@@ -33,7 +33,6 @@ public class TriggerAutoUnjam extends Command {
 
   @Override
   public void initialize() {
-    // hopper.setHopperBrake();
     Logger.recordOutput(logKey + "/Running", true);
     Logger.recordOutput(logKey + "/Unjamming", false);
     state = AutoUnjamState.FEED;
