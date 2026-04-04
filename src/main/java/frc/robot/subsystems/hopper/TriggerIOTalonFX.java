@@ -110,11 +110,19 @@ public class TriggerIOTalonFX implements TriggerIO {
     // update the trigger inputs
     var primaryTriggerStatus =
         BaseStatusSignal.refreshAll(
-            primaryPosition, primaryVelocity, primaryVoltage, primaryCurrent, primaryClosedLoopError);
+            primaryPosition,
+            primaryVelocity,
+            primaryVoltage,
+            primaryCurrent,
+            primaryClosedLoopError);
 
     var followerTriggerStatus =
         BaseStatusSignal.refreshAll(
-            followerPosition, followerVelocity, followerVoltage, followerCurrent, followerClosedLoopError);
+            followerPosition,
+            followerVelocity,
+            followerVoltage,
+            followerCurrent,
+            followerClosedLoopError);
 
     inputs.primaryConnected = triggerDebouncer.calculate(primaryTriggerStatus.isOK());
     inputs.primaryPosition = primaryPosition.getValue();
@@ -129,7 +137,6 @@ public class TriggerIOTalonFX implements TriggerIO {
     inputs.followerAppliedVolts = followerVoltage.getValue();
     inputs.followerCurrentAmps = followerCurrent.getValue();
     inputs.followerClosedLoopError = RotationsPerSecond.of(followerClosedLoopError.getValue());
-
   }
 
   /** sets the control for the trigger motor to the defined velocity */

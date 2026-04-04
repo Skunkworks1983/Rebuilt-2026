@@ -22,7 +22,10 @@ public class SetHopperToJoystick extends Command {
   Supplier<AngularVelocity> triggerSpeed;
   /** Creates a new setTriggerToJoystick. */
   public SetHopperToJoystick(
-      Hopper hopper, DoubleSupplier hopperSpeed, Supplier<AngularVelocity> triggerSpeed, Shooter shooter) {
+      Hopper hopper,
+      DoubleSupplier hopperSpeed,
+      Supplier<AngularVelocity> triggerSpeed,
+      Shooter shooter) {
     this.hopper = hopper;
     this.shooter = shooter;
     addRequirements(hopper, shooter);

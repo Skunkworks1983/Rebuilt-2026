@@ -33,7 +33,7 @@ public class TriggerConstants {
   /** Alignment configuration for the trigger motor. */
   public static final InvertedValue primaryMotorInvert = InvertedValue.CounterClockwise_Positive;
 
-  public static final double triggerGearRatio = 19.2; //TODO get actual gear ratio
+  public static final double triggerGearRatio = 19.2; // TODO get actual gear ratio
 
   /** Stator current limit in Amps for the trigger motor. */
   public static final double triggerStatorCurrentLimitAmps = 100;
