@@ -112,7 +112,7 @@ public class AnotherAutoAimedShoot extends Command {
         "Auto Shoot/Debounced", indexDebounce.calculate(yawController.atSetpoint()));
 
     boolean readyToFeed = yawController.atGoal() && shooter.isFlywheelAtSetpoint();
-    Logger.recordOutput("Auto Shoot/Indexer Ready", readyToFeed);
+    Logger.recordOutput("Auto Shoot/Trigger Ready", readyToFeed);
 
     if (readyToFeed && !feedEnabled) {
       feedEnabled = true;

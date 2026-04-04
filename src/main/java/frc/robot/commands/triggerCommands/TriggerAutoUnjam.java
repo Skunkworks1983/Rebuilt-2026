@@ -2,18 +2,18 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.indexerCommands;
+package frc.robot.commands.triggerCommands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.hopper.BedConstants;
 import frc.robot.subsystems.hopper.Hopper;
-import frc.robot.subsystems.hopper.IndexerConstants;
+import frc.robot.subsystems.hopper.TriggerConstants;
 import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.Logger;
 
-public class IndexerAutoUnjam extends Command {
-  private static final String logKey = "Index/AutoUnjam";
+public class TriggerAutoUnjam extends Command {
+  private static final String logKey = "Trigger/AutoUnjam";
 
   private enum AutoUnjamState {
     FEED,
@@ -26,7 +26,7 @@ public class IndexerAutoUnjam extends Command {
 
   private AutoUnjamState state = AutoUnjamState.FEED;
 
-  public IndexerAutoUnjam(BooleanSupplier beamBroken, Hopper hopper) {
+  public TriggerAutoUnjam(BooleanSupplier beamBroken, Hopper hopper) {
     this.beamBroken = beamBroken;
     this.hopper = hopper;
     addRequirements(hopper);
@@ -35,7 +35,7 @@ public class IndexerAutoUnjam extends Command {
   @Override
   public void initialize() {
     Logger.recordOutput(logKey + "/Running", true);
-    Logger.recordOutput(logKey + "Index/Unjamming", false);
+    Logger.recordOutput(logKey + "Trigger/Unjamming", false);
     state = AutoUnjamState.FEED;
     timer.restart();
     applyStateOutput();
@@ -47,12 +47,12 @@ public class IndexerAutoUnjam extends Command {
       case FEED:
         if (!beamBroken.getAsBoolean()) {
           timer.restart();
-        } else if (timer.hasElapsed(IndexerConstants.autoUnjamNoBeamBreakTimeoutSeconds.get())) {
+        } else if (timer.hasElapsed(TriggerConstants.autoUnjamNoBeamBreakTimeoutSeconds.get())) {
           setState(AutoUnjamState.REVERSE);
         }
         break;
       case REVERSE:
-        if (timer.hasElapsed(IndexerConstants.autoUnjamReverseDurationSeconds.get())) {
+        if (timer.hasElapsed(TriggerConstants.autoUnjamReverseDurationSeconds.get())) {
           setState(AutoUnjamState.FEED);
         }
         break;
@@ -62,7 +62,7 @@ public class IndexerAutoUnjam extends Command {
   @Override
   public void end(boolean interrupted) {
     timer.stop();
-    hopper.setIndexerDutyCycle(0.0);
+    hopper.setTriggerDutyCycle(0.0);
     Logger.recordOutput(logKey + "/Running", false);
     Logger.recordOutput(logKey + "/Unjamming", false);
   }
@@ -83,16 +83,11 @@ public class IndexerAutoUnjam extends Command {
   }
 
   private void applyStateOutput() {
-    double indexerSpeedRps = IndexerConstants.indexerAngularVelocityRotationsPerSecond.get();
-    double hopperSpeedRps = BedConstants.hopperAngularVelocityRotationsPerSecond.get();
-    double hopperReverseSpeedRps =
-        BedConstants.hopperReverseAngularVelocityRotationsPerSecond.get();
-
     if (state == AutoUnjamState.FEED) {
-      hopper.setIndexerDutyCycle(IndexerConstants.indexerDutyCycleSpeedFeed.get());
+      hopper.setTriggerDutyCycle(TriggerConstants.triggerDutyCycleSpeedFeed.get());
       Logger.recordOutput(logKey + "/Unjamming", false);
     } else {
-      hopper.setIndexerDutyCycle(IndexerConstants.indexerDutyCycleSpeedReverse.get());
+      hopper.setTriggerDutyCycle(TriggerConstants.triggerDutyCycleSpeedReverse.get());
       Logger.recordOutput(logKey + "/Unjamming", true);
     }
   }

@@ -2,28 +2,28 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.indexerCommands;
+package frc.robot.commands.triggerCommands;
 
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.hopper.BedConstants;
 import frc.robot.subsystems.hopper.Hopper;
-import frc.robot.subsystems.hopper.IndexerConstants;
+import frc.robot.subsystems.hopper.TriggerConstants;
 import org.littletonrobotics.junction.Logger;
 
-/** Command that runs the indexer */
-public class ReverseIndexCommand extends Command {
+/** Command that runs the Trigger */
+public class ReverseTriggerCommand extends Command {
   Hopper hopper;
 
-  public ReverseIndexCommand(Hopper hopper) {
+  public ReverseTriggerCommand(Hopper hopper) {
     this.hopper = hopper;
     addRequirements(hopper);
   }
 
   @Override
   public void initialize() {
-    hopper.setIndexerDutyCycle(IndexerConstants.indexerDutyCycleSpeedReverse.get());
+    hopper.setTriggerDutyCycle(TriggerConstants.triggerDutyCycleSpeedReverse.get());
     hopper.setHopperVelocity(
         RotationsPerSecond.of(BedConstants.hopperReverseAngularVelocityRotationsPerSecond.get()));
     Logger.recordOutput("Hopper/Reverse Command is Running", true);
@@ -31,7 +31,7 @@ public class ReverseIndexCommand extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    hopper.setIndexerDutyCycle(0);
+    hopper.setTriggerDutyCycle(0);
     hopper.setHopperDutyCycle(0);
     Logger.recordOutput("Hopper/Reverse Command is Running", false);
   }

@@ -12,7 +12,6 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.TorqueCurrentFOC;
-import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.filter.Debouncer;
@@ -36,8 +35,6 @@ public class BedIOTalonFX implements BedIO {
   public final StatusSignal<Voltage> hopperVoltage;
   public final StatusSignal<Current> hopperCurrent;
 
-  private final VelocityTorqueCurrentFOC velocityTorqueCurrentRequest =
-      new VelocityTorqueCurrentFOC(0.0);
   private final TorqueCurrentFOC torqueCurrentRequest = new TorqueCurrentFOC(0);
   private final DutyCycleOut dutyCycleOut = new DutyCycleOut(0);
 

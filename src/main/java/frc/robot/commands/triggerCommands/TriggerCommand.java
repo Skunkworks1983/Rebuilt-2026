@@ -2,40 +2,38 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.indexerCommands;
+package frc.robot.commands.triggerCommands;
 
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.hopper.Hopper;
-import frc.robot.subsystems.hopper.IndexerConstants;
+import frc.robot.subsystems.hopper.TriggerConstants;
 import org.littletonrobotics.junction.Logger;
 
-/** Command that runs the indexer */
-public class IndexerCommand extends Command {
+/** Command that runs the trigger */
+public class TriggerCommand extends Command {
   Hopper hopper;
 
-  public IndexerCommand(Hopper hopper) {
+  public TriggerCommand(Hopper hopper) {
     this.hopper = hopper;
     addRequirements(hopper);
   }
 
   @Override
   public void initialize() {
-    hopper.setIndexerVelocity(
-        RotationsPerSecond.of(IndexerConstants.indexerAngularVelocityRotationsPerSecond.get()));
-    Logger.recordOutput("Index/Command is Running", true);
+    hopper.setTriggerVelocity(
+        RotationsPerSecond.of(TriggerConstants.triggerAngularVelocityRotationsPerSecond.get()));
+    Logger.recordOutput("Trigger/Command is Running", true);
   }
 
   @Override
-  public void execute() {
-    // indexer.setIndexerDutyCycle(0.7);
-  }
+  public void execute() {}
 
   @Override
   public void end(boolean interrupted) {
-    hopper.setIndexerDutyCycle(0);
-    Logger.recordOutput("Index/Command is Running", false);
+    hopper.setTriggerDutyCycle(0);
+    Logger.recordOutput("Trigger/Command is Running", false);
   }
 
   @Override
