@@ -31,6 +31,7 @@ public class Hopper extends SubsystemBase {
 
   TriggerIO trigger;
   Alert leftTriggerDisconnectAlert = new Alert(getName(), AlertType.kError);
+  Alert rightTriggerDisconnectAlert = new Alert(getName(), AlertType.kError);
 
   private final SysIdRoutine sysId;
 
@@ -87,7 +88,8 @@ public class Hopper extends SubsystemBase {
     Logger.processInputs("Hopper/Bed/", hopperInputs);
     Logger.processInputs("Hopper/Trigger/", triggerInputs);
     hopperDisconnectAlert.set(!hopperInputs.connected);
-    leftTriggerDisconnectAlert.set(!triggerInputs.connected);
+    leftTriggerDisconnectAlert.set(!triggerInputs.primaryConnected);
+    rightTriggerDisconnectAlert.set(!triggerInputs.followerConnected);
 
     if (Constants.tuningMode) {
 

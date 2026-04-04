@@ -6,21 +6,23 @@ package frc.robot.commands.triggerCommands;
 
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.hopper.BedConstants;
 import frc.robot.subsystems.hopper.Hopper;
 import frc.robot.subsystems.shooter.Shooter;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class SetHopperToJoystick extends Command {
   Hopper hopper;
   Shooter shooter;
   DoubleSupplier hopperSpeed;
-  DoubleSupplier triggerSpeed;
+  Supplier<AngularVelocity> triggerSpeed;
   /** Creates a new setTriggerToJoystick. */
   public SetHopperToJoystick(
-      Hopper hopper, DoubleSupplier hopperSpeed, DoubleSupplier triggerSpeed, Shooter shooter) {
+      Hopper hopper, DoubleSupplier hopperSpeed, Supplier<AngularVelocity> triggerSpeed, Shooter shooter) {
     this.hopper = hopper;
     this.shooter = shooter;
     addRequirements(hopper, shooter);
@@ -39,7 +41,7 @@ public class SetHopperToJoystick extends Command {
   @Override
   public void execute() {
     hopper.setHopperDutyCycle(BedConstants.hopperDutyCycleSpeedFeed.get());
-    hopper.setTriggerVelocity(RotationsPerSecond.of(triggerSpeed.getAsDouble()));
+    hopper.setTriggerVelocity(triggerSpeed.get());
   }
 
   // Called once the command ends or is interrupted.

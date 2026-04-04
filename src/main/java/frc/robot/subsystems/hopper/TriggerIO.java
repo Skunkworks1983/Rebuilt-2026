@@ -15,11 +15,19 @@ import org.littletonrobotics.junction.AutoLog;
 public interface TriggerIO {
   @AutoLog
   public static class TriggerIOInputs {
-    public boolean connected = false;
-    public Angle position;
-    public AngularVelocity angularVelocity;
-    public Voltage appliedVolts;
-    public Current currentAmps;
+    public boolean primaryConnected = false;
+    public Angle primaryPosition;
+    public AngularVelocity primaryAngularVelocity;
+    public Voltage primaryAppliedVolts;
+    public Current primaryCurrentAmps;
+    public double primaryClosedLoopError;
+
+    public boolean followerConnected = false;
+    public Angle followerPosition;
+    public AngularVelocity followerAngularVelocity;
+    public Voltage followerAppliedVolts;
+    public Current followerCurrentAmps;
+    public double followerClosedLoopError;
   }
 
   public default void updateInputs(TriggerIOInputs inputs) {}

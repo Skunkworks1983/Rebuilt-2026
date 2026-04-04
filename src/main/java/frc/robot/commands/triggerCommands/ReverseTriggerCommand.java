@@ -13,10 +13,10 @@ import frc.robot.subsystems.hopper.TriggerConstants;
 import org.littletonrobotics.junction.Logger;
 
 /** Command that runs the Trigger */
-public class ReverseHopperCommand extends Command {
+public class ReverseTriggerCommand extends Command {
   Hopper hopper;
 
-  public ReverseHopperCommand(Hopper hopper) {
+  public ReverseTriggerCommand(Hopper hopper) {
     this.hopper = hopper;
     addRequirements(hopper);
   }
@@ -26,14 +26,14 @@ public class ReverseHopperCommand extends Command {
     hopper.setTriggerVelocity(
         RotationsPerSecond.of(TriggerConstants.triggerAngularVelocityRotationsPerSecond.get()));
     hopper.setHopperDutyCycle(BedConstants.hopperDutyCycleSpeedReverse.get());
-    Logger.recordOutput("Hopper/Reverse Command is Running", true);
+    Logger.recordOutput("Hopper/Reverse Trigger Command is Running", true);
   }
 
   @Override
   public void end(boolean interrupted) {
     hopper.setTriggerDutyCycle(0);
     hopper.setHopperDutyCycle(0);
-    Logger.recordOutput("Hopper/Reverse Command is Running", false);
+    Logger.recordOutput("Hopper/Reverse TriggerCommand is Running", false);
   }
 
   @Override

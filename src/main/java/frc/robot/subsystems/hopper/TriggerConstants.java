@@ -33,7 +33,7 @@ public class TriggerConstants {
   /** Alignment configuration for the trigger motor. */
   public static final InvertedValue primaryMotorInvert = InvertedValue.CounterClockwise_Positive;
 
-  public static final double triggerGearRatio = 19.2;
+  public static final double triggerGearRatio = 19.2; //TODO get actual gear ratio
 
   /** Stator current limit in Amps for the trigger motor. */
   public static final double triggerStatorCurrentLimitAmps = 100;
@@ -48,10 +48,6 @@ public class TriggerConstants {
   public static final LoggedTunableNumber triggerDutyCycleSpeedReverse =
       new LoggedTunableNumber("Hopper/Trigger/DutyCycleOutReverse", .2);
 
-  public static final LoggedTunableNumber autoUnjamNoBeamBreakTimeoutSeconds =
-      new LoggedTunableNumber("Hopper/Trigger/AutoUnjam/NoBeamBreakTimeout [sec]", 1.5);
-  public static final LoggedTunableNumber autoUnjamReverseDurationSeconds =
-      new LoggedTunableNumber("Hopper/Trigger/AutoUnjam/ReverseDuration [sec]", .5);
   public static final double triggerSupplyCurrentLimitAmps = 50;
 
   public static Velocity<VoltageUnit> sysIdRampRate = Volts.per(Second).of(2);

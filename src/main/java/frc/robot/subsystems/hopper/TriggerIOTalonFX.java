@@ -37,11 +37,13 @@ public class TriggerIOTalonFX implements TriggerIO {
   public final StatusSignal<AngularVelocity> primaryVelocity;
   public final StatusSignal<Voltage> primaryVoltage;
   public final StatusSignal<Current> primaryCurrent;
+  public final StatusSignal<Double> primaryClosedLoopError;
 
   public final StatusSignal<Angle> followerPosition;
   public final StatusSignal<AngularVelocity> followerVelocity;
   public final StatusSignal<Voltage> followerVoltage;
   public final StatusSignal<Current> followerCurrent;
+  public final StatusSignal<Double> followerClosedLoopError;
 
   private final DutyCycleOut dutyCycleOut = new DutyCycleOut(0);
 
@@ -78,22 +80,26 @@ public class TriggerIOTalonFX implements TriggerIO {
     primaryVelocity = primaryTriggerMotor.getVelocity();
     primaryVoltage = primaryTriggerMotor.getMotorVoltage();
     primaryCurrent = primaryTriggerMotor.getStatorCurrent();
+    primaryClosedLoopError = primaryTriggerMotor.getClosedLoopError();
 
     followerPosition = followerTriggerMotor.getPosition();
     followerVelocity = followerTriggerMotor.getVelocity();
     followerVoltage = followerTriggerMotor.getMotorVoltage();
     followerCurrent = followerTriggerMotor.getStatorCurrent();
+    followerClosedLoopError = followerTriggerMotor.getClosedLoopError();
 
     BaseStatusSignal.setUpdateFrequencyForAll(
-        50,
+        100,
         primaryVelocity,
         primaryCurrent,
         primaryPosition,
         primaryVoltage,
+        primaryClosedLoopError,
         followerPosition,
         followerVelocity,
         followerVoltage,
-        followerCurrent);
+        followerCurrent,
+        followerClosedLoopError);
 
     ParentDevice.optimizeBusUtilizationForAll(primaryTriggerMotor, followerTriggerMotor);
   }
@@ -101,15 +107,28 @@ public class TriggerIOTalonFX implements TriggerIO {
   @Override
   public void updateInputs(TriggerIOInputs inputs) {
     // update the trigger inputs
-    var triggerStatus =
+    var primaryTriggerStatus =
         BaseStatusSignal.refreshAll(
-            primaryPosition, primaryVelocity, primaryVoltage, primaryCurrent);
+            primaryPosition, primaryVelocity, primaryVoltage, primaryCurrent, primaryClosedLoopError);
 
-    inputs.connected = triggerDebouncer.calculate(triggerStatus.isOK());
-    inputs.position = primaryPosition.getValue();
-    inputs.angularVelocity = primaryVelocity.getValue();
-    inputs.appliedVolts = primaryVoltage.getValue();
-    inputs.currentAmps = primaryCurrent.getValue();
+    var followerTriggerStatus =
+        BaseStatusSignal.refreshAll(
+            followerPosition, followerVelocity, followerVoltage, followerCurrent, followerClosedLoopError);
+
+    inputs.primaryConnected = triggerDebouncer.calculate(primaryTriggerStatus.isOK());
+    inputs.primaryPosition = primaryPosition.getValue();
+    inputs.primaryAngularVelocity = primaryVelocity.getValue();
+    inputs.primaryAppliedVolts = primaryVoltage.getValue();
+    inputs.primaryCurrentAmps = primaryCurrent.getValue();
+    inputs.primaryClosedLoopError = primaryClosedLoopError.getValue();
+
+    inputs.followerConnected = triggerDebouncer.calculate(followerTriggerStatus.isOK());
+    inputs.followerPosition = followerPosition.getValue();
+    inputs.followerAngularVelocity = followerVelocity.getValue();
+    inputs.followerAppliedVolts = followerVoltage.getValue();
+    inputs.followerCurrentAmps = followerCurrent.getValue();
+    inputs.followerClosedLoopError = followerClosedLoopError.getValue();
+
   }
 
   /** sets the control for the trigger motor to the defined velocity */

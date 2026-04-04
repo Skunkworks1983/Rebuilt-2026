@@ -23,7 +23,7 @@ public class TriggerIOSim extends TriggerIOTalonFX {
 
     double[] stdevs = {0.00, 0.00};
 
-    triggerMotorSim = new DCMotorSim(linearSystem, DCMotor.getKrakenX44(1), stdevs);
+    triggerMotorSim = new DCMotorSim(linearSystem, DCMotor.getKrakenX60(1), stdevs);
   }
 
   @Override
@@ -44,10 +44,10 @@ public class TriggerIOSim extends TriggerIOTalonFX {
 
     triggerMotorSim.update(0.020);
 
-    input.connected = true;
-    input.position = triggerMotorSim.getAngularPosition();
-    input.angularVelocity = triggerMotorSim.getAngularVelocity();
-    input.appliedVolts = primaryAppliedVolts;
-    input.currentAmps = Units.Amps.of(triggerMotorSim.getCurrentDrawAmps());
+    input.primaryConnected = true;
+    input.primaryPosition = triggerMotorSim.getAngularPosition();
+    input.primaryAngularVelocity = triggerMotorSim.getAngularVelocity();
+    input.primaryAppliedVolts = primaryAppliedVolts;
+    input.primaryCurrentAmps = Units.Amps.of(triggerMotorSim.getCurrentDrawAmps());
   }
 }

@@ -13,10 +13,10 @@ import frc.robot.subsystems.hopper.TriggerConstants;
 import org.littletonrobotics.junction.Logger;
 
 /** Command that runs the trigger */
-public class HopperCommand extends Command {
+public class RunTrigger extends Command {
   Hopper hopper;
 
-  public HopperCommand(Hopper hopper) {
+  public RunTrigger(Hopper hopper) {
     this.hopper = hopper;
     addRequirements(hopper);
   }
@@ -26,7 +26,7 @@ public class HopperCommand extends Command {
     hopper.setTriggerVelocity(
         RotationsPerSecond.of(TriggerConstants.triggerAngularVelocityRotationsPerSecond.get()));
     hopper.setHopperDutyCycle(BedConstants.hopperDutyCycleSpeedFeed.get());
-    Logger.recordOutput("Trigger/Command is Running", true);
+    Logger.recordOutput("Trigger/Run Trigger Command is Running", true);
   }
 
   @Override
@@ -35,7 +35,7 @@ public class HopperCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     hopper.setTriggerDutyCycle(0);
-    Logger.recordOutput("Trigger/Command is Running", false);
+    Logger.recordOutput("Trigger/Run Trigger Command is Running", false);
   }
 
   @Override
