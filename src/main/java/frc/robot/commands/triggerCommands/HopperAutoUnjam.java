@@ -4,6 +4,8 @@
 
 package frc.robot.commands.triggerCommands;
 
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.hopper.BedConstants;
@@ -12,7 +14,7 @@ import frc.robot.subsystems.hopper.TriggerConstants;
 import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.Logger;
 
-public class TriggerAutoUnjam extends Command {
+public class HopperAutoUnjam extends Command {
   private static final String logKey = "Trigger/AutoUnjam";
 
   private enum AutoUnjamState {
@@ -26,7 +28,7 @@ public class TriggerAutoUnjam extends Command {
 
   private AutoUnjamState state = AutoUnjamState.FEED;
 
-  public TriggerAutoUnjam(BooleanSupplier beamBroken, Hopper hopper) {
+  public HopperAutoUnjam(BooleanSupplier beamBroken, Hopper hopper) {
     this.beamBroken = beamBroken;
     this.hopper = hopper;
     addRequirements(hopper);
@@ -35,7 +37,7 @@ public class TriggerAutoUnjam extends Command {
   @Override
   public void initialize() {
     Logger.recordOutput(logKey + "/Running", true);
-    Logger.recordOutput(logKey + "Trigger/Unjamming", false);
+    Logger.recordOutput(logKey + "/Unjamming", false);
     state = AutoUnjamState.FEED;
     timer.restart();
     applyStateOutput();
@@ -63,6 +65,7 @@ public class TriggerAutoUnjam extends Command {
   public void end(boolean interrupted) {
     timer.stop();
     hopper.setTriggerDutyCycle(0.0);
+    hopper.setHopperDutyCycle(0.0);
     Logger.recordOutput(logKey + "/Running", false);
     Logger.recordOutput(logKey + "/Unjamming", false);
   }
@@ -84,10 +87,15 @@ public class TriggerAutoUnjam extends Command {
 
   private void applyStateOutput() {
     if (state == AutoUnjamState.FEED) {
-      hopper.setTriggerDutyCycle(TriggerConstants.triggerDutyCycleSpeedFeed.get());
+      hopper.setTriggerVelocity(
+          RotationsPerSecond.of(TriggerConstants.triggerAngularVelocityRotationsPerSecond.get()));
+      hopper.setHopperDutyCycle(BedConstants.hopperDutyCycleSpeedFeed.get());
       Logger.recordOutput(logKey + "/Unjamming", false);
     } else {
-      hopper.setTriggerDutyCycle(TriggerConstants.triggerDutyCycleSpeedReverse.get());
+      hopper.setTriggerVelocity(
+          RotationsPerSecond.of(
+              TriggerConstants.triggerAngularVelocityRotationsPerSecond.get() * -1));
+      hopper.setHopperDutyCycle(BedConstants.hopperDutyCycleSpeedReverse.get());
       Logger.recordOutput(logKey + "/Unjamming", true);
     }
   }

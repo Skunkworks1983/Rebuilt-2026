@@ -134,11 +134,6 @@ public class Hopper extends SubsystemBase {
     }
   }
 
-  /** sets the velocity of the hopper to the defined velocity */
-  public void setHopperVelocity(AngularVelocity velocity) {
-    bed.setHopperVelocity(velocity);
-  }
-
   public void setHopperDutyCycle(double dutyCycle) {
     bed.setDutyCycle(dutyCycle);
   }

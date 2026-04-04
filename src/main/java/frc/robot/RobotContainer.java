@@ -35,8 +35,8 @@ import frc.robot.commands.collectorCommands.CollectorExpel;
 import frc.robot.commands.collectorCommands.CollectorIntake;
 import frc.robot.commands.collectorCommands.CollectorUp;
 import frc.robot.commands.collectorCommands.agitate;
-import frc.robot.commands.triggerCommands.ReverseTriggerCommand;
-import frc.robot.commands.triggerCommands.TriggerAutoUnjam;
+import frc.robot.commands.triggerCommands.HopperAutoUnjam;
+import frc.robot.commands.triggerCommands.ReverseHopperCommand;
 import frc.robot.subsystems.collector.Collector;
 import frc.robot.subsystems.collector.CollectorModuleIO;
 import frc.robot.subsystems.collector.CollectorModuleTalonIO;
@@ -227,7 +227,7 @@ public class RobotContainer {
         "Another Auto Aimed Shoot",
         new ParallelCommandGroup(
             new AnotherAutoAimedShoot(
-                drive, shooter, new TriggerAutoUnjam(shooter::getBeamBreak, hopper)),
+                drive, shooter, new HopperAutoUnjam(shooter::getBeamBreak, hopper)),
             new agitate(collector)));
 
     NamedCommands.registerCommand(
@@ -323,9 +323,9 @@ public class RobotContainer {
         new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID);
 
     runTrigger.whileTrue(
-        new TriggerAutoUnjam(shooter::getBeamBreak, hopper).alongWith(new agitate(collector)));
+        new HopperAutoUnjam(shooter::getBeamBreak, hopper).alongWith(new agitate(collector)));
 
-    runTriggerReverse.whileTrue(new ReverseTriggerCommand(hopper));
+    runTriggerReverse.whileTrue(new ReverseHopperCommand(hopper));
 
     // if the trigger button is hed and more than a second elapses before the beam
     // break is broken the
