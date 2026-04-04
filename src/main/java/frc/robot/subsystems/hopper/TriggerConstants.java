@@ -43,10 +43,6 @@ public class TriggerConstants {
       new LoggedTunableNumber(
           "Hopper/Trigger/AngularVelocity [Rps]",
           triggerAngularVelocitySetpoint.in(RotationsPerSecond));
-  public static final LoggedTunableNumber triggerDutyCycleSpeedFeed =
-      new LoggedTunableNumber("Hopper/Trigger/DutyCycleOutFeed", -1);
-  public static final LoggedTunableNumber triggerDutyCycleSpeedReverse =
-      new LoggedTunableNumber("Hopper/Trigger/DutyCycleOutReverse", .2);
 
   public static final double triggerSupplyCurrentLimitAmps = 50;
 
