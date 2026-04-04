@@ -14,13 +14,15 @@ import frc.robot.subsystems.shooter.Shooter;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+import org.littletonrobotics.junction.Logger;
+
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class SetHopperToJoystick extends Command {
   Hopper hopper;
   Shooter shooter;
   DoubleSupplier hopperSpeed;
   Supplier<AngularVelocity> triggerSpeed;
-  /** Creates a new setTriggerToJoystick. */
+  /** Creates a new setHopperToJoystick. */
   public SetHopperToJoystick(
       Hopper hopper,
       DoubleSupplier hopperSpeed,
@@ -38,20 +40,22 @@ public class SetHopperToJoystick extends Command {
   @Override
   public void initialize() {
     shooter.setManualVelocity(RotationsPerSecond.of(30));
+    hopper.setHopperDutyCycle(BedConstants.hopperDutyCycleSpeedFeed.get());
+    hopper.setTriggerVelocity(triggerSpeed.get());
+    Logger.recordOutput("Hopper/SetHopperToJoystick Command", true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    hopper.setHopperDutyCycle(BedConstants.hopperDutyCycleSpeedFeed.get());
-    hopper.setTriggerVelocity(triggerSpeed.get());
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     hopper.setHopperDutyCycle(0);
     hopper.setTriggerDutyCycle(0);
+    Logger.recordOutput("Hopper/SetHopperToJoystick Command", false);
+
   }
 
   // Returns true when the command should end.
