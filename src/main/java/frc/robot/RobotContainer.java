@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -29,7 +30,9 @@ import frc.robot.commands.Shooter.AutonomousAimedShoot;
 import frc.robot.commands.Shooter.ShootPresetSetpoints;
 import frc.robot.commands.Shooter.ShootPresetSetpoints.TargetType;
 import frc.robot.commands.TestPathCommands;
+import frc.robot.commands.collectorCommands.Agitate;
 import frc.robot.commands.collectorCommands.CollectorDown;
+import frc.robot.commands.collectorCommands.CollectorExpel;
 import frc.robot.commands.collectorCommands.CollectorIntake;
 import frc.robot.commands.collectorCommands.CollectorUp;
 import frc.robot.commands.triggerCommands.ReverseIndexCommand;
@@ -235,14 +238,16 @@ public class RobotContainer {
 
         break;
     }
-    Command autoShootTriggerCommand = new TriggerAutoUnjam(shooter::getBeamBreak, hopper);
 
     NamedCommands.registerCommand(
-        "Shoot Preset Setpoits", new ShootPresetSetpoints(shooter, TargetType.GOAL));
-    NamedCommands.registerCommand(
-        "Intake Shooter/ Trigger", new TriggerAutoUnjam(shooter::getBeamBreak, hopper));
-    NamedCommands.registerCommand(
-        "Auto Aimed Shoot", new AutonomousAimedShoot(drive, shooter, hopper));
+        "Another Auto Aimed Shoot",
+        new ParallelCommandGroup(
+            new AutonomousAimedShoot(
+                drive, shooter, new TriggerAutoUnjam(shooter::getBeamBreak, hopper)),
+            new Agitate(collector)));
+
+    NamedCommands.registerCommand("Intake Shooter/ Trigger", new TriggerAutoUnjam(shooter::getBeamBreak, hopper));
+    NamedCommands.registerCommand("Ramp Shooter", new ShootPresetSetpoints(shooter, TargetType.GOAL));
     NamedCommands.registerCommand("Lower Collector", new CollectorDown(collector));
     NamedCommands.registerCommand("Raise Collector", new CollectorUp(collector));
     NamedCommands.registerCommand("Run Collector", new CollectorIntake(collector));
@@ -293,7 +298,6 @@ public class RobotContainer {
                   .withTimeout(Seconds.of(3))));
     }
 
-    // autoChooser.addOption("Simple Auto", new NoYawShootHub(shooter, drive));
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -350,6 +354,8 @@ public class RobotContainer {
         .onTrue(new CollectorUp(collector));
     new JoystickButton(leftJoystick, Constants.OIConstants.CollectorIntakeID)
         .whileTrue(new CollectorIntake(collector));
+    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID)
+        .whileTrue(new CollectorExpel(collector));
   }
 
   /**
@@ -361,9 +367,6 @@ public class RobotContainer {
     return autoChooser.get();
   }
 
-  public Command getTeleopCommand() {
-    return new CollectorUp(collector);
-  }
   /**
    * This is called at robot initialization during sim
    *
