@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -29,7 +30,9 @@ import frc.robot.commands.Shooter.AutonomousAimedShoot;
 import frc.robot.commands.Shooter.ShootPresetSetpoints;
 import frc.robot.commands.Shooter.ShootPresetSetpoints.TargetType;
 import frc.robot.commands.TestPathCommands;
+import frc.robot.commands.collectorCommands.Agitate;
 import frc.robot.commands.collectorCommands.CollectorDown;
+import frc.robot.commands.collectorCommands.CollectorExpel;
 import frc.robot.commands.collectorCommands.CollectorIntake;
 import frc.robot.commands.collectorCommands.CollectorUp;
 import frc.robot.commands.indexerCommands.IndexerAutoUnjam;
@@ -150,24 +153,6 @@ public class RobotContainer {
                 new HopperIOTalonFX(),
                 new IndexerIOTalonFXS(IndexerConstants.leftIndexerMotorID),
                 new IndexerIOTalonFXS(IndexerConstants.rightIndexerMotorID));
-
-        // The ModuleIOTalonFXS implementation provides an example implementation for
-        // TalonFXS controller connected to a CANdi with a PWM encoder. The
-        // implementations
-        // of ModuleIOTalonFX, ModuleIOTalonFXS, and ModuleIOSpark (from the Spark
-        // swerve
-        // template) can be freely intermixed to support alternative hardware
-        // arrangements.
-        // Please see the AdvantageKit template documentation for more information:
-        // https://docs.advantagekit.org/getting-started/template-projects/talonfx-swerve-template#custom-module-implementations
-        //
-        // drive =
-        // new Drive(
-        // new GyroIOPigeon2(),
-        // new ModuleIOTalonFXS(TunerConstants.FrontLeft),
-        // new ModuleIOTalonFXS(TunerConstants.FrontRight),
-        // new ModuleIOTalonFXS(TunerConstants.BackLeft),
-        // new ModuleIOTalonFXS(TunerConstants.BackRight));
         break;
 
       case SIM:
@@ -236,14 +221,16 @@ public class RobotContainer {
 
         break;
     }
-    Command autoShootIndexerCommand = new IndexerAutoUnjam(shooter::getBeamBreak, hopper);
 
     NamedCommands.registerCommand(
-        "Shoot Preset Setpoits", new ShootPresetSetpoints(shooter, TargetType.GOAL));
+        "Another Auto Aimed Shoot",
+        new ParallelCommandGroup(
+            new AutonomousAimedShoot(
+                drive, shooter, new IndexerAutoUnjam(shooter::getBeamBreak, hopper)),
+            new Agitate(collector)));
+
     NamedCommands.registerCommand(
-        "Intake Shooter/ Index", new IndexerAutoUnjam(shooter::getBeamBreak, hopper));
-    NamedCommands.registerCommand(
-        "Auto Aimed Shoot", new AutonomousAimedShoot(drive, shooter, hopper));
+        "Ramp Shooter", new ShootPresetSetpoints(shooter, TargetType.GOAL));
     NamedCommands.registerCommand("Lower Collector", new CollectorDown(collector));
     NamedCommands.registerCommand("Raise Collector", new CollectorUp(collector));
     NamedCommands.registerCommand("Run Collector", new CollectorIntake(collector));
@@ -294,7 +281,6 @@ public class RobotContainer {
                   .withTimeout(Seconds.of(3))));
     }
 
-    // autoChooser.addOption("Simple Auto", new NoYawShootHub(shooter, drive));
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -330,11 +316,10 @@ public class RobotContainer {
     JoystickButton runIndexerReverse =
         new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID);
 
-    runIndexer.whileTrue(new IndexerAutoUnjam(shooter::getBeamBreak, hopper));
+    runIndexer.whileTrue(
+        new IndexerAutoUnjam(shooter::getBeamBreak, hopper).alongWith(new Agitate(collector)));
 
     runIndexerReverse.whileTrue(new ReverseIndexCommand(hopper));
-
-    runIndexer.whileTrue(new IndexerAutoUnjam(shooter::getBeamBreak, hopper));
 
     // if the index button is hed and more than a second elapses before the beam
     // break is broken the
@@ -351,6 +336,8 @@ public class RobotContainer {
         .onTrue(new CollectorUp(collector));
     new JoystickButton(leftJoystick, Constants.OIConstants.CollectorIntakeID)
         .whileTrue(new CollectorIntake(collector));
+    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID)
+        .whileTrue(new CollectorExpel(collector));
   }
 
   /**
@@ -362,9 +349,6 @@ public class RobotContainer {
     return autoChooser.get();
   }
 
-  public Command getTeleopCommand() {
-    return new CollectorUp(collector);
-  }
   /**
    * This is called at robot initialization during sim
    *

@@ -35,7 +35,6 @@ public class CollectorIntake extends Command {
   @Override
   public void end(boolean interrupted) {
     Logger.recordOutput("Commands/Collector/CollectorIntake", false);
-    collector.setCollectorPos(Radians.of(collector.getConstants().CollectorHalfPos.get()), 0);
     collector.setCollectorIntakeDutyCycle(0);
   }
 
