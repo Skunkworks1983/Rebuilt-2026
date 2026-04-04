@@ -26,7 +26,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveAimedAutoShoot;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.Shooter.AnotherAutoAimedShoot;
+import frc.robot.commands.Shooter.AutonomousAimedShoot;
 import frc.robot.commands.Shooter.ShootPresetSetpoints;
 import frc.robot.commands.Shooter.ShootPresetSetpoints.TargetType;
 import frc.robot.commands.TestPathCommands;
@@ -239,11 +239,11 @@ public class RobotContainer {
 
         break;
     }
-    
+
     NamedCommands.registerCommand(
         "Another Auto Aimed Shoot",
         new ParallelCommandGroup(
-            new AnotherAutoAimedShoot(
+            new AutonomousAimedShoot(
                 drive, shooter, new IndexerAutoUnjam(shooter::getBeamBreak, hopper)),
             new agitate(collector)));
 
