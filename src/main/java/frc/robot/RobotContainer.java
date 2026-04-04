@@ -35,8 +35,8 @@ import frc.robot.commands.collectorCommands.CollectorExpel;
 import frc.robot.commands.collectorCommands.CollectorIntake;
 import frc.robot.commands.collectorCommands.CollectorUp;
 import frc.robot.commands.collectorCommands.agitate;
-import frc.robot.commands.triggerCommands.HopperAutoUnjam;
 import frc.robot.commands.triggerCommands.ReverseTriggerCommand;
+import frc.robot.commands.triggerCommands.RunTrigger;
 import frc.robot.subsystems.collector.Collector;
 import frc.robot.subsystems.collector.CollectorModuleIO;
 import frc.robot.subsystems.collector.CollectorModuleTalonIO;
@@ -227,13 +227,13 @@ public class RobotContainer {
         "Another Auto Aimed Shoot",
         new ParallelCommandGroup(
             new AnotherAutoAimedShoot(
-                drive, shooter, new HopperAutoUnjam(shooter::getBeamBreak, hopper)),
+                drive, shooter, new RunTrigger(hopper)),
             new agitate(collector)));
 
     NamedCommands.registerCommand(
         "Ramp Shooter", new ShootPresetSetpoints(shooter, TargetType.GOAL));
     // NamedCommands.registerCommand(
-    //     "Intake Shooter/ Trigger", new TriggerAutoUnjam(shooter::getBeamBreak, hopper));
+    //     "Intake Shooter/ Trigger", new RunTrigger(hopper));
     // NamedCommands.registerCommand(
     //     "Auto Aimed Shoot", new AutonomousAimedShoot(drive, shooter, hopper));
     NamedCommands.registerCommand("Lower Collector", new CollectorDown(collector));
@@ -323,7 +323,7 @@ public class RobotContainer {
         new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID);
 
     runTrigger.whileTrue(
-        new HopperAutoUnjam(shooter::getBeamBreak, hopper).alongWith(new agitate(collector)));
+        new RunTrigger(hopper).alongWith(new agitate(collector)));
 
     runTriggerReverse.whileTrue(new ReverseTriggerCommand(hopper));
 
