@@ -51,8 +51,6 @@ public class TriggerIOTalonFXS implements TriggerIO {
 
     // creates and applies slot0 configs
     TalonFXSConfiguration configs = new TalonFXSConfiguration();
-    configs.ExternalFeedback.SensorToMechanismRatio =
-        TriggerConstants.triggerSensorToMechanismRatio;
     Slot0Configs slot0Configs = configs.Slot0;
     slot0Configs.kP = TriggerConstants.triggerKP;
     slot0Configs.kD = TriggerConstants.triggerKD;

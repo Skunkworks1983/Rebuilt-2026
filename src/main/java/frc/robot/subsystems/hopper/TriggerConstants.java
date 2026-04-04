@@ -33,8 +33,6 @@ public class TriggerConstants {
   /** Alignment configuration for the trigger motor. */
   public static final InvertedValue triggerMotorAlignment = InvertedValue.CounterClockwise_Positive;
 
-  public static final double triggerSensorToMechanismRatio = 19.2;
-
   /** Stator current limit in Amps for the trigger motor. */
   public static final Current triggerStatorCurrentLimitAmps = Amps.of(120);
 
