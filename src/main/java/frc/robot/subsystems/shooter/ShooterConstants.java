@@ -95,10 +95,10 @@ public class ShooterConstants {
   public static final InvertedValue leftMotorInverted = InvertedValue.CounterClockwise_Positive;
 
   /** Minimum physical pitch angle of the shooter. */
-  public static final Angle minShooterPitch = Degrees.of(55.5);
+  public static final Angle minShooterPitch = Degrees.of(35);
 
   /** Maximum physical pitch angle of the shooter. */
-  public static final Angle maxShooterPitch = Degrees.of(84);
+  public static final Angle maxShooterPitch = Degrees.of(83);
 
   /** Moment of inertia of the flywheel mechanism. */
   public static final MomentOfInertia flywheelInertia = KilogramSquareMeters.of(0.01);
