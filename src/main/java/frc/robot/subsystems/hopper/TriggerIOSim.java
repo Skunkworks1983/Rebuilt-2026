@@ -13,42 +13,42 @@ import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
-/** This is the Hopper IO sim */
-public class HopperIOSim extends HopperIOTalonFX {
-  DCMotorSim hopperMotorSim;
+/** This is the Trigger IO sim */
+public class TriggerIOSim extends TriggerIOTalonFXS {
+  DCMotorSim triggerMotorSim;
   Voltage voltage;
 
-  public HopperIOSim() {
-    super();
+  public TriggerIOSim(int motorID) {
+    super(motorID);
     LinearSystem linearSystem = LinearSystemId.createDCMotorSystem(0.002, 0.02);
 
     double[] stdevs = {0.00, 0.00};
 
-    hopperMotorSim = new DCMotorSim(linearSystem, DCMotor.getKrakenX44(1), stdevs);
+    triggerMotorSim = new DCMotorSim(linearSystem, DCMotor.getMinion(1), stdevs);
   }
 
   @Override
-  public void updateInputs(HopperIOInputs input) {
-    var talonFXSim = super.hopperMotor.getSimState();
+  public void updateInputs(TriggerIOInputs input) {
+    var talonFXSim = super.triggerMotor.getSimState();
 
-    talonFXSim.Orientation = ChassisReference.Clockwise_Positive;
+    talonFXSim.MotorOrientation = ChassisReference.Clockwise_Positive;
     talonFXSim.setSupplyVoltage(RobotController.getBatteryVoltage());
 
     Voltage primaryAppliedVolts = talonFXSim.getMotorVoltageMeasure();
-    hopperMotorSim.setInputVoltage(primaryAppliedVolts.magnitude());
+    triggerMotorSim.setInputVoltage(primaryAppliedVolts.magnitude());
 
-    hopperMotorSim.update(0.020);
+    triggerMotorSim.update(0.020);
 
-    talonFXSim.setRotorVelocity(hopperMotorSim.getAngularVelocity());
+    talonFXSim.setRotorVelocity(triggerMotorSim.getAngularVelocity());
 
-    talonFXSim.setRawRotorPosition(hopperMotorSim.getAngularPosition());
+    talonFXSim.setRawRotorPosition(triggerMotorSim.getAngularPosition());
 
-    hopperMotorSim.update(0.020);
+    triggerMotorSim.update(0.020);
 
     input.connected = true;
-    input.position = hopperMotorSim.getAngularPosition();
-    input.angularVelocity = hopperMotorSim.getAngularVelocity();
+    input.position = triggerMotorSim.getAngularPosition();
+    input.angularVelocity = triggerMotorSim.getAngularVelocity();
     input.appliedVolts = primaryAppliedVolts;
-    input.currentAmps = Units.Amps.of(hopperMotorSim.getCurrentDrawAmps());
+    input.currentAmps = Units.Amps.of(triggerMotorSim.getCurrentDrawAmps());
   }
 }

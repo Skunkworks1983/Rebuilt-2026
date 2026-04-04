@@ -26,7 +26,7 @@ public class AutonomousAimedShoot extends Command {
 
   private final ProfiledPIDController yawController;
 
-  private final Debouncer indexDebounce = new Debouncer(0.5);
+  private final Debouncer triggerDebounce = new Debouncer(0.5);
   private final Timer autoUnjamTimer = new Timer();
 
   private boolean feedEnabled = false;
@@ -103,10 +103,10 @@ public class AutonomousAimedShoot extends Command {
     Logger.recordOutput("Auto Shoot/At Setpoint", yawController.atSetpoint());
     Logger.recordOutput("Auto Shoot/At Goal", yawController.atGoal());
     Logger.recordOutput(
-        "Auto Shoot/Debounced", indexDebounce.calculate(yawController.atSetpoint()));
+        "Auto Shoot/Debounced", triggerDebounce.calculate(yawController.atSetpoint()));
 
     boolean readyToFeed = yawController.atGoal() && shooter.isUpperFlywheelAtSetpoint();
-    Logger.recordOutput("Auto Shoot/Indexer Ready", readyToFeed);
+    Logger.recordOutput("Auto Shoot/Trigger Ready", readyToFeed);
 
     if (readyToFeed && !feedEnabled) {
       feedEnabled = true;

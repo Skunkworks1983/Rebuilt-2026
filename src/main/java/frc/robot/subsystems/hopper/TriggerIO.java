@@ -4,11 +4,6 @@
 
 package frc.robot.subsystems.hopper;
 
-import static edu.wpi.first.units.Units.Amps;
-import static edu.wpi.first.units.Units.Rotations;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
-import static edu.wpi.first.units.Units.Volts;
-
 import com.ctre.phoenix6.configs.Slot0Configs;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -16,31 +11,31 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import org.littletonrobotics.junction.AutoLog;
 
-/** this is the Hoppers' IO */
-public interface HopperIO {
+/** this is the Indexer/Trigger IO */
+public interface TriggerIO {
   @AutoLog
-  public static class HopperIOInputs {
+  public static class TriggerIOInputs {
     public boolean connected = false;
-    public Angle position = Rotations.of(0);
-    public AngularVelocity angularVelocity = RotationsPerSecond.of(0);
-    public Voltage appliedVolts = Volts.of(0);
-    public Current currentAmps = Amps.of(0);
+    public Angle position;
+    public AngularVelocity angularVelocity;
+    public Voltage appliedVolts;
+    public Current currentAmps;
   }
 
-  public default void updateInputs(HopperIOInputs inputs) {}
+  public default void updateInputs(TriggerIOInputs inputs) {}
 
-  /** sets velocity at which to run the hopper */
-  public default void setHopperVelocity(AngularVelocity velocity) {}
+  /** sets velocity at which to run the trigger */
+  public default void setTriggerVelocity(AngularVelocity velocity) {}
 
   /**
-   * Reconfigure PID/FF gains used by the hopper controller on the fly.
+   * Reconfigure PID/FF gains used by the flywheel controller on the fly.
    *
    * @param configs controller gains
    */
   public default void setPID(Slot0Configs configs) {}
 
   /**
-   * Apply an open-loop torque/current command to the hopper motor.
+   * Apply an open-loop torque/current command to the flywheel motor.
    *
    * <p>This is primarily for SysID
    *
@@ -50,4 +45,6 @@ public interface HopperIO {
   public default void setOpenLoopTorqueCurrent(Current output) {}
 
   public default void setDutyCycle(double dutyCycle) {}
+
+  public default void setVoltageOut(Voltage voltage) {}
 }

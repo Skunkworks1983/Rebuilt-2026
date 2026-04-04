@@ -35,8 +35,8 @@ import frc.robot.commands.collectorCommands.CollectorDown;
 import frc.robot.commands.collectorCommands.CollectorExpel;
 import frc.robot.commands.collectorCommands.CollectorIntake;
 import frc.robot.commands.collectorCommands.CollectorUp;
-import frc.robot.commands.indexerCommands.IndexerAutoUnjam;
-import frc.robot.commands.indexerCommands.ReverseIndexCommand;
+import frc.robot.commands.triggerCommands.ReverseIndexCommand;
+import frc.robot.commands.triggerCommands.TriggerAutoUnjam;
 import frc.robot.subsystems.collector.Collector;
 import frc.robot.subsystems.collector.CollectorModuleIO;
 import frc.robot.subsystems.collector.CollectorModuleTalonIO;
@@ -48,12 +48,10 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.drive.ModuleIOTalonFXSim;
 import frc.robot.subsystems.hopper.Hopper;
-import frc.robot.subsystems.hopper.HopperIO;
-import frc.robot.subsystems.hopper.HopperIOSim;
-import frc.robot.subsystems.hopper.HopperIOTalonFX;
-import frc.robot.subsystems.hopper.IndexerConstants;
-import frc.robot.subsystems.hopper.IndexerIO;
-import frc.robot.subsystems.hopper.IndexerIOTalonFXS;
+import frc.robot.subsystems.hopper.TriggerConstants;
+import frc.robot.subsystems.hopper.TriggerIO;
+import frc.robot.subsystems.hopper.TriggerIOSim;
+import frc.robot.subsystems.hopper.TriggerIOTalonFXS;
 import frc.robot.subsystems.shooter.BeamBreakIO;
 import frc.robot.subsystems.shooter.BeamBreakIOSensor;
 import frc.robot.subsystems.shooter.FlywheelIO;
@@ -150,9 +148,26 @@ public class RobotContainer {
 
         hopper =
             new Hopper(
-                new HopperIOTalonFX(),
-                new IndexerIOTalonFXS(IndexerConstants.leftIndexerMotorID),
-                new IndexerIOTalonFXS(IndexerConstants.rightIndexerMotorID));
+                new TriggerIOTalonFXS(TriggerConstants.leftTriggerMotorID),
+                new TriggerIOTalonFXS(TriggerConstants.rightTriggerMotorID));
+
+        // The ModuleIOTalonFXS implementation provides an example implementation for
+        // TalonFXS controller connected to a CANdi with a PWM encoder. The
+        // implementations
+        // of ModuleIOTalonFX, ModuleIOTalonFXS, and ModuleIOSpark (from the Spark
+        // swerve
+        // template) can be freely intermixed to support alternative hardware
+        // arrangements.
+        // Please see the AdvantageKit template documentation for more information:
+        // https://docs.advantagekit.org/getting-started/template-projects/talonfx-swerve-template#custom-module-implementations
+        //
+        // drive =
+        // new Drive(
+        // new GyroIOPigeon2(),
+        // new ModuleIOTalonFXS(TunerConstants.FrontLeft),
+        // new ModuleIOTalonFXS(TunerConstants.FrontRight),
+        // new ModuleIOTalonFXS(TunerConstants.BackLeft),
+        // new ModuleIOTalonFXS(TunerConstants.BackRight));
         break;
 
       case SIM:
@@ -195,7 +210,10 @@ public class RobotContainer {
 
         collector = new Collector(new CollectorModuleIO() {});
 
-        hopper = new Hopper(new HopperIOSim(), new IndexerIOTalonFXS(0), new IndexerIOTalonFXS(0));
+        hopper =
+            new Hopper(
+                new TriggerIOSim(TriggerConstants.leftTriggerMotorID),
+                new TriggerIOSim(TriggerConstants.rightTriggerMotorID));
 
         break;
 
@@ -217,7 +235,7 @@ public class RobotContainer {
 
         collector = new Collector(new CollectorModuleTalonIO());
 
-        hopper = new Hopper(new HopperIO() {}, new IndexerIO() {}, new IndexerIO() {});
+        hopper = new Hopper(new TriggerIO() {}, new TriggerIO() {});
 
         break;
     }
@@ -226,9 +244,11 @@ public class RobotContainer {
         "Another Auto Aimed Shoot",
         new ParallelCommandGroup(
             new AutonomousAimedShoot(
-                drive, shooter, new IndexerAutoUnjam(shooter::getBeamBreak, hopper)),
+                drive, shooter, new TriggerAutoUnjam(shooter::getBeamBreak, hopper)),
             new Agitate(collector)));
 
+    NamedCommands.registerCommand(
+        "Intake Shooter/ Trigger", new TriggerAutoUnjam(shooter::getBeamBreak, hopper));
     NamedCommands.registerCommand(
         "Ramp Shooter", new ShootPresetSetpoints(shooter, TargetType.GOAL));
     NamedCommands.registerCommand("Lower Collector", new CollectorDown(collector));
@@ -312,18 +332,19 @@ public class RobotContainer {
     ShootPresetSetpoints shootPresetSetpointsTransfer =
         new ShootPresetSetpoints(shooter, TargetType.TRANSFER);
 
-    JoystickButton runIndexer = new JoystickButton(leftJoystick, 1);
-    JoystickButton runIndexerReverse =
+    JoystickButton runTrigger = new JoystickButton(leftJoystick, 1);
+    JoystickButton runTriggerReverse =
         new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID);
 
-    runIndexer.whileTrue(
-        new IndexerAutoUnjam(shooter::getBeamBreak, hopper).alongWith(new Agitate(collector)));
+    runTrigger.whileTrue(new TriggerAutoUnjam(shooter::getBeamBreak, hopper));
 
-    runIndexerReverse.whileTrue(new ReverseIndexCommand(hopper));
+    runTriggerReverse.whileTrue(new ReverseIndexCommand(hopper));
+
+    runTrigger.whileTrue(new TriggerAutoUnjam(shooter::getBeamBreak, hopper));
 
     // if the index button is hed and more than a second elapses before the beam
     // break is broken the
-    // indexer will reverse for 1 second before attempting to intake again
+    // trigger will reverse for 1 second before attempting to intake again
 
     Logger.recordOutput("Control Scheme", Constants.controlScheme);
 
