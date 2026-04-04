@@ -32,7 +32,7 @@ public class AutonomousAimedShoot extends Command {
   private boolean feedEnabled = false;
 
   /**
-   * Auto-aiming shoot command specifically for auto It does not allow for driver translation of the
+   * Auto-aiming shoot command specifically for auto. It does not allow for driver translation of the
    * robot and it automatically starts shooting when setpoints are reached
    *
    * @param feedCommand The command that should be run to feed balls into the shooter
@@ -61,7 +61,7 @@ public class AutonomousAimedShoot extends Command {
     autoUnjamTimer.stop();
     autoUnjamTimer.reset();
     Logger.recordOutput("Auto Shoot/Feed Enabled", false);
-    Logger.recordOutput("Commands/Another Auto Aimed Shoot", true);
+    Logger.recordOutput("Commands/Autonomous Aimed Shoot", true);
   }
 
   @Override
@@ -127,7 +127,7 @@ public class AutonomousAimedShoot extends Command {
     feedEnabled = false;
     Logger.recordOutput("Auto Shoot/Feed Enabled", false);
     Logger.recordOutput("Auto Shoot/Unjamming", false);
-    Logger.recordOutput("Commands/Another Auto Aimed Shoot", false);
+    Logger.recordOutput("Commands/Autonomous Aimed Shoot", false);
     feedCommand.cancel();
   }
 }
