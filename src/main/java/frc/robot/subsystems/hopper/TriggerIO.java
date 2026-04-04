@@ -20,14 +20,14 @@ public interface TriggerIO {
     public AngularVelocity primaryAngularVelocity;
     public Voltage primaryAppliedVolts;
     public Current primaryCurrentAmps;
-    public double primaryClosedLoopError;
+    public AngularVelocity primaryClosedLoopError;
 
     public boolean followerConnected = false;
     public Angle followerPosition;
     public AngularVelocity followerAngularVelocity;
     public Voltage followerAppliedVolts;
     public Current followerCurrentAmps;
-    public double followerClosedLoopError;
+    public AngularVelocity followerClosedLoopError;
   }
 
   public default void updateInputs(TriggerIOInputs inputs) {}

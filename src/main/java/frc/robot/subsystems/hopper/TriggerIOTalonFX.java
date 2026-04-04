@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.hopper;
 
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static frc.robot.util.PhoenixUtil.tryUntilOk;
 
 import com.ctre.phoenix6.BaseStatusSignal;
@@ -120,14 +121,14 @@ public class TriggerIOTalonFX implements TriggerIO {
     inputs.primaryAngularVelocity = primaryVelocity.getValue();
     inputs.primaryAppliedVolts = primaryVoltage.getValue();
     inputs.primaryCurrentAmps = primaryCurrent.getValue();
-    inputs.primaryClosedLoopError = primaryClosedLoopError.getValue();
+    inputs.primaryClosedLoopError = RotationsPerSecond.of(primaryClosedLoopError.getValue());
 
     inputs.followerConnected = triggerDebouncer.calculate(followerTriggerStatus.isOK());
     inputs.followerPosition = followerPosition.getValue();
     inputs.followerAngularVelocity = followerVelocity.getValue();
     inputs.followerAppliedVolts = followerVoltage.getValue();
     inputs.followerCurrentAmps = followerCurrent.getValue();
-    inputs.followerClosedLoopError = followerClosedLoopError.getValue();
+    inputs.followerClosedLoopError = RotationsPerSecond.of(followerClosedLoopError.getValue());
 
   }
 
