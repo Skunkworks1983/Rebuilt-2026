@@ -60,12 +60,15 @@ public class TunerConstantsRebuiltChassisOne implements TunerConstants {
   // cannot be null.
   // Some configs will be overwritten; check the `with InitialConfigs()` API
   // documentation.
-  private static final TalonFXConfiguration driveInitialConfigs = new TalonFXConfiguration().withCurrentLimits(
+  private static final TalonFXConfiguration driveInitialConfigs =
+      new TalonFXConfiguration()
+          .withCurrentLimits(
               new CurrentLimitsConfigs()
                   .withSupplyCurrentLimit(60)
                   .withStatorCurrentLimit(100)
                   .withStatorCurrentLimitEnable(true)
-                  .withStatorCurrentLimitEnable(true));;
+                  .withStatorCurrentLimitEnable(true));
+  ;
   private static final TalonFXConfiguration steerInitialConfigs =
       new TalonFXConfiguration()
           .withCurrentLimits(

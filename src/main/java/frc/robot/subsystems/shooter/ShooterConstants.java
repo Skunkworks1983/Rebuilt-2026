@@ -110,7 +110,7 @@ public class ShooterConstants {
   /** Initial pose of the shooter on the robot in WPILIb robot coordinate system. */
   public static final Pose3d shooterInitalPosition =
       new Pose3d(
-          new Translation3d(Inches.of(-4.483162), Meters.of(0), Inches.of(21.311)),
+          new Translation3d(Inches.of(-10.93875), Meters.of(0), Inches.of(19.068799)),
           new Rotation3d(Degrees.of(0), pivotStartAngle, Degrees.of(180)));
 
   /** Radius of the flywheel. */
