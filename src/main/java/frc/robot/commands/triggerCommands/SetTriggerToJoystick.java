@@ -13,13 +13,13 @@ import frc.robot.subsystems.shooter.Shooter;
 import java.util.function.DoubleSupplier;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class setTriggerToJoystick extends Command {
+public class SetTriggerToJoystick extends Command {
   Hopper hopper;
   Shooter shooter;
   DoubleSupplier hopperSpeed;
   DoubleSupplier triggerSpeed;
   /** Creates a new setIndexToJoystick. */
-  public setTriggerToJoystick(
+  public SetTriggerToJoystick(
       Hopper hopper, DoubleSupplier hopperSpeed, DoubleSupplier triggerSpeed, Shooter shooter) {
     this.hopper = hopper;
     this.shooter = shooter;
