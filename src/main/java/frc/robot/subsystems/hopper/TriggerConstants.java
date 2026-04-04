@@ -34,7 +34,7 @@ public class TriggerConstants {
   public static final InvertedValue triggerMotorAlignment = InvertedValue.CounterClockwise_Positive;
 
   /** Stator current limit in Amps for the trigger motor. */
-  public static final Current triggerStatorCurrentLimitAmps = Amps.of(120);
+  public static final Current triggerStatorCurrentLimitAmps = Amps.of(80);
 
   public static final LoggedTunableNumber triggerDutyCycleSpeedFeed =
       new LoggedTunableNumber("Hopper/Trigger/DutyCycleOutFeed", -1);

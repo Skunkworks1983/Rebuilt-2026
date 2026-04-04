@@ -20,8 +20,7 @@ import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
 
 /**
- * {@summary} Includes the mechanisms for both the Hopper Bed and the Indexer/Trigger, it takes in
- * one Hopper motor and two Trigger motors
+ * {@summary} Includes the spinning indexing wheels, it takes in two Trigger motor IO's
  */
 public class Hopper extends SubsystemBase {
 

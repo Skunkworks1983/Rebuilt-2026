@@ -24,7 +24,7 @@ public class TriggerIOSim extends TriggerIOTalonFXS {
 
     double[] stdevs = {0.00, 0.00};
 
-    triggerMotorSim = new DCMotorSim(linearSystem, DCMotor.getKrakenX44(1), stdevs);
+    triggerMotorSim = new DCMotorSim(linearSystem, DCMotor.getMinion(1), stdevs);
   }
 
   @Override

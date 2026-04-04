@@ -47,6 +47,7 @@ import frc.robot.subsystems.drive.ModuleIOTalonFXSim;
 import frc.robot.subsystems.hopper.Hopper;
 import frc.robot.subsystems.hopper.TriggerConstants;
 import frc.robot.subsystems.hopper.TriggerIO;
+import frc.robot.subsystems.hopper.TriggerIOSim;
 import frc.robot.subsystems.hopper.TriggerIOTalonFXS;
 import frc.robot.subsystems.shooter.BeamBreakIO;
 import frc.robot.subsystems.shooter.BeamBreakIOSensor;
@@ -206,7 +207,9 @@ public class RobotContainer {
 
         collector = new Collector(new CollectorModuleIO() {});
 
-        hopper = new Hopper(new TriggerIOTalonFXS(0), new TriggerIOTalonFXS(0));
+        hopper = new Hopper(
+            new TriggerIOSim(TriggerConstants.leftTriggerMotorID), 
+            new TriggerIOSim(TriggerConstants.rightTriggerMotorID));
 
         break;
 

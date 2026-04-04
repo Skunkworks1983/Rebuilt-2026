@@ -87,7 +87,6 @@ public class TriggerIOTalonFXS implements TriggerIO {
   }
 
   /** sets the control for the trigger motor to the defined velocity */
-
   @Override
   public void setOpenLoopTorqueCurrent(Current output) {
     triggerMotor.setControl(torqueCurrentRequest.withOutput(output));
