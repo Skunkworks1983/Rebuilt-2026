@@ -22,15 +22,16 @@ import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
 
 /**
- * {@summary} Includes the mechanisms for both the Hopper Bed and the Indexer, it takes in one
- * Hopper motor and two Indexer motors
+ * {@summary} Includes the mechanisms for both the Hopper Bed and the Trigger, it takes in one
+ * BedIOTalonFX and two TriggerIOTalonFX
  */
 public class Hopper extends SubsystemBase {
   BedIO bed;
   Alert hopperDisconnectAlert = new Alert(getName(), AlertType.kError);
 
-  IndexerIO indexer;
-  Alert leftIndexerDisconnectAlert = new Alert(getName(), AlertType.kError);
+  TriggerIO trigger;
+  Alert leftTriggerDisconnectAlert = new Alert(getName(), AlertType.kError);
+  Alert rightTriggerDisconnectAlert = new Alert(getName(), AlertType.kError);
 
   private final SysIdRoutine sysId;
 
@@ -47,22 +48,22 @@ public class Hopper extends SubsystemBase {
   private static final LoggedTunableNumber hopperlKA =
       new LoggedTunableNumber("Hopper/HopperBed/kA", BedConstants.hopperKA);
 
-  public final IndexerIOInputsAutoLogged indexerInputs = new IndexerIOInputsAutoLogged();
+  public final TriggerIOInputsAutoLogged triggerInputs = new TriggerIOInputsAutoLogged();
 
-  private static final LoggedTunableNumber indexerlKP =
-      new LoggedTunableNumber("Hopper/Indexer/kP", IndexerConstants.indexerKP);
-  private static final LoggedTunableNumber indexerlKD =
-      new LoggedTunableNumber("Hopper/Indexer/kD", IndexerConstants.indexerKD);
-  private static final LoggedTunableNumber indexerlKS =
-      new LoggedTunableNumber("Hopper/Indexer/kS", IndexerConstants.indexerKS);
-  private static final LoggedTunableNumber indexerlKV =
-      new LoggedTunableNumber("Hopper/Indexer/kV", IndexerConstants.indexerKV);
-  private static final LoggedTunableNumber indexerlKA =
-      new LoggedTunableNumber("Hopper/Indexer/kA", IndexerConstants.indexerKA);
+  private static final LoggedTunableNumber triggerlKP =
+      new LoggedTunableNumber("Hopper/Trigger/kP", TriggerConstants.triggerKP);
+  private static final LoggedTunableNumber triggerlKD =
+      new LoggedTunableNumber("Hopper/Trigger/kD", TriggerConstants.triggerKD);
+  private static final LoggedTunableNumber triggerlKS =
+      new LoggedTunableNumber("Hopper/Trigger/kS", TriggerConstants.triggerKS);
+  private static final LoggedTunableNumber triggerlKV =
+      new LoggedTunableNumber("Hopper/Trigger/kV", TriggerConstants.triggerKV);
+  private static final LoggedTunableNumber triggerlKA =
+      new LoggedTunableNumber("Hopper/Trigger/kA", TriggerConstants.triggerKA);
 
-  public Hopper(BedIO hopperMotor, IndexerIO indexer) {
+  public Hopper(BedIO hopperMotor, TriggerIO trigger) {
     this.bed = hopperMotor;
-    this.indexer = indexer;
+    this.trigger = trigger;
 
     sysId =
         new SysIdRoutine(
@@ -79,19 +80,16 @@ public class Hopper extends SubsystemBase {
     bed.setOpenLoopTorqueCurrent(Amps.of(torqueCurrent));
   }
 
-  private void runIndexerTorqueCurrent(double torqueCurrent) {
-    indexer.setOpenLoopTorqueCurrent(Amps.of(torqueCurrent));
-  }
-
   @Override
   public void periodic() {
     bed.updateInputs(hopperInputs);
-    indexer.updateInputs(indexerInputs);
+    trigger.updateInputs(triggerInputs);
 
     Logger.processInputs("Hopper/Bed/", hopperInputs);
-    Logger.processInputs("Hopper/Indexer/", indexerInputs);
+    Logger.processInputs("Hopper/Trigger/", triggerInputs);
     hopperDisconnectAlert.set(!hopperInputs.connected);
-    leftIndexerDisconnectAlert.set(!indexerInputs.connected);
+    leftTriggerDisconnectAlert.set(!triggerInputs.primaryConnected);
+    rightTriggerDisconnectAlert.set(!triggerInputs.followerConnected);
 
     if (Constants.tuningMode) {
 
@@ -116,49 +114,44 @@ public class Hopper extends SubsystemBase {
                 "Hopper motor PID gains have been updated."));
       }
 
-      if (indexerlKP.hasChanged(hash)
-          || indexerlKD.hasChanged(hash)
-          || indexerlKS.hasChanged(hash)
-          || indexerlKV.hasChanged(hash)
-          || indexerlKA.hasChanged(hash)) {
+      if (triggerlKP.hasChanged(hash)
+          || triggerlKD.hasChanged(hash)
+          || triggerlKS.hasChanged(hash)
+          || triggerlKV.hasChanged(hash)
+          || triggerlKA.hasChanged(hash)) {
         Slot0Configs gains = new Slot0Configs();
-        gains.kP = indexerlKP.get();
-        gains.kD = indexerlKD.get();
-        gains.kS = indexerlKS.get();
-        gains.kV = indexerlKV.get();
-        gains.kA = indexerlKA.get();
-        indexer.setPID(gains);
+        gains.kP = triggerlKP.get();
+        gains.kD = triggerlKD.get();
+        gains.kS = triggerlKS.get();
+        gains.kV = triggerlKV.get();
+        gains.kA = triggerlKA.get();
+        trigger.setPID(gains);
 
         Elastic.sendNotification(
             new Elastic.Notification(
                 Elastic.NotificationLevel.INFO,
-                "Indexer PID Update",
-                "Indexer motor PID gains have been updated."));
+                "Trigger PID Update",
+                "Trigger motor PID gains have been updated."));
       }
     }
-  }
-
-  /** sets the velocity of the hopper to the defined velocity */
-  public void setHopperVelocity(AngularVelocity velocity) {
-    bed.setHopperVelocity(velocity);
   }
 
   public void setHopperDutyCycle(double dutyCycle) {
     bed.setDutyCycle(dutyCycle);
   }
 
-  /** sets the velocity of the indexer to the defined velocity */
-  public void setIndexerVelocity(AngularVelocity velocity) {
-    indexer.setIndexerVelocity(velocity.unaryMinus());
+  /** sets the velocity of the trigger to the defined velocity */
+  public void setTriggerVelocity(AngularVelocity velocity) {
+    trigger.setTriggerVelocity(velocity.unaryMinus());
   }
 
-  /** sets both indexers duty cycle */
-  public void setIndexerDutyCycle(double dutyCycle) {
-    indexer.setDutyCycle(dutyCycle);
+  /** sets both triggers duty cycle */
+  public void setTriggerDutyCycle(double dutyCycle) {
+    trigger.setDutyCycle(dutyCycle);
   }
 
-  public void setIndexerVoltageOut(Voltage voltage) {
-    indexer.setVoltageOut(voltage.unaryMinus());
+  public void setTriggerVoltageOut(Voltage voltage) {
+    trigger.setVoltageOut(voltage.unaryMinus());
   }
 
   /** Returns a command to run a quasistatic test in the specified direction. */
