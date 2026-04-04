@@ -12,7 +12,6 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.TorqueCurrentFOC;
-import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.signals.MotorArrangementValue;
@@ -90,19 +89,10 @@ public class TriggerIOTalonFXS implements TriggerIO {
   }
 
   /** sets the control for the trigger motor to the defined velocity */
-  @Override
-  public void setTriggerVelocity(AngularVelocity velocity) {
-    triggerMotor.setControl(new VelocityVoltage(velocity));
-  }
 
   @Override
   public void setOpenLoopTorqueCurrent(Current output) {
     triggerMotor.setControl(torqueCurrentRequest.withOutput(output));
-  }
-
-  @Override
-  public void setPID(Slot0Configs configs) {
-    tryUntilOk(5, () -> triggerMotor.getConfigurator().apply(configs, 0.25));
   }
 
   @Override
