@@ -37,9 +37,9 @@ public class Agitate extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (time.hasElapsed(Seconds.of(1.5))) {
+    if (time.hasElapsed(Seconds.of(collector.getConstants().agitatePeriod * 2))) {
       time.reset();
-    } else if (time.hasElapsed(Seconds.of(.75))) {
+    } else if (time.hasElapsed(Seconds.of(collector.getConstants().agitatePeriod))) {
       collector.setCollectorPos(Radians.of(collector.getConstants().CollectorHalfPos.get()), 0);
     } else {
       collector.goDown();
