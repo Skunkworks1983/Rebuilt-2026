@@ -21,7 +21,7 @@ public class TriggerCommand extends Command {
   @Override
   public void initialize() {
     hopper.setTriggerDutyCycle(TriggerConstants.triggerDutyCycleSpeedFeed.get());
-    Logger.recordOutput("Trigger/Command is Running", true);
+    Logger.recordOutput("Commands/Trigger Command is Running", true);
   }
 
   @Override
@@ -30,7 +30,7 @@ public class TriggerCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     hopper.setTriggerDutyCycle(0);
-    Logger.recordOutput("Trigger/Command is Running", false);
+    Logger.recordOutput("Commands/Trigger Command is Running", false);
   }
 
   @Override

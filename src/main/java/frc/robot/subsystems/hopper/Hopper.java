@@ -24,8 +24,6 @@ import org.littletonrobotics.junction.Logger;
  * one Hopper motor and two Trigger motors
  */
 public class Hopper extends SubsystemBase {
-  HopperIO hopperBed;
-  Alert hopperBedDisconnectAlert = new Alert(getName(), AlertType.kError);
 
   TriggerIO leftTrigger;
   Alert leftTriggerDisconnectAlert = new Alert(getName(), AlertType.kError);
@@ -34,19 +32,6 @@ public class Hopper extends SubsystemBase {
   Alert rightTriggerDisconnectAlert = new Alert(getName(), AlertType.kError);
 
   private final SysIdRoutine sysId;
-
-  public final HopperIOInputsAutoLogged hopperBedInputs = new HopperIOInputsAutoLogged();
-
-  private static final LoggedTunableNumber hopperBedlKP =
-      new LoggedTunableNumber("Hopper/HopperBed/kP", HopperBedConstants.hopperKP);
-  private static final LoggedTunableNumber hopperBedlKD =
-      new LoggedTunableNumber("Hopper/HopperBed/kD", HopperBedConstants.hopperKD);
-  private static final LoggedTunableNumber hopperBedlKS =
-      new LoggedTunableNumber("Hopper/HopperBed/kS", HopperBedConstants.hopperKS);
-  private static final LoggedTunableNumber hopperBedlKV =
-      new LoggedTunableNumber("Hopper/HopperBed/kV", HopperBedConstants.hopperKV);
-  private static final LoggedTunableNumber hopperBedlKA =
-      new LoggedTunableNumber("Hopper/HopperBed/kA", HopperBedConstants.hopperKA);
 
   public final TriggerIOInputsAutoLogged leftTriggerInputs = new TriggerIOInputsAutoLogged();
   public final TriggerIOInputsAutoLogged rightTriggerInputs = new TriggerIOInputsAutoLogged();
@@ -62,16 +47,15 @@ public class Hopper extends SubsystemBase {
   private static final LoggedTunableNumber triggerlKA =
       new LoggedTunableNumber("Hopper/Trigger/kA", TriggerConstants.triggerKA);
 
-  public Hopper(HopperIO hopperBedMotor, TriggerIO leftTriggerMotor, TriggerIO rightTriggerMotor) {
-    this.hopperBed = hopperBedMotor;
+  public Hopper(TriggerIO leftTriggerMotor, TriggerIO rightTriggerMotor) {
     this.leftTrigger = leftTriggerMotor;
     this.rightTrigger = rightTriggerMotor;
 
     sysId =
         new SysIdRoutine(
             new SysIdRoutine.Config(
-                HopperBedConstants.sysIdRampRate,
-                HopperBedConstants.sysIdStepSize,
+                TriggerConstants.sysIdRampRate,
+                TriggerConstants.sysIdStepSize,
                 null,
                 (state) -> SignalLogger.writeString("Hopper/SysIdState", state.toString())),
             new SysIdRoutine.Mechanism(
@@ -79,44 +63,23 @@ public class Hopper extends SubsystemBase {
   }
 
   private void runHopperTorqueCurrent(double torqueCurrent) {
-    hopperBed.setOpenLoopTorqueCurrent(Amps.of(torqueCurrent));
+    leftTrigger.setOpenLoopTorqueCurrent(Amps.of(torqueCurrent));
+    rightTrigger.setOpenLoopTorqueCurrent(Amps.of(torqueCurrent));
   }
 
   @Override
   public void periodic() {
-    hopperBed.updateInputs(hopperBedInputs);
     leftTrigger.updateInputs(leftTriggerInputs);
     rightTrigger.updateInputs(rightTriggerInputs);
 
-    Logger.processInputs("Hopper/HopperBed/Hopper Motor", hopperBedInputs);
     Logger.processInputs("Hopper/Trigger/Left Trigger", leftTriggerInputs);
     Logger.processInputs("Hopper/Trigger/Right Trigger", rightTriggerInputs);
-    hopperBedDisconnectAlert.set(!hopperBedInputs.connected);
     leftTriggerDisconnectAlert.set(!leftTriggerInputs.connected);
     rightTriggerDisconnectAlert.set(!rightTriggerInputs.connected);
 
     if (Constants.tuningMode) {
 
       int hash = hashCode();
-      if (hopperBedlKP.hasChanged(hash)
-          || hopperBedlKD.hasChanged(hash)
-          || hopperBedlKS.hasChanged(hash)
-          || hopperBedlKV.hasChanged(hash)
-          || hopperBedlKA.hasChanged(hash)) {
-        Slot0Configs gains = new Slot0Configs();
-        gains.kP = hopperBedlKP.get();
-        gains.kD = hopperBedlKD.get();
-        gains.kS = hopperBedlKS.get();
-        gains.kV = hopperBedlKV.get();
-        gains.kA = hopperBedlKA.get();
-        hopperBed.setPID(gains);
-
-        Elastic.sendNotification(
-            new Elastic.Notification(
-                Elastic.NotificationLevel.INFO,
-                "Hopper Bed PID Update",
-                "Hopper Bed motor PID gains have been updated."));
-      }
 
       if (triggerlKP.hasChanged(hash)
           || triggerlKD.hasChanged(hash)
@@ -139,10 +102,6 @@ public class Hopper extends SubsystemBase {
                 "Trigger motor PID gains have been updated."));
       }
     }
-  }
-
-  public void setHopperBedDutyCycle(double dutyCycle) {
-    hopperBed.setDutyCycle(dutyCycle);
   }
 
   /** sets both triggers duty cycle */

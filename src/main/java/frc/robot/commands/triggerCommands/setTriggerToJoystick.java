@@ -8,7 +8,6 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.hopper.Hopper;
-import frc.robot.subsystems.hopper.HopperBedConstants;
 import frc.robot.subsystems.hopper.TriggerConstants;
 import frc.robot.subsystems.shooter.Shooter;
 import java.util.function.DoubleSupplier;
@@ -39,15 +38,12 @@ public class setTriggerToJoystick extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    hopper.setHopperBedDutyCycle(HopperBedConstants.hopperDutyCycleSpeedFeed.get());
-    ;
     hopper.setTriggerDutyCycle(TriggerConstants.triggerDutyCycleSpeedFeed.get());
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    hopper.setHopperBedDutyCycle(0);
     hopper.setTriggerDutyCycle(0);
   }
 

@@ -21,13 +21,13 @@ public class ReverseIndexCommand extends Command {
   @Override
   public void initialize() {
     hopper.setTriggerDutyCycle(TriggerConstants.triggerDutyCycleSpeedReverse.get());
-    Logger.recordOutput("Hopper/Reverse Command is Running", true);
+    Logger.recordOutput("Commands/Reverse Index Command is Running", true);
   }
 
   @Override
   public void end(boolean interrupted) {
     hopper.setTriggerDutyCycle(0);
-    Logger.recordOutput("Hopper/Reverse Command is Running", false);
+    Logger.recordOutput("Commands/Reverse Index Command is Running", false);
   }
 
   @Override

@@ -45,8 +45,6 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.drive.ModuleIOTalonFXSim;
 import frc.robot.subsystems.hopper.Hopper;
-import frc.robot.subsystems.hopper.HopperIO;
-import frc.robot.subsystems.hopper.HopperIOSim;
 import frc.robot.subsystems.hopper.TriggerConstants;
 import frc.robot.subsystems.hopper.TriggerIO;
 import frc.robot.subsystems.hopper.TriggerIOTalonFXS;
@@ -146,7 +144,6 @@ public class RobotContainer {
 
         hopper =
             new Hopper(
-                null,
                 new TriggerIOTalonFXS(TriggerConstants.leftTriggerMotorID),
                 new TriggerIOTalonFXS(TriggerConstants.rightTriggerMotorID));
 
@@ -209,7 +206,7 @@ public class RobotContainer {
 
         collector = new Collector(new CollectorModuleIO() {});
 
-        hopper = new Hopper(new HopperIOSim(), new TriggerIOTalonFXS(0), new TriggerIOTalonFXS(0));
+        hopper = new Hopper(new TriggerIOTalonFXS(0), new TriggerIOTalonFXS(0));
 
         break;
 
@@ -231,7 +228,7 @@ public class RobotContainer {
 
         collector = new Collector(new CollectorModuleTalonIO());
 
-        hopper = new Hopper(new HopperIO() {}, new TriggerIO() {}, new TriggerIO() {});
+        hopper = new Hopper(new TriggerIO() {}, new TriggerIO() {});
 
         break;
     }
