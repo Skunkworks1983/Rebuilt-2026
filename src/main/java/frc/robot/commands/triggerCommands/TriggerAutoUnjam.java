@@ -12,7 +12,7 @@ import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.Logger;
 
 public class TriggerAutoUnjam extends Command {
-  private static final String logKey = "Index/AutoUnjam";
+  private static final String logKey = "Hopper/AutoUnjam";
 
   private enum AutoUnjamState {
     FEED,
@@ -35,7 +35,7 @@ public class TriggerAutoUnjam extends Command {
   public void initialize() {
     // hopper.setHopperBrake();
     Logger.recordOutput(logKey + "/Running", true);
-    Logger.recordOutput(logKey + "Index/Unjamming", false);
+    Logger.recordOutput(logKey + "/Unjamming", false);
     state = AutoUnjamState.FEED;
     timer.restart();
     applyStateOutput();
