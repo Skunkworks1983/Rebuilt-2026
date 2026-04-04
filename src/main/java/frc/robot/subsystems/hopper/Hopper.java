@@ -19,9 +19,7 @@ import frc.robot.util.Elastic;
 import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
 
-/**
- * {@summary} Includes the spinning indexing wheels, it takes in two Trigger motor IO's
- */
+/** {@summary} Includes the spinning indexing wheels, it takes in two Trigger motor IO's */
 public class Hopper extends SubsystemBase {
 
   TriggerIO leftTrigger;

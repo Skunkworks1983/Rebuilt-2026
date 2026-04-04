@@ -7,7 +7,6 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.Shooter.ShooterSetpoints;
@@ -124,7 +123,7 @@ public class DriveAimedShoot extends Command {
     Logger.recordOutput(
         autoShootRequirementsLogKey + "/ReadyToShoot",
         yawController.atSetpoint() && shooter.canShoot());
-    }
+  }
 
   @Override
   public void end(boolean interrupted) {

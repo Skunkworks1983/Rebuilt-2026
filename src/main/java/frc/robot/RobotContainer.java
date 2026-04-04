@@ -210,9 +210,10 @@ public class RobotContainer {
 
         collector = new Collector(new CollectorModuleIO() {});
 
-        hopper = new Hopper(
-            new TriggerIOSim(TriggerConstants.leftTriggerMotorID), 
-            new TriggerIOSim(TriggerConstants.rightTriggerMotorID));
+        hopper =
+            new Hopper(
+                new TriggerIOSim(TriggerConstants.leftTriggerMotorID),
+                new TriggerIOSim(TriggerConstants.rightTriggerMotorID));
 
         break;
 
@@ -246,8 +247,10 @@ public class RobotContainer {
                 drive, shooter, new TriggerAutoUnjam(shooter::getBeamBreak, hopper)),
             new Agitate(collector)));
 
-    NamedCommands.registerCommand("Intake Shooter/ Trigger", new TriggerAutoUnjam(shooter::getBeamBreak, hopper));
-    NamedCommands.registerCommand("Ramp Shooter", new ShootPresetSetpoints(shooter, TargetType.GOAL));
+    NamedCommands.registerCommand(
+        "Intake Shooter/ Trigger", new TriggerAutoUnjam(shooter::getBeamBreak, hopper));
+    NamedCommands.registerCommand(
+        "Ramp Shooter", new ShootPresetSetpoints(shooter, TargetType.GOAL));
     NamedCommands.registerCommand("Lower Collector", new CollectorDown(collector));
     NamedCommands.registerCommand("Raise Collector", new CollectorUp(collector));
     NamedCommands.registerCommand("Run Collector", new CollectorIntake(collector));
