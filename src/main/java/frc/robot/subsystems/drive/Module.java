@@ -70,7 +70,7 @@ public class Module {
             AlertType.kError);
 
   // Initialize tunable numbers using the default gains for this module
-  var driveGains = this.constants.DriveMotorGains;
+  Slot0Configs driveGains = constants.DriveMotorGains;
   driveKP =
     new LoggedTunableNumber(
       "Drive/Module" + index + "/Drive/kP", driveGains.kP);
@@ -90,7 +90,7 @@ public class Module {
     new LoggedTunableNumber(
       "Drive/Module" + index + "/Drive/kA", driveGains.kA);
 
-  var turnGains = this.constants.SteerMotorGains;
+  Slot0Configs turnGains = constants.SteerMotorGains;
   turnKP =
     new LoggedTunableNumber(
       "Drive/Module" + index + "/Turn/kP", turnGains.kP);
