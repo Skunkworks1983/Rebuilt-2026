@@ -305,6 +305,10 @@ public class Shooter extends SubsystemBase {
     flywheel.setOpenLoopTorqueCurrent(Amps.of(0.0));
   }
 
+  public AngularVelocity getFlywheelSetpoint() {
+    return flywheelSetpoint;
+  }
+
   public boolean getBeamBreak() {
     return beamBreakInputs.beamBroken;
   }

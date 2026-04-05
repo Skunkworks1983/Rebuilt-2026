@@ -49,4 +49,6 @@ public class TriggerConstants {
   public static Velocity<VoltageUnit> sysIdRampRate = Volts.per(Second).of(2);
 
   public static Voltage sysIdStepSize = Volts.of(2);
+  public static LoggedTunableNumber triggerVelocityMultiplier =
+      new LoggedTunableNumber("Hopper/Trigger/VelocityMultiplier", 1.1);
 }

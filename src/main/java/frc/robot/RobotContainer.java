@@ -226,7 +226,7 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Another Auto Aimed Shoot",
         new ParallelCommandGroup(
-            new AnotherAutoAimedShoot(drive, shooter, new RunTrigger(hopper)),
+            new AnotherAutoAimedShoot(drive, shooter, new RunTrigger(hopper, shooter)),
             new agitate(collector)));
 
     NamedCommands.registerCommand(
@@ -322,11 +322,12 @@ public class RobotContainer {
 
     JoystickButton runTrigger = new JoystickButton(leftJoystick, 1);
     JoystickButton runTriggerOnly = new JoystickButton(buttonJoystick, 24);
-    runTriggerOnly.whileTrue(new RunTrigger(hopper));
+    runTriggerOnly.whileTrue(new RunTrigger(hopper, shooter));
     JoystickButton runTriggerReverse =
         new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID);
 
-    runTrigger.whileTrue(new RunTrigger(hopper).alongWith(new agitate(collector)));
+    runTrigger.whileTrue(new RunTrigger(hopper, shooter));
+    // .alongWith(new agitate(collector)))
 
     runTriggerReverse.whileTrue(new ReverseTriggerCommand(hopper));
 

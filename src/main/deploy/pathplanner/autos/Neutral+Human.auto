@@ -13,12 +13,6 @@
                 "data": {
                   "pathName": "Through Close Tunnel"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Lower Collector"
-                }
               }
             ]
           }

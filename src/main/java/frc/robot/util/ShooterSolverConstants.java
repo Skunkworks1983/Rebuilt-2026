@@ -16,7 +16,7 @@ public class ShooterSolverConstants {
 
   /** Air drag coefficient approximation. */
   public static LoggedTunableNumber drag =
-      new LoggedTunableNumber("Shooter/Air Drag Coefficient", 0.085);
+      new LoggedTunableNumber("Shooter/Air Drag Coefficient", 0.0825);
 
   /** Maximum multiplier to apply for drag compensation. */
   public static final double maxDragMultiplier = 3;
@@ -26,7 +26,7 @@ public class ShooterSolverConstants {
    * half the velocity is converted to spin
    */
   public static final LoggedTunableNumber flywheelEfficiency =
-      new LoggedTunableNumber("Flywheel Efficiency", 0.45);
+      new LoggedTunableNumber("Flywheel Efficiency", 0.445);
 
   // CONSTRAINED HEIGHT SOLVER
   /** Vertical clearance required above the hub for specialized constrained shots. */
@@ -34,9 +34,9 @@ public class ShooterSolverConstants {
       new LoggedTunableNumber("Shooter/Close Shot Apex Height Meters", 0.65);
 
   public static LoggedTunableNumber farShotApexHeight =
-      new LoggedTunableNumber("Shooter/Far Shot Apex Height Meters", 0.85);
+      new LoggedTunableNumber("Shooter/Far Shot Apex Height Meters", 0.8);
   public static LoggedTunableNumber farShotDistance =
-      new LoggedTunableNumber("Shooter/Far Shot Distance Meters", 3.65);
+      new LoggedTunableNumber("Shooter/Far Shot Distance Meters", 3.9);
 
   public static final LoggedTunableNumber lowerFlywheelVelocityMultiplier =
       new LoggedTunableNumber("Lower Flywheel Velocity Multiplier", 1.15);
