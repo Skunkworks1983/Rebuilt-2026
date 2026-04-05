@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -105,6 +106,16 @@ public class RobotContainer {
   private final TalonFX indexer;
   private final TalonFX collector;
   private final TalonFX pivotMotor;
+  private final TalonFX hopperFloor;
+  private final TalonFX jonathan;
+  private final TalonFX carl;
+
+  private int hopperFloorId;
+
+  private int jonathanId;
+
+  private int carlId;
+
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -118,13 +129,16 @@ public class RobotContainer {
       backLeftDriveId = 16;
       backLeftSteerId = 17;
       backRightDriveId = 19;
-      backRightSteerId = 20;
+      backRightSteerId = 14;
 
-      forwardShootId = 23;
-      backShootId = 21;
-      indexerId = 45;
-      collectorId = 46;
-      pivotMotorId = 47;
+      forwardShootId = 21;
+      backShootId = 27;
+      indexerId = 23;
+      collectorId = 24;
+      pivotMotorId = 22;
+      hopperFloorId = 25;
+      jonathanId = 26;
+      carlId = 29;
 
       DRIVEBASE_CANBUS = "drivebase_2026";
     } else {
@@ -142,6 +156,10 @@ public class RobotContainer {
       indexerId = 44;
       collectorId = 45;
       pivotMotorId=46;
+ hopperFloorId = 25;
+      jonathanId = 26;
+      carlId = 29;
+
       DRIVEBASE_CANBUS = "Drivebase 2025";
     }
 
@@ -154,11 +172,14 @@ public class RobotContainer {
     brDrive = new TalonFX(backRightDriveId, DRIVEBASE_CANBUS);
     brSteer = new TalonFX(backRightSteerId, DRIVEBASE_CANBUS);
 
-    forwardShoot = new TalonFX(forwardShootId, RIO_CANBUS);
-    backShoot = new TalonFX(backShootId, RIO_CANBUS);
-    indexer = new TalonFX(indexerId, RIO_CANBUS);
-    collector = new TalonFX(collectorId, RIO_CANBUS);
-    pivotMotor = new TalonFX(pivotMotorId, RIO_CANBUS);
+    forwardShoot = new TalonFX(forwardShootId, DRIVEBASE_CANBUS);
+    backShoot = new TalonFX(backShootId, DRIVEBASE_CANBUS);
+    indexer = new TalonFX(indexerId, DRIVEBASE_CANBUS);
+    collector = new TalonFX(collectorId, DRIVEBASE_CANBUS);
+    pivotMotor = new TalonFX(pivotMotorId, DRIVEBASE_CANBUS);
+    hopperFloor = new TalonFX(hopperFloorId, DRIVEBASE_CANBUS);
+    jonathan = new TalonFX(jonathanId, DRIVEBASE_CANBUS);
+    carl = new TalonFX(carlId, DRIVEBASE_CANBUS);
 
     Command crazyCommand = new InstantCommand(this::playMusic).ignoringDisable(true);
     songChooser.addOption("Rick Roll", Songs.RickRoll);
@@ -186,6 +207,10 @@ public class RobotContainer {
     backShoot.getConfigurator().apply(config);
     indexer.getConfigurator().apply(config);
     collector.getConfigurator().apply(config);
+    pivotMotor.getConfigurator().apply(config);
+    hopperFloor.getConfigurator().apply(config);
+    jonathan.getConfigurator().apply(config);
+    carl.getConfigurator().apply(config);
 
     // Melody Track (0)
     m_orchestra.addInstrument(forwardShoot, 0);
@@ -195,16 +220,19 @@ public class RobotContainer {
     m_orchestra.addInstrument(flDrive, 0);
     m_orchestra.addInstrument(frDrive, 0);
     m_orchestra.addInstrument(blDrive, 0);
-    m_orchestra.addInstrument(blSteer, 0);
-    m_orchestra.addInstrument(brDrive, 0);
+    m_orchestra.addInstrument(blSteer, 1);
+    m_orchestra.addInstrument(brDrive, 1);
     m_orchestra.addInstrument(brSteer, 1);
     m_orchestra.addInstrument(pivotMotor, 1);
+    m_orchestra.addInstrument(hopperFloor, 1);
+    m_orchestra.addInstrument(jonathan, 2);
+    m_orchestra.addInstrument(carl, 2);
 
     // Bass track (1)
-    m_orchestra.addInstrument(flSteer, 1);
-    m_orchestra.addInstrument(frSteer, 1);
-    m_orchestra.addInstrument(blSteer, 1);
-    m_orchestra.addInstrument(brSteer, 1);
+    m_orchestra.addInstrument(flSteer, 2);
+    m_orchestra.addInstrument(frSteer, 2);
+    m_orchestra.addInstrument(blSteer, 2);
+    m_orchestra.addInstrument(brSteer, 2);
 
     switch (songChooser.get()) {
       case RickRoll:
