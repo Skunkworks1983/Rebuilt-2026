@@ -22,13 +22,13 @@ public class TriggerConstants {
   public static final int rightTriggerMotorID = 22;
 
   // PID for trigger
-  public static final double triggerKP = 2.5;
+  public static final double triggerKP = 8.2;
   public static final double triggerKD = 0.0;
 
   // Feed forwards for the trigger
-  public static final double triggerKS = 0.7;
-  public static final double triggerKV = 0.65;
-  public static final double triggerKA = 0.0;
+  public static final double triggerKS = 0.4;
+  public static final double triggerKV = 0.;
+  public static final double triggerKA = 3.8;
 
   /** Alignment configuration for the trigger motor. */
   public static final InvertedValue primaryMotorInvert = InvertedValue.CounterClockwise_Positive;
@@ -44,7 +44,7 @@ public class TriggerConstants {
           "Hopper/Trigger/AngularVelocity [Rps]",
           triggerAngularVelocitySetpoint.in(RotationsPerSecond));
 
-  public static final double triggerSupplyCurrentLimitAmps = 50;
+  public static final double triggerSupplyCurrentLimitAmps = 80;
 
   public static Velocity<VoltageUnit> sysIdRampRate = Volts.per(Second).of(2);
 

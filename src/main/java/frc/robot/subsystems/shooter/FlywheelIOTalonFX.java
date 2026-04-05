@@ -85,7 +85,7 @@ public class FlywheelIOTalonFX implements FlywheelIO {
     followerFlywheelConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
     followerFlywheelConfig.CurrentLimits.SupplyCurrentLimit =
         ShooterConstants.flywheelSupplyCurrentLimitAmps.in(Amps);
-    
+
     followerFlywheelConfig.Feedback.SensorToMechanismRatio = ShooterConstants.flywheelGearRatio;
 
     if (Constants.currentMode == Mode.SIM) {

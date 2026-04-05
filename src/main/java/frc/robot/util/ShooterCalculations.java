@@ -147,7 +147,9 @@ public class ShooterCalculations {
     Translation2d releaseShooterPosField = releasePose.getTranslation().plus(shooterOffsetField);
 
     Translation2d targetVector = goal.toTranslation2d().minus(releaseShooterPosField);
+
     double trueDistance = targetVector.getNorm();
+    Logger.recordOutput("Shooter/Target Distance", trueDistance);
     if (trueDistance < ShooterSolverConstants.closeShotDistance.in(Meters)) {
 
       trueDistance = ShooterSolverConstants.closeShotDistance.in(Meters);
@@ -169,10 +171,17 @@ public class ShooterCalculations {
     dragMultiplier = MathUtil.clamp(dragMultiplier, 1.0, ShooterSolverConstants.maxDragMultiplier);
     double distWithDrag = trueDistance * dragMultiplier;
 
+    double finalDistance = distWithDrag + ShooterSolverConstants.shooterDistanceAdder.get();
+
     double relativeGoalZ = goal.getZ() - ShooterConstants.shooterInitalPosition.getZ();
 
+    double apexHeight =
+        trueDistance > ShooterSolverConstants.farShotDistance.get()
+            ? ShooterSolverConstants.farShotApexHeight.get()
+            : ShooterSolverConstants.closeShotApexHeight.get();
+
     // Apex height calculation
-    double heightTrajectoryPeak = relativeGoalZ + ShooterSolverConstants.hubHeightClearance.get();
+    double heightTrajectoryPeak = relativeGoalZ + apexHeight;
     heightTrajectoryPeak = Math.max(heightTrajectoryPeak, 0.1);
 
     double launchVelocityZ = Math.sqrt(2.0 * ShooterSolverConstants.gravity * heightTrajectoryPeak);
@@ -186,7 +195,7 @@ public class ShooterCalculations {
     totalTime = Math.max(totalTime, 1e-4);
 
     // Speed required if the robot were standing still
-    double requiredHorizontalSpeed = distWithDrag / totalTime;
+    double requiredHorizontalSpeed = finalDistance / totalTime;
 
     // Angle to aim
     Rotation2d angleToGoal = targetVector.getAngle();
@@ -209,7 +218,7 @@ public class ShooterCalculations {
     // 3) Compensate using instantaneous shooter velocity at release
     Translation2d effectiveLaunchVectorField = stationaryLaunchVectorField.minus(shooterVelField);
 
-    Rotation2d finalDriveYaw = effectiveLaunchVectorField.getAngle();
+    Rotation2d finalDriveYaw = effectiveLaunchVectorField.getAngle().minus(new Rotation2d(Math.PI));
 
     double effectiveHorizontalSpeed = effectiveLaunchVectorField.getNorm();
     double ballExitSpeed = Math.hypot(effectiveHorizontalSpeed, launchVelocityZ);

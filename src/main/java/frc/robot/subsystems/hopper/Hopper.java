@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.util.Elastic;
 import frc.robot.util.LoggedTunableNumber;
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 /**
@@ -28,6 +29,8 @@ import org.littletonrobotics.junction.Logger;
 public class Hopper extends SubsystemBase {
   BedIO bed;
   Alert hopperDisconnectAlert = new Alert(getName(), AlertType.kError);
+
+  @AutoLogOutput private AngularVelocity triggerSetpoint;
 
   TriggerIO trigger;
   Alert leftTriggerDisconnectAlert = new Alert(getName(), AlertType.kError);
@@ -142,6 +145,7 @@ public class Hopper extends SubsystemBase {
 
   /** sets the velocity of the trigger to the defined velocity */
   public void setTriggerVelocity(AngularVelocity velocity) {
+    triggerSetpoint = velocity.unaryMinus();
     trigger.setTriggerVelocity(velocity.unaryMinus());
   }
 

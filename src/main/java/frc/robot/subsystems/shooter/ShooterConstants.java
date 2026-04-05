@@ -60,13 +60,13 @@ public class ShooterConstants {
   public static final MotorAlignmentValue flywheelMotorAlignment = MotorAlignmentValue.Opposed;
 
   // PID for flywheel
-  public static final double flywheelKP = 8.35;
+  public static final double flywheelKP = 4.1;
   public static final double flywheelKD = 0.0;
 
   // Feed forwards for the flywheel
-  public static final double flywheelKS = 0.027988;
-  public static final double flywheelKV = 0.071044;
-  public static final double flywheelKA = 3.60181;
+  public static final double flywheelKS = 0.7;
+  public static final double flywheelKV = 0.085;
+  public static final double flywheelKA = 4.32;
 
   // PID for flywheel
   public static final double lowerFlywheelKP = 9.75;
@@ -137,13 +137,13 @@ public class ShooterConstants {
   public static final Angle pivotPositionTolerence = Degrees.of(4);
 
   // PID for pivot
-  public static final double pivotkP = 75;
+  public static final double pivotkP = 164;
   public static final double pivotkD = 0;
 
   // Feedforwards for pivot
-  public static final double pivotkS = 0;
+  public static final double pivotkS = 0.35;
   public static final double pivotkV = 0;
-  public static final double pivotkA = 0;
+  public static final double pivotkA = 0.7;
 
   public static final InvertedValue pivotMotorInverted = InvertedValue.Clockwise_Positive;
 
@@ -164,7 +164,7 @@ public class ShooterConstants {
 
   // SENSOR CONSTANTS
   public static final int pivotEncoderId = 28;
-  public static final double pivotEncoderAbsoluteOffset = -0.637207;
+  public static final double pivotEncoderAbsoluteOffset = -0.576416;
   public static final double pivotEncoderTotalOffset =
       pivotEncoderAbsoluteOffset + (pivotStartAngle.in(Rotations) * (pivotSensorToMechanismRatio));
   public static final SensorDirectionValue pivotEncoderDirection =

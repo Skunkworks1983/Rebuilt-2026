@@ -46,7 +46,7 @@ public class BedConstants {
   public static final LoggedTunableNumber hopperReverseAngularVelocityRotationsPerSecond =
       new LoggedTunableNumber("hopper/ReverseAngularVelocity [Rps]", -10);
   public static final LoggedTunableNumber hopperDutyCycleSpeedFeed =
-      new LoggedTunableNumber("hopper/DutyCycleOutFeed", .3);
+      new LoggedTunableNumber("hopper/DutyCycleOutFeed", .8);
   public static final LoggedTunableNumber hopperDutyCycleSpeedReverse =
       new LoggedTunableNumber("hopper/DutyCycleOutReverse", -.2);
 
