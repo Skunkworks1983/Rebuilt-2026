@@ -7,7 +7,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.DriveControlConstants;
@@ -27,7 +26,6 @@ public class AnotherAutoAimedShoot extends Command {
   private final ProfiledPIDController yawController;
 
   private final Debouncer indexDebounce = new Debouncer(0.5);
-  private final Timer autoUnjamTimer = new Timer();
 
   private boolean feedEnabled = false;
 
@@ -52,8 +50,6 @@ public class AnotherAutoAimedShoot extends Command {
   @Override
   public void initialize() {
     yawController.reset(drive.getRotation().getRadians());
-    autoUnjamTimer.stop();
-    autoUnjamTimer.reset();
     Logger.recordOutput("Auto Shoot/Feed Enabled", false);
     Logger.recordOutput("Commands/Another Auto Aimed Shoot", true);
   }
@@ -112,7 +108,7 @@ public class AnotherAutoAimedShoot extends Command {
         "Auto Shoot/Debounced", indexDebounce.calculate(yawController.atSetpoint()));
 
     boolean readyToFeed = yawController.atGoal() && shooter.isFlywheelAtSetpoint();
-    Logger.recordOutput("Auto Shoot/Indexer Ready", readyToFeed);
+    Logger.recordOutput("Auto Shoot/Trigger Ready", readyToFeed);
 
     if (readyToFeed && !feedEnabled) {
       feedEnabled = true;
@@ -130,9 +126,6 @@ public class AnotherAutoAimedShoot extends Command {
   @Override
   public void end(boolean interrupted) {
     shooter.stopFlywheels();
-    feedEnabled = false;
-    Logger.recordOutput("Auto Shoot/Feed Enabled", false);
-    Logger.recordOutput("Auto Shoot/Unjamming", false);
     Logger.recordOutput("Commands/Another Auto Aimed Shoot", false);
     feedCommand.cancel();
   }

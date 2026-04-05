@@ -35,8 +35,8 @@ import frc.robot.commands.collectorCommands.CollectorExpel;
 import frc.robot.commands.collectorCommands.CollectorIntake;
 import frc.robot.commands.collectorCommands.CollectorUp;
 import frc.robot.commands.collectorCommands.agitate;
-import frc.robot.commands.indexerCommands.IndexerAutoUnjam;
-import frc.robot.commands.indexerCommands.ReverseIndexCommand;
+import frc.robot.commands.triggerCommands.ReverseTriggerCommand;
+import frc.robot.commands.triggerCommands.RunTrigger;
 import frc.robot.subsystems.collector.Collector;
 import frc.robot.subsystems.collector.CollectorModuleIO;
 import frc.robot.subsystems.collector.CollectorModuleTalonIO;
@@ -51,9 +51,9 @@ import frc.robot.subsystems.hopper.BedIO;
 import frc.robot.subsystems.hopper.BedIOSim;
 import frc.robot.subsystems.hopper.BedIOTalonFX;
 import frc.robot.subsystems.hopper.Hopper;
-import frc.robot.subsystems.hopper.IndexerIO;
-import frc.robot.subsystems.hopper.IndexerIOSim;
-import frc.robot.subsystems.hopper.IndexerIOTalonFX;
+import frc.robot.subsystems.hopper.TriggerIO;
+import frc.robot.subsystems.hopper.TriggerIOSim;
+import frc.robot.subsystems.hopper.TriggerIOTalonFX;
 import frc.robot.subsystems.shooter.BeamBreakIO;
 import frc.robot.subsystems.shooter.BeamBreakIOSensor;
 import frc.robot.subsystems.shooter.FlywheelIO;
@@ -142,7 +142,7 @@ public class RobotContainer {
 
         collector = new Collector(new CollectorModuleTalonIO());
 
-        hopper = new Hopper(new BedIOTalonFX(), new IndexerIOTalonFX());
+        hopper = new Hopper(new BedIOTalonFX(), new TriggerIOTalonFX());
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
@@ -198,7 +198,7 @@ public class RobotContainer {
 
         collector = new Collector(new CollectorModuleIO() {});
 
-        hopper = new Hopper(new BedIOSim(), new IndexerIOSim());
+        hopper = new Hopper(new BedIOSim(), new TriggerIOSim());
 
         break;
 
@@ -218,7 +218,7 @@ public class RobotContainer {
 
         collector = new Collector(new CollectorModuleTalonIO());
 
-        hopper = new Hopper(new BedIO() {}, new IndexerIO() {});
+        hopper = new Hopper(new BedIO() {}, new TriggerIO() {});
 
         break;
     }
@@ -226,14 +226,13 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Another Auto Aimed Shoot",
         new ParallelCommandGroup(
-            new AnotherAutoAimedShoot(
-                drive, shooter, new IndexerAutoUnjam(shooter::getBeamBreak, hopper)),
+            new AnotherAutoAimedShoot(drive, shooter, new RunTrigger(hopper)),
             new agitate(collector)));
 
     NamedCommands.registerCommand(
         "Ramp Shooter", new ShootPresetSetpoints(shooter, TargetType.GOAL));
     // NamedCommands.registerCommand(
-    //     "Intake Shooter/ Index", new IndexerAutoUnjam(shooter::getBeamBreak, hopper));
+    //     "Intake Shooter/ Trigger", new RunTrigger(hopper));
     // NamedCommands.registerCommand(
     //     "Auto Aimed Shoot", new AutonomousAimedShoot(drive, shooter, hopper));
     NamedCommands.registerCommand("Lower Collector", new CollectorDown(collector));
@@ -318,18 +317,17 @@ public class RobotContainer {
     ShootPresetSetpoints shootPresetSetpointsTransfer =
         new ShootPresetSetpoints(shooter, TargetType.TRANSFER);
 
-    JoystickButton runIndexer = new JoystickButton(leftJoystick, 1);
-    JoystickButton runIndexerReverse =
+    JoystickButton runTrigger = new JoystickButton(leftJoystick, 1);
+    JoystickButton runTriggerReverse =
         new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID);
 
-    runIndexer.whileTrue(
-        new IndexerAutoUnjam(shooter::getBeamBreak, hopper).alongWith(new agitate(collector)));
+    runTrigger.whileTrue(new RunTrigger(hopper).alongWith(new agitate(collector)));
 
-    runIndexerReverse.whileTrue(new ReverseIndexCommand(hopper));
+    runTriggerReverse.whileTrue(new ReverseTriggerCommand(hopper));
 
-    // if the index button is hed and more than a second elapses before the beam
+    // if the trigger button is hed and more than a second elapses before the beam
     // break is broken the
-    // indexer will reverse for 1 second before attempting to intake again
+    // trigger will reverse for 1 second before attempting to intake again
 
     Logger.recordOutput("Control Scheme", Constants.controlScheme);
 

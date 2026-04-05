@@ -9,13 +9,12 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.DriveControlConstants;
 import frc.robot.commands.DriveUtils;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.hopper.Hopper;
-import frc.robot.subsystems.hopper.IndexerConstants;
+import frc.robot.subsystems.hopper.TriggerConstants;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.Shooter.ShooterSetpoints;
 import frc.robot.util.ShooterCalculations;
@@ -23,10 +22,6 @@ import frc.robot.util.ShooterCalculations.ShooterControls;
 import org.littletonrobotics.junction.Logger;
 
 public class AutonomousAimedShoot extends Command {
-  private enum AutoUnjamState {
-    FEED,
-    REVERSE
-  }
 
   private final Drive drive;
   private final Shooter shooter;
@@ -34,11 +29,7 @@ public class AutonomousAimedShoot extends Command {
 
   private final ProfiledPIDController yawController;
 
-  private final Debouncer indexDebounce = new Debouncer(0.5);
-  private final Timer autoUnjamTimer = new Timer();
-
-  private AutoUnjamState autoUnjamState = AutoUnjamState.FEED;
-  private boolean feedEnabled = false;
+  private final Debouncer triggerDebounce = new Debouncer(0.5);
 
   public AutonomousAimedShoot(Drive drive, Shooter shooter, Hopper hopper) {
     this.drive = drive;
@@ -61,13 +52,7 @@ public class AutonomousAimedShoot extends Command {
   @Override
   public void initialize() {
     yawController.reset(drive.getRotation().getRadians());
-    autoUnjamTimer.stop();
-    autoUnjamTimer.reset();
-    autoUnjamState = AutoUnjamState.FEED;
-    feedEnabled = false;
-    hopper.setIndexerDutyCycle(0.0);
-    Logger.recordOutput("Auto Shoot/Feed Enabled", false);
-    Logger.recordOutput("Auto Shoot/Unjamming", false);
+    hopper.setTriggerDutyCycle(0.0);
   }
 
   @Override
@@ -121,24 +106,15 @@ public class AutonomousAimedShoot extends Command {
     Logger.recordOutput("Auto Shoot/At Setpoint", yawController.atSetpoint());
     Logger.recordOutput("Auto Shoot/At Goal", yawController.atGoal());
     Logger.recordOutput(
-        "Auto Shoot/Debounced", indexDebounce.calculate(yawController.atSetpoint()));
+        "Auto Shoot/Debounced", triggerDebounce.calculate(yawController.atSetpoint()));
 
     boolean readyToFeed = yawController.atGoal() && shooter.isFlywheelAtSetpoint();
-    Logger.recordOutput("Auto Shoot/Indexer Ready", readyToFeed);
+    Logger.recordOutput("Auto Shoot/Trigger Ready", readyToFeed);
 
-    if (readyToFeed && !feedEnabled) {
-      feedEnabled = true;
-      autoUnjamState = AutoUnjamState.FEED;
-      autoUnjamTimer.restart();
-      Logger.recordOutput("Auto Shoot/Feed Enabled", true);
-      applyAutoUnjamOutput();
-    }
+    double speedRps = TriggerConstants.triggerAngularVelocityRotationsPerSecond.get();
 
-    if (feedEnabled) {
-      handleAutoUnjam(shooter.getBeamBreak());
-    } else {
-      hopper.setIndexerDutyCycle(0.0);
-    }
+    hopper.setTriggerVelocity(RotationsPerSecond.of(speedRps));
+    Logger.recordOutput("Auto Shoot/Trigger Velocity", speedRps);
   }
 
   @Override
@@ -149,55 +125,6 @@ public class AutonomousAimedShoot extends Command {
   @Override
   public void end(boolean interrupted) {
     shooter.stopFlywheels();
-    hopper.setIndexerDutyCycle(0);
-    autoUnjamTimer.stop();
-    feedEnabled = false;
-    Logger.recordOutput("Auto Shoot/Feed Enabled", false);
-    Logger.recordOutput("Auto Shoot/Unjamming", false);
-  }
-
-  private void handleAutoUnjam(boolean beamBroken) {
-    switch (autoUnjamState) {
-      case FEED:
-        if (!beamBroken) {
-          autoUnjamTimer.restart();
-        } else if (autoUnjamTimer.hasElapsed(
-            IndexerConstants.autoUnjamNoBeamBreakTimeoutSeconds.get())) {
-          setAutoUnjamState(AutoUnjamState.REVERSE);
-        }
-        break;
-      case REVERSE:
-        if (autoUnjamTimer.hasElapsed(IndexerConstants.autoUnjamReverseDurationSeconds.get())) {
-          setAutoUnjamState(AutoUnjamState.FEED);
-        }
-        break;
-    }
-  }
-
-  private void setAutoUnjamState(AutoUnjamState nextState) {
-    if (autoUnjamState == nextState) {
-      return;
-    }
-
-    autoUnjamState = nextState;
-    autoUnjamTimer.restart();
-    applyAutoUnjamOutput();
-  }
-
-  private void applyAutoUnjamOutput() {
-
-    double speedRps = IndexerConstants.indexerAngularVelocityRotationsPerSecond.get();
-
-    if (autoUnjamState == AutoUnjamState.FEED) {
-      hopper.setIndexerVelocity(RotationsPerSecond.of(speedRps));
-      Logger.recordOutput("Auto Shoot/Unjamming", false);
-      Logger.recordOutput("Auto Shoot/UnjamState", "FEED");
-      Logger.recordOutput("Auto Shoot/Indexer Velocity", speedRps);
-    } else {
-      hopper.setIndexerVelocity(RotationsPerSecond.of(-speedRps));
-      Logger.recordOutput("Auto Shoot/Unjamming", true);
-      Logger.recordOutput("Auto Shoot/UnjamState", "REVERSE");
-      Logger.recordOutput("Auto Shoot/Indexer Velocity", -50);
-    }
+    hopper.setTriggerDutyCycle(0);
   }
 }
