@@ -69,46 +69,22 @@ public class Module {
             "Disconnected turn encoder on module " + Integer.toString(index) + ".",
             AlertType.kError);
 
-  // Initialize tunable numbers using the default gains for this module
-  Slot0Configs driveGains = constants.DriveMotorGains;
-  driveKP =
-    new LoggedTunableNumber(
-      "Drive/Module" + index + "/Drive/kP", driveGains.kP);
-  driveKI =
-    new LoggedTunableNumber(
-      "Drive/Module" + index + "/Drive/kI", driveGains.kI);
-  driveKD =
-    new LoggedTunableNumber(
-      "Drive/Module" + index + "/Drive/kD", driveGains.kD);
-  driveKS =
-    new LoggedTunableNumber(
-      "Drive/Module" + index + "/Drive/kS", driveGains.kS);
-  driveKV =
-    new LoggedTunableNumber(
-      "Drive/Module" + index + "/Drive/kV", driveGains.kV);
-  driveKA =
-    new LoggedTunableNumber(
-      "Drive/Module" + index + "/Drive/kA", driveGains.kA);
+    // Initialize tunable numbers using the default gains for this module
+    Slot0Configs driveGains = constants.DriveMotorGains;
+    driveKP = new LoggedTunableNumber("Drive/Module" + index + "/Drive/kP", driveGains.kP);
+    driveKI = new LoggedTunableNumber("Drive/Module" + index + "/Drive/kI", driveGains.kI);
+    driveKD = new LoggedTunableNumber("Drive/Module" + index + "/Drive/kD", driveGains.kD);
+    driveKS = new LoggedTunableNumber("Drive/Module" + index + "/Drive/kS", driveGains.kS);
+    driveKV = new LoggedTunableNumber("Drive/Module" + index + "/Drive/kV", driveGains.kV);
+    driveKA = new LoggedTunableNumber("Drive/Module" + index + "/Drive/kA", driveGains.kA);
 
-  Slot0Configs turnGains = constants.SteerMotorGains;
-  turnKP =
-    new LoggedTunableNumber(
-      "Drive/Module" + index + "/Turn/kP", turnGains.kP);
-  turnKI =
-    new LoggedTunableNumber(
-      "Drive/Module" + index + "/Turn/kI", turnGains.kI);
-  turnKD =
-    new LoggedTunableNumber(
-      "Drive/Module" + index + "/Turn/kD", turnGains.kD);
-  turnKS =
-    new LoggedTunableNumber(
-      "Drive/Module" + index + "/Turn/kS", turnGains.kS);
-  turnKV =
-    new LoggedTunableNumber(
-      "Drive/Module" + index + "/Turn/kV", turnGains.kV);
-  turnKA =
-    new LoggedTunableNumber(
-      "Drive/Module" + index + "/Turn/kA", turnGains.kA);
+    Slot0Configs turnGains = constants.SteerMotorGains;
+    turnKP = new LoggedTunableNumber("Drive/Module" + index + "/Turn/kP", turnGains.kP);
+    turnKI = new LoggedTunableNumber("Drive/Module" + index + "/Turn/kI", turnGains.kI);
+    turnKD = new LoggedTunableNumber("Drive/Module" + index + "/Turn/kD", turnGains.kD);
+    turnKS = new LoggedTunableNumber("Drive/Module" + index + "/Turn/kS", turnGains.kS);
+    turnKV = new LoggedTunableNumber("Drive/Module" + index + "/Turn/kV", turnGains.kV);
+    turnKA = new LoggedTunableNumber("Drive/Module" + index + "/Turn/kA", turnGains.kA);
   }
 
   public void periodic() {
@@ -152,7 +128,7 @@ public class Module {
           driveKV,
           driveKA);
 
-      // Turn 
+      // Turn
       LoggedTunableNumber.ifChanged(
           hash,
           values -> {

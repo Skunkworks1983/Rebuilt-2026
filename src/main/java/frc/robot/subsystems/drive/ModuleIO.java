@@ -7,10 +7,9 @@
 
 package frc.robot.subsystems.drive;
 
+import com.ctre.phoenix6.configs.Slot0Configs;
 import edu.wpi.first.math.geometry.Rotation2d;
 import org.littletonrobotics.junction.AutoLog;
-
-import com.ctre.phoenix6.configs.Slot0Configs;
 
 public interface ModuleIO {
   @AutoLog
