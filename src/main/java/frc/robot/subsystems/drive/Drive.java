@@ -10,6 +10,7 @@ package frc.robot.subsystems.drive;
 import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.CANBus;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.ModuleConfig;
@@ -53,6 +54,7 @@ import frc.robot.Constants.Mode;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.vision.Vision.VisionConsumer;
 import frc.robot.util.LocalADStarAK;
+import frc.robot.util.LoggedTunableNumber;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
@@ -70,6 +72,37 @@ public class Drive extends SubsystemBase implements VisionConsumer {
   private static final TunerConstants tunerConstants = Constants.tunerConstants;
   private static final SwerveDrivetrainConstants driveConstants =
       tunerConstants.getSwerveDrivetrainConstants();
+
+  private static final Slot0Configs defaultDriveGains =
+      tunerConstants.getFrontLeft().DriveMotorGains;
+  private static final Slot0Configs defaultTurnGains =
+      tunerConstants.getFrontLeft().SteerMotorGains;
+
+  private static final LoggedTunableNumber driveKP =
+      new LoggedTunableNumber("Drive/PID/Drive/kP", defaultDriveGains.kP);
+  private static final LoggedTunableNumber driveKI =
+      new LoggedTunableNumber("Drive/PID/Drive/kI", defaultDriveGains.kI);
+  private static final LoggedTunableNumber driveKD =
+      new LoggedTunableNumber("Drive/PID/Drive/kD", defaultDriveGains.kD);
+  private static final LoggedTunableNumber driveKS =
+      new LoggedTunableNumber("Drive/PID/Drive/kS", defaultDriveGains.kS);
+  private static final LoggedTunableNumber driveKV =
+      new LoggedTunableNumber("Drive/PID/Drive/kV", defaultDriveGains.kV);
+  private static final LoggedTunableNumber driveKA =
+      new LoggedTunableNumber("Drive/PID/Drive/kA", defaultDriveGains.kA);
+
+  private static final LoggedTunableNumber turnKP =
+      new LoggedTunableNumber("Drive/PID/Turn/kP", defaultTurnGains.kP);
+  private static final LoggedTunableNumber turnKI =
+      new LoggedTunableNumber("Drive/PID/Turn/kI", defaultTurnGains.kI);
+  private static final LoggedTunableNumber turnKD =
+      new LoggedTunableNumber("Drive/PID/Turn/kD", defaultTurnGains.kD);
+  private static final LoggedTunableNumber turnKS =
+      new LoggedTunableNumber("Drive/PID/Turn/kS", defaultTurnGains.kS);
+  private static final LoggedTunableNumber turnKV =
+      new LoggedTunableNumber("Drive/PID/Turn/kV", defaultTurnGains.kV);
+  private static final LoggedTunableNumber turnKA =
+      new LoggedTunableNumber("Drive/PID/Turn/kA", defaultTurnGains.kA);
 
   // TunerConstants doesn't include these constants, so they are declared locally
   static final double ODOMETRY_FREQUENCY =
@@ -223,6 +256,54 @@ public class Drive extends SubsystemBase implements VisionConsumer {
       module.periodic();
     }
     odometryLock.unlock();
+
+    if (Constants.tuningMode) {
+      int hash = hashCode();
+
+      // Drive motor PID
+      LoggedTunableNumber.ifChanged(
+          hash,
+          values -> {
+            Slot0Configs gains = new Slot0Configs();
+            gains.kP = values[0];
+            gains.kI = values[1];
+            gains.kD = values[2];
+            gains.kS = values[3];
+            gains.kV = values[4];
+            gains.kA = values[5];
+            for (Module module : modules) {
+              module.setDrivePID(gains);
+            }
+          },
+          driveKP,
+          driveKI,
+          driveKD,
+          driveKS,
+          driveKV,
+          driveKA);
+
+      // Turn motor PID
+      LoggedTunableNumber.ifChanged(
+          hash,
+          values -> {
+            Slot0Configs gains = new Slot0Configs();
+            gains.kP = values[0];
+            gains.kI = values[1];
+            gains.kD = values[2];
+            gains.kS = values[3];
+            gains.kV = values[4];
+            gains.kA = values[5];
+            for (Module module : modules) {
+              module.setTurnPID(gains);
+            }
+          },
+          turnKP,
+          turnKI,
+          turnKD,
+          turnKS,
+          turnKV,
+          turnKA);
+    }
 
     // Stop moving when disabled
     if (DriverStation.isDisabled()) {
