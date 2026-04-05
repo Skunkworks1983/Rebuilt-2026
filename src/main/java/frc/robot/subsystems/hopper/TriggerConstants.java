@@ -22,12 +22,12 @@ public class TriggerConstants {
   public static final int rightTriggerMotorID = 22;
 
   // PID for trigger
-  public static final double triggerKP = 2.0;
+  public static final double triggerKP = 2.5;
   public static final double triggerKD = 0.0;
 
   // Feed forwards for the trigger
-  public static final double triggerKS = 1.0;
-  public static final double triggerKV = 0.75;
+  public static final double triggerKS = 0.7;
+  public static final double triggerKV = 0.65;
   public static final double triggerKA = 0.0;
 
   /** Alignment configuration for the trigger motor. */
@@ -38,7 +38,7 @@ public class TriggerConstants {
   /** Stator current limit in Amps for the trigger motor. */
   public static final double triggerStatorCurrentLimitAmps = 100;
 
-  public static final AngularVelocity triggerAngularVelocitySetpoint = RotationsPerSecond.of(25);
+  public static final AngularVelocity triggerAngularVelocitySetpoint = RotationsPerSecond.of(50);
   public static final LoggedTunableNumber triggerAngularVelocityRotationsPerSecond =
       new LoggedTunableNumber(
           "Hopper/Trigger/AngularVelocity [Rps]",

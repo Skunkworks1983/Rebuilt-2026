@@ -58,6 +58,8 @@ public class TriggerIOTalonFX implements TriggerIO {
     primaryConfig.Feedback.SensorToMechanismRatio = TriggerConstants.triggerGearRatio;
     primaryConfig.CurrentLimits.SupplyCurrentLimit = TriggerConstants.triggerSupplyCurrentLimitAmps;
     primaryConfig.CurrentLimits.StatorCurrentLimit = TriggerConstants.triggerStatorCurrentLimitAmps;
+    primaryConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    primaryConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 
     Slot0Configs slot0Configs = primaryConfig.Slot0;
     slot0Configs.kP = TriggerConstants.triggerKP;

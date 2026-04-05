@@ -77,14 +77,15 @@ public class FlywheelIOTalonFX implements FlywheelIO {
     primaryFlywheelConfig.MotionMagic.MotionMagicAcceleration =
         ShooterConstants.flywheelMaxAcceleration.in(RotationsPerSecondPerSecond);
 
-    primaryFlywheelConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-    primaryFlywheelConfig.CurrentLimits.StatorCurrentLimit =
-        ShooterConstants.flywheelStatorCurrentLimitAmps.in(Amps);
+    primaryFlywheelConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    primaryFlywheelConfig.CurrentLimits.SupplyCurrentLimit =
+        ShooterConstants.flywheelSupplyCurrentLimitAmps.in(Amps);
 
     TalonFXConfiguration followerFlywheelConfig = new TalonFXConfiguration();
-    followerFlywheelConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-    followerFlywheelConfig.CurrentLimits.StatorCurrentLimit =
-        ShooterConstants.flywheelStatorCurrentLimitAmps.in(Amps);
+    followerFlywheelConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    followerFlywheelConfig.CurrentLimits.SupplyCurrentLimit =
+        ShooterConstants.flywheelSupplyCurrentLimitAmps.in(Amps);
+    
     followerFlywheelConfig.Feedback.SensorToMechanismRatio = ShooterConstants.flywheelGearRatio;
 
     if (Constants.currentMode == Mode.SIM) {

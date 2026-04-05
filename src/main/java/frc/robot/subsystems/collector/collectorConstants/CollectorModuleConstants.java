@@ -97,7 +97,7 @@ public class CollectorModuleConstants {
     canbus = new CANBus("peripherals_2026");
 
     // Gear ratio's
-    turnMotorGearRatio = 29.07160494;
+    turnMotorGearRatio = (28.0 / 12.0) * (58.0 / 18.0) * (58.0 / 18.0) * (20.0 / 12);
     turnInvert = InvertedValue.Clockwise_Positive;
     turnSupplyCurrent = 80;
 

@@ -35,6 +35,7 @@ public class RunTrigger extends Command {
   @Override
   public void end(boolean interrupted) {
     hopper.setTriggerDutyCycle(0);
+    hopper.setHopperDutyCycle(0);
     Logger.recordOutput("Trigger/Run Trigger Command is Running", false);
   }
 

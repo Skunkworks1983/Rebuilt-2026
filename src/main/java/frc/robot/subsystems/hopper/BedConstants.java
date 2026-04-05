@@ -19,7 +19,7 @@ public class BedConstants {
   public static final double disconnectedDebounceTimeSec = 0.5;
 
   /** CAN ID for the hopper. */
-  public static final int hopperMotorID = 29;
+  public static final int hopperMotorID = 25;
 
   // PID for hopper
   public static final double hopperKP = 0.5;

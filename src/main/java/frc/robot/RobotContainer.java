@@ -317,7 +317,12 @@ public class RobotContainer {
     ShootPresetSetpoints shootPresetSetpointsTransfer =
         new ShootPresetSetpoints(shooter, TargetType.TRANSFER);
 
+    JoystickButton runShooterDefault = new JoystickButton(buttonJoystick, 17);
+    runShooterDefault.whileTrue(shootPresetSetpointsGoal);
+
     JoystickButton runTrigger = new JoystickButton(leftJoystick, 1);
+    JoystickButton runTriggerOnly = new JoystickButton(buttonJoystick, 24);
+    runTriggerOnly.whileTrue(new RunTrigger(hopper));
     JoystickButton runTriggerReverse =
         new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID);
 
