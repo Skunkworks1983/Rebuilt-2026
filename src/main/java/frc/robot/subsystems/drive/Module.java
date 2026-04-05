@@ -8,6 +8,7 @@
 package frc.robot.subsystems.drive;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -16,6 +17,8 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
+import frc.robot.Constants;
+import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
 
 public class Module {
@@ -30,6 +33,21 @@ public class Module {
   private final Alert turnDisconnectedAlert;
   private final Alert turnEncoderDisconnectedAlert;
   private SwerveModulePosition[] odometryPositions = new SwerveModulePosition[] {};
+
+  // Logged tunable PID values for drive and turn motors (per-module)
+  private final LoggedTunableNumber driveKP;
+  private final LoggedTunableNumber driveKI;
+  private final LoggedTunableNumber driveKD;
+  private final LoggedTunableNumber driveKS;
+  private final LoggedTunableNumber driveKV;
+  private final LoggedTunableNumber driveKA;
+
+  private final LoggedTunableNumber turnKP;
+  private final LoggedTunableNumber turnKI;
+  private final LoggedTunableNumber turnKD;
+  private final LoggedTunableNumber turnKS;
+  private final LoggedTunableNumber turnKV;
+  private final LoggedTunableNumber turnKA;
 
   public Module(
       ModuleIO io,
@@ -50,6 +68,47 @@ public class Module {
         new Alert(
             "Disconnected turn encoder on module " + Integer.toString(index) + ".",
             AlertType.kError);
+
+  // Initialize tunable numbers using the default gains for this module
+  var driveGains = this.constants.DriveMotorGains;
+  driveKP =
+    new LoggedTunableNumber(
+      "Drive/Module" + index + "/Drive/kP", driveGains.kP);
+  driveKI =
+    new LoggedTunableNumber(
+      "Drive/Module" + index + "/Drive/kI", driveGains.kI);
+  driveKD =
+    new LoggedTunableNumber(
+      "Drive/Module" + index + "/Drive/kD", driveGains.kD);
+  driveKS =
+    new LoggedTunableNumber(
+      "Drive/Module" + index + "/Drive/kS", driveGains.kS);
+  driveKV =
+    new LoggedTunableNumber(
+      "Drive/Module" + index + "/Drive/kV", driveGains.kV);
+  driveKA =
+    new LoggedTunableNumber(
+      "Drive/Module" + index + "/Drive/kA", driveGains.kA);
+
+  var turnGains = this.constants.SteerMotorGains;
+  turnKP =
+    new LoggedTunableNumber(
+      "Drive/Module" + index + "/Turn/kP", turnGains.kP);
+  turnKI =
+    new LoggedTunableNumber(
+      "Drive/Module" + index + "/Turn/kI", turnGains.kI);
+  turnKD =
+    new LoggedTunableNumber(
+      "Drive/Module" + index + "/Turn/kD", turnGains.kD);
+  turnKS =
+    new LoggedTunableNumber(
+      "Drive/Module" + index + "/Turn/kS", turnGains.kS);
+  turnKV =
+    new LoggedTunableNumber(
+      "Drive/Module" + index + "/Turn/kV", turnGains.kV);
+  turnKA =
+    new LoggedTunableNumber(
+      "Drive/Module" + index + "/Turn/kA", turnGains.kA);
   }
 
   public void periodic() {
@@ -69,6 +128,50 @@ public class Module {
     driveDisconnectedAlert.set(!inputs.driveConnected);
     turnDisconnectedAlert.set(!inputs.turnConnected);
     turnEncoderDisconnectedAlert.set(!inputs.turnEncoderConnected);
+
+    if (Constants.tuningMode) {
+      int hash = hashCode();
+
+      // Drive pid
+      LoggedTunableNumber.ifChanged(
+          hash,
+          values -> {
+            Slot0Configs gains = new Slot0Configs();
+            gains.kP = values[0];
+            gains.kI = values[1];
+            gains.kD = values[2];
+            gains.kS = values[3];
+            gains.kV = values[4];
+            gains.kA = values[5];
+            io.setDrivePID(gains);
+          },
+          driveKP,
+          driveKI,
+          driveKD,
+          driveKS,
+          driveKV,
+          driveKA);
+
+      // Turn 
+      LoggedTunableNumber.ifChanged(
+          hash,
+          values -> {
+            Slot0Configs gains = new Slot0Configs();
+            gains.kP = values[0];
+            gains.kI = values[1];
+            gains.kD = values[2];
+            gains.kS = values[3];
+            gains.kV = values[4];
+            gains.kA = values[5];
+            io.setTurnPID(gains);
+          },
+          turnKP,
+          turnKI,
+          turnKD,
+          turnKS,
+          turnKV,
+          turnKA);
+    }
   }
 
   /** Runs the module with the specified setpoint state. Mutates the state to optimize it. */
