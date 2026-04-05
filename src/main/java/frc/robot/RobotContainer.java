@@ -336,11 +336,11 @@ public class RobotContainer {
     TestPathCommands.publishTestPaths(drive);
 
     shooter.setDefaultCommand(Commands.run(shooter::stop, shooter));
-    new JoystickButton(rightJoystick, Constants.OIConstants.CollectorManualPivotDown)
+    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualPivotDown)
         .onTrue(new CollectorDown(collector));
-    new JoystickButton(rightJoystick, Constants.OIConstants.CollectorManualPivotUp)
+    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualPivotUp)
         .onTrue(new CollectorUp(collector));
-    new JoystickButton(leftJoystick, Constants.OIConstants.CollectorIntakeID)
+    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorIntakeID)
         .whileTrue(new CollectorIntake(collector));
     new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID)
         .whileTrue(new CollectorExpel(collector));

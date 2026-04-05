@@ -17,9 +17,9 @@ public class IndexerConstants {
   public static final double disconnectedDebounceTimeSec = 0.5;
 
   /** CAN ID for the indexer. */
-  public static final int leftIndexerMotorID = 35;
+  public static final int leftIndexerMotorID = 26;
 
-  public static final int rightIndexerMotorID = 34;
+  public static final int rightIndexerMotorID = 22;
 
   // PID for indexer
   public static final double indexerKP = 2.0;

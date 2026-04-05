@@ -52,10 +52,10 @@ public class ShooterConstants {
   // FLYWHEEL CONSTANTS
 
   /** CAN ID for the primary flywheel motor. */
-  public static final int leftFlywheelMotorID = 26;
+  public static final int leftFlywheelMotorID = 27;
 
   /** CAN ID for the secondary flywheel motor. */
-  public static final int rightFlywheelMotorID = 25;
+  public static final int rightFlywheelMotorID = 21;
 
   public static final MotorAlignmentValue flywheelMotorAlignment = MotorAlignmentValue.Opposed;
 
@@ -131,7 +131,7 @@ public class ShooterConstants {
   // PIVOT CONSTANTS
 
   /** CAN ID for the primary pivot motor. */
-  public static final int pivotMotorId = 27;
+  public static final int pivotMotorId = 29;
 
   /** Allowable error tolerance for the pivot position. */
   public static final Angle pivotPositionTolerence = Degrees.of(4);
@@ -163,7 +163,7 @@ public class ShooterConstants {
   public static final Angle defaultPitchTransfer = Degrees.of(58);
 
   // SENSOR CONSTANTS
-  public static final int pivotEncoderId = 43;
+  public static final int pivotEncoderId = 28;
   public static final double pivotEncoderAbsoluteOffset = -0.488525;
   public static final double pivotEncoderTotalOffset =
       pivotEncoderAbsoluteOffset + (pivotStartAngle.in(Rotations) * (pivotSensorToMechanismRatio));
@@ -172,7 +172,7 @@ public class ShooterConstants {
 
   public static final int beamBreakSensorChannel = 0;
 
-  public static final int shooterCandiId = 7;
+  public static final int shooterCandiId = 30;
 
   public static final ReverseLimitSourceValue pivotReverseLimitSource =
       ReverseLimitSourceValue.RemoteCANdiS1;

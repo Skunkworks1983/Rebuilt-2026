@@ -91,8 +91,8 @@ public class CollectorModuleConstants {
   public CollectorModuleConstants() {
 
     // Hardware IDs
-    turnMotorID = 32;
-    intakeMotorID = 21;
+    turnMotorID = 24;
+    intakeMotorID = 23;
 
     canbus = new CANBus("peripherals_2026");
 
