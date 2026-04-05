@@ -17,9 +17,9 @@ public class TriggerConstants {
   public static final double disconnectedDebounceTimeSec = 0.5;
 
   /** CAN ID for the trigger. */
-  public static final int leftTriggerMotorID = 35;
+  public static final int leftTriggerMotorID = 26;
 
-  public static final int rightTriggerMotorID = 34;
+  public static final int rightTriggerMotorID = 22;
 
   // PID for trigger
   public static final double triggerKP = 2.0;
