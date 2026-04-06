@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.258688310763993,
-        "y": 7.533255555555556
+        "x": 4.319549549549549,
+        "y": 7.541024774774774
       },
       "isLocked": false,
       "linkedName": "Far Collect End"
     },
     {
       "anchor": {
-        "x": 2.5122967189728955,
-        "y": 7.198502139800285
+        "x": 2.383828828828829,
+        "y": 6.83981981981982
       },
       "prevControl": {
-        "x": 3.0567135433663393,
-        "y": 7.564831574497307
+        "x": 2.719617117117117,
+        "y": 7.27436936936937
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,7 +30,7 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.7996850393700681,
+      "waypointRelativePos": 0.3124592302674501,
       "rotationDegrees": 180.0
     }
   ],
@@ -52,7 +52,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.0,
+    "maxVelocity": 3.1,
     "maxAcceleration": 3.8,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -61,7 +61,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -56.309932474020236
+    "rotation": 136.974934010882
   },
   "reversed": false,
   "folder": null,

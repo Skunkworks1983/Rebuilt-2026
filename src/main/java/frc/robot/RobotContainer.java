@@ -30,11 +30,11 @@ import frc.robot.commands.Shooter.AnotherAutoAimedShoot;
 import frc.robot.commands.Shooter.ShootPresetSetpoints;
 import frc.robot.commands.Shooter.ShootPresetSetpoints.TargetType;
 import frc.robot.commands.TestPathCommands;
-import frc.robot.commands.collectorCommands.Agitate;
 import frc.robot.commands.collectorCommands.CollectorDown;
 import frc.robot.commands.collectorCommands.CollectorExpel;
 import frc.robot.commands.collectorCommands.CollectorIntake;
 import frc.robot.commands.collectorCommands.CollectorUp;
+import frc.robot.commands.collectorCommands.agitate;
 import frc.robot.commands.triggerCommands.ReverseTriggerCommand;
 import frc.robot.commands.triggerCommands.RunTrigger;
 import frc.robot.subsystems.collector.Collector;
@@ -227,7 +227,7 @@ public class RobotContainer {
         "Another Auto Aimed Shoot",
         new ParallelCommandGroup(
             new AnotherAutoAimedShoot(drive, shooter, new RunTrigger(hopper, shooter)),
-            new Agitate(collector)));
+            new agitate(collector)));
 
     NamedCommands.registerCommand(
         "Ramp Shooter", new ShootPresetSetpoints(shooter, TargetType.GOAL));
@@ -326,8 +326,7 @@ public class RobotContainer {
     JoystickButton runTriggerReverse =
         new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID);
 
-    runTrigger.whileTrue(new RunTrigger(hopper, shooter));
-    // .alongWith(new agitate(collector)))
+    runTrigger.whileTrue(new RunTrigger(hopper, shooter).alongWith(new agitate(collector)));
 
     runTriggerReverse.whileTrue(new ReverseTriggerCommand(hopper));
 

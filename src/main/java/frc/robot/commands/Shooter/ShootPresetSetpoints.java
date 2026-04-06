@@ -1,8 +1,8 @@
 package frc.robot.commands.Shooter;
 
-import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterConstants;
@@ -17,7 +17,7 @@ public class ShootPresetSetpoints extends Command {
 
   private final Shooter shooter;
   private final LoggedTunableNumber upperVelocitySetpointRPS;
-  private final LoggedTunableNumber pitchSetpointDegrees;
+  private final Angle pitchSetpoint;
 
   public ShootPresetSetpoints(Shooter shooter, TargetType targetType) {
     this.shooter = shooter;
@@ -28,20 +28,14 @@ public class ShootPresetSetpoints extends Command {
               "Shooter/Flywheel/Goal Velocity Default Setpoint [RPS]",
               ShooterConstants.defaultUpperFlywheelVelocityGoal.in(RotationsPerSecond));
 
-      pitchSetpointDegrees =
-          new LoggedTunableNumber(
-              "Shooter/Goal Pitch Default Setpoint [Degrees]",
-              ShooterConstants.defaultPitchGoal.in(Degrees));
+      pitchSetpoint = ShooterConstants.defaultPitchGoal;
     } else {
       upperVelocitySetpointRPS =
           new LoggedTunableNumber(
               "Shooter/Flywheel/Transfer Velocity Default Setpoint [RPS]",
               ShooterConstants.defaultVelocityTransfer.in(RotationsPerSecond));
 
-      pitchSetpointDegrees =
-          new LoggedTunableNumber(
-              "Shooter/Transfer Pitch Default Setpoint [Degrees]",
-              ShooterConstants.defaultPitchTransfer.in(Degrees));
+      pitchSetpoint = ShooterConstants.defaultPitchTransfer;
     }
     addRequirements(shooter);
   }
@@ -51,8 +45,7 @@ public class ShootPresetSetpoints extends Command {
     Logger.recordOutput("Commands/Manual Shoot/Shoot preset setpoints", true);
     shooter.setShooterSetpoints(
         new Shooter.ShooterSetpoints(
-            RotationsPerSecond.of(upperVelocitySetpointRPS.get()),
-            Degrees.of(pitchSetpointDegrees.get())));
+            RotationsPerSecond.of(upperVelocitySetpointRPS.get()), pitchSetpoint));
   }
 
   @Override
