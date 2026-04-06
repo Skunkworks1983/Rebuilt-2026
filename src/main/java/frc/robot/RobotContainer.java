@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -34,7 +33,6 @@ import frc.robot.commands.collectorCommands.CollectorDown;
 import frc.robot.commands.collectorCommands.CollectorExpel;
 import frc.robot.commands.collectorCommands.CollectorIntake;
 import frc.robot.commands.collectorCommands.CollectorUp;
-import frc.robot.commands.collectorCommands.agitate;
 import frc.robot.commands.triggerCommands.ReverseTriggerCommand;
 import frc.robot.commands.triggerCommands.RunTrigger;
 import frc.robot.subsystems.collector.Collector;
@@ -225,9 +223,9 @@ public class RobotContainer {
 
     NamedCommands.registerCommand(
         "Another Auto Aimed Shoot",
-        new ParallelCommandGroup(
-            new AnotherAutoAimedShoot(drive, shooter, new RunTrigger(hopper, shooter)),
-            new agitate(collector)));
+        new AnotherAutoAimedShoot(drive, shooter, new RunTrigger(hopper, shooter)));
+
+    // TODO: new agitate(collector)
 
     NamedCommands.registerCommand(
         "Ramp Shooter", new ShootPresetSetpoints(shooter, TargetType.GOAL));

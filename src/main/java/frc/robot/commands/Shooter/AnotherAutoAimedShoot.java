@@ -50,6 +50,7 @@ public class AnotherAutoAimedShoot extends Command {
   @Override
   public void initialize() {
     yawController.reset(drive.getRotation().getRadians());
+    feedEnabled = false;
     Logger.recordOutput("Auto Shoot/Feed Enabled", false);
     Logger.recordOutput("Commands/Another Auto Aimed Shoot", true);
   }
@@ -107,7 +108,7 @@ public class AnotherAutoAimedShoot extends Command {
     Logger.recordOutput(
         "Auto Shoot/Debounced", indexDebounce.calculate(yawController.atSetpoint()));
 
-    boolean readyToFeed = yawController.atGoal() && shooter.isFlywheelAtSetpoint();
+    boolean readyToFeed = yawController.atGoal();
     Logger.recordOutput("Auto Shoot/Trigger Ready", readyToFeed);
 
     if (readyToFeed && !feedEnabled) {
@@ -128,5 +129,7 @@ public class AnotherAutoAimedShoot extends Command {
     shooter.stopFlywheels();
     Logger.recordOutput("Commands/Another Auto Aimed Shoot", false);
     feedCommand.cancel();
+
+    feedEnabled = false;
   }
 }

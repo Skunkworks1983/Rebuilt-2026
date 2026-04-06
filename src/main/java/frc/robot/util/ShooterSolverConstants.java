@@ -16,7 +16,7 @@ public class ShooterSolverConstants {
 
   /** Air drag coefficient approximation. */
   public static LoggedTunableNumber drag =
-      new LoggedTunableNumber("Shooter/Air Drag Coefficient", 0.0825);
+      new LoggedTunableNumber("Shooter/Air Drag Coefficient", 0.084);
 
   /** Maximum multiplier to apply for drag compensation. */
   public static final double maxDragMultiplier = 3;
@@ -34,9 +34,9 @@ public class ShooterSolverConstants {
       new LoggedTunableNumber("Shooter/Close Shot Apex Height Meters", 0.65);
 
   public static LoggedTunableNumber farShotApexHeight =
-      new LoggedTunableNumber("Shooter/Far Shot Apex Height Meters", 0.8);
+      new LoggedTunableNumber("Shooter/Far Shot Apex Height Meters", 0.85);
   public static LoggedTunableNumber farShotDistance =
-      new LoggedTunableNumber("Shooter/Far Shot Distance Meters", 3.9);
+      new LoggedTunableNumber("Shooter/Far Shot Distance Meters", 3.65);
 
   public static final LoggedTunableNumber lowerFlywheelVelocityMultiplier =
       new LoggedTunableNumber("Lower Flywheel Velocity Multiplier", 1.15);

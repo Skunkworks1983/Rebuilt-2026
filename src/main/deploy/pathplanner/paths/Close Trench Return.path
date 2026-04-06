@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.9558332919896,
-        "y": 0.846737064167417
+        "x": 5.920687394918911,
+        "y": 0.8635047343381493
       },
       "isLocked": false,
       "linkedName": "Close Collectio End"
@@ -20,12 +20,12 @@
         "y": 0.7911032028469753
       },
       "prevControl": {
-        "x": 5.214181672474907,
-        "y": 0.6128881229869945
+        "x": 5.05168520775067,
+        "y": 0.5621756187998743
       },
       "nextControl": {
-        "x": 3.018015624364062,
-        "y": 0.8138888339361926
+        "x": 3.019006751673447,
+        "y": 0.8229104928822513
       },
       "isLocked": false,
       "linkedName": null
@@ -36,8 +36,8 @@
         "y": 1.0397004279600572
       },
       "prevControl": {
-        "x": 2.66661472124028,
-        "y": 0.9894056378531195
+        "x": 2.645313345350994,
+        "y": 0.9278579217104159
       },
       "nextControl": null,
       "isLocked": false,
@@ -47,7 +47,7 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 0.9443983402489614,
-      "rotationDegrees": 0.0
+      "rotationDegrees": 180.0
     }
   ],
   "constraintZones": [
@@ -77,13 +77,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 49.15964229371264
+    "rotation": -130.52707509912028
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
-    "velocity": 3.5,
-    "rotation": 0.611
+    "velocity": 4.0,
+    "rotation": 180.0
   },
   "useDefaultConstraints": false
 }
