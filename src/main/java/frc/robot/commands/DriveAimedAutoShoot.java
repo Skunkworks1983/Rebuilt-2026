@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.DriveAimedShoot.TargetType;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.vision.Vision;
 import frc.robot.util.FieldConstants;
 import frc.robot.util.FieldConstants.AllianceZone;
 import java.util.function.DoubleSupplier;
@@ -18,6 +19,7 @@ public class DriveAimedAutoShoot extends Command {
 
   private final Drive drive;
   private final Shooter shooter;
+  private final Vision vision;
   private final DriveAimedShoot goalCommand;
   private final DriveAimedShoot transferCommand;
 
@@ -25,12 +27,18 @@ public class DriveAimedAutoShoot extends Command {
   private boolean wasInAllianceZone;
 
   public DriveAimedAutoShoot(
-      Drive drive, Shooter shooter, DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
+      Drive drive,
+      Shooter shooter,
+      Vision vision,
+      DoubleSupplier xSupplier,
+      DoubleSupplier ySupplier) {
     this.drive = drive;
     this.shooter = shooter;
-    goalCommand = new DriveAimedShoot(drive, shooter, xSupplier, ySupplier, TargetType.GOAL);
+    this.vision = vision;
+    goalCommand =
+        new DriveAimedShoot(drive, shooter, vision, xSupplier, ySupplier, TargetType.GOAL);
     transferCommand =
-        new DriveAimedShoot(drive, shooter, xSupplier, ySupplier, TargetType.TRANSFER);
+        new DriveAimedShoot(drive, shooter, vision, xSupplier, ySupplier, TargetType.TRANSFER);
   }
 
   @Override

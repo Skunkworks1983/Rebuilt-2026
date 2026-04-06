@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.Shooter.ShooterSetpoints;
+import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.util.ShooterCalculations;
 import frc.robot.util.ShooterCalculations.ShooterControls;
 import java.util.function.DoubleSupplier;
@@ -23,6 +25,7 @@ public class DriveAimedShoot extends Command {
 
   private final Drive drive;
   private final Shooter shooter;
+  private final Vision vision;
   private final DoubleSupplier xSupplier;
   private final DoubleSupplier ySupplier;
   private ProfiledPIDController yawController;
@@ -34,11 +37,13 @@ public class DriveAimedShoot extends Command {
   public DriveAimedShoot(
       Drive drive,
       Shooter shooter,
+      Vision vision,
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
       TargetType targetType) {
     this.drive = drive;
     this.shooter = shooter;
+    this.vision = vision;
     this.xSupplier = xSupplier;
     this.ySupplier = ySupplier;
     this.targetType = targetType;
@@ -62,7 +67,6 @@ public class DriveAimedShoot extends Command {
 
   @Override
   public void initialize() {
-
     yawController.setP(DriveControlConstants.YAW_CONTROL_KP.get());
     yawController.setD(DriveControlConstants.YAW_CONTROL_KD.get());
     yawController.setConstraints(
@@ -72,6 +76,10 @@ public class DriveAimedShoot extends Command {
     yawController.enableContinuousInput(-Math.PI, Math.PI);
     yawController.setTolerance(DriveControlConstants.YAW_SETPOINT_TOLERANCE_RADIANS.get());
     yawController.reset(drive.getRotation().getRadians());
+
+    vision.setBaselineStdDevs(
+        VisionConstants.shootingLinearStdDevBaseline,
+        VisionConstants.shootingAngularStdDevBaseline);
 
     Logger.recordOutput(logKey, true);
     Logger.recordOutput(autoShootRequirementsLogKey + "/ReadyToShoot", false);
@@ -128,5 +136,8 @@ public class DriveAimedShoot extends Command {
     Logger.recordOutput(autoShootRequirementsLogKey + "/ReadyToShoot", false);
     Logger.recordOutput(autoShootRequirementsLogKey + "/TriggerCommandScheduled", false);
     Logger.recordOutput(logKey, false);
+
+    vision.setBaselineStdDevs(
+        VisionConstants.teleopLinearStdDevBaseline, VisionConstants.teleopAngularStdDevBaseline);
   }
 }
