@@ -148,6 +148,8 @@ public class Robot extends LoggedRobot {
     CommandScheduler.getInstance().schedule(teleInitCommand);
 
     HubShiftUtil.initialize();
+
+    robotContainer.teleopInit();
   }
 
   /** This function is called periodically during operator control. */

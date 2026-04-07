@@ -60,13 +60,13 @@ public class ShooterConstants {
   public static final MotorAlignmentValue flywheelMotorAlignment = MotorAlignmentValue.Opposed;
 
   // PID for flywheel
-  public static final double flywheelKP = 4.1;
+  public static final double flywheelKP = 12;
   public static final double flywheelKD = 0.0;
 
   // Feed forwards for the flywheel
-  public static final double flywheelKS = 0.7;
-  public static final double flywheelKV = 0.085;
-  public static final double flywheelKA = 4.32;
+  public static final double flywheelKS = 0.5;
+  public static final double flywheelKV = 0.2;
+  public static final double flywheelKA = 10;
 
   // PID for flywheel
   public static final double lowerFlywheelKP = 9.75;
@@ -137,13 +137,13 @@ public class ShooterConstants {
   public static final Angle pivotPositionTolerence = Degrees.of(4);
 
   // PID for pivot
-  public static final double pivotkP = 164;
+  public static final double pivotkP = 195;
   public static final double pivotkD = 0;
 
   // Feedforwards for pivot
   public static final double pivotkS = 0.35;
   public static final double pivotkV = 0;
-  public static final double pivotkA = 0.7;
+  public static final double pivotkA = 0.;
 
   public static final InvertedValue pivotMotorInverted = InvertedValue.Clockwise_Positive;
 
@@ -155,7 +155,7 @@ public class ShooterConstants {
   public static final AngularVelocity defaultUpperFlywheelVelocityGoal = RotationsPerSecond.of(65);
   public static final AngularVelocity defaultLowerFlywheelVelocityGoal =
       defaultUpperFlywheelVelocityGoal.times(1.15);
-  public static final Angle defaultPitchGoal = Degrees.of(50);
+  public static final Angle defaultPitchGoal = Degrees.of(60);
 
   public static final AngularVelocity defaultVelocityTransfer = RotationsPerSecond.of(65);
   public static final AngularVelocity defaultLowerFlywheelVelocityTransfer =
@@ -164,7 +164,7 @@ public class ShooterConstants {
 
   // SENSOR CONSTANTS
   public static final int pivotEncoderId = 28;
-  public static final double pivotEncoderAbsoluteOffset = -0.576416;
+  public static final double pivotEncoderAbsoluteOffset = -0.664062;
   public static final double pivotEncoderTotalOffset =
       pivotEncoderAbsoluteOffset + (pivotStartAngle.in(Rotations) * (pivotSensorToMechanismRatio));
   public static final SensorDirectionValue pivotEncoderDirection =

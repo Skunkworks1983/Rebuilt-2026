@@ -30,6 +30,9 @@ public class Vision extends SubsystemBase {
   private final VisionIOInputsAutoLogged[] inputs;
   private final Alert[] disconnectedAlerts;
 
+  private double linearStdDevBaseline = VisionConstants.autoLinearStdDevBaseline;
+  private double angularStdDevBaseline = VisionConstants.autoAngularStdDevBaseline;
+
   public Vision(VisionConsumer consumer, VisionIO... io) {
     this.consumer = consumer;
     this.io = io;
@@ -174,5 +177,10 @@ public class Vision extends SubsystemBase {
         Pose2d visionRobotPoseMeters,
         double timestampSeconds,
         Matrix<N3, N1> visionMeasurementStdDevs);
+  }
+
+  public void setBaselineStdDevs(double linearStdDevBaseline, double angularStdDevBaseline) {
+    this.linearStdDevBaseline = linearStdDevBaseline;
+    this.angularStdDevBaseline = angularStdDevBaseline;
   }
 }

@@ -310,7 +310,7 @@ public class RobotContainer {
 
     shootAutoAim.whileTrue(
         new DriveAimedAutoShoot(
-            drive, shooter, () -> -leftJoystick.getY(), () -> -leftJoystick.getX()));
+            drive, shooter, vision, () -> -leftJoystick.getY(), () -> -leftJoystick.getX()));
 
     ShootPresetSetpoints shootPresetSetpointsGoal =
         new ShootPresetSetpoints(shooter, TargetType.GOAL);
@@ -328,8 +328,7 @@ public class RobotContainer {
     JoystickButton runTriggerReverse =
         new JoystickButton(buttonJoystick, Constants.OIConstants.ShooterReverseTriggerID);
 
-    runTrigger.whileTrue(new RunTrigger(hopper, shooter));
-    // .alongWith(new agitate(collector)))
+    runTrigger.whileTrue(new RunTrigger(hopper, shooter).alongWith(new agitate(collector)));
 
     runTriggerReverse.whileTrue(new ReverseTriggerCommand(hopper));
 
@@ -426,5 +425,10 @@ public class RobotContainer {
   public void scheduleBothCollectorsUp() {
     CommandScheduler.getInstance();
     CommandScheduler.getInstance();
+  }
+
+  public void teleopInit() {
+    vision.setBaselineStdDevs(
+        VisionConstants.teleopLinearStdDevBaseline, VisionConstants.teleopAngularStdDevBaseline);
   }
 }

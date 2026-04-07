@@ -175,8 +175,10 @@ public class ShooterCalculations {
 
     double relativeGoalZ = goal.getZ() - ShooterConstants.shooterInitalPosition.getZ();
 
+    boolean useFarApex = trueDistance > ShooterSolverConstants.farShotDistance.get();
+    Logger.recordOutput("Shooter/Using far apex", useFarApex);
     double apexHeight =
-        trueDistance > ShooterSolverConstants.farShotDistance.get()
+        useFarApex
             ? ShooterSolverConstants.farShotApexHeight.get()
             : ShooterSolverConstants.closeShotApexHeight.get();
 

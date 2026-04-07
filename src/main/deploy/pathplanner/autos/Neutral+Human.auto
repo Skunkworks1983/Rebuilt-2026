@@ -99,22 +99,9 @@
           }
         },
         {
-          "type": "race",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 10.0
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Another Auto Aimed Shoot"
-                }
-              }
-            ]
+            "name": "Another Auto Aimed Shoot"
           }
         }
       ]

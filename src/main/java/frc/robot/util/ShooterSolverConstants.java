@@ -26,17 +26,17 @@ public class ShooterSolverConstants {
    * half the velocity is converted to spin
    */
   public static final LoggedTunableNumber flywheelEfficiency =
-      new LoggedTunableNumber("Flywheel Efficiency", 0.445);
+      new LoggedTunableNumber("Flywheel Efficiency", 0.5);
 
   // CONSTRAINED HEIGHT SOLVER
   /** Vertical clearance required above the hub for specialized constrained shots. */
   public static LoggedTunableNumber closeShotApexHeight =
-      new LoggedTunableNumber("Shooter/Close Shot Apex Height Meters", 0.65);
+      new LoggedTunableNumber("Shooter/Close Shot Apex Height Meters", 1.0);
 
   public static LoggedTunableNumber farShotApexHeight =
-      new LoggedTunableNumber("Shooter/Far Shot Apex Height Meters", 0.85);
+      new LoggedTunableNumber("Shooter/Far Shot Apex Height Meters", 1.7);
   public static LoggedTunableNumber farShotDistance =
-      new LoggedTunableNumber("Shooter/Far Shot Distance Meters", 3.65);
+      new LoggedTunableNumber("Shooter/Far Shot Distance Meters", 3.5);
 
   public static final LoggedTunableNumber lowerFlywheelVelocityMultiplier =
       new LoggedTunableNumber("Lower Flywheel Velocity Multiplier", 1.15);
@@ -67,5 +67,5 @@ public class ShooterSolverConstants {
       new LoggedTunableNumber("Shooter/Close Shoot Angle Deg", 76.5);
 
   public static final LoggedTunableNumber shooterDistanceAdder =
-      new LoggedTunableNumber("Shooter/Distance Adder", 0.3);
+      new LoggedTunableNumber("Shooter/Distance Adder", 0.07);
 }

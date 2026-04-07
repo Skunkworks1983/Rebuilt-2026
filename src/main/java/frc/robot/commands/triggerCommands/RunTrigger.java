@@ -7,7 +7,6 @@ package frc.robot.commands.triggerCommands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.hopper.BedConstants;
 import frc.robot.subsystems.hopper.Hopper;
-import frc.robot.subsystems.hopper.TriggerConstants;
 import frc.robot.subsystems.shooter.Shooter;
 import org.littletonrobotics.junction.Logger;
 
@@ -24,8 +23,9 @@ public class RunTrigger extends Command {
 
   @Override
   public void initialize() {
-    hopper.setTriggerVelocity(
-        shooter.getFlywheelSetpoint().times(TriggerConstants.triggerVelocityMultiplier.get()));
+    // hopper.setTriggerDutyCycle(
+    // shooter.getFlywheelSetpoint().times(TriggerConstants.triggerVelocityMultiplier.get()));
+    hopper.setTriggerDutyCycle(-1.0);
     hopper.setHopperDutyCycle(BedConstants.hopperDutyCycleSpeedFeed.get());
     Logger.recordOutput("Trigger/Run Trigger Command is Running", true);
   }
