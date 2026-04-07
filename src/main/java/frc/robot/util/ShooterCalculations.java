@@ -1,12 +1,10 @@
 package frc.robot.util;
 
-import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -150,22 +148,7 @@ public class ShooterCalculations {
 
     double trueDistance = targetVector.getNorm();
     Logger.recordOutput("Shooter/Target Distance", trueDistance);
-    if (trueDistance < ShooterSolverConstants.closeShotDistance.in(Meters)) {
 
-      trueDistance = ShooterSolverConstants.closeShotDistance.in(Meters);
-      Logger.recordOutput("Shooter/Shooting Close", true);
-
-      AngularVelocity closeShotVelocity =
-          RotationsPerSecond.of(ShooterSolverConstants.closeShootVelocity.get());
-      Angle closeShotAngle = Degrees.of(ShooterSolverConstants.closeShootAngle.get());
-
-      return new ShooterControls(
-          closeShotVelocity,
-          closeShotVelocity.times(ShooterSolverConstants.lowerFlywheelVelocityMultiplier.get()),
-          closeShotAngle,
-          currentRobotRotation,
-          true);
-    }
     // Simple drag approximation
     double dragMultiplier = 1.0 + (ShooterSolverConstants.drag.get() * trueDistance);
     dragMultiplier = MathUtil.clamp(dragMultiplier, 1.0, ShooterSolverConstants.maxDragMultiplier);

@@ -152,10 +152,11 @@ public class ShooterConstants {
   public static final double pivotSensorToMechanismRatio = 4.;
   public static final double pivotMotorToSensorRatio = 100.0 * (15.0 / 20.0);
 
-  public static final AngularVelocity defaultUpperFlywheelVelocityGoal = RotationsPerSecond.of(65);
+  public static final AngularVelocity defaultUpperFlywheelVelocityGoal =
+      RotationsPerSecond.of(46.3);
   public static final AngularVelocity defaultLowerFlywheelVelocityGoal =
       defaultUpperFlywheelVelocityGoal.times(1.15);
-  public static final Angle defaultPitchGoal = Degrees.of(60);
+  public static final Angle defaultPitchGoal = Degrees.of(64.95);
 
   public static final AngularVelocity defaultVelocityTransfer = RotationsPerSecond.of(65);
   public static final AngularVelocity defaultLowerFlywheelVelocityTransfer =
