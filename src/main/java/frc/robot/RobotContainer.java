@@ -227,7 +227,7 @@ public class RobotContainer {
         "Another Auto Aimed Shoot",
         new ParallelCommandGroup(
             new AnotherAutoAimedShoot(drive, shooter, new RunTrigger(hopper, shooter)),
-            new agitate(collector)));
+            new agitate(collector, () -> false)));
 
     NamedCommands.registerCommand(
         "Ramp Shooter", new ShootPresetSetpoints(shooter, TargetType.GOAL));
@@ -320,6 +320,8 @@ public class RobotContainer {
     JoystickButton runShooterDefault = new JoystickButton(buttonJoystick, 17);
     runShooterDefault.whileTrue(shootPresetSetpointsGoal);
 
+    JoystickButton dontAgitate = new JoystickButton(buttonJoystick, Constants.OIConstants.dontAgitate);
+
     JoystickButton runTrigger =
         new JoystickButton(leftJoystick, Constants.OIConstants.joystickTrigger);
     JoystickButton runTriggerOnly =
@@ -328,7 +330,7 @@ public class RobotContainer {
     JoystickButton runTriggerReverse =
         new JoystickButton(buttonJoystick, Constants.OIConstants.ShooterReverseTriggerID);
 
-    runTrigger.whileTrue(new RunTrigger(hopper, shooter).alongWith(new agitate(collector)));
+    runTrigger.whileTrue(new RunTrigger(hopper, shooter).alongWith(new agitate(collector, () -> dontAgitate.getAsBoolean())));
 
     runTriggerReverse.whileTrue(new ReverseTriggerCommand(hopper));
 
@@ -432,3 +434,4 @@ public class RobotContainer {
         VisionConstants.teleopLinearStdDevBaseline, VisionConstants.teleopAngularStdDevBaseline);
   }
 }
+
