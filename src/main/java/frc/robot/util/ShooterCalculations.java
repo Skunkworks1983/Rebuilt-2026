@@ -406,6 +406,8 @@ public class ShooterCalculations {
     double calculatedFlywheelVelocity =
         calculatedProjectileVelocity / ShooterSolverConstants.flywheelEfficiency.get();
 
+    finalYaw = finalYaw.minus(new Rotation2d(Math.PI));
+
     return new ShooterControls(
         RadiansPerSecond.of(
             calculatedFlywheelVelocity / ShooterConstants.flywheelRadius.in(Meters)),
