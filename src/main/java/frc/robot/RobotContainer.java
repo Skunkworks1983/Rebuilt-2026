@@ -306,7 +306,7 @@ public class RobotContainer {
             () -> -leftJoystick.getX(), // -Y (used to be)
             () -> -rightJoystick.getX())); // Confirm if negitive or not
 
-    shootAutoAim = new JoystickButton(rightJoystick, 1);
+    shootAutoAim = new JoystickButton(rightJoystick, Constants.OIConstants.joystickAutoAim);
 
     shootAutoAim.whileTrue(
         new DriveAimedAutoShoot(
@@ -320,11 +320,13 @@ public class RobotContainer {
     JoystickButton runShooterDefault = new JoystickButton(buttonJoystick, 17);
     runShooterDefault.whileTrue(shootPresetSetpointsGoal);
 
-    JoystickButton runTrigger = new JoystickButton(leftJoystick, 1);
-    JoystickButton runTriggerOnly = new JoystickButton(buttonJoystick, 24);
+    JoystickButton runTrigger =
+        new JoystickButton(leftJoystick, Constants.OIConstants.joystickTrigger);
+    JoystickButton runTriggerOnly =
+        new JoystickButton(buttonJoystick, Constants.OIConstants.ShooterTriggerID);
     runTriggerOnly.whileTrue(new RunTrigger(hopper, shooter));
     JoystickButton runTriggerReverse =
-        new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID);
+        new JoystickButton(buttonJoystick, Constants.OIConstants.ShooterReverseTriggerID);
 
     runTrigger.whileTrue(new RunTrigger(hopper, shooter).alongWith(new agitate(collector)));
 
@@ -339,9 +341,9 @@ public class RobotContainer {
     TestPathCommands.publishTestPaths(drive);
 
     shooter.setDefaultCommand(Commands.run(shooter::stop, shooter));
-    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualPivotDown)
+    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorPivotDown)
         .onTrue(new CollectorDown(collector));
-    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorManualPivotUp)
+    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorPivotUp)
         .onTrue(new CollectorUp(collector));
     new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorIntakeID)
         .whileTrue(new CollectorIntake(collector));
