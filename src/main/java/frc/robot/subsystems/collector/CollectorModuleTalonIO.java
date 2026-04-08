@@ -7,7 +7,6 @@ package frc.robot.subsystems.collector;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Radians;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
@@ -101,6 +100,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     // Config for turnMotor
     var turnConfig = new TalonFXConfiguration();
     turnConfig.CurrentLimits.SupplyCurrentLimit = constants.turnSupplyCurrent;
+    turnConfig.CurrentLimits.StatorCurrentLimit = constants.turnStatorCurrent;
     turnConfig.Feedback.SensorToMechanismRatio = constants.turnMotorGearRatio;
     turnConfig.MotorOutput.Inverted = constants.turnInvert;
 
@@ -239,12 +239,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
    * @param velocity -Angular Velocity
    */
   public void setCollectorIntakeVelocity(AngularVelocity velocity) {
-    intakeVelocitySetPoint = velocity;
-    if (!velocity.equals(lastVelocity)) {
-      intakeMotor.setControl(
-          new VelocityVoltage(RadiansPerSecond.of(collectorIntakeVelocity.get())));
-      lastVelocity = velocity;
-    }
+    intakeMotor.setControl(new VelocityVoltage(velocity));
   }
 
   /** sets Just the encoder pos */

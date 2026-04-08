@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.6316444444444445,
-        "y": 0.6515406562054205
+        "x": 4.449,
+        "y": 0.6404744958481603
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.678544699041561,
-        "y": 0.7398857628393096
+        "x": 4.75982591060982,
+        "y": 0.6517520848968661
       },
       "isLocked": false,
       "linkedName": "Close Trench"
@@ -17,11 +17,11 @@
     {
       "anchor": {
         "x": 5.689,
-        "y": 0.7695848161328582
+        "y": 0.69
       },
       "prevControl": {
-        "x": 4.634404076698781,
-        "y": 0.6862530574341243
+        "x": 3.709932234247794,
+        "y": 0.6120465205340831
       },
       "nextControl": null,
       "isLocked": false,
@@ -34,7 +34,7 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
-    "maxAcceleration": 3.8,
+    "maxAcceleration": 2.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,

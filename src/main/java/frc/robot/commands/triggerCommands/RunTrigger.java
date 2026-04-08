@@ -15,6 +15,8 @@ public class RunTrigger extends Command {
   Hopper hopper;
   Shooter shooter;
 
+  private boolean feeding = false;
+
   public RunTrigger(Hopper hopper, Shooter shooter) {
     this.hopper = hopper;
     this.shooter = shooter;
@@ -25,19 +27,29 @@ public class RunTrigger extends Command {
   public void initialize() {
     // hopper.setTriggerDutyCycle(
     // shooter.getFlywheelSetpoint().times(TriggerConstants.triggerVelocityMultiplier.get()));
-    hopper.setTriggerDutyCycle(-1.0);
-    hopper.setHopperDutyCycle(BedConstants.hopperDutyCycleSpeedFeed.get());
+
     Logger.recordOutput("Trigger/Run Trigger Command is Running", true);
+
+    feeding = false;
   }
 
   @Override
-  public void execute() {}
+  public void execute() {
+    if (!feeding && shooter.canShoot()) {
+      hopper.setTriggerDutyCycle(-1.0);
+      hopper.setHopperDutyCycle(BedConstants.hopperDutyCycleSpeedFeed.get());
+
+      feeding = true;
+    }
+  }
 
   @Override
   public void end(boolean interrupted) {
     hopper.setTriggerDutyCycle(0);
     hopper.setHopperDutyCycle(0);
     Logger.recordOutput("Trigger/Run Trigger Command is Running", false);
+
+    feeding = false;
   }
 
   @Override

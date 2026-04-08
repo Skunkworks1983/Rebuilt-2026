@@ -73,5 +73,7 @@ public final class Constants {
     // public static final int ShooterFlywheelSwitchID = 6;
     public static final int ShooterHoldToAimID = 1; // Jotstick trigger
     public static final int ShooterReverseIndexID = 18;
+
+    public static final int dontAgitate = 3;
   }
 }

@@ -33,6 +33,9 @@ public class Collector extends SubsystemBase {
 
   private final CollectorIOInputsAutoLogged inputs = new CollectorIOInputsAutoLogged();
 
+  @AutoLogOutput(key = "Collector/Intake Velocity")
+  private AngularVelocity collectorIntakeSetpoint;
+
   private final LoggedTunableNumber collectorPivotKP;
   private final LoggedTunableNumber collectorPivotKD;
   private final LoggedTunableNumber collectorPivotKS;
@@ -47,7 +50,7 @@ public class Collector extends SubsystemBase {
   private final LoggedTunableNumber collectorIntakeKA;
   private final LoggedTunableNumber collectorIntakeVelocity;
 
-  @AutoLogOutput(key = "collector/mechanism")
+  @AutoLogOutput(key = "Collector/mechanism")
   private LoggedMechanism2d loggedMechanism2d = new LoggedMechanism2d(0, 0);
 
   LoggedMechanismRoot2d root =
@@ -187,6 +190,7 @@ public class Collector extends SubsystemBase {
    * @param velocity -Angular Velocity
    */
   public void setCollectorIntakeVelocity(AngularVelocity velocity) {
+    collectorIntakeSetpoint = velocity;
     collectorIO.setCollectorIntakeVelocity(velocity);
   }
 

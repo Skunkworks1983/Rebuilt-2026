@@ -21,6 +21,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -227,7 +229,7 @@ public class RobotContainer {
         "Another Auto Aimed Shoot",
         new ParallelCommandGroup(
             new AnotherAutoAimedShoot(drive, shooter, new RunTrigger(hopper, shooter)),
-            new agitate(collector, () -> false)));
+            new SequentialCommandGroup(new WaitCommand(0.5), new agitate(collector, () -> false))));
 
     NamedCommands.registerCommand(
         "Ramp Shooter", new ShootPresetSetpoints(shooter, TargetType.GOAL));
@@ -320,7 +322,8 @@ public class RobotContainer {
     JoystickButton runShooterDefault = new JoystickButton(buttonJoystick, 17);
     runShooterDefault.whileTrue(shootPresetSetpointsGoal);
 
-    JoystickButton dontAgitate = new JoystickButton(buttonJoystick, Constants.OIConstants.dontAgitate);
+    JoystickButton dontAgitate =
+        new JoystickButton(buttonJoystick, Constants.OIConstants.dontAgitate);
 
     JoystickButton runTrigger =
         new JoystickButton(leftJoystick, Constants.OIConstants.joystickTrigger);
@@ -330,7 +333,9 @@ public class RobotContainer {
     JoystickButton runTriggerReverse =
         new JoystickButton(buttonJoystick, Constants.OIConstants.ShooterReverseTriggerID);
 
-    runTrigger.whileTrue(new RunTrigger(hopper, shooter).alongWith(new agitate(collector, () -> dontAgitate.getAsBoolean())));
+    runTrigger.whileTrue(
+        new RunTrigger(hopper, shooter)
+            .alongWith(new agitate(collector, () -> dontAgitate.getAsBoolean())));
 
     runTriggerReverse.whileTrue(new ReverseTriggerCommand(hopper));
 
@@ -434,4 +439,3 @@ public class RobotContainer {
         VisionConstants.teleopLinearStdDevBaseline, VisionConstants.teleopAngularStdDevBaseline);
   }
 }
-

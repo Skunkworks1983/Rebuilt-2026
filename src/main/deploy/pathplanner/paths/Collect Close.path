@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 5.689,
-        "y": 0.7695848161328582
+        "y": 0.69
       },
       "prevControl": null,
       "nextControl": {
         "x": 7.363800699314605,
-        "y": 0.7695848161328582
+        "y": 0.69
       },
       "isLocked": false,
       "linkedName": "Outside Close Trench"
@@ -69,7 +69,7 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
-    "maxAcceleration": 3.8,
+    "maxAcceleration": 2.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,

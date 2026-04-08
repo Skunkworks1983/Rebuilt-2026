@@ -7,11 +7,10 @@ package frc.robot.commands.collectorCommands;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.Seconds;
 
-import java.util.function.BooleanSupplier;
-
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.collector.Collector;
+import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.Logger;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -34,7 +33,7 @@ public class agitate extends Command {
     Logger.recordOutput("Commands/Collector/Agitate", true);
     time.reset();
     time.start();
-    if(!agitate.getAsBoolean()) {
+    if (!agitate.getAsBoolean()) {
       collector.setCollectorPos(Radians.of(collector.getConstants().CollectorHalfPos.get()), 0);
       collector.setCollectorIntakeVelocity(collector.getConstants().CollectorIntakeSpeed);
     }
@@ -43,7 +42,7 @@ public class agitate extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(!agitate.getAsBoolean()) {
+    if (!agitate.getAsBoolean()) {
       if (time.hasElapsed(Seconds.of(1.5))) {
         time.reset();
       } else if (time.hasElapsed(Seconds.of(.75))) {
@@ -58,7 +57,7 @@ public class agitate extends Command {
   @Override
   public void end(boolean interrupted) {
     Logger.recordOutput("Commands/Collector/Agitate", false);
-    if(!agitate.getAsBoolean()) {
+    if (!agitate.getAsBoolean()) {
       collector.goDown();
       collector.setCollectorIntakeDutyCycle(0);
     }

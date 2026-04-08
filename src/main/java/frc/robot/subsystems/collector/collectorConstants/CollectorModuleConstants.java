@@ -18,6 +18,7 @@ import frc.robot.util.LoggedTunableNumber;
 
 /** This class is a grouping of constants */
 public class CollectorModuleConstants {
+
   // Collector CanBus
   public CANBus canbus;
 
@@ -83,6 +84,7 @@ public class CollectorModuleConstants {
 
   // Collector SupplyCurrents
   public double turnSupplyCurrent;
+  public double turnStatorCurrent;
   public double intakeSupplyCurrent;
 
   // Inverted Value
@@ -114,7 +116,8 @@ public class CollectorModuleConstants {
     intakekA = 0;
     intakekS = 0;
     intakeInvertedValue = InvertedValue.CounterClockwise_Positive;
-    intakeSupplyCurrent = 80;
+    intakeSupplyCurrent = 60;
+    turnStatorCurrent = 80;
 
     // Motion Magic constraints
     motionMagicCruiseVelocity = RotationsPerSecond.of(0.5);

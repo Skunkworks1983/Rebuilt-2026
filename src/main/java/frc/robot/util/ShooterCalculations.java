@@ -157,13 +157,15 @@ public class ShooterCalculations {
     double finalDistance = distWithDrag + ShooterSolverConstants.shooterDistanceAdder.get();
 
     double relativeGoalZ = goal.getZ() - ShooterConstants.shooterInitalPosition.getZ();
+    double apexHeight = ShooterSolverConstants.closeShotApexHeight.get();
+    if (trueDistance > ShooterSolverConstants.farShotDistance.get()) {
+      apexHeight = ShooterSolverConstants.farShotApexHeight.get();
 
-    boolean useFarApex = trueDistance > ShooterSolverConstants.farShotDistance.get();
-    Logger.recordOutput("Shooter/Using far apex", useFarApex);
-    double apexHeight =
-        useFarApex
-            ? ShooterSolverConstants.farShotApexHeight.get()
-            : ShooterSolverConstants.closeShotApexHeight.get();
+    } else if (trueDistance > ShooterSolverConstants.mediumShotDistance.get()) {
+      apexHeight = ShooterSolverConstants.mediumShotApexHeight.get();
+    }
+
+    Logger.recordOutput("Shooter/Apex Height", apexHeight);
 
     // Apex height calculation
     double heightTrajectoryPeak = relativeGoalZ + apexHeight;
