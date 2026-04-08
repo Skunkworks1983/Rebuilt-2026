@@ -126,7 +126,7 @@ public class ShooterConstants {
           flywheelMaxVelocityRotationsPerSec.in(RadiansPerSecond) * flywheelRadius.in(Meters));
 
   /** Allowable error tolerance for the flywheel velocity. */
-  public static final AngularVelocity flywheelVelocityTolerance = RotationsPerSecond.of(5);
+  public static final AngularVelocity flywheelVelocityTolerance = RotationsPerSecond.of(3);
 
   // PIVOT CONSTANTS
 
@@ -134,7 +134,7 @@ public class ShooterConstants {
   public static final int pivotMotorId = 29;
 
   /** Allowable error tolerance for the pivot position. */
-  public static final Angle pivotPositionTolerence = Degrees.of(5);
+  public static final Angle pivotPositionTolerence = Degrees.of(3);
 
   // PID for pivot
   public static final double pivotkP = 195;

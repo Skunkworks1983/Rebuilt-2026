@@ -5,6 +5,7 @@
 package frc.robot.commands.triggerCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.hopper.BedConstants;
 import frc.robot.subsystems.hopper.Hopper;
 import frc.robot.subsystems.shooter.Shooter;
@@ -14,13 +15,15 @@ import org.littletonrobotics.junction.Logger;
 public class RunTrigger extends Command {
   Hopper hopper;
   Shooter shooter;
+  Drive drive;
 
   private boolean feeding = false;
 
-  public RunTrigger(Hopper hopper, Shooter shooter) {
+  public RunTrigger(Hopper hopper, Shooter shooter, Drive drive) {
     this.hopper = hopper;
+    this.drive = drive;
     this.shooter = shooter;
-    addRequirements(hopper);
+    addRequirements(hopper, drive);
   }
 
   @Override
@@ -29,8 +32,8 @@ public class RunTrigger extends Command {
     // shooter.getFlywheelSetpoint().times(TriggerConstants.triggerVelocityMultiplier.get()));
 
     Logger.recordOutput("Trigger/Run Trigger Command is Running", true);
-
     feeding = false;
+    drive.stopWithX();
   }
 
   @Override
@@ -38,7 +41,6 @@ public class RunTrigger extends Command {
     if (!feeding && shooter.canShoot()) {
       hopper.setTriggerDutyCycle(-1.0);
       hopper.setHopperDutyCycle(BedConstants.hopperDutyCycleSpeedFeed.get());
-
       feeding = true;
     }
   }

@@ -31,7 +31,7 @@ public class ShooterSolverConstants {
   // CONSTRAINED HEIGHT SOLVER
   /** Vertical clearance required above the hub for specialized constrained shots. */
   public static LoggedTunableNumber closeShotApexHeight =
-      new LoggedTunableNumber("Shooter/Close Shot Apex Height Meters", 0.65);
+      new LoggedTunableNumber("Shooter/Close Shot Apex Height Meters", 0.5);
 
   public static LoggedTunableNumber farShotApexHeight =
       new LoggedTunableNumber("Shooter/Far Shot Apex Height Meters", 1.7);
