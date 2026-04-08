@@ -229,7 +229,7 @@ public class RobotContainer {
         "Another Auto Aimed Shoot",
         new ParallelCommandGroup(
             new AnotherAutoAimedShoot(drive, shooter, new RunTrigger(hopper, shooter)),
-            new SequentialCommandGroup(new WaitCommand(1), new agitate(collector, () -> false))));
+            new SequentialCommandGroup(new WaitCommand(2), new agitate(collector, () -> false))));
 
     NamedCommands.registerCommand(
         "Ramp Shooter", new ShootPresetSetpoints(shooter, TargetType.GOAL));
