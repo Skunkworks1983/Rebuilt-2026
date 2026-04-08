@@ -8,52 +8,52 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.629188325556216,
-        "y": 6.800854900580975
+        "x": 2.6269112715508762,
+        "y": 6.775438049058849
       },
       "isLocked": false,
       "linkedName": "Far Trench Shoot"
     },
     {
       "anchor": {
-        "x": 0.8,
-        "y": 6.030830367730931
+        "x": 1.878,
+        "y": 6.178
       },
       "prevControl": {
-        "x": 1.1785617052704904,
-        "y": 6.021726533932575
+        "x": 2.1255735289063606,
+        "y": 6.2127469104360555
       },
       "nextControl": {
-        "x": 0.55007225983599,
-        "y": 6.036840750124011
+        "x": 0.6435233931997544,
+        "y": 6.0047413794949085
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.9,
-        "y": 5.92323843416035
+        "x": 0.51,
+        "y": 6.013
       },
       "prevControl": {
-        "x": 0.7205563853138268,
-        "y": 6.097307354845118
+        "x": 0.756019850834432,
+        "y": 5.968567658227324
       },
       "nextControl": {
-        "x": 1.0794436146861732,
-        "y": 5.749169513475581
+        "x": 0.15991720349009148,
+        "y": 6.076226599034606
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.825243179129667,
-        "y": 5.3960379596645005
+        "x": 1.8776444444444444,
+        "y": 5.880201660735468
       },
       "prevControl": {
-        "x": 1.223556388994734,
-        "y": 5.751666988047771
+        "x": 2.1250575097439555,
+        "y": 5.916073308580247
       },
       "nextControl": null,
       "isLocked": false,
@@ -64,8 +64,8 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.8021892103205592,
-      "maxWaypointRelativePos": 1.9796716184519179,
+      "minWaypointRelativePos": 0.9945269741985927,
+      "maxWaypointRelativePos": 2.25,
       "constraints": {
         "maxVelocity": 1.0,
         "maxAcceleration": 4.0,
@@ -84,7 +84,7 @@
       },
       "rotationOffset": 0.0,
       "minWaypointRelativePos": 0.5,
-      "maxWaypointRelativePos": 1.85,
+      "maxWaypointRelativePos": 2.35,
       "name": "Point Towards Zone"
     }
   ],
@@ -99,13 +99,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 150.83238662042228
+    "rotation": 144.2929368603588
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 127.49265333282476
+    "rotation": 133.49256424122507
   },
   "useDefaultConstraints": false
 }
