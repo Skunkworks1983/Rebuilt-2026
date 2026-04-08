@@ -129,7 +129,7 @@ public class CollectorModuleConstants {
     CollectorHalfPos = new LoggedTunableNumber("Collector/Halfpose rad", 1);
 
     // Collector Intake Speeds
-    CollectorIntakeSpeed = RotationsPerSecond.of(50);
+    CollectorIntakeSpeed = RotationsPerSecond.of(70);
 
     // Limit Switch Constants
     UpperLimitChannel = 1;

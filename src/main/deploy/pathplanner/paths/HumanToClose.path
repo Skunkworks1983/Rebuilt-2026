@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 0.4588256227758012,
-        "y": 0.5
+        "y": 0.7157888493475684
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.0531923682630842,
-        "y": 0.35073347693390666
+        "x": 0.6744626987414184,
+        "y": 0.8422825308854168
       },
       "isLocked": false,
       "linkedName": "HumanPlayerStation"
@@ -20,8 +20,8 @@
         "y": 1.1569157769869503
       },
       "prevControl": {
-        "x": 1.5073139013286916,
-        "y": 1.1156959553039476
+        "x": 1.651801387273893,
+        "y": 1.0526900553478726
       },
       "nextControl": null,
       "isLocked": false,
@@ -48,7 +48,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": -90.0
   },
   "useDefaultConstraints": true
 }

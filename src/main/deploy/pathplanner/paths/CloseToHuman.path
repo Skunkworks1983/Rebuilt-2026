@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.8761106658807005,
-        "y": 0.6375361682469497
+        "x": 1.663552548607516,
+        "y": 0.7354307939670628
       },
       "isLocked": false,
       "linkedName": "Close Trench Shoot"
     },
     {
       "anchor": {
-        "x": 1.4809489916963232,
-        "y": 0.7911032028469753
+        "x": 1.5132265717674978,
+        "y": 0.7157888493475684
       },
       "prevControl": {
-        "x": 1.8785177796077208,
-        "y": 0.7926769122361124
+        "x": 1.9785168753461642,
+        "y": 0.9629649740568308
       },
       "nextControl": {
-        "x": 0.3272629586137423,
-        "y": 0.7865365301161598
+        "x": 1.2924458039549198,
+        "y": 0.598503502589806
       },
       "isLocked": false,
       "linkedName": null
@@ -33,27 +33,22 @@
     {
       "anchor": {
         "x": 0.4588256227758012,
-        "y": 0.5
+        "y": 0.7157888493475684
       },
       "prevControl": {
-        "x": 0.7810800308819934,
-        "y": 0.4984191116505543
+        "x": 0.21188313594629413,
+        "y": 0.7547684362932856
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "HumanPlayerStation"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 1.3614775725593677,
-      "rotationDegrees": 90.0
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 1.6,
+      "minWaypointRelativePos": 1.3541829554339375,
       "maxWaypointRelativePos": 2.0,
       "constraints": {
         "maxVelocity": 1.2,
@@ -77,7 +72,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": -90.0
   },
   "reversed": false,
   "folder": null,

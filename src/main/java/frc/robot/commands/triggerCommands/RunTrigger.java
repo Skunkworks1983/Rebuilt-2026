@@ -15,15 +15,13 @@ import org.littletonrobotics.junction.Logger;
 public class RunTrigger extends Command {
   Hopper hopper;
   Shooter shooter;
-  Drive drive;
 
   private boolean feeding = false;
 
   public RunTrigger(Hopper hopper, Shooter shooter, Drive drive) {
     this.hopper = hopper;
-    this.drive = drive;
     this.shooter = shooter;
-    addRequirements(hopper, drive);
+    addRequirements(hopper);
   }
 
   @Override
@@ -33,7 +31,6 @@ public class RunTrigger extends Command {
 
     Logger.recordOutput("Trigger/Run Trigger Command is Running", true);
     feeding = false;
-    drive.stopWithX();
   }
 
   @Override

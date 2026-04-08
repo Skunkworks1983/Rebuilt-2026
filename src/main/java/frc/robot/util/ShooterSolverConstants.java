@@ -36,7 +36,7 @@ public class ShooterSolverConstants {
   public static LoggedTunableNumber farShotApexHeight =
       new LoggedTunableNumber("Shooter/Far Shot Apex Height Meters", 1.7);
   public static LoggedTunableNumber farShotDistance =
-      new LoggedTunableNumber("Shooter/Far Shot Distance Meters", 3);
+      new LoggedTunableNumber("Shooter/Far Shot Distance Meters", 2.8);
 
   public static final LoggedTunableNumber lowerFlywheelVelocityMultiplier =
       new LoggedTunableNumber("Lower Flywheel Velocity Multiplier", 1.15);
