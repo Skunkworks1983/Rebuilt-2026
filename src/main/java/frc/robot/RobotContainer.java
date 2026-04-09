@@ -37,6 +37,7 @@ import frc.robot.commands.collectorCommands.CollectorExpel;
 import frc.robot.commands.collectorCommands.CollectorIntake;
 import frc.robot.commands.collectorCommands.CollectorUp;
 import frc.robot.commands.collectorCommands.agitate;
+import frc.robot.commands.triggerCommands.ForceRunTrigger;
 import frc.robot.commands.triggerCommands.ReverseTriggerCommand;
 import frc.robot.commands.triggerCommands.RunTrigger;
 import frc.robot.commands.triggerCommands.RunTriggerNoLock;
@@ -331,9 +332,9 @@ public class RobotContainer {
 
     JoystickButton runTriggerDriverStick =
         new JoystickButton(leftJoystick, Constants.OIConstants.joystickTrigger);
-    JoystickButton runTriggerButtonJoystick =
+    JoystickButton forceRunTrigger =
         new JoystickButton(buttonJoystick, Constants.OIConstants.ShooterTriggerID);
-    runTriggerButtonJoystick.whileTrue(new RunTrigger(hopper, shooter, drive, driveAimedAutoShoot));
+    forceRunTrigger.whileTrue(new ForceRunTrigger(hopper, drive, driveAimedAutoShoot));
     JoystickButton runTriggerReverse =
         new JoystickButton(buttonJoystick, Constants.OIConstants.ShooterReverseTriggerID);
 
