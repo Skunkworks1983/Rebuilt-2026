@@ -130,8 +130,10 @@ public class CollectorModuleConstants {
     CollectorUpPos = Rotations.of(0);
     CollectorDownPosDefault = Radians.of(2.198);
     CollectorHalfPosDefault = Radians.of(1);
-    CollectorDownPos = new LoggedTunableNumber("Collector/Downpose rad", CollectorDownPosDefault.in(Radians));
-    CollectorHalfPos = new LoggedTunableNumber("Collector/Halfpose rad", CollectorHalfPosDefault.in(Radians));
+    CollectorDownPos =
+        new LoggedTunableNumber("Collector/Downpose rad", CollectorDownPosDefault.in(Radians));
+    CollectorHalfPos =
+        new LoggedTunableNumber("Collector/Halfpose rad", CollectorHalfPosDefault.in(Radians));
 
     // Collector Intake Speeds
     CollectorIntakeSpeed = RotationsPerSecond.of(70);
