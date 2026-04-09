@@ -150,6 +150,7 @@ public class DriveAimedShoot extends Command {
 
   public void lockControls() {
     controlsLocked = true;
+    drive.stopWithX();
   }
 
   public void unlockControls() {
