@@ -23,7 +23,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -97,8 +96,6 @@ public class RobotContainer {
   private final Joystick rightJoystick;
   private final Joystick buttonJoystick;
 
-  private final CommandXboxController xboxController;
-
   /**
    * Xbox Controller for simulation.
    *
@@ -119,7 +116,6 @@ public class RobotContainer {
     leftJoystick = new Joystick(Constants.OIConstants.LeftJoystick);
     rightJoystick = new Joystick(Constants.OIConstants.RightJoystick);
     buttonJoystick = new Joystick(Constants.OIConstants.ButtonJoystick);
-    xboxController = new CommandXboxController(2);
 
     switch (Constants.currentMode) {
       case REAL:
@@ -346,11 +342,6 @@ public class RobotContainer {
             .alongWith(new agitate(collector, () -> dontAgitate.getAsBoolean())));
 
     runTriggerReverse.whileTrue(new ReverseTriggerCommand(hopper));
-
-    Trigger xboxA = xboxController.a();
-    xboxA.whileTrue(new CollectorIntake(collector));
-    Trigger xboxB = xboxController.b();
-    xboxB.whileTrue(new CollectorExpel(collector));
 
     // if the trigger button is hed and more than a second elapses before the beam
     // break is broken the
