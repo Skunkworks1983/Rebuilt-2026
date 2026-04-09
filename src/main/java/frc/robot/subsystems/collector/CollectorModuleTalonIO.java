@@ -319,7 +319,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
 
   /** Sets Collector to its up position */
   public void goDown() {
-    setCollectorPos(Radians.of(constants.CollectorDownPos.get()), 0);
+    setCollectorPos(constants.CollectorDownPosDefault, 0);
   }
 
   @Override

@@ -5,6 +5,7 @@
 package frc.robot.subsystems.collector.collectorConstants;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
@@ -68,6 +69,8 @@ public class CollectorModuleConstants {
   public Angle CollectorUpPos;
   public LoggedTunableNumber CollectorDownPos;
   public LoggedTunableNumber CollectorHalfPos;
+  public Angle CollectorDownPosDefault;
+  public Angle CollectorHalfPosDefault;
 
   // Collector Manual pivot velocity
   public double CollectorPivotDutyCycle;
@@ -125,8 +128,10 @@ public class CollectorModuleConstants {
 
     // Position
     CollectorUpPos = Rotations.of(0);
-    CollectorDownPos = new LoggedTunableNumber("Collector/Downpose rad", 2.198);
-    CollectorHalfPos = new LoggedTunableNumber("Collector/Halfpose rad", 1);
+    CollectorDownPosDefault = Radians.of(2.198);
+    CollectorHalfPosDefault = Radians.of(1);
+    CollectorDownPos = new LoggedTunableNumber("Collector/Downpose rad", CollectorDownPosDefault.in(Radians));
+    CollectorHalfPos = new LoggedTunableNumber("Collector/Halfpose rad", CollectorHalfPosDefault.in(Radians));
 
     // Collector Intake Speeds
     CollectorIntakeSpeed = RotationsPerSecond.of(70);
