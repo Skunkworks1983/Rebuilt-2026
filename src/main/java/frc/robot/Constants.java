@@ -75,5 +75,8 @@ public final class Constants {
     public static final int ShooterReverseIndexID = 18;
 
     public static final int dontAgitate = 3;
+
+    public static final int gamepadCollect = 2;
+    public static final int gamepadCollectorReverse = 1;
   }
 }
