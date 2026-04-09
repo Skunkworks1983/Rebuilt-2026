@@ -35,7 +35,7 @@ public class agitate extends Command {
     time.start();
     if (!agitate.getAsBoolean()) {
       collector.setCollectorPos(Radians.of(collector.getConstants().CollectorHalfPos.get()), 0);
-      collector.setCollectorIntakeVelocity(collector.getConstants().CollectorIntakeSpeed);
+      // collector.setCollectorIntakeVelocity(collector.getConstants().CollectorIntakeSpeed);
     }
   }
 
@@ -59,7 +59,7 @@ public class agitate extends Command {
     Logger.recordOutput("Commands/Collector/Agitate", false);
     if (!agitate.getAsBoolean()) {
       collector.goDown();
-      collector.setCollectorIntakeDutyCycle(0);
+      // collector.setCollectorIntakeDutyCycle(0);
     }
   }
 
