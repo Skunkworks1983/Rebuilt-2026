@@ -134,7 +134,7 @@ public class ShooterConstants {
   public static final int pivotMotorId = 29;
 
   /** Allowable error tolerance for the pivot position. */
-  public static final Angle pivotPositionTolerence = Degrees.of(3);
+  public static final Angle pivotPositionTolerence = Degrees.of(4.5);
 
   // PID for pivot
   public static final double pivotkP = 160;
@@ -165,7 +165,7 @@ public class ShooterConstants {
 
   // SENSOR CONSTANTS
   public static final int pivotEncoderId = 28;
-  public static final double pivotEncoderAbsoluteOffset = -0.731201;
+  public static final double pivotEncoderAbsoluteOffset = -0.764648;
   public static final double pivotEncoderTotalOffset =
       pivotEncoderAbsoluteOffset + (pivotStartAngle.in(Rotations) * (pivotSensorToMechanismRatio));
   public static final SensorDirectionValue pivotEncoderDirection =
