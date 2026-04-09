@@ -101,4 +101,18 @@ public class DriveAimedAutoShoot extends Command {
     CommandScheduler.getInstance().schedule(activeCommand);
     Logger.recordOutput(logKey + "/ActiveTarget", nextCommand == goalCommand ? "GOAL" : "TRANSFER");
   }
+
+  /** Forces auto aimed yaw setpoint and shooter setpoints to remain fixed */
+  public void lockControls() {
+    if (activeCommand != null) {
+      activeCommand.lockControls();
+    }
+  }
+
+  /** Allows auto aimed shoot yaw and shooter setpoint to change */
+  public void unlockControls() {
+    if (activeCommand != null) {
+      activeCommand.unlockControls();
+    }
+  }
 }

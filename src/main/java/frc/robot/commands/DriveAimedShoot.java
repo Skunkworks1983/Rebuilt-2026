@@ -34,6 +34,8 @@ public class DriveAimedShoot extends Command {
   private final String logKey;
   private final String autoShootRequirementsLogKey;
 
+  private boolean controlsLocked = false;
+
   public DriveAimedShoot(
       Drive drive,
       Shooter shooter,
@@ -83,6 +85,8 @@ public class DriveAimedShoot extends Command {
 
     Logger.recordOutput(logKey, true);
     Logger.recordOutput(autoShootRequirementsLogKey + "/ReadyToShoot", false);
+
+    controlsLocked = false;
   }
 
   @Override
@@ -90,38 +94,41 @@ public class DriveAimedShoot extends Command {
     var currentPose = drive.getPose();
     var currentSpeeds = drive.getChassisSpeeds();
 
-    ShooterControls controls =
-        switch (targetType) {
-          case GOAL -> ShooterCalculations.getApexConstrainedShooterControls(
-              currentPose, currentSpeeds);
-          case TRANSFER -> ShooterCalculations.getShooterControlsTransfer(
-              currentSpeeds, currentPose, shooter.getShooterForwardLinearVelocity());
-        };
+    if (!controlsLocked) {
+      ShooterControls controls =
+          switch (targetType) {
+            case GOAL -> ShooterCalculations.getApexConstrainedShooterControls(
+                currentPose, currentSpeeds);
+            case TRANSFER -> ShooterCalculations.getShooterControlsTransfer(
+                currentSpeeds, currentPose, shooter.getShooterForwardLinearVelocity());
+          };
 
-    shooter.setShooterSetpoints(
-        new ShooterSetpoints(controls.flywheelVelocity(), controls.shooterPitch()));
-    double currentYawRadians = drive.getRotation().getRadians();
-    double targetYawRadians = controls.driveYaw().getRadians();
+      shooter.setShooterSetpoints(
+          new ShooterSetpoints(controls.flywheelVelocity(), controls.shooterPitch()));
+      double currentYawRadians = drive.getRotation().getRadians();
+      double targetYawRadians = controls.driveYaw().getRadians();
 
-    Logger.recordOutput("Auto Shoot/Target Yaw", targetYawRadians);
-    Logger.recordOutput("Auto Shoot/Current Yaw", currentYawRadians);
+      Logger.recordOutput("Auto Shoot/Target Yaw", targetYawRadians);
+      Logger.recordOutput("Auto Shoot/Current Yaw", currentYawRadians);
 
-    double omegaCalculated = yawController.calculate(currentYawRadians, targetYawRadians);
+      double omegaCalculated = yawController.calculate(currentYawRadians, targetYawRadians);
 
-    Logger.recordOutput("Auto Shoot/Omega Calculated", omegaCalculated);
+      Logger.recordOutput("Auto Shoot/Omega Calculated", omegaCalculated);
 
-    ChassisSpeeds targetSpeeds =
-        DriveUtils.getChassisSpeeds(
-            drive, xSupplier, ySupplier, omegaCalculated // Override rotation
-            );
+      ChassisSpeeds targetSpeeds =
+          DriveUtils.getChassisSpeeds(
+              drive, xSupplier, ySupplier, omegaCalculated // Override rotation
+              );
 
-    boolean isRed = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red;
+      boolean isRed = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red;
 
-    Rotation2d fieldCentricOffset = isRed ? Rotation2d.fromDegrees(180) : Rotation2d.fromDegrees(0);
+      Rotation2d fieldCentricOffset =
+          isRed ? Rotation2d.fromDegrees(180) : Rotation2d.fromDegrees(0);
 
-    drive.runVelocity(
-        ChassisSpeeds.fromFieldRelativeSpeeds(
-            targetSpeeds, drive.getRotation().plus(fieldCentricOffset)));
+      drive.runVelocity(
+          ChassisSpeeds.fromFieldRelativeSpeeds(
+              targetSpeeds, drive.getRotation().plus(fieldCentricOffset)));
+    }
 
     Logger.recordOutput(
         autoShootRequirementsLogKey + "/DriveReadyToShoot", yawController.atSetpoint());
@@ -139,5 +146,13 @@ public class DriveAimedShoot extends Command {
 
     vision.setBaselineStdDevs(
         VisionConstants.teleopLinearStdDevBaseline, VisionConstants.teleopAngularStdDevBaseline);
+  }
+
+  public void lockControls() {
+    controlsLocked = true;
+  }
+
+  public void unlockControls() {
+    controlsLocked = false;
   }
 }

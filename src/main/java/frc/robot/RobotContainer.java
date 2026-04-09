@@ -312,9 +312,11 @@ public class RobotContainer {
 
     shootAutoAim = new JoystickButton(rightJoystick, Constants.OIConstants.joystickAutoAim);
 
-    shootAutoAim.whileTrue(
+    DriveAimedAutoShoot driveAimedAutoShoot =
         new DriveAimedAutoShoot(
-            drive, shooter, vision, () -> -leftJoystick.getY(), () -> -leftJoystick.getX()));
+            drive, shooter, vision, () -> -leftJoystick.getY(), () -> -leftJoystick.getX());
+
+    shootAutoAim.whileTrue(driveAimedAutoShoot);
 
     ShootPresetSetpoints shootPresetSetpointsGoal =
         new ShootPresetSetpoints(shooter, TargetType.GOAL);
@@ -327,16 +329,16 @@ public class RobotContainer {
     JoystickButton dontAgitate =
         new JoystickButton(buttonJoystick, Constants.OIConstants.dontAgitate);
 
-    JoystickButton runTrigger =
+    JoystickButton runTriggerDriverStick =
         new JoystickButton(leftJoystick, Constants.OIConstants.joystickTrigger);
-    JoystickButton runTriggerOnly =
+    JoystickButton runTriggerButtonJoystick =
         new JoystickButton(buttonJoystick, Constants.OIConstants.ShooterTriggerID);
-    runTriggerOnly.whileTrue(new RunTrigger(hopper, shooter, drive));
+    runTriggerButtonJoystick.whileTrue(new RunTrigger(hopper, shooter, drive, driveAimedAutoShoot));
     JoystickButton runTriggerReverse =
         new JoystickButton(buttonJoystick, Constants.OIConstants.ShooterReverseTriggerID);
 
-    runTrigger.whileTrue(
-        new RunTrigger(hopper, shooter, drive)
+    runTriggerDriverStick.whileTrue(
+        new RunTrigger(hopper, shooter, drive, driveAimedAutoShoot)
             .alongWith(new agitate(collector, () -> dontAgitate.getAsBoolean())));
 
     runTriggerReverse.whileTrue(new ReverseTriggerCommand(hopper));
