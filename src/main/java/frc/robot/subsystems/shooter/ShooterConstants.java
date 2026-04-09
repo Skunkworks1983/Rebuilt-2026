@@ -137,7 +137,7 @@ public class ShooterConstants {
   public static final Angle pivotPositionTolerence = Degrees.of(3);
 
   // PID for pivot
-  public static final double pivotkP = 195;
+  public static final double pivotkP = 175;
   public static final double pivotkD = 0;
 
   // Feedforwards for pivot
