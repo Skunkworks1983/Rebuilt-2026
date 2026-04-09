@@ -251,10 +251,14 @@ public class Shooter extends SubsystemBase {
 
   @AutoLogOutput(key = "Shooter/UpperFlywheelAtSetpoint")
   public boolean isFlywheelAtSetpoint() {
-    return MathUtil.isNear(
-        flywheelSetpoint.in(RotationsPerSecond),
-        flywheelInputs.primaryAngularVelocity.in(RotationsPerSecond),
-        ShooterConstants.flywheelVelocityTolerance.in(RotationsPerSecond));
+    if (flywheelSetpoint.lte(RotationsPerSecond.of(70))) {
+      return MathUtil.isNear(
+          flywheelSetpoint.in(RotationsPerSecond),
+          flywheelInputs.primaryAngularVelocity.in(RotationsPerSecond),
+          ShooterConstants.flywheelVelocityTolerance.in(RotationsPerSecond));
+    } else {
+      return true;
+    }
   }
 
   @AutoLogOutput(key = "Shooter/PivotAtSetpoint")
