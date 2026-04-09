@@ -69,7 +69,7 @@ public class CollectorModuleConstants {
   public Angle CollectorUpPos;
   public LoggedTunableNumber CollectorDownPos;
   public LoggedTunableNumber CollectorHalfPos;
-  public Angle CollectorDownPosDefault;
+  public static final Angle CollectorDownPosDefault = Radians.of(2.198);
   public Angle CollectorHalfPosDefault;
 
   // Collector Manual pivot velocity
@@ -128,7 +128,6 @@ public class CollectorModuleConstants {
 
     // Position
     CollectorUpPos = Rotations.of(0);
-    CollectorDownPosDefault = Radians.of(2.198);
     CollectorHalfPosDefault = Radians.of(1);
     CollectorDownPos =
         new LoggedTunableNumber("Collector/Downpose rad", CollectorDownPosDefault.in(Radians));

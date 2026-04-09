@@ -126,25 +126,21 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     intakeConfig.CurrentLimits.SupplyCurrentLimit = constants.intakeSupplyCurrent;
     intakeConfig.MotorOutput.Inverted = constants.intakeInvertedValue;
 
-    if (RobotBase.isReal()) {
-      intakeConfig.Slot0.kP = constants.intakekP;
-      intakeConfig.Slot0.kD = constants.intakekD;
-      intakeConfig.Slot0.kI = constants.intakekI;
-      intakeConfig.Slot0.kV = constants.intakekV;
-      turnSlot0Configs.kP = constants.turnkP;
-      turnSlot0Configs.kD = constants.turnkD;
-      turnSlot0Configs.kI = constants.turnkI;
-    } else if (RobotBase.isSimulation()) {
+    intakeConfig.Slot0.kP = constants.intakekP;
+    intakeConfig.Slot0.kD = constants.intakekD;
+    intakeConfig.Slot0.kI = constants.intakekI;
+    intakeConfig.Slot0.kV = constants.intakekV;
+    turnSlot0Configs.kP = constants.turnkP;
+    turnSlot0Configs.kD = constants.turnkD;
+    turnSlot0Configs.kI = constants.turnkI;
+
+    if (RobotBase.isSimulation()) {
       intakeConfig.Slot0.kP = constants.SimIntakekP;
       intakeConfig.Slot0.kD = constants.SimIntakekD;
       intakeConfig.Slot0.kI = constants.SimIntakekI;
       turnSlot0Configs.kP = constants.SimTurnkP;
       turnSlot0Configs.kD = constants.SimTurnkD;
       turnSlot0Configs.kI = constants.SimTurnkI;
-    } else {
-      turnSlot0Configs.kP = constants.turnkP;
-      turnSlot0Configs.kD = constants.turnkD;
-      turnSlot0Configs.kI = constants.turnkI;
     }
 
     collectorIntakeVelocity =
@@ -153,6 +149,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
 
     // Applying Intake Configs
     tryUntilOk(5, () -> intakeMotor.getConfigurator().apply(intakeConfig, 0.25));
+    tryUntilOk(5, () -> turnMotor.getConfigurator().apply(turnConfig, 0.25));
 
     // Create turn status signals
     turnPosition = turnMotor.getPosition();
@@ -319,7 +316,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
 
   /** Sets Collector to its up position */
   public void goDown() {
-    setCollectorPos(constants.CollectorDownPosDefault, 0);
+    setCollectorPos(CollectorModuleConstants.CollectorDownPosDefault, 0);
   }
 
   @Override
