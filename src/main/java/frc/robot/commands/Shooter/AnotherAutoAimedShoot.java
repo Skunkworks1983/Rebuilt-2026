@@ -57,65 +57,52 @@ public class AnotherAutoAimedShoot extends Command {
 
   @Override
   public void execute() {
-    var currentPose = drive.getPose();
-    var currentSpeeds = drive.getChassisSpeeds();
+    if (!feedEnabled) {
+      var currentPose = drive.getPose();
+      var currentSpeeds = drive.getChassisSpeeds();
 
-    ShooterControls controls =
-        ShooterCalculations.getApexConstrainedShooterControls(currentPose, currentSpeeds);
+      ShooterControls controls =
+          ShooterCalculations.getApexConstrainedShooterControls(currentPose, currentSpeeds);
 
-    shooter.setShooterSetpoints(
-        new ShooterSetpoints(controls.flywheelVelocity(), controls.shooterPitch()));
-    double currentYawRadians = drive.getRotation().getRadians();
-    double targetYawRadians = controls.driveYaw().getRadians();
-    // double targetYawDelta = MathUtil.angleModulus(targetYawRadians - lastFilteredYaw);
+      shooter.setShooterSetpoints(
+          new ShooterSetpoints(controls.flywheelVelocity(), controls.shooterPitch()));
+      double currentYawRadians = drive.getRotation().getRadians();
+      double targetYawRadians = controls.driveYaw().getRadians();
 
-    // TrapezoidProfile.State setpoint =
-    //     profile.calculate(
-    //         0.02,
-    //         new TrapezoidProfile.State(
-    //             currentYawRadians, drive.getAngularVelocity().in(RadiansPerSecond)),
-    //         new TrapezoidProfile.State(targetYawRadians, 0));
+      Logger.recordOutput("Auto Shoot/Target Yaw", targetYawRadians);
+      Logger.recordOutput("Auto Shoot/Current Yaw", currentYawRadians);
+      double omegaCalculated;
 
-    // if (Math.abs(targetYawDelta) > DriveControlConstants.largeAngleJumpThreshold.in(Radians)) {
-    //   lastFilteredYaw = targetYawRadians;
-    // } else {
-    //   lastFilteredYaw += yawFilterAlpha * targetYawDelta;
-    // }
-    // double filteredTargetYaw = MathUtil.angleModulus(lastFilteredYaw);
-    Logger.recordOutput("Auto Shoot/Target Yaw", targetYawRadians);
-    Logger.recordOutput("Auto Shoot/Current Yaw", currentYawRadians);
-    // Logger.recordOutput("Auto Shoot/Filtered Target Yaw", filteredTargetYaw);
-    double omegaCalculated;
+      omegaCalculated = yawController.calculate(currentYawRadians, targetYawRadians);
+      Logger.recordOutput("Auto Shoot/Omega Calculated", omegaCalculated);
 
-    omegaCalculated = yawController.calculate(currentYawRadians, targetYawRadians);
-    Logger.recordOutput("Auto Shoot/Omega Calculated", omegaCalculated);
+      ChassisSpeeds targetSpeeds =
+          DriveUtils.getChassisSpeeds(
+              drive, () -> 0, () -> 0, omegaCalculated // Override rotation
+              );
 
-    ChassisSpeeds targetSpeeds =
-        DriveUtils.getChassisSpeeds(
-            drive, () -> 0, () -> 0, omegaCalculated // Override rotation
-            );
+      boolean isRed = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red;
 
-    boolean isRed = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red;
+      Rotation2d fieldCentricOffset =
+          isRed ? Rotation2d.fromDegrees(180) : Rotation2d.fromDegrees(0);
 
-    Rotation2d fieldCentricOffset = isRed ? Rotation2d.fromDegrees(180) : Rotation2d.fromDegrees(0);
+      drive.runVelocity(
+          ChassisSpeeds.fromFieldRelativeSpeeds(
+              targetSpeeds, drive.getRotation().plus(fieldCentricOffset)));
 
-    drive.runVelocity(
-        ChassisSpeeds.fromFieldRelativeSpeeds(
-            targetSpeeds, drive.getRotation().plus(fieldCentricOffset)));
+      Logger.recordOutput("Auto Shoot/At Setpoint", yawController.atSetpoint());
+      Logger.recordOutput("Auto Shoot/At Goal", yawController.atGoal());
+      Logger.recordOutput(
+          "Auto Shoot/Debounced", indexDebounce.calculate(yawController.atSetpoint()));
 
-    Logger.recordOutput("Auto Shoot/At Setpoint", yawController.atSetpoint());
-    Logger.recordOutput("Auto Shoot/At Goal", yawController.atGoal());
-    Logger.recordOutput(
-        "Auto Shoot/Debounced", indexDebounce.calculate(yawController.atSetpoint()));
+      boolean readyToFeed = yawController.atGoal();
+      Logger.recordOutput("Auto Shoot/Trigger Ready", readyToFeed);
+      if (readyToFeed) {
+        feedEnabled = true;
+        Logger.recordOutput("Auto Shoot/Feed Enabled", true);
 
-    boolean readyToFeed = yawController.atGoal();
-    Logger.recordOutput("Auto Shoot/Trigger Ready", readyToFeed);
-
-    if (readyToFeed && !feedEnabled) {
-      feedEnabled = true;
-      Logger.recordOutput("Auto Shoot/Feed Enabled", true);
-
-      CommandScheduler.getInstance().schedule(feedCommand);
+        CommandScheduler.getInstance().schedule(feedCommand);
+      }
     }
   }
 
