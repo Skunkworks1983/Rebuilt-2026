@@ -340,7 +340,7 @@ public class RobotContainer {
     // Shoot Preset Transfer
     new JoystickButton(buttonJoystick, 13).whileTrue(shootPresetSetpointsTransfer);
     // Force Index
-    new JoystickButton(buttonJoystick, 24)
+    new JoystickButton(buttonJoystick, 23)
         .whileTrue(
             new ForceRunTrigger(hopper, drive, driveAimedAutoShoot)
                 .alongWith(new agitate(collector, dontAgitate::getAsBoolean)));
