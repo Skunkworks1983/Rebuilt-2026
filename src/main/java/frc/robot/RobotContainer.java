@@ -75,6 +75,7 @@ import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import frc.robot.util.AutoPreview;
+import frc.robot.util.Elastic;
 import frc.robot.util.sim.SimProjectile;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
@@ -450,5 +451,7 @@ public class RobotContainer {
   public void teleopInit() {
     vision.setBaselineStdDevs(
         VisionConstants.teleopLinearStdDevBaseline, VisionConstants.teleopAngularStdDevBaseline);
+
+    Elastic.selectTab("Teleop");
   }
 }
