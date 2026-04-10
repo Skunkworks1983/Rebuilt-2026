@@ -166,7 +166,7 @@ public class Robot extends LoggedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    ShiftInfo shiftInfo = HubShiftUtil.getShiftedShiftInfo();
+    ShiftInfo shiftInfo = HubShiftUtil.getOfficialShiftInfo();
 
     SmartDashboard.putNumber("Shift Time Remaining", shiftInfo.remainingTime());
     SmartDashboard.putBoolean("Currently Active?", shiftInfo.active());
