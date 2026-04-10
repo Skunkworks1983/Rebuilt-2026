@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 0.515,
-        "y": 0.9
+        "y": 0.82
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.7306370759656172,
-        "y": 1.0264936815378483
+        "x": 0.7306370759656173,
+        "y": 0.9464936815378482
       },
       "isLocked": false,
       "linkedName": "HumanPlayerStation"
