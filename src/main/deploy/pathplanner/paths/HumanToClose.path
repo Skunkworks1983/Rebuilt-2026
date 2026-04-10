@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.515,
+        "x": 0.49,
         "y": 0.82
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.7306370759656173,
-        "y": 0.9464936815378482
+        "x": 0.9528599330935947,
+        "y": 1.0346281516677571
       },
       "isLocked": false,
       "linkedName": "HumanPlayerStation"
     },
     {
       "anchor": {
-        "x": 1.8790391459074738,
-        "y": 1.1569157769869503
+        "x": 1.5132265717674978,
+        "y": 1.092360616844602
       },
       "prevControl": {
-        "x": 1.651801387273893,
-        "y": 1.0526900553478726
+        "x": 1.2987087808407534,
+        "y": 0.963977917948257
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -132.35745470593545
+    "rotation": -129.40066066347956
   },
   "reversed": false,
   "folder": null,
