@@ -328,7 +328,6 @@ public class RobotContainer {
 
     shootAutoAim.whileTrue(driveAimedAutoShoot);
 
-    
     // Ramp Shooter Hub
     buttonJoystick.rightTrigger().whileTrue(new NoYawShootHub(shooter, drive));
     // Ramp Shooter Transfer
