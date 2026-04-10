@@ -376,6 +376,8 @@ public class RobotContainer {
         .onTrue(new CollectorUp(collector));
     new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorIntakeID)
         .whileTrue(new CollectorIntake(collector));
+
+    new JoystickButton(rightJoystick, 2).whileTrue(new CollectorIntake(collector));
   }
 
   /**
