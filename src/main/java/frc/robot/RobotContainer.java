@@ -42,6 +42,7 @@ import frc.robot.commands.collectorCommands.CollectorExpel;
 import frc.robot.commands.collectorCommands.CollectorIntake;
 import frc.robot.commands.collectorCommands.CollectorUp;
 import frc.robot.commands.collectorCommands.agitate;
+import frc.robot.commands.triggerCommands.ForceRunTrigger;
 import frc.robot.commands.triggerCommands.ReverseTriggerCommand;
 import frc.robot.commands.triggerCommands.RunTrigger;
 import frc.robot.commands.triggerCommands.RunTriggerNoLock;
@@ -361,6 +362,7 @@ public class RobotContainer {
         .whileTrue(
             new ParallelCommandGroup(
                 new ReverseTriggerCommand(hopper), new CollectorExpel(collector)));
+    buttonJoystick.x().whileTrue(new ForceRunTrigger(hopper, drive, driveAimedAutoShoot) );
   }
 
   /**
