@@ -135,7 +135,7 @@ public class Robot extends LoggedRobot {
     if (autonomousCommand != null) {
       CommandScheduler.getInstance().schedule(autonomousCommand);
     }
-    
+
     Elastic.selectTab("Teleop");
   }
 
