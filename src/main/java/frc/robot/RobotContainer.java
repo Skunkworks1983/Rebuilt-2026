@@ -251,7 +251,7 @@ public class RobotContainer {
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
-AutoPreview.initAutoPreview(autoChooser.getSendableChooser(), autoPreviewField);
+    AutoPreview.initAutoPreview(autoChooser.getSendableChooser(), autoPreviewField);
     SmartDashboard.putData(autoPreviewField);
     if (Constants.tuningMode) {
       // Set up SysId routines

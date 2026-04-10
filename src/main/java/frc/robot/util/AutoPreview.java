@@ -3,6 +3,8 @@ package frc.robot.util;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
+
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
@@ -33,9 +35,8 @@ public class AutoPreview {
     }
     if (auto != null) {
       FieldObject2d fieldObj = field.getObject("Auto Preview");
-      for (PathPlannerPath path : auto) {
-        fieldObj.setPoses(path.getPathPoses());
-      }
+      List<Pose2d> allPoses = auto.stream().flatMap(path -> path.getPathPoses().stream()).toList();
+      fieldObj.setPoses(allPoses);
     }
   }
 
