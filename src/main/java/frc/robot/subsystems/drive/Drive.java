@@ -137,7 +137,7 @@ public class Drive extends SubsystemBase implements VisionConsumer {
               WHEEL_COF,
               DCMotor.getKrakenX60Foc(1)
                   .withReduction(tunerConstants.getFrontLeft().DriveMotorGearRatio),
-             60,
+              60,
               1),
           getModuleTranslations());
   private final SwerveSetpointGenerator setpointGenerator =
