@@ -91,7 +91,6 @@ public class RobotContainer {
   // Controller
   private final Joystick leftJoystick;
   private final Joystick rightJoystick;
-  private final Joystick buttonJoystick;
 
   /**
    * Xbox Controller for simulation.
@@ -112,7 +111,6 @@ public class RobotContainer {
   public RobotContainer() {
     leftJoystick = new Joystick(Constants.OIConstants.LeftJoystick);
     rightJoystick = new Joystick(Constants.OIConstants.RightJoystick);
-    buttonJoystick = new Joystick(Constants.OIConstants.ButtonJoystick);
 
     switch (Constants.currentMode) {
       case REAL:
@@ -333,12 +331,8 @@ public class RobotContainer {
         new ShootPresetSetpoints(shooter, TargetType.TRANSFER);
 
     JoystickButton runTrigger = new JoystickButton(leftJoystick, 1);
-    JoystickButton runTriggerReverse =
-        new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID);
 
     runTrigger.whileTrue(new TriggerAutoUnjam(shooter::getBeamBreak, hopper));
-
-    runTriggerReverse.whileTrue(new ReverseIndexCommand(hopper));
 
     runTrigger.whileTrue(new TriggerAutoUnjam(shooter::getBeamBreak, hopper));
 
@@ -357,8 +351,9 @@ public class RobotContainer {
         .onTrue(new CollectorUp(collector));
     new JoystickButton(leftJoystick, Constants.OIConstants.CollectorIntakeID)
         .whileTrue(new CollectorIntake(collector));
-    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID)
-        .whileTrue(new CollectorExpel(collector));
+
+    new JoystickButton(leftJoystick, 2).onTrue(new CollectorIntake(collector));
+    new JoystickButton(rightJoystick, 2).onTrue(new CollectorUp(collector));
   }
 
   /**
