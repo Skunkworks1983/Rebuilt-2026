@@ -1,5 +1,6 @@
 package frc.robot.util;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
@@ -267,7 +268,8 @@ public class ShooterCalculations {
   public static ShooterControls getShooterControlsTransfer(
       ChassisSpeeds speeds, Pose2d odometryPose, LinearVelocity flywheelLinearVelocity) {
     boolean isLeft =
-        odometryPose.getTranslation().getY() > FieldConstants.FIELD_WIDTH_INCHES.in(Inches) / 2.0;
+        odometryPose.getTranslation().getY()
+            > FieldConstants.FIELD_WIDTH_INCHES.in(Meters) / 2.0;
 
     Translation2d target;
     Alliance alliance =
@@ -392,6 +394,11 @@ public class ShooterCalculations {
         calculatedProjectileVelocity / ShooterSolverConstants.flywheelEfficiency.get();
 
     finalYaw = finalYaw.minus(new Rotation2d(Math.PI));
+
+    MathUtil.clamp(
+        calculatedPitch.in(Degrees),
+        ShooterConstants.minShooterPitch.in(Degrees),
+        ShooterConstants.maxShooterPitch.in(Degrees));
 
     return new ShooterControls(
         RadiansPerSecond.of(
