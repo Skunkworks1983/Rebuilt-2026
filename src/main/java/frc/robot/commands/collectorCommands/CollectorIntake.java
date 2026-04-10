@@ -24,7 +24,7 @@ public class CollectorIntake extends Command {
   public void initialize() {
     Logger.recordOutput("Commands/Collector/CollectorIntake", true);
     collector.setCollectorPos(Radians.of(collector.getConstants().CollectorDownPos.get()), 0);
-    collector.setCollectorIntakeVelocity(collector.getConstants().CollectorIntakeSpeed);
+    collector.setCollectorIntakeDutyCycle(0.85);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
