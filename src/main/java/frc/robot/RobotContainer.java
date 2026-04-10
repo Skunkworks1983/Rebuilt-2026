@@ -31,6 +31,8 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveAimedAutoShoot;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.Shooter.AnotherAutoAimedShoot;
+import frc.robot.commands.Shooter.NoYawShootHub;
+import frc.robot.commands.Shooter.NoYawShootTransfer;
 import frc.robot.commands.Shooter.ShootPresetSetpoints;
 import frc.robot.commands.Shooter.ShootPresetSetpoints.TargetType;
 import frc.robot.commands.TestPathCommands;
@@ -330,31 +332,34 @@ public class RobotContainer {
         new ShootPresetSetpoints(shooter, TargetType.GOAL);
     ShootPresetSetpoints shootPresetSetpointsTransfer =
         new ShootPresetSetpoints(shooter, TargetType.TRANSFER);
-
-    JoystickButton runShooterDefault = new JoystickButton(buttonJoystick, 17);
-    runShooterDefault.whileTrue(shootPresetSetpointsGoal);
-
-    JoystickButton rampShooterTransfer = new JoystickButton(buttonJoystick, 13);
-    rampShooterTransfer.whileTrue(shootPresetSetpointsTransfer);
-
     JoystickButton dontAgitate =
         new JoystickButton(buttonJoystick, Constants.OIConstants.dontAgitate);
 
+    // Shoot Preset Goal
+    new JoystickButton(buttonJoystick, 15).whileTrue(shootPresetSetpointsGoal);
+    // Shoot Preset Transfer
+    new JoystickButton(buttonJoystick, 13).whileTrue(shootPresetSetpointsTransfer);
+    // Force Index
+    new JoystickButton(buttonJoystick, 24)
+        .whileTrue(
+            new ForceRunTrigger(hopper, drive, driveAimedAutoShoot)
+                .alongWith(new agitate(collector, dontAgitate::getAsBoolean)));
+    // Reverse All
+    new JoystickButton(buttonJoystick, Constants.OIConstants.ShooterReverseTriggerID)
+        .whileTrue(
+            new ParallelCommandGroup(
+                new ReverseTriggerCommand(hopper), new CollectorExpel(collector)));
+    // Ramp Shooter Hub
+    new JoystickButton(buttonJoystick, 18).whileTrue(new NoYawShootHub(shooter, drive));
+    // Ramp Shooter Transfer
+    new JoystickButton(buttonJoystick, 22).whileTrue(new NoYawShootTransfer(shooter, drive));
+
     JoystickButton runTriggerDriverStick =
         new JoystickButton(leftJoystick, Constants.OIConstants.joystickTrigger);
-    JoystickButton forceRunTrigger =
-        new JoystickButton(buttonJoystick, Constants.OIConstants.ShooterTriggerID);
-    forceRunTrigger.whileTrue(
-        new ForceRunTrigger(hopper, drive, driveAimedAutoShoot)
-            .alongWith(new agitate(collector, () -> dontAgitate.getAsBoolean())));
-    JoystickButton runTriggerReverse =
-        new JoystickButton(buttonJoystick, Constants.OIConstants.ShooterReverseTriggerID);
 
     runTriggerDriverStick.whileTrue(
         new RunTrigger(hopper, shooter, drive, driveAimedAutoShoot)
             .alongWith(new agitate(collector, () -> dontAgitate.getAsBoolean())));
-
-    runTriggerReverse.whileTrue(new ReverseTriggerCommand(hopper));
 
     // if the trigger button is hed and more than a second elapses before the beam
     // break is broken the
@@ -371,8 +376,6 @@ public class RobotContainer {
         .onTrue(new CollectorUp(collector));
     new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorIntakeID)
         .whileTrue(new CollectorIntake(collector));
-    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID)
-        .whileTrue(new CollectorExpel(collector));
   }
 
   /**

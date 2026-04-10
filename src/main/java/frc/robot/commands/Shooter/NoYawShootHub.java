@@ -24,6 +24,8 @@ public class NoYawShootHub extends Command {
   public NoYawShootHub(Shooter shooter, Drive drive) {
     this.shooter = shooter;
     this.drive = drive;
+
+    addRequirements(shooter);
   }
 
   @Override
