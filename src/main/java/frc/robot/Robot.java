@@ -111,7 +111,7 @@ public class Robot extends LoggedRobot {
 
     Elastic.sendNotification(
         new Notification(
-            NotificationLevel.INFO, "Restart Code", "Have you restarted the robot code?"));
+            NotificationLevel.INFO, "Restart Code", "Have you restarted the robot code?", 10000));
   }
 
   /** This function is called periodically when disabled. */
