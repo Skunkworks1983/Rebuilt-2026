@@ -123,7 +123,7 @@ public class HubShiftUtil {
     // Starting active
     if (shiftSchedule[1] == true) {
       double[] shiftedShiftStartTimes = {0.0, 10.0, 35.0, 60.0, 85.0, 110.0};
-      double[] shiftedShiftEndTimes = {10.0, 35.0, 6`0.0, 85.0, 110.0, 140.0};
+      double[] shiftedShiftEndTimes = {10.0, 35.0, 60.0, 85.0, 110.0, 140.0};
       return getShiftInfo(shiftSchedule, shiftedShiftStartTimes, shiftedShiftEndTimes);
     }
     double[] shiftedShiftStartTimes = {0.0, 10.0, 35.0, 60.0, 85.0, 110.0};
