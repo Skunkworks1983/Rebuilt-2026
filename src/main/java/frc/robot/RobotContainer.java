@@ -334,7 +334,7 @@ public class RobotContainer {
         new JoystickButton(leftJoystick, Constants.OIConstants.joystickTrigger);
     JoystickButton forceRunTrigger =
         new JoystickButton(buttonJoystick, Constants.OIConstants.ShooterTriggerID);
-    forceRunTrigger.whileTrue(new ForceRunTrigger(hopper, drive, driveAimedAutoShoot));
+    forceRunTrigger.whileTrue(new ForceRunTrigger(hopper, drive, driveAimedAutoShoot).alongWith(new agitate(collector, () -> dontAgitate.getAsBoolean())));
     JoystickButton runTriggerReverse =
         new JoystickButton(buttonJoystick, Constants.OIConstants.ShooterReverseTriggerID);
 

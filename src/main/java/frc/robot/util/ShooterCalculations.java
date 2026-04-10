@@ -1,7 +1,6 @@
 package frc.robot.util;
 
 import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Radians;
@@ -268,8 +267,7 @@ public class ShooterCalculations {
   public static ShooterControls getShooterControlsTransfer(
       ChassisSpeeds speeds, Pose2d odometryPose, LinearVelocity flywheelLinearVelocity) {
     boolean isLeft =
-        odometryPose.getTranslation().getY()
-            > FieldConstants.FIELD_WIDTH_INCHES.in(Meters) / 2.0;
+        odometryPose.getTranslation().getY() > FieldConstants.FIELD_WIDTH_INCHES.in(Meters) / 2.0;
 
     Translation2d target;
     Alliance alliance =
