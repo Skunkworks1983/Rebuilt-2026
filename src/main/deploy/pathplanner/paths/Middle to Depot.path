@@ -1,0 +1,127 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.568232502965599,
+        "y": 4.0
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.997783483800061,
+        "y": 4.287608926036199
+      },
+      "isLocked": false,
+      "linkedName": "Middle 90 Start"
+    },
+    {
+      "anchor": {
+        "x": 1.3303202846975095,
+        "y": 4.83655990510083
+      },
+      "prevControl": {
+        "x": 1.9545110782360622,
+        "y": 4.73968917206738
+      },
+      "nextControl": {
+        "x": 1.0832776209662969,
+        "y": 4.8748994707815605
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 0.55,
+        "y": 5.277686832740213
+      },
+      "prevControl": {
+        "x": 0.7214481179154224,
+        "y": 4.9677754901426825
+      },
+      "nextControl": {
+        "x": 0.35372244943213776,
+        "y": 5.632480107567811
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 0.57,
+        "y": 6.21373665480427
+      },
+      "prevControl": {
+        "x": 0.5241265521194627,
+        "y": 5.967981437607256
+      },
+      "nextControl": {
+        "x": 0.6158734478805372,
+        "y": 6.459491872001284
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.1689323843416375,
+        "y": 6.977639383155397
+      },
+      "prevControl": {
+        "x": 0.7350488028637094,
+        "y": 6.941246840084154
+      },
+      "nextControl": {
+        "x": 1.756343259588279,
+        "y": 7.026909225321612
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.90055753262159,
+        "y": 5.966275207591934
+      },
+      "prevControl": {
+        "x": 1.8463774623275462,
+        "y": 6.210333643182537
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Middle Depot Shoot"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.65,
+      "rotationDegrees": 90.0
+    },
+    {
+      "waypointRelativePos": 2.9,
+      "rotationDegrees": 90.0
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 2.5,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 139.53777250790665
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 90.0
+  },
+  "useDefaultConstraints": true
+}

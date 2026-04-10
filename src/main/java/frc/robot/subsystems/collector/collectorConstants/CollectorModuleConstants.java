@@ -119,7 +119,7 @@ public class CollectorModuleConstants {
     intakekA = 0;
     intakekS = 0;
     intakeInvertedValue = InvertedValue.CounterClockwise_Positive;
-    intakeSupplyCurrent = 60;
+    intakeSupplyCurrent = 80;
     turnStatorCurrent = 80;
 
     // Motion Magic constraints
