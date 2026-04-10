@@ -100,7 +100,7 @@ public class AnotherAutoAimedShoot extends Command {
       if (readyToFeed) {
         feedEnabled = true;
         Logger.recordOutput("Auto Shoot/Feed Enabled", true);
-
+        drive.stopWithX();
         CommandScheduler.getInstance().schedule(feedCommand);
       }
     }

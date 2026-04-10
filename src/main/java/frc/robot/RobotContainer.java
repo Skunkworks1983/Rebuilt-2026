@@ -362,7 +362,7 @@ public class RobotContainer {
         .whileTrue(
             new ParallelCommandGroup(
                 new ReverseTriggerCommand(hopper), new CollectorExpel(collector)));
-    buttonJoystick.x().whileTrue(new ForceRunTrigger(hopper, drive, driveAimedAutoShoot) );
+    buttonJoystick.x().whileTrue(new ForceRunTrigger(hopper, drive, driveAimedAutoShoot));
   }
 
   /**
