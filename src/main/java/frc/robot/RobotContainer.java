@@ -323,14 +323,7 @@ public class RobotContainer {
         new DriveAimedAutoShoot(
             drive, shooter, () -> -leftJoystick.getY(), () -> -leftJoystick.getX()));
 
-    ShootPresetSetpoints shootPresetSetpointsGoal =
-        new ShootPresetSetpoints(shooter, TargetType.GOAL);
-    ShootPresetSetpoints shootPresetSetpointsTransfer =
-        new ShootPresetSetpoints(shooter, TargetType.TRANSFER);
-
     JoystickButton runTrigger = new JoystickButton(leftJoystick, 1);
-
-    runTrigger.whileTrue(new TriggerAutoUnjam(shooter::getBeamBreak, hopper));
 
     runTrigger.whileTrue(new TriggerAutoUnjam(shooter::getBeamBreak, hopper));
 
@@ -343,15 +336,9 @@ public class RobotContainer {
     TestPathCommands.publishTestPaths(drive);
 
     shooter.setDefaultCommand(Commands.run(shooter::stop, shooter));
-    new JoystickButton(rightJoystick, Constants.OIConstants.CollectorManualPivotDown)
-        .onTrue(new CollectorDown(collector));
-    new JoystickButton(rightJoystick, Constants.OIConstants.CollectorManualPivotUp)
-        .onTrue(new CollectorUp(collector));
-    new JoystickButton(leftJoystick, Constants.OIConstants.CollectorIntakeID)
-        .whileTrue(new CollectorIntake(collector));
 
-    new JoystickButton(leftJoystick, 2).onTrue(new CollectorIntake(collector));
-    new JoystickButton(rightJoystick, 2).onTrue(new CollectorUp(collector));
+    new JoystickButton(leftJoystick, 2).whileTrue(new CollectorIntake(collector));
+    new JoystickButton(rightJoystick, 2).whileTrue(new CollectorUp(collector));
   }
 
   /**
