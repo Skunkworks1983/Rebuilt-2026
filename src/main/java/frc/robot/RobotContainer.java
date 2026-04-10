@@ -17,6 +17,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -72,6 +74,7 @@ import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
+import frc.robot.util.AutoPreview;
 import frc.robot.util.sim.SimProjectile;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
@@ -96,6 +99,8 @@ public class RobotContainer {
   private final Joystick leftJoystick;
   private final Joystick rightJoystick;
   private final Joystick buttonJoystick;
+
+  private Field2d autoPreviewField = new Field2d();
 
   /**
    * Xbox Controller for simulation.
@@ -246,7 +251,8 @@ public class RobotContainer {
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
-
+AutoPreview.initAutoPreview(autoChooser.getSendableChooser(), autoPreviewField);
+    SmartDashboard.putData(autoPreviewField);
     if (Constants.tuningMode) {
       // Set up SysId routines
       autoChooserAddOption(
