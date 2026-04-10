@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -41,7 +42,6 @@ import frc.robot.commands.collectorCommands.CollectorExpel;
 import frc.robot.commands.collectorCommands.CollectorIntake;
 import frc.robot.commands.collectorCommands.CollectorUp;
 import frc.robot.commands.collectorCommands.agitate;
-import frc.robot.commands.triggerCommands.ForceRunTrigger;
 import frc.robot.commands.triggerCommands.ReverseTriggerCommand;
 import frc.robot.commands.triggerCommands.RunTrigger;
 import frc.robot.commands.triggerCommands.RunTriggerNoLock;
@@ -101,7 +101,7 @@ public class RobotContainer {
   // Controller
   private final Joystick leftJoystick;
   private final Joystick rightJoystick;
-  private final Joystick buttonJoystick;
+  private final CommandXboxController buttonJoystick;
 
   private Field2d autoPreviewField = new Field2d();
 
@@ -124,7 +124,7 @@ public class RobotContainer {
   public RobotContainer() {
     leftJoystick = new Joystick(Constants.OIConstants.LeftJoystick);
     rightJoystick = new Joystick(Constants.OIConstants.RightJoystick);
-    buttonJoystick = new Joystick(Constants.OIConstants.ButtonJoystick);
+    buttonJoystick = new CommandXboxController(Constants.OIConstants.ButtonJoystick);
 
     switch (Constants.currentMode) {
       case REAL:
@@ -328,38 +328,23 @@ public class RobotContainer {
 
     shootAutoAim.whileTrue(driveAimedAutoShoot);
 
-    ShootPresetSetpoints shootPresetSetpointsGoal =
-        new ShootPresetSetpoints(shooter, TargetType.GOAL);
-    ShootPresetSetpoints shootPresetSetpointsTransfer =
-        new ShootPresetSetpoints(shooter, TargetType.TRANSFER);
-    JoystickButton dontAgitate =
-        new JoystickButton(buttonJoystick, Constants.OIConstants.dontAgitate);
-
-    // Shoot Preset Goal
-    new JoystickButton(buttonJoystick, 15).whileTrue(shootPresetSetpointsGoal);
-    // Shoot Preset Transfer
-    new JoystickButton(buttonJoystick, 13).whileTrue(shootPresetSetpointsTransfer);
-    // Force Index
-    new JoystickButton(buttonJoystick, 24)
-        .whileTrue(
-            new ForceRunTrigger(hopper, drive, driveAimedAutoShoot)
-                .alongWith(new agitate(collector, dontAgitate::getAsBoolean)));
     // Reverse All
-    new JoystickButton(buttonJoystick, Constants.OIConstants.ShooterReverseTriggerID)
+    buttonJoystick
+        .y()
         .whileTrue(
             new ParallelCommandGroup(
                 new ReverseTriggerCommand(hopper), new CollectorExpel(collector)));
     // Ramp Shooter Hub
-    new JoystickButton(buttonJoystick, 18).whileTrue(new NoYawShootHub(shooter, drive));
+    buttonJoystick.rightTrigger().whileTrue(new NoYawShootHub(shooter, drive));
     // Ramp Shooter Transfer
-    new JoystickButton(buttonJoystick, 22).whileTrue(new NoYawShootTransfer(shooter, drive));
+    buttonJoystick.leftTrigger().whileTrue(new NoYawShootTransfer(shooter, drive));
 
     JoystickButton runTriggerDriverStick =
         new JoystickButton(leftJoystick, Constants.OIConstants.joystickTrigger);
 
     runTriggerDriverStick.whileTrue(
         new RunTrigger(hopper, shooter, drive, driveAimedAutoShoot)
-            .alongWith(new agitate(collector, () -> dontAgitate.getAsBoolean())));
+            .alongWith(new agitate(collector, () -> false)));
 
     // if the trigger button is hed and more than a second elapses before the beam
     // break is broken the
@@ -370,12 +355,8 @@ public class RobotContainer {
     TestPathCommands.publishTestPaths(drive);
 
     shooter.setDefaultCommand(Commands.run(shooter::stop, shooter));
-    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorPivotDown)
-        .onTrue(new CollectorDown(collector));
-    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorPivotUp)
-        .onTrue(new CollectorUp(collector));
-    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorIntakeID)
-        .whileTrue(new CollectorIntake(collector));
+    buttonJoystick.a().onTrue(new CollectorUp(collector));
+    buttonJoystick.x().whileTrue(new CollectorIntake(collector));
   }
 
   /**
