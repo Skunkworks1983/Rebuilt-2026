@@ -191,7 +191,7 @@ public class RobotContainer {
                     Constants.tunerConstants.getBackLeft(), simulation.getModules()[2]),
                 new ModuleIOTalonFXSim(
                     Constants.tunerConstants.getBackRight(), simulation.getModules()[3]),
-                    odometryField,
+                odometryField,
                 simulation::setSimulationWorldPose);
 
         shooter = new Shooter(new FlywheelIOSim(), new PivotIOSim(), new BeamBreakIO() {});
