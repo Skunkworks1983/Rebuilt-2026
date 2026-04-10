@@ -193,6 +193,7 @@ public class Drive extends SubsystemBase implements VisionConsumer {
       ModuleIO frModuleIO,
       ModuleIO blModuleIO,
       ModuleIO brModuleIO,
+      Field2d field,
       Consumer<Pose2d> resetSimulationPoseCallBack) {
     this.gyroIO = gyroIO;
     this.resetSimulationPoseCallBack = resetSimulationPoseCallBack;
@@ -463,7 +464,9 @@ public class Drive extends SubsystemBase implements VisionConsumer {
   /** Returns the current odometry pose. */
   @AutoLogOutput(key = "Odometry/Robot")
   public Pose2d getPose() {
-    return poseEstimator.getEstimatedPosition();
+    Pose2d pose = poseEstimator.getEstimatedPosition();
+    field.setRobotPose(pose);
+    return pose;
   }
 
   /** Returns the current odometry rotation. */
