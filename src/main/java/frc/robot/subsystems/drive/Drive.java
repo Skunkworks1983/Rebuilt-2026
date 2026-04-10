@@ -40,6 +40,8 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -193,7 +195,6 @@ public class Drive extends SubsystemBase implements VisionConsumer {
       ModuleIO frModuleIO,
       ModuleIO blModuleIO,
       ModuleIO brModuleIO,
-      Field2d field,
       Consumer<Pose2d> resetSimulationPoseCallBack) {
     this.gyroIO = gyroIO;
     this.resetSimulationPoseCallBack = resetSimulationPoseCallBack;
@@ -352,6 +353,26 @@ public class Drive extends SubsystemBase implements VisionConsumer {
       field.setRobotPose(poseEstimator.getEstimatedPosition());
       SmartDashboard.putData("Cur Pose", field);
     }
+    SmartDashboard.putData("Swerve Drive", new Sendable() {
+  @Override
+  public void initSendable(SendableBuilder builder) {
+    builder.setSmartDashboardType("SwerveDrive");
+
+    builder.addDoubleProperty("Front Left Angle", () -> modules[0].getAngle().getRadians(), null);
+    builder.addDoubleProperty("Front Left Velocity", () -> modules[0].getVelocityMetersPerSec(), null);
+
+    builder.addDoubleProperty("Front Right Angle", () -> modules[1].getAngle().getRadians(), null);
+    builder.addDoubleProperty("Front Right Velocity", () -> modules[1].getVelocityMetersPerSec(), null);
+
+    builder.addDoubleProperty("Back Left Angle", () -> modules[2].getAngle().getRadians(), null);
+    builder.addDoubleProperty("Back Left Velocity", () -> modules[2].getVelocityMetersPerSec(), null);
+
+    builder.addDoubleProperty("Back Right Angle", () -> modules[3].getAngle().getRadians(), null);
+    builder.addDoubleProperty("Back Right Velocity", () -> modules[3].getVelocityMetersPerSec(), null);
+
+    builder.addDoubleProperty("Robot Angle", () -> getRotation().getRadians(), null);
+  }
+});
 
     // Update gyro alert
     gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);

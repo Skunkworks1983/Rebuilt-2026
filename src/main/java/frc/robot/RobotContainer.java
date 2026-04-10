@@ -101,7 +101,6 @@ public class RobotContainer {
   private final Joystick buttonJoystick;
 
   private Field2d autoPreviewField = new Field2d();
-  private Field2d odometryField = new Field2d();
 
   /**
    * Xbox Controller for simulation.
@@ -136,7 +135,6 @@ public class RobotContainer {
                 new ModuleIOTalonFX(Constants.tunerConstants.getFrontRight()),
                 new ModuleIOTalonFX(Constants.tunerConstants.getBackLeft()),
                 new ModuleIOTalonFX(Constants.tunerConstants.getBackRight()),
-                odometryField,
                 (pose) -> {});
 
         shooter =
@@ -191,7 +189,6 @@ public class RobotContainer {
                     Constants.tunerConstants.getBackLeft(), simulation.getModules()[2]),
                 new ModuleIOTalonFXSim(
                     Constants.tunerConstants.getBackRight(), simulation.getModules()[3]),
-                odometryField,
                 simulation::setSimulationWorldPose);
 
         shooter = new Shooter(new FlywheelIOSim(), new PivotIOSim(), new BeamBreakIO() {});
@@ -223,7 +220,6 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {},
-                odometryField,
                 (pose) -> {});
         shooter = new Shooter(new FlywheelIO() {}, new PivotIO() {}, new BeamBreakIO() {});
 
