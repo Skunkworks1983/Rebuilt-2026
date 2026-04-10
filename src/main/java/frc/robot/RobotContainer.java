@@ -334,6 +334,9 @@ public class RobotContainer {
     JoystickButton runShooterDefault = new JoystickButton(buttonJoystick, 17);
     runShooterDefault.whileTrue(shootPresetSetpointsGoal);
 
+    JoystickButton rampShooterTransfer = new JoystickButton(buttonJoystick, 13);
+    rampShooterTransfer.onTrue(shootPresetSetpointsTransfer);
+
     JoystickButton dontAgitate =
         new JoystickButton(buttonJoystick, Constants.OIConstants.dontAgitate);
 
