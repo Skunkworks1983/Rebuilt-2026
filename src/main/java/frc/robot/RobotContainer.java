@@ -328,16 +328,14 @@ public class RobotContainer {
 
     shootAutoAim.whileTrue(driveAimedAutoShoot);
 
-    // Reverse All
-    buttonJoystick
-        .y()
-        .whileTrue(
-            new ParallelCommandGroup(
-                new ReverseTriggerCommand(hopper), new CollectorExpel(collector)));
+    
     // Ramp Shooter Hub
     buttonJoystick.rightTrigger().whileTrue(new NoYawShootHub(shooter, drive));
     // Ramp Shooter Transfer
     buttonJoystick.leftTrigger().whileTrue(new NoYawShootTransfer(shooter, drive));
+
+    buttonJoystick.leftBumper().whileTrue(new ShootPresetSetpoints(shooter, TargetType.TRANSFER));
+    buttonJoystick.rightBumper().whileTrue(new ShootPresetSetpoints(shooter, TargetType.GOAL));
 
     JoystickButton runTriggerDriverStick =
         new JoystickButton(leftJoystick, Constants.OIConstants.joystickTrigger);
@@ -355,8 +353,15 @@ public class RobotContainer {
     TestPathCommands.publishTestPaths(drive);
 
     shooter.setDefaultCommand(Commands.run(shooter::stop, shooter));
-    buttonJoystick.a().onTrue(new CollectorUp(collector));
-    buttonJoystick.x().whileTrue(new CollectorIntake(collector));
+    buttonJoystick.y().onTrue(new CollectorUp(collector));
+    buttonJoystick.a().whileTrue(new CollectorIntake(collector));
+
+    // Reverse All
+    buttonJoystick
+        .b()
+        .whileTrue(
+            new ParallelCommandGroup(
+                new ReverseTriggerCommand(hopper), new CollectorExpel(collector)));
   }
 
   /**
