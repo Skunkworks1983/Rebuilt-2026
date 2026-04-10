@@ -112,7 +112,7 @@ public class CollectorModuleConstants {
     turnkI = 0;
 
     // Real intake upper PID
-    intakekP = 0;
+    intakekP = 5;
     intakekD = 0.0;
     intakekI = 0.0;
     intakekV = (5.0 / 80.0) * 3.5;
