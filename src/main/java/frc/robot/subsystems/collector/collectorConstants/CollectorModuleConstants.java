@@ -107,7 +107,7 @@ public class CollectorModuleConstants {
     turnSupplyCurrent = 80;
 
     // Real Turn PID
-    turnkP = 40;
+    turnkP = 39;
     turnkD = 0;
     turnkI = 0;
 
@@ -123,8 +123,8 @@ public class CollectorModuleConstants {
     turnStatorCurrent = 80;
 
     // Motion Magic constraints
-    motionMagicCruiseVelocity = RotationsPerSecond.of(0.85);
-    motionMagicAcceleration = RotationsPerSecondPerSecond.of(2);
+    motionMagicCruiseVelocity = RotationsPerSecond.of(1.3);
+    motionMagicAcceleration = RotationsPerSecondPerSecond.of(2.4);
 
     // Position
     CollectorUpPos = Rotations.of(0);
