@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.7822064056939508,
-        "y": 5.353001186239621
+        "x": 2.03143730137251,
+        "y": 5.367223299019928
       },
       "isLocked": false,
       "linkedName": "Middle Depot Shoot"
     },
     {
       "anchor": {
-        "x": 3.137864768683275,
-        "y": 5.4
+        "x": 3.138,
+        "y": 2.75
       },
       "prevControl": {
-        "x": 2.85124201074614,
-        "y": 5.4
+        "x": 2.8880157309278083,
+        "y": 2.7528044993211
       },
       "nextControl": {
-        "x": 6.012771225812648,
-        "y": 5.4
+        "x": 6.100568438645324,
+        "y": 2.7167638239568896
       },
       "isLocked": false,
       "linkedName": null
@@ -33,15 +33,15 @@
     {
       "anchor": {
         "x": 5.25,
-        "y": 5.4
+        "y": 2.75
       },
       "prevControl": {
-        "x": 4.683774315501813,
-        "y": 5.4
+        "x": 4.775150100551431,
+        "y": 2.7540690635483127
       },
       "nextControl": {
-        "x": 5.624732142122071,
-        "y": 5.4
+        "x": 5.49999082169807,
+        "y": 2.7478577892905407
       },
       "isLocked": false,
       "linkedName": null
@@ -49,15 +49,15 @@
     {
       "anchor": {
         "x": 6.1,
-        "y": 5.4
+        "y": 2.75
       },
       "prevControl": {
-        "x": 4.9884586873978805,
-        "y": 5.4
+        "x": 4.946540669147102,
+        "y": 2.7503179972633003
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Middle Bump Neutral"
+      "linkedName": "Close Bump Launch End"
     }
   ],
   "rotationTargets": [

@@ -55,7 +55,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Depot Shoot to Launch"
+                  "pathName": "Shoot to Left Bump Launch"
                 }
               },
               {
@@ -74,7 +74,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Middle Collector to Neutral"
+                  "pathName": "Close Bump Collet"
                 }
               },
               {
