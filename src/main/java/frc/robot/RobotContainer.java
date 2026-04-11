@@ -457,4 +457,8 @@ public class RobotContainer {
 
     Elastic.selectTab("Teleop");
   }
+
+  public void disabledPeriodic() {
+    autoPreviewField.setRobotPose(drive.getPose());
+  }
 }

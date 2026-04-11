@@ -122,6 +122,8 @@ public class Robot extends LoggedRobot {
     if (Constants.currentMode == Mode.SIM) {
       robotContainer.resetSimRobotPose();
     }
+
+    robotContainer.disabledPeriodic();
   }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
