@@ -1,5 +1,8 @@
 package frc.robot.commands;
 
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -19,10 +22,6 @@ import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.util.LoggedTunableNumber;
 import frc.robot.util.ShooterCalculations;
 import frc.robot.util.ShooterCalculations.ShooterControls;
-
-import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
-
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
@@ -52,9 +51,13 @@ public class DriveAimedShoot extends Command {
   private boolean feeding = false;
 
   private final LoggedTunableNumber transferFarVelocity =
-      new LoggedTunableNumber("Drive Aimed Shoot/Transfer Far Velocity RPS", ShooterConstants.defaultVelocityTransfer.in(RotationsPerSecond));
+      new LoggedTunableNumber(
+          "Drive Aimed Shoot/Transfer Far Velocity RPS",
+          ShooterConstants.defaultVelocityTransfer.in(RotationsPerSecond));
   private final LoggedTunableNumber transferFarPitch =
-      new LoggedTunableNumber("Drive Aimed Shoot/Transfer Far Pitch Degrees", ShooterConstants.defaultPitchTransfer.in(Degrees));
+      new LoggedTunableNumber(
+          "Drive Aimed Shoot/Transfer Far Pitch Degrees",
+          ShooterConstants.defaultPitchTransfer.in(Degrees));
 
   public DriveAimedShoot(
       Drive drive,

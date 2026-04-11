@@ -60,7 +60,7 @@ public class ShooterConstants {
   public static final MotorAlignmentValue flywheelMotorAlignment = MotorAlignmentValue.Opposed;
 
   // PID for flywheel
-  public static final double flywheelKP = 12;
+  public static final double flywheelKP = 12.2;
   public static final double flywheelKD = 0.0;
 
   // Feed forwards for the flywheel
