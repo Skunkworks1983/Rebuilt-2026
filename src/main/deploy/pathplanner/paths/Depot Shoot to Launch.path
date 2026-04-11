@@ -1,0 +1,95 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.6530960854092531,
+        "y": 6.3858837485172
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.7822064056939508,
+        "y": 5.353001186239621
+      },
+      "isLocked": false,
+      "linkedName": "Middle Depot Shoot"
+    },
+    {
+      "anchor": {
+        "x": 3.137864768683275,
+        "y": 5.4
+      },
+      "prevControl": {
+        "x": 2.85124201074614,
+        "y": 5.4
+      },
+      "nextControl": {
+        "x": 6.012771225812648,
+        "y": 5.4
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.25,
+        "y": 5.4
+      },
+      "prevControl": {
+        "x": 4.683774315501813,
+        "y": 5.4
+      },
+      "nextControl": {
+        "x": 5.624732142122071,
+        "y": 5.4
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.1,
+        "y": 5.4
+      },
+      "prevControl": {
+        "x": 4.9884586873978805,
+        "y": 5.4
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Middle Bump Neutral"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.1200527704485521,
+      "rotationDegrees": 45.0
+    },
+    {
+      "waypointRelativePos": 2.147757255936674,
+      "rotationDegrees": 45.0
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 2.5,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 45.0
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 139.53777250790665
+  },
+  "useDefaultConstraints": true
+}

@@ -32,6 +32,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveAimedAutoShoot;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.Shooter.AnotherAutoAimedShoot;
+import frc.robot.commands.Shooter.AutoAimedShootNeutral;
 import frc.robot.commands.Shooter.NoYawShootHub;
 import frc.robot.commands.Shooter.NoYawShootTransfer;
 import frc.robot.commands.Shooter.ShootPresetSetpoints;
@@ -79,6 +80,7 @@ import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import frc.robot.util.AutoPreview;
 import frc.robot.util.Elastic;
+import frc.robot.util.NetworkTablesWait;
 import frc.robot.util.sim.SimProjectile;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
@@ -241,9 +243,16 @@ public class RobotContainer {
         new ParallelCommandGroup(
             new AnotherAutoAimedShoot(drive, shooter, new RunTriggerNoLock(hopper, shooter)),
             new SequentialCommandGroup(new WaitCommand(2), new agitate(collector, () -> false))));
+    NamedCommands.registerCommand(
+        "Auto Aimed Shoot Neutral",
+        new ParallelCommandGroup(
+            new AutoAimedShootNeutral(drive, shooter, new RunTriggerNoLock(hopper, shooter)),
+            new SequentialCommandGroup(new WaitCommand(2), new agitate(collector, () -> false))));
 
     NamedCommands.registerCommand(
         "Ramp Shooter", new ShootPresetSetpoints(shooter, TargetType.GOAL));
+
+    NamedCommands.registerCommand("Network Wait", new NetworkTablesWait("Bump Launch"));
     // NamedCommands.registerCommand(
     //     "Intake Shooter/ Trigger", new RunTrigger(hopper));
     // NamedCommands.registerCommand(

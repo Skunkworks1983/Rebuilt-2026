@@ -5,9 +5,110 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "deadline",
           "data": {
-            "pathName": "Launch"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Middle to Depot"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Lower Collector"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Run Collector"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Another Auto Aimed Shoot"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 5.0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Depot Shoot to Launch"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Raise Collector"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Middle Collector to Neutral"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Run Collector"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Lower Collector"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Auto Aimed Shoot Neutral"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 5.0
+                }
+              }
+            ]
           }
         }
       ]
