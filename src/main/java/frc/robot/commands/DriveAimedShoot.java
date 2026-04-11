@@ -7,20 +7,26 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.Shooter.ShooterSetpoints;
+import frc.robot.subsystems.shooter.ShooterConstants;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.util.ShooterCalculations;
 import frc.robot.util.ShooterCalculations.ShooterControls;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
 public class DriveAimedShoot extends Command {
   public enum TargetType {
     GOAL,
-    TRANSFER
+    TRANSFER_NEUTRAL,
+    TRANSFER_FAR
   }
 
   private final Drive drive;
@@ -34,7 +40,11 @@ public class DriveAimedShoot extends Command {
   private final String logKey;
   private final String autoShootRequirementsLogKey;
 
+  private final BooleanSupplier indexPermitted;
+  private final Command feedCommand;
+
   private boolean controlsLocked = false;
+  private boolean feeding = false;
 
   public DriveAimedShoot(
       Drive drive,
@@ -42,13 +52,17 @@ public class DriveAimedShoot extends Command {
       Vision vision,
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
-      TargetType targetType) {
+      TargetType targetType,
+      BooleanSupplier indexPermitted,
+      Command feedCommand) {
     this.drive = drive;
     this.shooter = shooter;
     this.vision = vision;
     this.xSupplier = xSupplier;
     this.ySupplier = ySupplier;
     this.targetType = targetType;
+    this.indexPermitted = indexPermitted;
+    this.feedCommand = feedCommand;
 
     yawController =
         new ProfiledPIDController(
@@ -87,6 +101,7 @@ public class DriveAimedShoot extends Command {
     Logger.recordOutput(autoShootRequirementsLogKey + "/ReadyToShoot", false);
 
     controlsLocked = false;
+    feeding = false;
   }
 
   @Override
@@ -99,8 +114,14 @@ public class DriveAimedShoot extends Command {
           switch (targetType) {
             case GOAL -> ShooterCalculations.getApexConstrainedShooterControls(
                 currentPose, currentSpeeds);
-            case TRANSFER -> ShooterCalculations.getShooterControlsTransfer(
+            case TRANSFER_NEUTRAL -> ShooterCalculations.getShooterControlsTransfer(
                 currentSpeeds, currentPose, shooter.getShooterForwardLinearVelocity());
+            case TRANSFER_FAR -> new ShooterControls(
+                ShooterConstants.defaultVelocityTransfer,
+                ShooterConstants.defaultVelocityTransfer,
+                ShooterConstants.defaultPitchTransfer,
+                Rotation2d.fromDegrees(180),
+                true);
           };
 
       shooter.setShooterSetpoints(
@@ -128,6 +149,24 @@ public class DriveAimedShoot extends Command {
       drive.runVelocity(
           ChassisSpeeds.fromFieldRelativeSpeeds(
               targetSpeeds, drive.getRotation().plus(fieldCentricOffset)));
+
+      if (shooter.canShoot() && indexPermitted.getAsBoolean() && !feeding) {
+        if (targetType == TargetType.GOAL) {
+          drive.stopWithX();
+          controlsLocked = true;
+        }
+        feeding = true;
+        CommandScheduler.getInstance().schedule(feedCommand);
+
+        new Trigger(indexPermitted)
+            .onFalse(
+                new InstantCommand(
+                    () -> {
+                      CommandScheduler.getInstance().cancel(feedCommand);
+                      controlsLocked = false;
+                      feeding = false;
+                    }));
+      }
     }
 
     Logger.recordOutput(
@@ -143,6 +182,10 @@ public class DriveAimedShoot extends Command {
     Logger.recordOutput(autoShootRequirementsLogKey + "/ReadyToShoot", false);
     Logger.recordOutput(autoShootRequirementsLogKey + "/TriggerCommandScheduled", false);
     Logger.recordOutput(logKey, false);
+    CommandScheduler.getInstance().cancel(feedCommand);
+
+    controlsLocked = false;
+    feeding = false;
 
     vision.setBaselineStdDevs(
         VisionConstants.teleopLinearStdDevBaseline, VisionConstants.teleopAngularStdDevBaseline);

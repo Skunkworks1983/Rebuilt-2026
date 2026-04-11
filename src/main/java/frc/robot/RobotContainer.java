@@ -323,12 +323,6 @@ public class RobotContainer {
 
     shootAutoAim = new JoystickButton(rightJoystick, Constants.OIConstants.joystickAutoAim);
 
-    DriveAimedAutoShoot driveAimedAutoShoot =
-        new DriveAimedAutoShoot(
-            drive, shooter, vision, () -> -leftJoystick.getY(), () -> -leftJoystick.getX());
-
-    shootAutoAim.whileTrue(driveAimedAutoShoot);
-
     // Ramp Shooter Hub
     buttonJoystick.rightTrigger().whileTrue(new NoYawShootHub(shooter, drive));
     // Ramp Shooter Transfer
@@ -340,9 +334,16 @@ public class RobotContainer {
     JoystickButton runTriggerDriverStick =
         new JoystickButton(leftJoystick, Constants.OIConstants.joystickTrigger);
 
-    runTriggerDriverStick.whileTrue(
-        new RunTrigger(hopper, shooter, drive, driveAimedAutoShoot)
-            .alongWith(new agitate(collector, () -> false)));
+    DriveAimedAutoShoot driveAimedAutoShoot =
+        new DriveAimedAutoShoot(
+            drive,
+            shooter,
+            vision,
+            () -> -leftJoystick.getY(),
+            () -> -leftJoystick.getX(),
+            runTriggerDriverStick::getAsBoolean,
+            new RunTrigger(hopper, shooter, drive).alongWith(new agitate(collector, () -> false)));
+    shootAutoAim.whileTrue(driveAimedAutoShoot);
 
     // if the trigger button is hed and more than a second elapses before the beam
     // break is broken the

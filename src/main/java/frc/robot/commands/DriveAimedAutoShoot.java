@@ -10,7 +10,7 @@ import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.util.FieldConstants;
-import frc.robot.util.FieldConstants.AllianceZone;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
@@ -19,45 +19,82 @@ public class DriveAimedAutoShoot extends Command {
 
   private final Drive drive;
   private final Shooter shooter;
-  private final Vision vision;
   private final DriveAimedShoot goalCommand;
-  private final DriveAimedShoot transferCommand;
+  private final DriveAimedShoot transferNeutralCommand;
+
+  private final DriveAimedShoot transferFarCommand;
 
   private DriveAimedShoot activeCommand;
-  private boolean wasInAllianceZone;
+
+  private enum ZoneType {
+    ALLIANCE,
+    NEUTRAL,
+    FAR
+  }
+
+  private ZoneType lastZone;
 
   public DriveAimedAutoShoot(
       Drive drive,
       Shooter shooter,
       Vision vision,
       DoubleSupplier xSupplier,
-      DoubleSupplier ySupplier) {
+      DoubleSupplier ySupplier,
+      BooleanSupplier indexPermitted,
+      Command feedCommand) {
     this.drive = drive;
     this.shooter = shooter;
-    this.vision = vision;
     goalCommand =
-        new DriveAimedShoot(drive, shooter, vision, xSupplier, ySupplier, TargetType.GOAL);
-    transferCommand =
-        new DriveAimedShoot(drive, shooter, vision, xSupplier, ySupplier, TargetType.TRANSFER);
+        new DriveAimedShoot(
+            drive,
+            shooter,
+            vision,
+            xSupplier,
+            ySupplier,
+            TargetType.GOAL,
+            indexPermitted,
+            feedCommand);
+    transferNeutralCommand =
+        new DriveAimedShoot(
+            drive,
+            shooter,
+            vision,
+            xSupplier,
+            ySupplier,
+            TargetType.TRANSFER_NEUTRAL,
+            indexPermitted,
+            feedCommand);
+
+    transferFarCommand =
+        new DriveAimedShoot(
+            drive,
+            shooter,
+            vision,
+            xSupplier,
+            ySupplier,
+            TargetType.TRANSFER_FAR,
+            indexPermitted,
+            feedCommand);
   }
 
   @Override
   public void initialize() {
-    boolean inAllianceZone = isInAllianceZone();
-    wasInAllianceZone = inAllianceZone;
+    ZoneType zone = getCurrentZone();
+    lastZone = zone;
     Logger.recordOutput(logKey, true);
-    Logger.recordOutput(logKey + "/InAllianceZone", inAllianceZone);
-    switchTo(inAllianceZone ? goalCommand : transferCommand);
+    Logger.recordOutput(logKey + "/Zone", zone.name());
+    switchTo(selectCommandForZone(zone));
   }
 
   @Override
   public void execute() {
-    boolean inAllianceZone = isInAllianceZone();
-    Logger.recordOutput(logKey + "/InAllianceZone", inAllianceZone);
+    ZoneType zone = getCurrentZone();
+    Logger.recordOutput(logKey + "/Zone", zone.name());
+    Logger.recordOutput(logKey + "/InAllianceZone", zone == ZoneType.ALLIANCE);
 
-    if (inAllianceZone != wasInAllianceZone) {
-      switchTo(inAllianceZone ? goalCommand : transferCommand);
-      wasInAllianceZone = inAllianceZone;
+    if (zone != lastZone) {
+      switchTo(selectCommandForZone(zone));
+      lastZone = zone;
     }
   }
 
@@ -68,12 +105,14 @@ public class DriveAimedAutoShoot extends Command {
       activeCommand = null;
     }
     CommandScheduler.getInstance().cancel(goalCommand);
-    CommandScheduler.getInstance().cancel(transferCommand);
+    CommandScheduler.getInstance().cancel(transferNeutralCommand);
+    CommandScheduler.getInstance().cancel(transferFarCommand);
 
     shooter.stopFlywheels();
     shooter.setPivotHome();
     Logger.recordOutput(logKey, false);
     Logger.recordOutput(logKey + "/InAllianceZone", false);
+    Logger.recordOutput(logKey + "/Zone", "NONE");
     Logger.recordOutput(logKey + "/ActiveTarget", "NONE");
   }
 
@@ -82,12 +121,37 @@ public class DriveAimedAutoShoot extends Command {
     return false;
   }
 
-  private boolean isInAllianceZone() {
+  private ZoneType getCurrentZone() {
     Translation2d robotPosition = drive.getPose().getTranslation();
     Alliance alliance = DriverStation.getAlliance().orElse(Alliance.Blue);
-    AllianceZone zone =
-        alliance == Alliance.Red ? FieldConstants.redAllianceZone : FieldConstants.blueAllianceZone;
-    return zone.contains(robotPosition);
+    boolean inBlue = FieldConstants.blueAllianceZone.contains(robotPosition);
+    boolean inRed = FieldConstants.redAllianceZone.contains(robotPosition);
+
+    if (alliance == Alliance.Blue) {
+      if (inBlue) {
+        return ZoneType.ALLIANCE;
+      }
+      if (inRed) {
+        return ZoneType.FAR;
+      }
+    } else {
+      if (inRed) {
+        return ZoneType.ALLIANCE;
+      }
+      if (inBlue) {
+        return ZoneType.FAR;
+      }
+    }
+
+    return ZoneType.NEUTRAL;
+  }
+
+  private DriveAimedShoot selectCommandForZone(ZoneType zone) {
+    return switch (zone) {
+      case ALLIANCE -> goalCommand;
+      case NEUTRAL -> transferNeutralCommand;
+      case FAR -> transferFarCommand;
+    };
   }
 
   private void switchTo(DriveAimedShoot nextCommand) {
@@ -99,7 +163,15 @@ public class DriveAimedAutoShoot extends Command {
     }
     activeCommand = nextCommand;
     CommandScheduler.getInstance().schedule(activeCommand);
-    Logger.recordOutput(logKey + "/ActiveTarget", nextCommand == goalCommand ? "GOAL" : "TRANSFER");
+    String targetLabel;
+    if (nextCommand == goalCommand) {
+      targetLabel = "GOAL";
+    } else if (nextCommand == transferNeutralCommand) {
+      targetLabel = "TRANSFER_NEUTRAL";
+    } else {
+      targetLabel = "TRANSFER_FAR";
+    }
+    Logger.recordOutput(logKey + "/ActiveTarget", targetLabel);
   }
 
   /** Forces auto aimed yaw setpoint and shooter setpoints to remain fixed */

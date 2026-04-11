@@ -5,7 +5,6 @@
 package frc.robot.commands.triggerCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.commands.DriveAimedAutoShoot;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.hopper.BedConstants;
 import frc.robot.subsystems.hopper.Hopper;
@@ -17,35 +16,17 @@ public class RunTrigger extends Command {
   Hopper hopper;
   Shooter shooter;
 
-  DriveAimedAutoShoot driveAimedShoot;
-
-  private boolean feeding = false;
-
-  public RunTrigger(
-      Hopper hopper, Shooter shooter, Drive drive, DriveAimedAutoShoot driveAimedShoot) {
+  public RunTrigger(Hopper hopper, Shooter shooter, Drive drive) {
     this.hopper = hopper;
     this.shooter = shooter;
-    this.driveAimedShoot = driveAimedShoot;
     addRequirements(hopper);
   }
 
   @Override
   public void initialize() {
-    // hopper.setTriggerDutyCycle(
-    // shooter.getFlywheelSetpoint().times(TriggerConstants.triggerVelocityMultiplier.get()));
-
     Logger.recordOutput("Trigger/Run Trigger Command is Running", true);
-    feeding = false;
-  }
-
-  @Override
-  public void execute() {
-    if (!feeding && shooter.canShoot()) {
-      hopper.setTriggerDutyCycle(-1.0);
-      hopper.setHopperDutyCycle(BedConstants.hopperDutyCycleSpeedFeed.get());
-      feeding = true;
-      driveAimedShoot.lockControls();
-    }
+    hopper.setTriggerDutyCycle(-1.0);
+    hopper.setHopperDutyCycle(BedConstants.hopperDutyCycleSpeedFeed.get());
   }
 
   @Override
@@ -53,9 +34,6 @@ public class RunTrigger extends Command {
     hopper.setTriggerDutyCycle(0);
     hopper.setHopperDutyCycle(0);
     Logger.recordOutput("Trigger/Run Trigger Command is Running", false);
-
-    feeding = false;
-    driveAimedShoot.unlockControls();
   }
 
   @Override
