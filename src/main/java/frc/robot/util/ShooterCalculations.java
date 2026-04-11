@@ -383,7 +383,7 @@ public class ShooterCalculations {
           Math.sqrt((ShooterSolverConstants.gravity * distanceToTargetMeters) / sinTwoTheta);
       calculatedProjectileVelocity = requiredProjectileVelocity;
     } else {
-      calculatedProjectileVelocity = ShooterConstants.defaultVelocityTransfer.in(RadiansPerSecond);
+      calculatedProjectileVelocity = ShooterConstants.defaultVelocityTransferFar.in(RadiansPerSecond);
     }
 
     // Convert solved projectile velocity back into required flywheel surface

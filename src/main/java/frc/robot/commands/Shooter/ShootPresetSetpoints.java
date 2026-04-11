@@ -33,9 +33,9 @@ public class ShootPresetSetpoints extends Command {
       upperVelocitySetpointRPS =
           new LoggedTunableNumber(
               "Shooter/Flywheel/Transfer Velocity Default Setpoint [RPS]",
-              ShooterConstants.defaultVelocityTransfer.in(RotationsPerSecond));
+              ShooterConstants.defaultVelocityTransferFar.in(RotationsPerSecond));
 
-      pitchSetpoint = ShooterConstants.defaultPitchTransfer;
+      pitchSetpoint = ShooterConstants.defaultPitchTransferFar;
     }
     addRequirements(shooter);
   }

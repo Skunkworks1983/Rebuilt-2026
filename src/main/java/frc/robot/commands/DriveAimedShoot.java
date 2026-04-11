@@ -53,11 +53,19 @@ public class DriveAimedShoot extends Command {
   private final LoggedTunableNumber transferFarVelocity =
       new LoggedTunableNumber(
           "Drive Aimed Shoot/Transfer Far Velocity RPS",
-          ShooterConstants.defaultVelocityTransfer.in(RotationsPerSecond));
+          ShooterConstants.defaultVelocityTransferFar.in(RotationsPerSecond));
   private final LoggedTunableNumber transferFarPitch =
       new LoggedTunableNumber(
           "Drive Aimed Shoot/Transfer Far Pitch Degrees",
-          ShooterConstants.defaultPitchTransfer.in(Degrees));
+          ShooterConstants.defaultPitchTransferFar.in(Degrees));
+  private final LoggedTunableNumber transferCloseVelocity =
+      new LoggedTunableNumber(
+          "Drive Aimed Shoot/Transfer Close Velocity RPS",
+          ShooterConstants.defaultVelocityTransferClose.in(RotationsPerSecond));
+  private final LoggedTunableNumber transferClosePitch =
+      new LoggedTunableNumber(
+          "Drive Aimed Shoot/Transfer Close Pitch Degrees",
+          ShooterConstants.defaultPitchTransferClose.in(Degrees));
 
   public DriveAimedShoot(
       Drive drive,
@@ -127,8 +135,12 @@ public class DriveAimedShoot extends Command {
           switch (targetType) {
             case GOAL -> ShooterCalculations.getApexConstrainedShooterControls(
                 currentPose, currentSpeeds);
-            case TRANSFER_NEUTRAL -> ShooterCalculations.getShooterControlsTransfer(
-                currentSpeeds, currentPose, shooter.getShooterForwardLinearVelocity());
+            case TRANSFER_NEUTRAL -> new ShooterControls(
+                RotationsPerSecond.of(transferCloseVelocity.get()),
+                RotationsPerSecond.of(transferClosePitch.get()),
+                Degrees.of(transferFarPitch.get()),
+                Rotation2d.fromDegrees(180),
+                true);
             case TRANSFER_FAR -> new ShooterControls(
                 RotationsPerSecond.of(transferFarVelocity.get()),
                 RotationsPerSecond.of(transferFarVelocity.get()),
