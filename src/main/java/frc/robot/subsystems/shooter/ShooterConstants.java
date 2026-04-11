@@ -60,7 +60,7 @@ public class ShooterConstants {
   public static final MotorAlignmentValue flywheelMotorAlignment = MotorAlignmentValue.Opposed;
 
   // PID for flywheel
-  public static final double flywheelKP = 12.2;
+  public static final double flywheelKP = 12.3;
   public static final double flywheelKD = 0.0;
 
   // Feed forwards for the flywheel
@@ -126,7 +126,7 @@ public class ShooterConstants {
           flywheelMaxVelocityRotationsPerSec.in(RadiansPerSecond) * flywheelRadius.in(Meters));
 
   /** Allowable error tolerance for the flywheel velocity. */
-  public static final AngularVelocity flywheelVelocityTolerance = RotationsPerSecond.of(3);
+  public static final AngularVelocity flywheelVelocityTolerance = RotationsPerSecond.of(3.5);
 
   // PIVOT CONSTANTS
 
@@ -137,7 +137,7 @@ public class ShooterConstants {
   public static final Angle pivotPositionTolerence = Degrees.of(4.5);
 
   // PID for pivot
-  public static final double pivotkP = 160;
+  public static final double pivotkP = 164;
   public static final double pivotkD = 0;
 
   // Feedforwards for pivot
