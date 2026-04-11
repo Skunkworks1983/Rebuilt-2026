@@ -316,6 +316,9 @@ public class Drive extends SubsystemBase implements VisionConsumer {
     if (DriverStation.isDisabled()) {
       Logger.recordOutput("SwerveStates/Setpoints", new SwerveModuleState[] {});
       Logger.recordOutput("SwerveStates/SetpointsOptimized", new SwerveModuleState[] {});
+
+      field.setRobotPose(poseEstimator.getEstimatedPosition());
+      SmartDashboard.putData("Cur Pose", field);
     }
 
     // Update odometry
