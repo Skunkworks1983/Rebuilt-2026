@@ -47,7 +47,7 @@ public class DriveAimedShoot extends Command {
   private final BooleanSupplier indexPermitted;
   private final Command feedCommand;
 
-  private boolean controlsLocked = false;
+  private boolean shooterSetpointsLocked = false;
   private boolean feeding = false;
 
   private final LoggedTunableNumber transferFarVelocity =
@@ -121,7 +121,7 @@ public class DriveAimedShoot extends Command {
     Logger.recordOutput(logKey, true);
     Logger.recordOutput(autoShootRequirementsLogKey + "/ReadyToShoot", false);
 
-    controlsLocked = false;
+    shooterSetpointsLocked = false;
     feeding = false;
   }
 
@@ -129,8 +129,6 @@ public class DriveAimedShoot extends Command {
   public void execute() {
     var currentPose = drive.getPose();
     var currentSpeeds = drive.getChassisSpeeds();
-
-    if (!controlsLocked) {
       ShooterControls controls =
           switch (targetType) {
             case GOAL -> ShooterCalculations.getApexConstrainedShooterControls(
@@ -149,8 +147,10 @@ public class DriveAimedShoot extends Command {
                 true);
           };
 
-      shooter.setShooterSetpoints(
-          new ShooterSetpoints(controls.flywheelVelocity(), controls.shooterPitch()));
+      if (!shooterSetpointsLocked) {
+        shooter.setShooterSetpoints(
+            new ShooterSetpoints(controls.flywheelVelocity(), controls.shooterPitch()));
+      }
       double currentYawRadians = drive.getRotation().getRadians();
       double targetYawRadians = controls.driveYaw().getRadians();
 
@@ -177,8 +177,7 @@ public class DriveAimedShoot extends Command {
 
       if (shooter.canShoot() && indexPermitted.getAsBoolean() && !feeding) {
         if (targetType == TargetType.GOAL) {
-          drive.stopWithX();
-          controlsLocked = true;
+          shooterSetpointsLocked = true;
         }
         feeding = true;
         CommandScheduler.getInstance().schedule(feedCommand);
@@ -188,11 +187,10 @@ public class DriveAimedShoot extends Command {
                 new InstantCommand(
                     () -> {
                       CommandScheduler.getInstance().cancel(feedCommand);
-                      controlsLocked = false;
+                      shooterSetpointsLocked = false;
                       feeding = false;
                     }));
       }
-    }
 
     Logger.recordOutput(
         autoShootRequirementsLogKey + "/DriveReadyToShoot", yawController.atSetpoint());
@@ -209,7 +207,7 @@ public class DriveAimedShoot extends Command {
     Logger.recordOutput(logKey, false);
     CommandScheduler.getInstance().cancel(feedCommand);
 
-    controlsLocked = false;
+    shooterSetpointsLocked = false;
     feeding = false;
 
     vision.setBaselineStdDevs(
@@ -217,11 +215,11 @@ public class DriveAimedShoot extends Command {
   }
 
   public void lockControls() {
-    controlsLocked = true;
+    shooterSetpointsLocked = true;
     drive.stopWithX();
   }
 
   public void unlockControls() {
-    controlsLocked = false;
+    shooterSetpointsLocked = false;
   }
 }
