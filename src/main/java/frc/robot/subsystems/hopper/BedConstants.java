@@ -48,7 +48,7 @@ public class BedConstants {
   public static final LoggedTunableNumber hopperDutyCycleSpeedFeed =
       new LoggedTunableNumber("hopper/DutyCycleOutFeed", .8);
   public static final LoggedTunableNumber hopperDutyCycleSpeedReverse =
-      new LoggedTunableNumber("hopper/DutyCycleOutReverse", -.2);
+      new LoggedTunableNumber("hopper/DutyCycleOutReverse", -.8);
 
   public static Velocity<VoltageUnit> sysIdRampRate = Volts.per(Second).of(2);
 
