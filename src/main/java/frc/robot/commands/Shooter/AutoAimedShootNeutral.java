@@ -1,5 +1,7 @@
 package frc.robot.commands.Shooter;
 
+import static edu.wpi.first.units.Units.Degrees;
+
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -13,13 +15,9 @@ import frc.robot.commands.DriveControlConstants;
 import frc.robot.commands.DriveUtils;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.shooter.ShooterConstants;
 import frc.robot.subsystems.shooter.Shooter.ShooterSetpoints;
-import frc.robot.util.ShooterCalculations;
+import frc.robot.subsystems.shooter.ShooterConstants;
 import frc.robot.util.ShooterCalculations.ShooterControls;
-
-import static edu.wpi.first.units.Units.Degrees;
-
 import org.littletonrobotics.junction.Logger;
 
 public class AutoAimedShootNeutral extends Command {
@@ -31,7 +29,13 @@ public class AutoAimedShootNeutral extends Command {
 
   private final Debouncer indexDebounce = new Debouncer(0.5);
 
-  private final ShooterControls controls = new ShooterControls(ShooterConstants.defaultVelocityTransferClose, ShooterConstants.defaultVelocityTransferClose, ShooterConstants.defaultPitchTransferClose, new Rotation2d(Degrees.of(180)), true);
+  private final ShooterControls controls =
+      new ShooterControls(
+          ShooterConstants.defaultVelocityTransferClose,
+          ShooterConstants.defaultVelocityTransferClose,
+          ShooterConstants.defaultPitchTransferClose,
+          new Rotation2d(Degrees.of(180)),
+          true);
 
   private boolean feedEnabled = false;
 
@@ -61,7 +65,7 @@ public class AutoAimedShootNeutral extends Command {
     Logger.recordOutput("Commands/Another Auto Aimed Shoot", true);
 
     shooter.setShooterSetpoints(
-          new ShooterSetpoints(controls.flywheelVelocity(), controls.shooterPitch()));
+        new ShooterSetpoints(controls.flywheelVelocity(), controls.shooterPitch()));
   }
 
   @Override

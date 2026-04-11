@@ -129,68 +129,67 @@ public class DriveAimedShoot extends Command {
   public void execute() {
     var currentPose = drive.getPose();
     var currentSpeeds = drive.getChassisSpeeds();
-      ShooterControls controls =
-          switch (targetType) {
-            case GOAL -> ShooterCalculations.getApexConstrainedShooterControls(
-                currentPose, currentSpeeds);
-            case TRANSFER_NEUTRAL -> new ShooterControls(
-                RotationsPerSecond.of(transferCloseVelocity.get()),
-                RotationsPerSecond.of(transferClosePitch.get()),
-                Degrees.of(transferFarPitch.get()),
-                Rotation2d.fromDegrees(180),
-                true);
-            case TRANSFER_FAR -> new ShooterControls(
-                RotationsPerSecond.of(transferFarVelocity.get()),
-                RotationsPerSecond.of(transferFarVelocity.get()),
-                Degrees.of(transferFarPitch.get()),
-                Rotation2d.fromDegrees(180),
-                true);
-          };
+    ShooterControls controls =
+        switch (targetType) {
+          case GOAL -> ShooterCalculations.getApexConstrainedShooterControls(
+              currentPose, currentSpeeds);
+          case TRANSFER_NEUTRAL -> new ShooterControls(
+              RotationsPerSecond.of(transferCloseVelocity.get()),
+              RotationsPerSecond.of(transferClosePitch.get()),
+              Degrees.of(transferFarPitch.get()),
+              Rotation2d.fromDegrees(180),
+              true);
+          case TRANSFER_FAR -> new ShooterControls(
+              RotationsPerSecond.of(transferFarVelocity.get()),
+              RotationsPerSecond.of(transferFarVelocity.get()),
+              Degrees.of(transferFarPitch.get()),
+              Rotation2d.fromDegrees(180),
+              true);
+        };
 
-      if (!shooterSetpointsLocked) {
-        shooter.setShooterSetpoints(
-            new ShooterSetpoints(controls.flywheelVelocity(), controls.shooterPitch()));
+    if (!shooterSetpointsLocked) {
+      shooter.setShooterSetpoints(
+          new ShooterSetpoints(controls.flywheelVelocity(), controls.shooterPitch()));
+    }
+    double currentYawRadians = drive.getRotation().getRadians();
+    double targetYawRadians = controls.driveYaw().getRadians();
+
+    Logger.recordOutput("Auto Shoot/Target Yaw", targetYawRadians);
+    Logger.recordOutput("Auto Shoot/Current Yaw", currentYawRadians);
+
+    double omegaCalculated = yawController.calculate(currentYawRadians, targetYawRadians);
+
+    Logger.recordOutput("Auto Shoot/Omega Calculated", omegaCalculated);
+
+    ChassisSpeeds targetSpeeds =
+        DriveUtils.getChassisSpeeds(
+            drive, xSupplier, ySupplier, omegaCalculated // Override rotation
+            );
+
+    boolean isRed = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red;
+
+    Rotation2d fieldCentricOffset = isRed ? Rotation2d.fromDegrees(180) : Rotation2d.fromDegrees(0);
+
+    drive.runVelocity(
+        ChassisSpeeds.fromFieldRelativeSpeeds(
+            targetSpeeds, drive.getRotation().plus(fieldCentricOffset)));
+
+    if (shooter.canShoot() && indexPermitted.getAsBoolean() && !feeding) {
+      if (targetType == TargetType.GOAL) {
+        shooterSetpointsLocked = true;
       }
-      double currentYawRadians = drive.getRotation().getRadians();
-      double targetYawRadians = controls.driveYaw().getRadians();
+      feeding = true;
+      CommandScheduler.getInstance().schedule(feedCommand);
 
-      Logger.recordOutput("Auto Shoot/Target Yaw", targetYawRadians);
-      Logger.recordOutput("Auto Shoot/Current Yaw", currentYawRadians);
-
-      double omegaCalculated = yawController.calculate(currentYawRadians, targetYawRadians);
-
-      Logger.recordOutput("Auto Shoot/Omega Calculated", omegaCalculated);
-
-      ChassisSpeeds targetSpeeds =
-          DriveUtils.getChassisSpeeds(
-              drive, xSupplier, ySupplier, omegaCalculated // Override rotation
-              );
-
-      boolean isRed = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red;
-
-      Rotation2d fieldCentricOffset =
-          isRed ? Rotation2d.fromDegrees(180) : Rotation2d.fromDegrees(0);
-
-      drive.runVelocity(
-          ChassisSpeeds.fromFieldRelativeSpeeds(
-              targetSpeeds, drive.getRotation().plus(fieldCentricOffset)));
-
-      if (shooter.canShoot() && indexPermitted.getAsBoolean() && !feeding) {
-        if (targetType == TargetType.GOAL) {
-          shooterSetpointsLocked = true;
-        }
-        feeding = true;
-        CommandScheduler.getInstance().schedule(feedCommand);
-
-        new Trigger(indexPermitted)
-            .onFalse(
-                new InstantCommand(
-                    () -> {
-                      CommandScheduler.getInstance().cancel(feedCommand);
-                      shooterSetpointsLocked = false;
-                      feeding = false;
-                    }));
-      }
+      new Trigger(indexPermitted)
+          .onFalse(
+              new InstantCommand(
+                  () -> {
+                    CommandScheduler.getInstance().cancel(feedCommand);
+                    shooterSetpointsLocked = false;
+                    feeding = false;
+                  }));
+    }
 
     Logger.recordOutput(
         autoShootRequirementsLogKey + "/DriveReadyToShoot", yawController.atSetpoint());
