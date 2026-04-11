@@ -111,9 +111,7 @@ public class Robot extends LoggedRobot {
       robotContainer.resetSimulationField();
     }
 
-    Elastic.sendNotification(
-        new Notification(
-            NotificationLevel.INFO, "Restart Code", "Have you restarted the robot code?", 10000));
+    Elastic.selectTab("Auto Setup");
   }
 
   /** This function is called periodically when disabled. */
