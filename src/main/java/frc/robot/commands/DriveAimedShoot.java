@@ -57,7 +57,7 @@ public class DriveAimedShoot extends Command {
   private final LoggedTunableNumber transferFarPitch =
       new LoggedTunableNumber(
           "Drive Aimed Shoot/Transfer Far Pitch Degrees",
-          ShooterConstants.defaultPitchTransferFar.in(Degrees));
+          ShooterConstants.defaultDemoPitch.in(Degrees));
   private final LoggedTunableNumber transferCloseVelocity =
       new LoggedTunableNumber(
           "Drive Aimed Shoot/Transfer Close Velocity RPS",

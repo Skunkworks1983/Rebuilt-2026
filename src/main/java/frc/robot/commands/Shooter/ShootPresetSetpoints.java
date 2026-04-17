@@ -1,51 +1,73 @@
 package frc.robot.commands.Shooter;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
-import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.Shooter.ShooterSetpoints;
 import frc.robot.subsystems.shooter.ShooterConstants;
 import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedNetworkBoolean;
 
 public class ShootPresetSetpoints extends Command {
   public enum TargetType {
-    GOAL,
-    TRANSFER
+    RegularShot,
+    SafeShot
   }
 
-  private final Shooter shooter;
-  private final LoggedTunableNumber upperVelocitySetpointRPS;
-  private final Angle pitchSetpoint;
+  TargetType targetType;
 
-  public ShootPresetSetpoints(Shooter shooter, TargetType targetType) {
+  private final LoggedTunableNumber regularFlywheelVelocity;
+  private final LoggedTunableNumber demoFlyWheelVelocity;
+  private final LoggedTunableNumber regularPitch;
+  private final LoggedTunableNumber demoPitch;
+
+  private final Shooter shooter;
+  LoggedNetworkBoolean useDemoMode = new LoggedNetworkBoolean("Shooter/Use Demo Mode Setpoints");
+
+  public ShootPresetSetpoints(Shooter shooter) {
     this.shooter = shooter;
 
-    if (targetType == TargetType.GOAL) {
-      upperVelocitySetpointRPS =
-          new LoggedTunableNumber(
-              "Shooter/Flywheel/Goal Velocity Default Setpoint [RPS]",
-              ShooterConstants.defaultUpperFlywheelVelocityGoal.in(RotationsPerSecond));
+    regularFlywheelVelocity =
+        new LoggedTunableNumber(
+            "Shooter/Flywheel/Regular Velocity Default Setpoint [RPS]",
+            ShooterConstants.deafultRegularVelocity.in(RotationsPerSecond));
 
-      pitchSetpoint = ShooterConstants.defaultPitchGoal;
-    } else {
-      upperVelocitySetpointRPS =
-          new LoggedTunableNumber(
-              "Shooter/Flywheel/Transfer Velocity Default Setpoint [RPS]",
-              ShooterConstants.defaultVelocityTransferFar.in(RotationsPerSecond));
+    demoFlyWheelVelocity =
+        new LoggedTunableNumber(
+            "Shooter/Flywheel/Demo Velocity Default Setpoint [RPS]",
+            ShooterConstants.defaultDemoVelocity.in(RotationsPerSecond));
 
-      pitchSetpoint = ShooterConstants.defaultPitchTransferFar;
-    }
+    regularPitch =
+        new LoggedTunableNumber(
+            "Shooter/Pitch/Regular Default Setpoint [deg]",
+            ShooterConstants.defaultRegularPitch.in(Degrees));
+
+    demoPitch =
+        new LoggedTunableNumber(
+            "Shooter/Pitch/Demo Default Setpoint [deg]",
+            ShooterConstants.defaultDemoPitch.in(Degrees));
+
     addRequirements(shooter);
   }
 
   @Override
   public void initialize() {
     Logger.recordOutput("Commands/Manual Shoot/Shoot preset setpoints", true);
-    shooter.setShooterSetpoints(
-        new Shooter.ShooterSetpoints(
-            RotationsPerSecond.of(upperVelocitySetpointRPS.get()), pitchSetpoint));
+
+    ShooterSetpoints setpoints;
+    if (!useDemoMode.get()) {
+      setpoints =
+          new ShooterSetpoints(
+              RotationsPerSecond.of(regularFlywheelVelocity.get()), Degrees.of(regularPitch.get()));
+    } else {
+      setpoints =
+          new ShooterSetpoints(
+              RotationsPerSecond.of(demoFlyWheelVelocity.get()), Degrees.of(demoPitch.get()));
+    }
+    shooter.setShooterSetpoints(setpoints);
   }
 
   @Override

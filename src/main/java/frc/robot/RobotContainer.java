@@ -36,7 +36,6 @@ import frc.robot.commands.Shooter.AutoAimedShootNeutral;
 import frc.robot.commands.Shooter.NoYawShootHub;
 import frc.robot.commands.Shooter.NoYawShootTransfer;
 import frc.robot.commands.Shooter.ShootPresetSetpoints;
-import frc.robot.commands.Shooter.ShootPresetSetpoints.TargetType;
 import frc.robot.commands.TestPathCommands;
 import frc.robot.commands.collectorCommands.CollectorDown;
 import frc.robot.commands.collectorCommands.CollectorExpel;
@@ -249,9 +248,6 @@ public class RobotContainer {
             new AutoAimedShootNeutral(drive, shooter, new RunTriggerNoLock(hopper, shooter)),
             new SequentialCommandGroup(new WaitCommand(2), new agitate(collector, () -> false))));
 
-    NamedCommands.registerCommand(
-        "Ramp Shooter", new ShootPresetSetpoints(shooter, TargetType.GOAL));
-
     NamedCommands.registerCommand("Network Wait", new NetworkTablesWait("Bump Launch"));
     // NamedCommands.registerCommand(
     //     "Intake Shooter/ Trigger", new RunTrigger(hopper));
@@ -337,8 +333,7 @@ public class RobotContainer {
     // Ramp Shooter Transfer
     buttonJoystick.leftTrigger().whileTrue(new NoYawShootTransfer(shooter, drive));
 
-    buttonJoystick.leftBumper().whileTrue(new ShootPresetSetpoints(shooter, TargetType.TRANSFER));
-    buttonJoystick.rightBumper().whileTrue(new ShootPresetSetpoints(shooter, TargetType.GOAL));
+    buttonJoystick.rightBumper().whileTrue(new ShootPresetSetpoints(shooter));
 
     JoystickButton runTriggerDriverStick =
         new JoystickButton(leftJoystick, Constants.OIConstants.joystickTrigger);
