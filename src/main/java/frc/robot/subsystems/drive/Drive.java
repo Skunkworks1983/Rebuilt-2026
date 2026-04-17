@@ -104,6 +104,9 @@ public class Drive extends SubsystemBase implements VisionConsumer {
   private static final LoggedTunableNumber turnKA =
       new LoggedTunableNumber("Drive/PID/Turn/kA", defaultTurnGains.kA);
 
+  private static final LoggedTunableNumber driveMaxVelocity =
+      new LoggedTunableNumber("Drive/Drive Max Velocity", 12.0 * 0.15);
+
   // TunerConstants doesn't include these constants, so they are declared locally
   static final double ODOMETRY_FREQUENCY =
       new CANBus(driveConstants.CANBusName).isNetworkFD() ? 250.0 : 100.0;
@@ -367,7 +370,7 @@ public class Drive extends SubsystemBase implements VisionConsumer {
     // Calculate module setpoints
     ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(speeds, 0.02);
     SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(discreteSpeeds);
-    SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, tunerConstants.getSpeedAt12Volts());
+    SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, driveMaxVelocity.get());
 
     // Log unoptimized setpoints and setpoint speeds
     Logger.recordOutput("SwerveStates/Setpoints", setpointStates);
