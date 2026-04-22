@@ -25,7 +25,7 @@ public class ShootPresetSetpoints extends Command {
   private final LoggedTunableNumber demoPitch;
 
   private final Shooter shooter;
-  LoggedNetworkBoolean useDemoMode = new LoggedNetworkBoolean("Shooter/Use Demo Mode Setpoints");
+  LoggedNetworkBoolean useDemoMode;
 
   public ShootPresetSetpoints(Shooter shooter) {
     this.shooter = shooter;
@@ -49,7 +49,8 @@ public class ShootPresetSetpoints extends Command {
         new LoggedTunableNumber(
             "Shooter/Pitch/Demo Default Setpoint [deg]",
             ShooterConstants.defaultDemoPitch.in(Degrees));
-
+    useDemoMode = new LoggedNetworkBoolean("Shooter/Use Demo Mode Setpoints");
+    useDemoMode.setDefault(false);
     addRequirements(shooter);
   }
 

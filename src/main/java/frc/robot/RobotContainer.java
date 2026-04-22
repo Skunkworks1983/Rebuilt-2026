@@ -33,8 +33,6 @@ import frc.robot.commands.DriveAimedAutoShoot;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.Shooter.AnotherAutoAimedShoot;
 import frc.robot.commands.Shooter.AutoAimedShootNeutral;
-import frc.robot.commands.Shooter.NoYawShootHub;
-import frc.robot.commands.Shooter.NoYawShootTransfer;
 import frc.robot.commands.Shooter.ShootPresetSetpoints;
 import frc.robot.commands.TestPathCommands;
 import frc.robot.commands.collectorCommands.CollectorDown;
@@ -103,7 +101,7 @@ public class RobotContainer {
   // Controller
   private final Joystick leftJoystick;
   private final Joystick rightJoystick;
-  private final CommandXboxController buttonJoystick;
+  private final CommandXboxController xboxController;
 
   private Field2d autoPreviewField = new Field2d();
 
@@ -126,7 +124,7 @@ public class RobotContainer {
   public RobotContainer() {
     leftJoystick = new Joystick(Constants.OIConstants.LeftJoystick);
     rightJoystick = new Joystick(Constants.OIConstants.RightJoystick);
-    buttonJoystick = new CommandXboxController(Constants.OIConstants.ButtonJoystick);
+    xboxController = new CommandXboxController(Constants.OIConstants.ButtonJoystick);
 
     switch (Constants.currentMode) {
       case REAL:
@@ -322,18 +320,18 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -leftJoystick.getY(), // -X (used to be)
-            () -> -leftJoystick.getX(), // -Y (used to be)
-            () -> -rightJoystick.getX())); // Confirm if negitive or not
+            xboxController::getLeftY, // -Y (used to be)
+            xboxController::getLeftX, // -X (used to be)
+            xboxController::getRightX)); // Confirm if negitive or not
 
     shootAutoAim = new JoystickButton(rightJoystick, Constants.OIConstants.joystickAutoAim);
 
     // Ramp Shooter Hub
-    buttonJoystick.rightTrigger().whileTrue(new NoYawShootHub(shooter, drive));
+    // xboxController.rightTrigger().whileTrue(new NoYawShootHub(shooter, drive));
     // Ramp Shooter Transfer
-    buttonJoystick.leftTrigger().whileTrue(new NoYawShootTransfer(shooter, drive));
+    // xboxController.leftTrigger().whileTrue(new NoYawShootTransfer(shooter, drive));
 
-    buttonJoystick.rightBumper().whileTrue(new ShootPresetSetpoints(shooter));
+    xboxController.rightTrigger().whileTrue(new ShootPresetSetpoints(shooter));
 
     JoystickButton runTriggerDriverStick =
         new JoystickButton(leftJoystick, Constants.OIConstants.joystickTrigger);
@@ -358,16 +356,20 @@ public class RobotContainer {
     TestPathCommands.publishTestPaths(drive);
 
     shooter.setDefaultCommand(Commands.run(shooter::stop, shooter));
-    buttonJoystick.y().onTrue(new CollectorUp(collector));
-    buttonJoystick.a().whileTrue(new CollectorIntake(collector));
+    xboxController.y().onTrue(new CollectorUp(collector));
+    xboxController.a().whileTrue(new CollectorIntake(collector));
 
     // Reverse All
-    buttonJoystick
+    xboxController
         .b()
         .whileTrue(
             new ParallelCommandGroup(
                 new ReverseTriggerCommand(hopper), new CollectorExpel(collector)));
-    buttonJoystick.x().whileTrue(new ForceRunTrigger(hopper, drive, driveAimedAutoShoot));
+    xboxController
+        .leftTrigger()
+        .whileTrue(
+            new ForceRunTrigger(hopper, drive, driveAimedAutoShoot)
+                .alongWith(new agitate(collector, () -> false)));
   }
 
   /**
