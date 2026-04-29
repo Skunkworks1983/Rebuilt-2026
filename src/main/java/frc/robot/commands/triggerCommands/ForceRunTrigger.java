@@ -27,8 +27,6 @@ public class ForceRunTrigger extends Command {
 
   @Override
   public void initialize() {
-    // hopper.setTriggerDutyCycle(
-    // shooter.getFlywheelSetpoint().times(TriggerConstants.triggerVelocityMultiplier.get()));
     hopper.setTriggerDutyCycle(-1.0);
     hopper.setHopperDutyCycle(BedConstants.hopperDutyCycleSpeedFeed.get());
     driveAimedShoot.lockControls();

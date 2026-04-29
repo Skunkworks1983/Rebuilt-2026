@@ -253,10 +253,6 @@ public class RobotContainer {
         "Ramp Shooter", new ShootPresetSetpoints(shooter, TargetType.GOAL));
 
     NamedCommands.registerCommand("Network Wait", new NetworkTablesWait("Bump Launch"));
-    // NamedCommands.registerCommand(
-    //     "Intake Shooter/ Trigger", new RunTrigger(hopper));
-    // NamedCommands.registerCommand(
-    //     "Auto Aimed Shoot", new AutonomousAimedShoot(drive, shooter, hopper));
     NamedCommands.registerCommand("Lower Collector", new CollectorDown(collector));
     NamedCommands.registerCommand("Raise Collector", new CollectorUp(collector));
     NamedCommands.registerCommand("Run Collector", new CollectorIntake(collector));
