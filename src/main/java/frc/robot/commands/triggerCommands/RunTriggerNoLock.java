@@ -32,7 +32,7 @@ public class RunTriggerNoLock extends Command {
   @Override
   public void execute() {
     if (!feeding && shooter.canShoot()) {
-      hopper.setTriggerDutyCycle(-1.0);
+      hopper.triggerRunMaxDutyCycle();
       hopper.setHopperDutyCycle(BedConstants.hopperDutyCycleSpeedFeed.get());
       feeding = true;
     }

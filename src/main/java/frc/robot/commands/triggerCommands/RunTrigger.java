@@ -25,7 +25,7 @@ public class RunTrigger extends Command {
   @Override
   public void initialize() {
     Logger.recordOutput("Trigger/Run Trigger Command is Running", true);
-    hopper.setTriggerDutyCycle(-1.0);
+    hopper.triggerRunMaxDutyCycle();
     hopper.setHopperDutyCycle(BedConstants.hopperDutyCycleSpeedFeed.get());
   }
 
