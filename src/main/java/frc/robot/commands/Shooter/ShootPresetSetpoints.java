@@ -1,5 +1,6 @@
 package frc.robot.commands.Shooter;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import edu.wpi.first.units.measure.Angle;
@@ -17,7 +18,7 @@ public class ShootPresetSetpoints extends Command {
 
   private final Shooter shooter;
   private final LoggedTunableNumber upperVelocitySetpointRPS;
-  private final Angle pitchSetpoint;
+  private final LoggedTunableNumber pitchSetpointDeg;
 
   public ShootPresetSetpoints(Shooter shooter, TargetType targetType) {
     this.shooter = shooter;
@@ -28,14 +29,14 @@ public class ShootPresetSetpoints extends Command {
               "Shooter/Flywheel/Goal Velocity Default Setpoint [RPS]",
               ShooterConstants.defaultUpperFlywheelVelocityGoal.in(RotationsPerSecond));
 
-      pitchSetpoint = ShooterConstants.defaultPitchGoal;
+      pitchSetpointDeg = new LoggedTunableNumber("Shooter/Pivot/Goal Default Pitch [Deg]", ShooterConstants.defaultPitchGoal.in(Degrees));
     } else {
       upperVelocitySetpointRPS =
           new LoggedTunableNumber(
               "Shooter/Flywheel/Transfer Velocity Default Setpoint [RPS]",
               ShooterConstants.defaultVelocityTransferFar.in(RotationsPerSecond));
 
-      pitchSetpoint = ShooterConstants.defaultPitchTransferFar;
+      pitchSetpointDeg =new LoggedTunableNumber("Shooter/Pivot/Transfer Default Pitch [Deg]", ShooterConstants.defaultPitchTransferFar.in(Degrees));
     }
     addRequirements(shooter);
   }
@@ -45,7 +46,7 @@ public class ShootPresetSetpoints extends Command {
     Logger.recordOutput("Commands/Manual Shoot/Shoot preset setpoints", true);
     shooter.setShooterSetpoints(
         new Shooter.ShooterSetpoints(
-            RotationsPerSecond.of(upperVelocitySetpointRPS.get()), pitchSetpoint));
+            RotationsPerSecond.of(upperVelocitySetpointRPS.get()), Degrees.of(pitchSetpointDeg.get())));
   }
 
   @Override
