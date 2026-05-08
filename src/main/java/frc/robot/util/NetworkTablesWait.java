@@ -5,6 +5,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
+/**
+ * A network tunable wait command. Allows adjusting the wait duration OTF from a
+ * dashboard. Intended for adjusting a delay between auto paths pre-match
+ * 
+ * @param name Name that the command will show under in network tables
+ */
 public class NetworkTablesWait extends Command {
   Timer timer = new Timer();
   LoggedNetworkNumber logTimer;

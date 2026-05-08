@@ -111,10 +111,7 @@ public class AutonomousAimedShoot extends Command {
     boolean readyToFeed = yawController.atGoal() && shooter.isFlywheelAtSetpoint();
     Logger.recordOutput("Auto Shoot/Trigger Ready", readyToFeed);
 
-    double speedRps = TriggerConstants.triggerAngularVelocityRotationsPerSecond.get();
-
-    hopper.setTriggerVelocity(RotationsPerSecond.of(speedRps));
-    Logger.recordOutput("Auto Shoot/Trigger Velocity", speedRps);
+    hopper.setTriggerVelocity(RotationsPerSecond.of(TriggerConstants.triggerAngularVelocityRotationsPerSecond.get()));
   }
 
   @Override

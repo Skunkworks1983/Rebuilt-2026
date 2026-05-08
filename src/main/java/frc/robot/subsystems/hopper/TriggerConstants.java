@@ -31,7 +31,7 @@ public class TriggerConstants {
   public static final double triggerKA = 3.8;
 
   /** Alignment configuration for the trigger motor. */
-  public static final InvertedValue primaryMotorInvert = InvertedValue.CounterClockwise_Positive;
+  public static final InvertedValue primaryMotorInvert = InvertedValue.Clockwise_Positive;
 
   public static final double triggerGearRatio = 24.0 / 15.0;
 

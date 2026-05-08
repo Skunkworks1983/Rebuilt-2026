@@ -154,6 +154,10 @@ public class Hopper extends SubsystemBase {
     trigger.setDutyCycle(dutyCycle);
   }
 
+  public void triggerRunMaxDutyCycle() {
+    trigger.setDutyCycle(1.0);
+  }
+
   public void setTriggerVoltageOut(Voltage voltage) {
     trigger.setVoltageOut(voltage.unaryMinus());
   }

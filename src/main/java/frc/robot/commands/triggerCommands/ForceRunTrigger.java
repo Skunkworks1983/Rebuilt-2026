@@ -17,8 +17,6 @@ public class ForceRunTrigger extends Command {
 
   DriveAimedAutoShoot driveAimedShoot;
 
-  private boolean feeding = false;
-
   public ForceRunTrigger(Hopper hopper, Drive drive, DriveAimedAutoShoot driveAimedShoot) {
     this.hopper = hopper;
     this.driveAimedShoot = driveAimedShoot;
@@ -27,14 +25,11 @@ public class ForceRunTrigger extends Command {
 
   @Override
   public void initialize() {
-    // hopper.setTriggerDutyCycle(
-    // shooter.getFlywheelSetpoint().times(TriggerConstants.triggerVelocityMultiplier.get()));
-    hopper.setTriggerDutyCycle(-1.0);
+    hopper.triggerRunMaxDutyCycle();
     hopper.setHopperDutyCycle(BedConstants.hopperDutyCycleSpeedFeed.get());
     driveAimedShoot.lockControls();
 
     Logger.recordOutput("Trigger/Run Trigger Command is Running", true);
-    feeding = false;
   }
 
   @Override
@@ -43,7 +38,6 @@ public class ForceRunTrigger extends Command {
     hopper.setHopperDutyCycle(0);
     Logger.recordOutput("Trigger/Run Trigger Command is Running", false);
 
-    feeding = false;
     driveAimedShoot.unlockControls();
   }
 
