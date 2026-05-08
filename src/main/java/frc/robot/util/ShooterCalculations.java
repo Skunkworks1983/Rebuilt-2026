@@ -171,18 +171,32 @@ public class ShooterCalculations {
     double heightTrajectoryPeak = relativeGoalZ + apexHeight; // (delta h for ballistic equation)
     heightTrajectoryPeak = Math.max(heightTrajectoryPeak, 0.1);
 
-    double launchVelocityZ = Math.sqrt(2.0 * ShooterSolverConstants.gravity * heightTrajectoryPeak); //ke = 1/2 m v^2, pe = mg(delta h), solve for v, gives required vertical velocity to make goal
+    double launchVelocityZ =
+        Math.sqrt(
+            2.0
+                * ShooterSolverConstants.gravity
+                * heightTrajectoryPeak); // ke = 1/2 m v^2, pe = mg(delta h), solve for v, gives
+    // required vertical velocity to make goal
 
     // Calculate the time for the ball to follow trajectory
-    double timeUp = launchVelocityZ / ShooterSolverConstants.gravity; // time = velocity / acceleration
-    double heightDown = Math.max(heightTrajectoryPeak - relativeGoalZ, 0.0); // ball starts at robot, goal is taller than robot -> use diff height for end than start
+    double timeUp =
+        launchVelocityZ / ShooterSolverConstants.gravity; // time = velocity / acceleration
+    double heightDown =
+        Math.max(
+            heightTrajectoryPeak - relativeGoalZ,
+            0.0); // ball starts at robot, goal is taller than robot -> use diff height for end than
+    // start
     double timeDescend = Math.sqrt(2.0 * heightDown / ShooterSolverConstants.gravity);
 
     double totalTime = timeUp + timeDescend;
-    totalTime = Math.max(totalTime, 1e-4); // a funny weird error happened because bad odo and now we have this
+    totalTime =
+        Math.max(
+            totalTime, 1e-4); // a funny weird error happened because bad odo and now we have this
 
     // Speed required if the robot were standing still
-    double requiredHorizontalSpeed = finalDistance / totalTime; // Horizontal v = delta x / time for ball to get to correct vertical height 
+    double requiredHorizontalSpeed =
+        finalDistance
+            / totalTime; // Horizontal v = delta x / time for ball to get to correct vertical height
 
     // Yaw to aim
     Rotation2d angleToGoal = targetVector.getAngle();
@@ -208,10 +222,22 @@ public class ShooterCalculations {
     Rotation2d finalDriveYaw = effectiveLaunchVectorField.getAngle().minus(new Rotation2d(Math.PI));
 
     double effectiveHorizontalSpeed = effectiveLaunchVectorField.getNorm();
-    double ballExitSpeed = Math.hypot(effectiveHorizontalSpeed, launchVelocityZ); // Make a right triangle of horizontal and vertical velocity, net speed is hypotenuse
-    double flywheelSurfaceSpeed = ballExitSpeed / ShooterSolverConstants.flywheelEfficiency.get(); // Allow tunability (especially because only flywheel on bottom, so half v become rotational motion rather than translational)
+    double ballExitSpeed =
+        Math.hypot(
+            effectiveHorizontalSpeed,
+            launchVelocityZ); // Make a right triangle of horizontal and vertical velocity, net
+    // speed is hypotenuse
+    double flywheelSurfaceSpeed =
+        ballExitSpeed
+            / ShooterSolverConstants.flywheelEfficiency
+                .get(); // Allow tunability (especially because only flywheel on bottom, so half v
+    // become rotational motion rather than translational)
 
-    double finalPitch = Math.atan2(launchVelocityZ, effectiveHorizontalSpeed); // Split net veloicty between horizontal and vertical velocity
+    double finalPitch =
+        Math.atan2(
+            launchVelocityZ,
+            effectiveHorizontalSpeed); // Split net veloicty between horizontal and vertical
+    // velocity
     finalPitch =
         MathUtil.clamp(
             finalPitch,

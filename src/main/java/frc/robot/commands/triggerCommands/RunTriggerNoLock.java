@@ -10,7 +10,10 @@ import frc.robot.subsystems.hopper.Hopper;
 import frc.robot.subsystems.shooter.Shooter;
 import org.littletonrobotics.junction.Logger;
 
-/** Command that runs the trigger without locking the flywheel, pitch, and drivetrain setpoints for the duration of indexing */
+/**
+ * Command that runs the trigger without locking the flywheel, pitch, and drivetrain setpoints for
+ * the duration of indexing
+ */
 public class RunTriggerNoLock extends Command {
   Hopper hopper;
   Shooter shooter;

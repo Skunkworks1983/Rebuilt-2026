@@ -41,10 +41,8 @@ import frc.robot.commands.TestPathCommands;
 import frc.robot.commands.collectorCommands.Agitate;
 import frc.robot.commands.collectorCommands.CollectorDown;
 import frc.robot.commands.collectorCommands.CollectorExpel;
-import frc.robot.commands.collectorCommands.CollectorExpel;
 import frc.robot.commands.collectorCommands.CollectorIntake;
 import frc.robot.commands.collectorCommands.CollectorUp;
-import frc.robot.commands.collectorCommands.agitate;
 import frc.robot.commands.triggerCommands.ForceRunTrigger;
 import frc.robot.commands.triggerCommands.ReverseTriggerCommand;
 import frc.robot.commands.triggerCommands.RunTrigger;
@@ -244,12 +242,12 @@ public class RobotContainer {
         "Another Auto Aimed Shoot",
         new ParallelCommandGroup(
             new AnotherAutoAimedShoot(drive, shooter, new RunTriggerNoLock(hopper, shooter)),
-            new SequentialCommandGroup(new WaitCommand(2), new agitate(collector, () -> false))));
+            new SequentialCommandGroup(new WaitCommand(2), new Agitate(collector, () -> false))));
     NamedCommands.registerCommand(
         "Auto Aimed Shoot Neutral",
         new ParallelCommandGroup(
             new AutoAimedShootNeutral(drive, shooter, new RunTriggerNoLock(hopper, shooter)),
-            new SequentialCommandGroup(new WaitCommand(2), new agitate(collector, () -> false))));
+            new SequentialCommandGroup(new WaitCommand(2), new Agitate(collector, () -> false))));
 
     NamedCommands.registerCommand(
         "Ramp Shooter", new ShootPresetSetpoints(shooter, TargetType.GOAL));
@@ -348,7 +346,7 @@ public class RobotContainer {
             () -> -leftJoystick.getY(),
             () -> -leftJoystick.getX(),
             runTriggerDriverStick::getAsBoolean,
-            new RunTrigger(hopper, shooter, drive).alongWith(new agitate(collector, () -> false)));
+            new RunTrigger(hopper, shooter, drive).alongWith(new Agitate(collector, () -> false)));
     shootAutoAim.whileTrue(driveAimedAutoShoot);
 
     // if the trigger button is hed and more than a second elapses before the beam
@@ -371,7 +369,7 @@ public class RobotContainer {
             new ParallelCommandGroup(
                 new ReverseTriggerCommand(hopper), new CollectorExpel(collector)));
     buttonJoystick.x().whileTrue(new ForceRunTrigger(hopper, drive, driveAimedAutoShoot));
-    }
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

@@ -9,6 +9,8 @@ import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -51,16 +53,6 @@ public class Hopper extends SubsystemBase {
 
   public final TriggerIOInputsAutoLogged triggerInputs = new TriggerIOInputsAutoLogged();
 
-  private static final LoggedTunableNumber triggerlKP =
-      new LoggedTunableNumber("Hopper/Trigger/kP", TriggerConstants.triggerKP);
-  private static final LoggedTunableNumber triggerlKD =
-      new LoggedTunableNumber("Hopper/Trigger/kD", TriggerConstants.triggerKD);
-  private static final LoggedTunableNumber triggerlKS =
-      new LoggedTunableNumber("Hopper/Trigger/kS", TriggerConstants.triggerKS);
-  private static final LoggedTunableNumber triggerlKV =
-      new LoggedTunableNumber("Hopper/Trigger/kV", TriggerConstants.triggerKV);
-  private static final LoggedTunableNumber triggerlKA =
-      new LoggedTunableNumber("Hopper/Trigger/kA", TriggerConstants.triggerKA);
   private static final LoggedTunableNumber triggerlKP =
       new LoggedTunableNumber("Hopper/Trigger/kP", TriggerConstants.triggerKP);
   private static final LoggedTunableNumber triggerlKD =
@@ -141,8 +133,6 @@ public class Hopper extends SubsystemBase {
         Elastic.sendNotification(
             new Elastic.Notification(
                 Elastic.NotificationLevel.INFO,
-                "Trigger PID Update",
-                "Trigger motor PID gains have been updated."));
                 "Trigger PID Update",
                 "Trigger motor PID gains have been updated."));
       }

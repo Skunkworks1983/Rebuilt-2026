@@ -31,7 +31,6 @@ import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.Constants;
-import frc.robot.Constants.Mode;
 import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstants;
 import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
@@ -318,7 +317,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
 
   /** Sets Collector to its up position */
   public void goDown() {
-    if(Constants.tuningMode == true) {
+    if (Constants.tuningMode == true) {
       setCollectorPos(Radians.of(constants.CollectorDownPos.get()), 0);
     } else {
       setCollectorPos(CollectorModuleConstants.CollectorDownPosDefault, 0);
