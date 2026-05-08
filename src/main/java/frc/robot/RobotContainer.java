@@ -370,7 +370,6 @@ public class RobotContainer {
                 new ReverseTriggerCommand(hopper), new CollectorExpel(collector)));
     buttonJoystick.x().whileTrue(new ForceRunTrigger(hopper, drive, driveAimedAutoShoot));
     }
-  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
