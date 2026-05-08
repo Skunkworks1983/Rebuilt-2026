@@ -6,6 +6,28 @@
       "commands": [
         {
           "type": "deadline",
+<<<<<<< HEAD:src/main/deploy/pathplanner/autos/Middle + Depot + Human.auto
+=======
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Through Close Tunnel"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Lower Collector"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+>>>>>>> 1c08a7888e31212203713082c09f2bef4b24ee80:src/main/deploy/pathplanner/autos/Neutral+Human.auto
           "data": {
             "commands": [
               {

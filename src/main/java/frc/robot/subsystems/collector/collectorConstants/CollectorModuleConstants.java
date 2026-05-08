@@ -93,6 +93,9 @@ public class CollectorModuleConstants {
   // Inverted Value
   public InvertedValue intakeInvertedValue;
 
+  // Agitate period
+  public double agitatePeriod;
+
   public CollectorModuleConstants() {
 
     // Hardware IDs
@@ -143,5 +146,8 @@ public class CollectorModuleConstants {
 
     // Collector Position Tolerance
     CollectorPosTolerance = Degrees.of(2);
+
+    // Agitate period
+    agitatePeriod = .75;
   }
 }

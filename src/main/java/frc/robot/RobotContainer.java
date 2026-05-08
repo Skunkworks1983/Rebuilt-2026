@@ -38,7 +38,9 @@ import frc.robot.commands.Shooter.NoYawShootTransfer;
 import frc.robot.commands.Shooter.ShootPresetSetpoints;
 import frc.robot.commands.Shooter.ShootPresetSetpoints.TargetType;
 import frc.robot.commands.TestPathCommands;
+import frc.robot.commands.collectorCommands.Agitate;
 import frc.robot.commands.collectorCommands.CollectorDown;
+import frc.robot.commands.collectorCommands.CollectorExpel;
 import frc.robot.commands.collectorCommands.CollectorExpel;
 import frc.robot.commands.collectorCommands.CollectorIntake;
 import frc.robot.commands.collectorCommands.CollectorUp;
@@ -305,7 +307,6 @@ public class RobotContainer {
                   .withTimeout(Seconds.of(3))));
     }
 
-    // autoChooser.addOption("Simple Auto", new NoYawShootHub(shooter, drive));
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -352,6 +353,7 @@ public class RobotContainer {
 
     // if the trigger button is hed and more than a second elapses before the beam
     // break is broken the
+    // trigger will reverse for 1 second before attempting to intake again
     // trigger will reverse for 1 second before attempting to intake again
 
     Logger.recordOutput("Control Scheme", Constants.controlScheme);
