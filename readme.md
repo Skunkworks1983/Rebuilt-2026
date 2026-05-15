@@ -1,4 +1,4 @@
-Demo code for 2026 robot (the final one)
+Demo code for 2026 robot (the final chassis, aka Indiana Skunk)
 
 Uses one xbox controller on port 0.
 
@@ -12,4 +12,4 @@ R Trigger: Run Shooter
 
 B: Reverse All
 A: Intake (Also puts collector down)
-X: Pull intake up
+Y: Pull intake up
