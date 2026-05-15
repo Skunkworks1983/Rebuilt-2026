@@ -52,7 +52,7 @@ public final class Constants {
     // Joystick ID's
     public static final int LeftJoystick = 0;
     public static final int RightJoystick = 1;
-    public static final int ButtonJoystick = 2;
+    public static final int ButtonJoystick = 0;
 
     // Joystick Button ID's
     public static final int joystickTrigger = 1; // left
