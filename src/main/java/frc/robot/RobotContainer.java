@@ -335,7 +335,6 @@ public class RobotContainer {
 
     JoystickButton runTriggerDriverStick =
         new JoystickButton(leftJoystick, Constants.OIConstants.joystickTrigger);
-
     DriveAimedAutoShoot driveAimedAutoShoot =
         new DriveAimedAutoShoot(
             drive,
