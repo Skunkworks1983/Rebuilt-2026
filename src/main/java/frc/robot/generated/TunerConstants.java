@@ -30,7 +30,6 @@ public interface TunerConstants {
       return new TunerConstantsRebuiltChassisTwo();
     }
 
-    // TODO: Replace with rebuilt constants
     return new TunerConstantsRebuiltChassisTwo();
   }
 

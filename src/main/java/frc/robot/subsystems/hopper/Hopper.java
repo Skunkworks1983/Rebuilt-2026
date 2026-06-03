@@ -24,7 +24,7 @@ import org.littletonrobotics.junction.Logger;
 
 /**
  * {@summary} Includes the mechanisms for both the Hopper Bed and the Trigger, it takes in one
- * BedIOTalonFX and two TriggerIOTalonFX
+ * BedIOTalonFX and one TriggerIOTalonFX
  */
 public class Hopper extends SubsystemBase {
   BedIO bed;
