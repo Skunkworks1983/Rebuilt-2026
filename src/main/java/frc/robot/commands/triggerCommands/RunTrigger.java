@@ -16,7 +16,7 @@ public class RunTrigger extends Command {
   Hopper hopper;
   Shooter shooter;
 
-  public RunTrigger(Hopper hopper, Shooter shooter, Drive drive) {
+  public RunTrigger(Hopper hopper, Shooter shooter) {
     this.hopper = hopper;
     this.shooter = shooter;
     addRequirements(hopper);

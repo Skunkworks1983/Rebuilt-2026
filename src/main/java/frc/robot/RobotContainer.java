@@ -346,7 +346,7 @@ public class RobotContainer {
             () -> -leftJoystick.getY(),
             () -> -leftJoystick.getX(),
             runTriggerDriverStick::getAsBoolean,
-            new RunTrigger(hopper, shooter, drive).alongWith(new Agitate(collector, () -> false)));
+            new RunTrigger(hopper, shooter).alongWith(new Agitate(collector, () -> false)));
     shootAutoAim.whileTrue(driveAimedAutoShoot);
 
     // if the trigger button is hed and more than a second elapses before the beam
@@ -368,7 +368,7 @@ public class RobotContainer {
         .whileTrue(
             new ParallelCommandGroup(
                 new ReverseTriggerCommand(hopper), new CollectorExpel(collector)));
-    buttonJoystick.x().whileTrue(new ForceRunTrigger(hopper, drive, driveAimedAutoShoot));
+    buttonJoystick.x().whileTrue(new ForceRunTrigger(hopper, driveAimedAutoShoot));
   }
 
   /**

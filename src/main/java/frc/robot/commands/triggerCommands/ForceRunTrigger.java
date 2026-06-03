@@ -17,7 +17,7 @@ public class ForceRunTrigger extends Command {
 
   DriveAimedAutoShoot driveAimedShoot;
 
-  public ForceRunTrigger(Hopper hopper, Drive drive, DriveAimedAutoShoot driveAimedShoot) {
+  public ForceRunTrigger(Hopper hopper, DriveAimedAutoShoot driveAimedShoot) {
     this.hopper = hopper;
     this.driveAimedShoot = driveAimedShoot;
     addRequirements(hopper);

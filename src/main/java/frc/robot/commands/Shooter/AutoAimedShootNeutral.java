@@ -62,7 +62,7 @@ public class AutoAimedShootNeutral extends Command {
     yawController.reset(drive.getRotation().getRadians());
     feedEnabled = false;
     Logger.recordOutput("Auto Shoot/Feed Enabled", false);
-    Logger.recordOutput("Commands/Another Auto Aimed Shoot", true);
+    Logger.recordOutput("Commands/Auto Aimed Shoot Neutral", true);
 
     shooter.setShooterSetpoints(
         new ShooterSetpoints(controls.flywheelVelocity(), controls.shooterPitch()));
@@ -119,7 +119,7 @@ public class AutoAimedShootNeutral extends Command {
   @Override
   public void end(boolean interrupted) {
     shooter.stopFlywheels();
-    Logger.recordOutput("Commands/Another Auto Aimed Shoot", false);
+    Logger.recordOutput("Commands/Auto Aimed Shoot Neutral", false);
     feedCommand.cancel();
 
     feedEnabled = false;
