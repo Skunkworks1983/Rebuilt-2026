@@ -13,8 +13,8 @@ public class NoYawShootTransfer extends Command {
   private final Drive drive;
 
   /**
-   * Sets shooter to correct flywheel velocity and pivot pitch to shoot into the hub without
-   * controlling drive yaw
+   * Sets shooter to correct flywheel velocity and pivot pitch to shoot transfer without controlling
+   * drive yaw
    *
    * <p>This is primarily for autonomous
    *
@@ -30,7 +30,7 @@ public class NoYawShootTransfer extends Command {
 
   @Override
   public void initialize() {
-    Logger.recordOutput("Commands/Auto Shoot/Drive Aimed Goal No Yaw", true);
+    Logger.recordOutput("Commands/Auto Shoot/Drive Aimed Transfer No Yaw", true);
   }
 
   @Override
@@ -52,6 +52,6 @@ public class NoYawShootTransfer extends Command {
   public void end(boolean interrupted) {
     shooter.stopFlywheels();
     shooter.setPivotHome();
-    Logger.recordOutput("Commands/Auto Shoot/Drive Aimed Goal No Yaw", false);
+    Logger.recordOutput("Commands/Auto Shoot/Drive Aimed Transfer No Yaw", false);
   }
 }

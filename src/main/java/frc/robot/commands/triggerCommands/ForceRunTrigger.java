@@ -6,12 +6,14 @@ package frc.robot.commands.triggerCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.DriveAimedAutoShoot;
-import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.hopper.BedConstants;
 import frc.robot.subsystems.hopper.Hopper;
 import org.littletonrobotics.junction.Logger;
 
-/** Command that runs the trigger */
+/**
+ * Command that runs the trigger Note: This ONLY runs as the trigger, acting as an override, and
+ * does not spin up the flywheel
+ */
 public class ForceRunTrigger extends Command {
   Hopper hopper;
 
