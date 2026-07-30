@@ -41,55 +41,34 @@ public class Shooter extends SubsystemBase {
    * @param shooterVelocity Target flywheel angular velocity.
    * @param shooterPitch Target pivot angle.
    */
-  public record ShooterSetpoints(
-      AngularVelocity upperFlywheelVelocity,
-      AngularVelocity lowerFlywheelVelocity,
-      Angle shooterPitch) {}
+  public record ShooterSetpoints(AngularVelocity flywheelVelocity, Angle shooterPitch) {}
 
-  private final FlywheelIO upperFlywheel;
-  private final FlywheelIO lowerFlywheel;
-
+  private final FlywheelIO flywheel;
   private final PivotIO pivot;
-
   private final BeamBreakIO beamBreak;
 
-  private final FlywheelIOInputsAutoLogged upperFlywheelInputs = new FlywheelIOInputsAutoLogged();
-  private final FlywheelIOInputsAutoLogged lowerFlywheelInputs = new FlywheelIOInputsAutoLogged();
+  private final FlywheelIOInputsAutoLogged flywheelInputs = new FlywheelIOInputsAutoLogged();
   private final PivotIOInputsAutoLogged pivotInputs = new PivotIOInputsAutoLogged();
   private final BeamBreakIOInputsAutoLogged beamBreakInputs = new BeamBreakIOInputsAutoLogged();
 
-  @AutoLogOutput(key = "Shooter/Upper Flywheel/Setpoint")
-  private AngularVelocity upperFlywheelSetpoint = RadiansPerSecond.of(0.);
-
-  @AutoLogOutput(key = "Shooter/Lower Flywheel/Setpoint")
-  private AngularVelocity lowerFlywheelSetpoint = RadiansPerSecond.of(0.);
+  @AutoLogOutput(key = "Shooter/Flywheel/Setpoint")
+  private AngularVelocity flywheelSetpoint = RadiansPerSecond.of(0.);
 
   @AutoLogOutput(key = "Shooter/Pivot/Setpoint")
   private Angle pivotSetpoint = Radians.of(0.);
 
   private final SysIdRoutine sysId;
 
-  private static final LoggedTunableNumber upperFlywheelKP =
-      new LoggedTunableNumber("Shooter/Upper Flywheel/kP", ShooterConstants.upperFlywheelKP);
-  private static final LoggedTunableNumber upperFlywheelKD =
-      new LoggedTunableNumber("Shooter/Upper Flywheel/kD", ShooterConstants.upperFlywheelKD);
-  private static final LoggedTunableNumber upperFlywheelKS =
-      new LoggedTunableNumber("Shooter/Upper Flywheel/kS", ShooterConstants.upperFlywheelKS);
-  private static final LoggedTunableNumber upperFlywheelKV =
-      new LoggedTunableNumber("Shooter/Upper Flywheel/kV", ShooterConstants.upperFlywheelKV);
-  private static final LoggedTunableNumber upperFlywheelKA =
-      new LoggedTunableNumber("Shooter/Upper Flywheel/kA", ShooterConstants.upperFlywheelKA);
-
-  private static final LoggedTunableNumber lowerFlywheelKP =
-      new LoggedTunableNumber("Shooter/Lower Flywheel/kP", ShooterConstants.lowerFlywheelKP);
-  private static final LoggedTunableNumber lowerFlywheelKD =
-      new LoggedTunableNumber("Shooter/Lower Flywheel/kD", ShooterConstants.lowerFlywheelKD);
-  private static final LoggedTunableNumber lowerFlywheelKS =
-      new LoggedTunableNumber("Shooter/Lower Flywheel/kS", ShooterConstants.lowerFlywheelKS);
-  private static final LoggedTunableNumber lowerFlywheelKV =
-      new LoggedTunableNumber("Shooter/Lower Flywheel/kV", ShooterConstants.lowerFlywheelKV);
-  private static final LoggedTunableNumber lowerFlywheelKA =
-      new LoggedTunableNumber("Shooter/Lower Flywheel/kA", ShooterConstants.lowerFlywheelKA);
+  private static final LoggedTunableNumber flywheelKP =
+      new LoggedTunableNumber("Shooter/Upper Flywheel/kP", ShooterConstants.flywheelKP);
+  private static final LoggedTunableNumber flywheelKD =
+      new LoggedTunableNumber("Shooter/Upper Flywheel/kD", ShooterConstants.flywheelKD);
+  private static final LoggedTunableNumber flywheelKS =
+      new LoggedTunableNumber("Shooter/Upper Flywheel/kS", ShooterConstants.flywheelKS);
+  private static final LoggedTunableNumber flywheelKV =
+      new LoggedTunableNumber("Shooter/Upper Flywheel/kV", ShooterConstants.flywheelKV);
+  private static final LoggedTunableNumber flywheelKA =
+      new LoggedTunableNumber("Shooter/Upper Flywheel/kA", ShooterConstants.flywheelKA);
 
   private static final LoggedTunableNumber pivotKP =
       new LoggedTunableNumber("Shooter/Pivot/kP", ShooterConstants.pivotkP);
@@ -120,15 +99,12 @@ public class Shooter extends SubsystemBase {
   /**
    * Constructs a new Shooter instance.
    *
-   * @param forwardFlywheel The IO implementation for the forward (launch) flywheel.
-   * @param forwardFlywheel The IO implementation for the back flywheel.
+   * @param flywheel The IO implementation for the flywheel.
    * @param pivot The IO implementation for the pivot.
    * @param beamBreak The IO implementation for the beam break sensor.
    */
-  public Shooter(
-      FlywheelIO forwardFlywheel, FlywheelIO backFlywheel, PivotIO pivot, BeamBreakIO beamBreak) {
-    this.upperFlywheel = forwardFlywheel;
-    this.lowerFlywheel = backFlywheel;
+  public Shooter(FlywheelIO flywheel, PivotIO pivot, BeamBreakIO beamBreak) {
+    this.flywheel = flywheel;
     this.pivot = pivot;
     this.beamBreak = beamBreak;
 
@@ -146,83 +122,42 @@ public class Shooter extends SubsystemBase {
                 (state) -> SignalLogger.writeString("Shooter/SysIdState", state.toString())),
             new SysIdRoutine.Mechanism(
                 (voltage) -> runFlywheelTorqueCurrent(voltage.in(Volts)), null, this));
-
-    // This ensures upper flywheel gets upper PID and lower flywheel gets lower PID
-    // (the io defaults to upper)
-    upperFlywheel.setPID(
-        new Slot0Configs()
-            .withKP(ShooterConstants.upperFlywheelKP)
-            .withKD(ShooterConstants.upperFlywheelKD)
-            .withKS(ShooterConstants.upperFlywheelKS)
-            .withKV(ShooterConstants.upperFlywheelKV)
-            .withKA(ShooterConstants.upperFlywheelKA));
-    lowerFlywheel.setPID(
-        new Slot0Configs()
-            .withKP(ShooterConstants.lowerFlywheelKP)
-            .withKD(ShooterConstants.lowerFlywheelKD)
-            .withKS(ShooterConstants.lowerFlywheelKS)
-            .withKV(ShooterConstants.lowerFlywheelKV)
-            .withKA(ShooterConstants.lowerFlywheelKA));
   }
 
   @Override
   public void periodic() {
-    upperFlywheel.updateInputs(upperFlywheelInputs);
-    lowerFlywheel.updateInputs(lowerFlywheelInputs);
+    flywheel.updateInputs(flywheelInputs);
     pivot.updateInputs(pivotInputs);
     beamBreak.updateInputs(beamBreakInputs);
 
-    Logger.processInputs("Shooter/Flywheel/Lower Flywheel", lowerFlywheelInputs);
-    Logger.processInputs("Shooter/Flywheel/Upper Flywheel", upperFlywheelInputs);
+    Logger.processInputs("Shooter/Flywheel", flywheelInputs);
     Logger.processInputs("Shooter/Pivot", pivotInputs);
     Logger.processInputs("Shooter/BeamBreak", beamBreakInputs);
 
-    upperFlywheelDisconnectedAlert.set(!upperFlywheelInputs.connected);
-
-    lowerFlywheelDisconnectedAlert.set(!lowerFlywheelInputs.connected);
+    upperFlywheelDisconnectedAlert.set(!flywheelInputs.primaryConnected);
 
     pivotDisconnectedAlert.set(
         (!pivotInputs.motorConnected) && Constants.currentMode != Constants.Mode.SIM);
     if (Constants.tuningMode) {
       int hash = hashCode();
-      if (upperFlywheelKP.hasChanged(hash)
-          || upperFlywheelKD.hasChanged(hash)
-          || upperFlywheelKS.hasChanged(hash)
-          || upperFlywheelKV.hasChanged(hash)
-          || upperFlywheelKA.hasChanged(hash)) {
+      if (flywheelKP.hasChanged(hash)
+          || flywheelKD.hasChanged(hash)
+          || flywheelKS.hasChanged(hash)
+          || flywheelKV.hasChanged(hash)
+          || flywheelKA.hasChanged(hash)) {
         Slot0Configs gains = new Slot0Configs();
-        gains.kP = upperFlywheelKP.get();
-        gains.kD = upperFlywheelKD.get();
-        gains.kS = upperFlywheelKS.get();
-        gains.kV = upperFlywheelKV.get();
-        gains.kA = upperFlywheelKA.get();
-        upperFlywheel.setPID(gains);
+        gains.kP = flywheelKP.get();
+        gains.kD = flywheelKD.get();
+        gains.kS = flywheelKS.get();
+        gains.kV = flywheelKV.get();
+        gains.kA = flywheelKA.get();
+        flywheel.setPID(gains);
 
         Elastic.sendNotification(
             new Elastic.Notification(
                 Elastic.NotificationLevel.INFO,
                 "Shooter PID Update",
                 "Upper flywheel PID gains have been updated."));
-      }
-
-      if (lowerFlywheelKP.hasChanged(hash)
-          || lowerFlywheelKD.hasChanged(hash)
-          || lowerFlywheelKS.hasChanged(hash)
-          || lowerFlywheelKV.hasChanged(hash)
-          || lowerFlywheelKA.hasChanged(hash)) {
-        Slot0Configs gains = new Slot0Configs();
-        gains.kP = lowerFlywheelKP.get();
-        gains.kD = lowerFlywheelKD.get();
-        gains.kS = lowerFlywheelKS.get();
-        gains.kV = lowerFlywheelKV.get();
-        gains.kA = lowerFlywheelKA.get();
-        lowerFlywheel.setPID(gains);
-
-        Elastic.sendNotification(
-            new Elastic.Notification(
-                Elastic.NotificationLevel.INFO,
-                "Shooter PID Update",
-                "Lower flywheel PID gains have been updated."));
       }
 
       if (pivotKP.hasChanged(hash)
@@ -268,7 +203,7 @@ public class Shooter extends SubsystemBase {
    */
   public LinearVelocity getShooterForwardLinearVelocity() {
     return MetersPerSecond.of(
-        upperFlywheelInputs.angularVelocity.in(RadiansPerSecond)
+        flywheelInputs.primaryAngularVelocity.in(RadiansPerSecond)
             * ShooterConstants.flywheelRadius.in(Meters));
   }
 
@@ -278,7 +213,7 @@ public class Shooter extends SubsystemBase {
    * @param output The output torque current to apply.
    */
   private void runFlywheelTorqueCurrent(double output) {
-    upperFlywheel.setOpenLoopTorqueCurrent(Amps.of(output));
+    flywheel.setOpenLoopTorqueCurrent(Amps.of(output));
   }
 
   /** Returns a command to run a quasistatic test in the specified direction. */
@@ -301,8 +236,7 @@ public class Shooter extends SubsystemBase {
    * @param velocity The angular velocity to set.
    */
   public void setManualVelocity(AngularVelocity velocity) {
-    upperFlywheel.setVelocity(velocity);
-    lowerFlywheel.setVelocity(velocity);
+    flywheel.setVelocity(velocity);
   }
 
   /**
@@ -312,23 +246,19 @@ public class Shooter extends SubsystemBase {
    */
   @AutoLogOutput(key = "Shooter/canShoot")
   public boolean canShoot() {
-    return isUpperFlywheelAtSetpoint() && isLowerFlywheelAtSetpoint() && isPivotAtSetpoint();
+    return isFlywheelAtSetpoint() && isPivotAtSetpoint();
   }
 
   @AutoLogOutput(key = "Shooter/UpperFlywheelAtSetpoint")
-  public boolean isUpperFlywheelAtSetpoint() {
-    return MathUtil.isNear(
-        upperFlywheelSetpoint.in(RotationsPerSecond),
-        upperFlywheelInputs.angularVelocity.in(RotationsPerSecond),
-        ShooterConstants.flywheelVelocityTolerance.in(RotationsPerSecond));
-  }
-
-  @AutoLogOutput(key = "Shooter/LowerFlywheelAtSetpoint")
-  public boolean isLowerFlywheelAtSetpoint() {
-    return MathUtil.isNear(
-        lowerFlywheelSetpoint.in(RotationsPerSecond),
-        lowerFlywheelInputs.angularVelocity.in(RotationsPerSecond),
-        ShooterConstants.flywheelVelocityTolerance.in(RotationsPerSecond));
+  public boolean isFlywheelAtSetpoint() {
+    if (flywheelSetpoint.lte(RotationsPerSecond.of(70))) {
+      return MathUtil.isNear(
+          flywheelSetpoint.in(RotationsPerSecond),
+          flywheelInputs.primaryAngularVelocity.in(RotationsPerSecond),
+          ShooterConstants.flywheelVelocityTolerance.in(RotationsPerSecond));
+    } else {
+      return true;
+    }
   }
 
   @AutoLogOutput(key = "Shooter/PivotAtSetpoint")
@@ -354,7 +284,7 @@ public class Shooter extends SubsystemBase {
    * @return The flywheel AngularVelocity.
    */
   public AngularVelocity getFlywheelVelocity() {
-    return upperFlywheelInputs.angularVelocity;
+    return flywheelInputs.primaryAngularVelocity;
   }
 
   /**
@@ -363,24 +293,24 @@ public class Shooter extends SubsystemBase {
    * @param setpoints The calculated shooter controls containing pitch and velocity.
    */
   public void setShooterSetpoints(ShooterSetpoints setpoints) {
-    AngularVelocity targetUpperFlywheelSetpoint = setpoints.upperFlywheelVelocity();
-    AngularVelocity targetLowerFlywheelSetpoint = setpoints.lowerFlywheelVelocity();
+    AngularVelocity targetFlywheelSetpoint = setpoints.flywheelVelocity();
     Angle targetPivotSetpoint = setpoints.shooterPitch();
 
     Logger.recordOutput("Shooter/Setpoints", setpoints);
 
-    upperFlywheelSetpoint = targetUpperFlywheelSetpoint;
-    lowerFlywheelSetpoint = targetLowerFlywheelSetpoint;
+    flywheelSetpoint = targetFlywheelSetpoint;
     pivotSetpoint = targetPivotSetpoint;
 
     pivot.setPosition(targetPivotSetpoint);
-    upperFlywheel.setVelocity(targetUpperFlywheelSetpoint);
-    lowerFlywheel.setVelocity(targetLowerFlywheelSetpoint);
+    flywheel.setVelocity(targetFlywheelSetpoint);
   }
 
   public void stopFlywheels() {
-    upperFlywheel.setOpenLoopTorqueCurrent(Amps.of(0.0));
-    lowerFlywheel.setOpenLoopTorqueCurrent(Amps.of(0.0));
+    flywheel.setOpenLoopTorqueCurrent(Amps.of(0.0));
+  }
+
+  public AngularVelocity getFlywheelSetpoint() {
+    return flywheelSetpoint;
   }
 
   public boolean getBeamBreak() {

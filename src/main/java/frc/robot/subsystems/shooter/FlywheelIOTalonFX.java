@@ -9,6 +9,7 @@ import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.ParentDevice;
@@ -20,15 +21,20 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants;
 import frc.robot.Constants.Mode;
-import frc.robot.subsystems.shooter.ShooterConstants.FlywheelLevel;
 
 public class FlywheelIOTalonFX implements FlywheelIO {
-  protected final TalonFX flywheelMotor; // Protected for the sim
+  protected final TalonFX primaryFlywheelMotor; // Protected for the sim
+  protected final TalonFX followerFlywheelMotor;
 
-  private final StatusSignal<AngularVelocity> flywheelVelocity;
-  private final StatusSignal<Voltage> flywheelAppliedVolts;
-  private final StatusSignal<Current> flywheelCurrent;
-  private final StatusSignal<Current> flywheelTorqueCurrent;
+  private final StatusSignal<AngularVelocity> primaryFlywheelVelocity;
+  private final StatusSignal<Voltage> primaryFlywheelAppliedVolts;
+  private final StatusSignal<Current> primaryFlywheelCurrent;
+  private final StatusSignal<Current> primaryFlywheelTorqueCurrent;
+
+  private final StatusSignal<AngularVelocity> followerFlywheelVelocity;
+  private final StatusSignal<Voltage> followerFlywheelAppliedVolts;
+  private final StatusSignal<Current> followerFlywheelCurrent;
+  private final StatusSignal<Current> followerFlywheelTorqueCurrent;
 
   private final TorqueCurrentFOC torqueCurrentRequest = new TorqueCurrentFOC(0);
   private final VelocityTorqueCurrentFOC velocityTorqueCurrentRequest =
@@ -37,89 +43,119 @@ public class FlywheelIOTalonFX implements FlywheelIO {
   private final Debouncer primaryConnectedDebounce =
       new Debouncer(ShooterConstants.disconnectedDebounceTimeSec, Debouncer.DebounceType.kFalling);
 
+  private final Debouncer followerConnectedDebounce =
+      new Debouncer(ShooterConstants.disconnectedDebounceTimeSec, Debouncer.DebounceType.kFalling);
+
   /**
    * One TalonFX controlled shooter flywheel
    *
    * @param flywheelCanID This is primarily used to differentiate the two flywheels in logging
    */
-  public FlywheelIOTalonFX(int flywheelCanID, FlywheelLevel level) {
-    flywheelMotor = new TalonFX(flywheelCanID, ShooterConstants.shooterCan);
+  public FlywheelIOTalonFX() {
+    primaryFlywheelMotor =
+        new TalonFX(ShooterConstants.leftFlywheelMotorID, ShooterConstants.shooterCan);
+    followerFlywheelMotor =
+        new TalonFX(ShooterConstants.rightFlywheelMotorID, ShooterConstants.shooterCan);
 
-    TalonFXConfiguration flywheelConfig = new TalonFXConfiguration();
+    TalonFXConfiguration primaryFlywheelConfig = new TalonFXConfiguration();
 
-    flywheelConfig.Feedback.SensorToMechanismRatio = ShooterConstants.flywheelGearRatio;
+    primaryFlywheelConfig.Feedback.SensorToMechanismRatio = ShooterConstants.flywheelGearRatio;
 
-    flywheelConfig.MotorOutput.Inverted = ShooterConstants.flywheelMotorInverted;
-    flywheelConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    primaryFlywheelConfig.MotorOutput.Inverted = ShooterConstants.leftMotorInverted;
+    primaryFlywheelConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
-    flywheelConfig.ClosedLoopGeneral.ContinuousWrap = true;
+    primaryFlywheelConfig.ClosedLoopGeneral.ContinuousWrap = true;
 
-    if (level == FlywheelLevel.Upper) {
-      flywheelConfig.Slot0.kP = ShooterConstants.upperFlywheelKP;
-      flywheelConfig.Slot0.kI = 0.0;
-      flywheelConfig.Slot0.kD = ShooterConstants.upperFlywheelKD;
+    primaryFlywheelConfig.Slot0.kP = ShooterConstants.flywheelKP;
+    primaryFlywheelConfig.Slot0.kI = 0.0;
+    primaryFlywheelConfig.Slot0.kD = ShooterConstants.flywheelKD;
 
-      flywheelConfig.Slot0.kS = ShooterConstants.upperFlywheelKS;
-      flywheelConfig.Slot0.kV = ShooterConstants.upperFlywheelKV;
-      flywheelConfig.Slot0.kA = ShooterConstants.upperFlywheelKA;
-    } else {
-      flywheelConfig.Slot0.kP = ShooterConstants.lowerFlywheelKP;
-      flywheelConfig.Slot0.kI = 0.0;
-      flywheelConfig.Slot0.kD = ShooterConstants.lowerFlywheelKD;
+    primaryFlywheelConfig.Slot0.kS = ShooterConstants.flywheelKS;
+    primaryFlywheelConfig.Slot0.kV = ShooterConstants.flywheelKV;
+    primaryFlywheelConfig.Slot0.kA = ShooterConstants.flywheelKA;
 
-      flywheelConfig.Slot0.kS = ShooterConstants.lowerFlywheelKS;
-      flywheelConfig.Slot0.kV = ShooterConstants.lowerFlywheelKV;
-      flywheelConfig.Slot0.kA = ShooterConstants.lowerFlywheelKA;
-    }
-
-    flywheelConfig.MotionMagic.MotionMagicAcceleration =
+    primaryFlywheelConfig.MotionMagic.MotionMagicAcceleration =
         ShooterConstants.flywheelMaxAcceleration.in(RotationsPerSecondPerSecond);
 
-    flywheelConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-    flywheelConfig.CurrentLimits.StatorCurrentLimit =
-        ShooterConstants.flywheelStatorCurrentLimitAmps.in(Amps);
+    primaryFlywheelConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    primaryFlywheelConfig.CurrentLimits.SupplyCurrentLimit =
+        ShooterConstants.flywheelSupplyCurrentLimitAmps.in(Amps);
+
+    TalonFXConfiguration followerFlywheelConfig = new TalonFXConfiguration();
+    followerFlywheelConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    followerFlywheelConfig.CurrentLimits.SupplyCurrentLimit =
+        ShooterConstants.flywheelSupplyCurrentLimitAmps.in(Amps);
+
+    followerFlywheelConfig.Feedback.SensorToMechanismRatio = ShooterConstants.flywheelGearRatio;
 
     if (Constants.currentMode == Mode.SIM) {
-      flywheelConfig.Slot0 = ShooterConstants.simFlywheelConfigs;
+      primaryFlywheelConfig.Slot0 = ShooterConstants.simFlywheelConfigs;
     }
-    tryUntilOk(5, () -> flywheelMotor.getConfigurator().apply(flywheelConfig, 0.25));
+    tryUntilOk(5, () -> primaryFlywheelMotor.getConfigurator().apply(primaryFlywheelConfig, 0.25));
+    tryUntilOk(
+        5, () -> followerFlywheelMotor.getConfigurator().apply(followerFlywheelConfig, 0.25));
 
-    flywheelVelocity = flywheelMotor.getVelocity();
-    flywheelAppliedVolts = flywheelMotor.getMotorVoltage();
-    flywheelCurrent = flywheelMotor.getStatorCurrent();
-    flywheelTorqueCurrent = flywheelMotor.getTorqueCurrent();
+    primaryFlywheelVelocity = primaryFlywheelMotor.getVelocity();
+    primaryFlywheelAppliedVolts = primaryFlywheelMotor.getMotorVoltage();
+    primaryFlywheelCurrent = primaryFlywheelMotor.getStatorCurrent();
+    primaryFlywheelTorqueCurrent = primaryFlywheelMotor.getTorqueCurrent();
+
+    followerFlywheelVelocity = followerFlywheelMotor.getVelocity();
+    followerFlywheelAppliedVolts = followerFlywheelMotor.getMotorVoltage();
+    followerFlywheelCurrent = followerFlywheelMotor.getStatorCurrent();
+    followerFlywheelTorqueCurrent = followerFlywheelMotor.getTorqueCurrent();
 
     BaseStatusSignal.setUpdateFrequencyForAll(
-        50.0, flywheelVelocity, flywheelAppliedVolts, flywheelCurrent, flywheelTorqueCurrent);
+        50.0, primaryFlywheelVelocity, primaryFlywheelAppliedVolts, primaryFlywheelCurrent);
 
-    ParentDevice.optimizeBusUtilizationForAll(flywheelMotor);
+    BaseStatusSignal.setUpdateFrequencyForAll(250.0, primaryFlywheelTorqueCurrent);
+
+    ParentDevice.optimizeBusUtilizationForAll(primaryFlywheelMotor, followerFlywheelMotor);
+
+    followerFlywheelMotor.setControl(
+        new Follower(
+            ShooterConstants.leftFlywheelMotorID, ShooterConstants.flywheelMotorAlignment));
   }
 
   @Override
   public void setVelocity(AngularVelocity velocity) {
-    flywheelMotor.setControl(velocityTorqueCurrentRequest.withVelocity(velocity));
+    primaryFlywheelMotor.setControl(velocityTorqueCurrentRequest.withVelocity(velocity));
   }
 
   @Override
   public void setOpenLoopTorqueCurrent(Current output) {
-    flywheelMotor.setControl(torqueCurrentRequest.withOutput(output));
+    primaryFlywheelMotor.setControl(torqueCurrentRequest.withOutput(output));
   }
 
   @Override
   public void updateInputs(FlywheelIOInputs inputs) {
     StatusCode flywheelStatus =
         BaseStatusSignal.refreshAll(
-            flywheelVelocity, flywheelAppliedVolts, flywheelCurrent, flywheelTorqueCurrent);
+            primaryFlywheelVelocity,
+            primaryFlywheelAppliedVolts,
+            primaryFlywheelCurrent,
+            primaryFlywheelTorqueCurrent);
+    StatusCode followerFlywheelStatus =
+        BaseStatusSignal.refreshAll(
+            followerFlywheelVelocity,
+            followerFlywheelAppliedVolts,
+            followerFlywheelCurrent,
+            followerFlywheelTorqueCurrent);
+    inputs.primaryConnected = primaryConnectedDebounce.calculate(flywheelStatus.isOK());
+    inputs.primaryAngularVelocity = primaryFlywheelVelocity.getValue();
+    inputs.primaryAppliedVolts = primaryFlywheelAppliedVolts.getValue();
+    inputs.primaryStatorCurrentAmps = primaryFlywheelCurrent.getValue();
+    inputs.primaryTorqueCurrentAmps = primaryFlywheelTorqueCurrent.getValue();
 
-    inputs.connected = primaryConnectedDebounce.calculate(flywheelStatus.isOK());
-    inputs.angularVelocity = flywheelVelocity.getValue();
-    inputs.appliedVolts = flywheelAppliedVolts.getValue();
-    inputs.statorCurrentAmps = flywheelCurrent.getValue();
-    inputs.torqueCurrentAmps = flywheelTorqueCurrent.getValue();
+    inputs.followerConnected = followerConnectedDebounce.calculate(followerFlywheelStatus.isOK());
+    inputs.followerAngularVelocity = followerFlywheelVelocity.getValue();
+    inputs.followerAppliedVolts = followerFlywheelAppliedVolts.getValue();
+    inputs.followerStatorCurrentAmps = followerFlywheelCurrent.getValue();
+    inputs.followerTorqueCurrentAmps = followerFlywheelTorqueCurrent.getValue();
   }
 
   @Override
   public void setPID(Slot0Configs gains) {
-    tryUntilOk(5, () -> flywheelMotor.getConfigurator().apply(gains));
+    tryUntilOk(5, () -> primaryFlywheelMotor.getConfigurator().apply(gains));
   }
 }

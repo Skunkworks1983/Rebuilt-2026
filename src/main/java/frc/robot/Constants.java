@@ -18,7 +18,7 @@ public final class Constants {
   public static final Mode simMode = Mode.SIM;
   public static final Mode currentMode = Mode.REAL;
   public static final ControlScheme controlScheme = ControlScheme.OI;
-  public static final RobotHardware robotHardware = RobotHardware.Rebuilt;
+  public static final RobotHardware robotHardware = RobotHardware.RebuiltChassisOne;
   public static final TunerConstants tunerConstants = TunerConstants.getTunerConstants();
 
   public static final boolean tuningMode = false;
@@ -43,7 +43,8 @@ public final class Constants {
   public static enum RobotHardware {
     Swerveles,
     Reefscape,
-    Rebuilt
+    RebuiltChassisOne,
+    RebuiltChassisTwo
   }
 
   /** OI constants */
@@ -53,24 +54,29 @@ public final class Constants {
     public static final int RightJoystick = 1;
     public static final int ButtonJoystick = 2;
 
-    // Collector button joystick ID's
-    public static final int CollectorManualModeID = 8;
+    // Joystick Button ID's
+    public static final int joystickTrigger = 1; // left
+    public static final int joystickAutoAim = 1; // right
 
-    public static final int CollectorIntakeID = 3;
-    public static final int CollectorRightDownID = 17;
-    public static final int CollectorLeftDownID = 24;
-    public static final int CollectorManualUpID = 5;
+    // Collector ID's
+    public static final int CollectorIntakeID = 24;
     public static final int CollectorReverseIntakeID = 22;
-    public static final int CollectorManualPivotDown = 2;
-    public static final int CollectorManualPivotUp = 3;
+    public static final int CollectorPivotDown = 4;
+    public static final int CollectorPivotUp = 12;
 
     // Shooter button joystick ID's
     public static final int ShooterShootHubID = 15;
     public static final int ShooterShootTransferID = 13;
+    public static final int ShooterTriggerID = 24;
+    public static final int ShooterReverseTriggerID = 17;
 
-    public static final int ShooterIndexID = 12;
     // public static final int ShooterFlywheelSwitchID = 6;
     public static final int ShooterHoldToAimID = 1; // Jotstick trigger
     public static final int ShooterReverseIndexID = 18;
+
+    public static final int dontAgitate = 3;
+
+    public static final int gamepadCollect = 2;
+    public static final int gamepadCollectorReverse = 1;
   }
 }

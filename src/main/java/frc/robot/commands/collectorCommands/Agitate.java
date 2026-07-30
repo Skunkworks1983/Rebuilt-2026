@@ -10,18 +10,21 @@ import static edu.wpi.first.units.Units.Seconds;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.collector.Collector;
+import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.Logger;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class Agitate extends Command {
   Collector collector;
   Timer time;
+  BooleanSupplier agitate;
   /** Creates a new agitate. */
-  public Agitate(Collector collector) {
+  public Agitate(Collector collector, BooleanSupplier agitate) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.collector = collector;
     time = new Timer();
     addRequirements(collector);
+    this.agitate = agitate;
   }
 
   // Called when the command is initially scheduled.
@@ -30,19 +33,23 @@ public class Agitate extends Command {
     Logger.recordOutput("Commands/Collector/Agitate", true);
     time.reset();
     time.start();
-    collector.setCollectorPos(Radians.of(collector.getConstants().CollectorHalfPos.get()), 0);
-    collector.setCollectorIntakeVelocity(collector.getConstants().CollectorIntakeSpeed);
+    if (!agitate.getAsBoolean()) {
+      collector.setCollectorPos(Radians.of(collector.getConstants().CollectorHalfPos.get()), 0);
+      collector.setCollectorIntakeDutyCycle(.5);
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (time.hasElapsed(Seconds.of(collector.getConstants().agitatePeriod * 2))) {
-      time.reset();
-    } else if (time.hasElapsed(Seconds.of(collector.getConstants().agitatePeriod))) {
-      collector.setCollectorPos(Radians.of(collector.getConstants().CollectorHalfPos.get()), 0);
-    } else {
-      collector.goDown();
+    if (!agitate.getAsBoolean()) {
+      if (time.hasElapsed(Seconds.of(1.5))) {
+        time.reset();
+      } else if (time.hasElapsed(Seconds.of(.75))) {
+        collector.setCollectorPos(Radians.of(collector.getConstants().CollectorHalfPos.get()), 0);
+      } else {
+        collector.goDown();
+      }
     }
   }
 
@@ -50,8 +57,10 @@ public class Agitate extends Command {
   @Override
   public void end(boolean interrupted) {
     Logger.recordOutput("Commands/Collector/Agitate", false);
-    collector.goDown();
-    collector.setCollectorIntakeDutyCycle(0);
+    if (!agitate.getAsBoolean()) {
+      collector.goDown();
+      collector.setCollectorIntakeDutyCycle(0);
+    }
   }
 
   // Returns true when the command should end.

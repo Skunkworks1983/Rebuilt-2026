@@ -1,12 +1,10 @@
 package frc.robot.util;
 
 import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -44,8 +42,7 @@ public class ShooterCalculations {
    * @param possibleShot Whether the shot is physically possible given the constraints.
    */
   public record ShooterControls(
-      AngularVelocity upperFlywheelVelocity,
-      AngularVelocity lowerFlywheelVelocity,
+      AngularVelocity flywheelVelocity,
       Angle shooterPitch,
       Rotation2d driveYaw,
       boolean possibleShot) {}
@@ -147,48 +144,60 @@ public class ShooterCalculations {
     Translation2d releaseShooterPosField = releasePose.getTranslation().plus(shooterOffsetField);
 
     Translation2d targetVector = goal.toTranslation2d().minus(releaseShooterPosField);
+
     double trueDistance = targetVector.getNorm();
-    if (trueDistance < ShooterSolverConstants.closeShotDistance.in(Meters)) {
+    Logger.recordOutput("Shooter/Target Distance", trueDistance);
 
-      trueDistance = ShooterSolverConstants.closeShotDistance.in(Meters);
-      Logger.recordOutput("Shooter/Shooting Close", true);
-
-      AngularVelocity closeShotVelocity =
-          RotationsPerSecond.of(ShooterSolverConstants.closeShootVelocity.get());
-      Angle closeShotAngle = Degrees.of(ShooterSolverConstants.closeShootAngle.get());
-
-      return new ShooterControls(
-          closeShotVelocity,
-          closeShotVelocity.times(ShooterSolverConstants.lowerFlywheelVelocityMultiplier.get()),
-          closeShotAngle,
-          currentRobotRotation,
-          true);
-    }
     // Simple drag approximation
     double dragMultiplier = 1.0 + (ShooterSolverConstants.drag.get() * trueDistance);
     dragMultiplier = MathUtil.clamp(dragMultiplier, 1.0, ShooterSolverConstants.maxDragMultiplier);
     double distWithDrag = trueDistance * dragMultiplier;
 
+    double finalDistance = distWithDrag + ShooterSolverConstants.shooterDistanceAdder.get();
+
     double relativeGoalZ = goal.getZ() - ShooterConstants.shooterInitalPosition.getZ();
+    double apexHeight = ShooterSolverConstants.closeShotApexHeight.get();
+    if (trueDistance > ShooterSolverConstants.farShotDistance.get()) {
+      apexHeight = ShooterSolverConstants.farShotApexHeight.get();
+
+    } else if (trueDistance > ShooterSolverConstants.mediumShotDistance.get()) {
+      apexHeight = ShooterSolverConstants.mediumShotApexHeight.get();
+    }
+
+    Logger.recordOutput("Shooter/Apex Height", apexHeight);
 
     // Apex height calculation
-    double heightTrajectoryPeak = relativeGoalZ + ShooterSolverConstants.hubHeightClearance.get();
+    double heightTrajectoryPeak = relativeGoalZ + apexHeight; // (delta h for ballistic equation)
     heightTrajectoryPeak = Math.max(heightTrajectoryPeak, 0.1);
 
-    double launchVelocityZ = Math.sqrt(2.0 * ShooterSolverConstants.gravity * heightTrajectoryPeak);
+    double launchVelocityZ =
+        Math.sqrt(
+            2.0
+                * ShooterSolverConstants.gravity
+                * heightTrajectoryPeak); // ke = 1/2 m v^2, pe = mg(delta h), solve for v, gives
+    // required vertical velocity to make goal
 
     // Calculate the time for the ball to follow trajectory
-    double timeUp = launchVelocityZ / ShooterSolverConstants.gravity;
-    double heightDown = Math.max(heightTrajectoryPeak - relativeGoalZ, 0.0);
+    double timeUp =
+        launchVelocityZ / ShooterSolverConstants.gravity; // time = velocity / acceleration
+    double heightDown =
+        Math.max(
+            heightTrajectoryPeak - relativeGoalZ,
+            0.0); // ball starts at robot, goal is taller than robot -> use diff height for end than
+    // start
     double timeDescend = Math.sqrt(2.0 * heightDown / ShooterSolverConstants.gravity);
 
     double totalTime = timeUp + timeDescend;
-    totalTime = Math.max(totalTime, 1e-4);
+    totalTime =
+        Math.max(
+            totalTime, 1e-4); // a funny weird error happened because bad odo and now we have this
 
     // Speed required if the robot were standing still
-    double requiredHorizontalSpeed = distWithDrag / totalTime;
+    double requiredHorizontalSpeed =
+        finalDistance
+            / totalTime; // Horizontal v = delta x / time for ball to get to correct vertical height
 
-    // Angle to aim
+    // Yaw to aim
     Rotation2d angleToGoal = targetVector.getAngle();
     Translation2d stationaryLaunchVectorField =
         new Translation2d(requiredHorizontalSpeed, angleToGoal);
@@ -209,13 +218,25 @@ public class ShooterCalculations {
     // 3) Compensate using instantaneous shooter velocity at release
     Translation2d effectiveLaunchVectorField = stationaryLaunchVectorField.minus(shooterVelField);
 
-    Rotation2d finalDriveYaw = effectiveLaunchVectorField.getAngle();
+    Rotation2d finalDriveYaw = effectiveLaunchVectorField.getAngle().minus(new Rotation2d(Math.PI));
 
     double effectiveHorizontalSpeed = effectiveLaunchVectorField.getNorm();
-    double ballExitSpeed = Math.hypot(effectiveHorizontalSpeed, launchVelocityZ);
-    double flywheelSurfaceSpeed = ballExitSpeed / ShooterSolverConstants.flywheelEfficiency.get();
+    double ballExitSpeed =
+        Math.hypot(
+            effectiveHorizontalSpeed,
+            launchVelocityZ); // Make a right triangle of horizontal and vertical velocity, net
+    // speed is hypotenuse
+    double flywheelSurfaceSpeed =
+        ballExitSpeed
+            / ShooterSolverConstants.flywheelEfficiency
+                .get(); // Allow tunability (especially because only flywheel on bottom, so half v
+    // become rotational motion rather than translational)
 
-    double finalPitch = Math.atan2(launchVelocityZ, effectiveHorizontalSpeed);
+    double finalPitch =
+        Math.atan2(
+            launchVelocityZ,
+            effectiveHorizontalSpeed); // Split net veloicty between horizontal and vertical
+    // velocity
     finalPitch =
         MathUtil.clamp(
             finalPitch,
@@ -246,9 +267,6 @@ public class ShooterCalculations {
 
     return new ShooterControls(
         RadiansPerSecond.of(flywheelSurfaceSpeed / ShooterConstants.flywheelRadius.in(Meters)),
-        RadiansPerSecond.of(
-            (flywheelSurfaceSpeed / ShooterConstants.flywheelRadius.in(Meters))
-                * ShooterSolverConstants.lowerFlywheelVelocityMultiplier.get()),
         Radians.of(finalPitch),
         finalDriveYaw,
         true);
@@ -271,7 +289,7 @@ public class ShooterCalculations {
   public static ShooterControls getShooterControlsTransfer(
       ChassisSpeeds speeds, Pose2d odometryPose, LinearVelocity flywheelLinearVelocity) {
     boolean isLeft =
-        odometryPose.getTranslation().getY() > FieldConstants.FIELD_WIDTH_INCHES.in(Inches) / 2.0;
+        odometryPose.getTranslation().getY() > FieldConstants.FIELD_WIDTH_INCHES.in(Meters) / 2.0;
 
     Translation2d target;
     Alliance alliance =
@@ -387,7 +405,8 @@ public class ShooterCalculations {
           Math.sqrt((ShooterSolverConstants.gravity * distanceToTargetMeters) / sinTwoTheta);
       calculatedProjectileVelocity = requiredProjectileVelocity;
     } else {
-      calculatedProjectileVelocity = ShooterConstants.defaultVelocityTransfer.in(RadiansPerSecond);
+      calculatedProjectileVelocity =
+          ShooterConstants.defaultVelocityTransferFar.in(RadiansPerSecond);
     }
 
     // Convert solved projectile velocity back into required flywheel surface
@@ -395,12 +414,16 @@ public class ShooterCalculations {
     double calculatedFlywheelVelocity =
         calculatedProjectileVelocity / ShooterSolverConstants.flywheelEfficiency.get();
 
+    finalYaw = finalYaw.minus(new Rotation2d(Math.PI));
+
+    MathUtil.clamp(
+        calculatedPitch.in(Degrees),
+        ShooterConstants.minShooterPitch.in(Degrees),
+        ShooterConstants.maxShooterPitch.in(Degrees));
+
     return new ShooterControls(
         RadiansPerSecond.of(
             calculatedFlywheelVelocity / ShooterConstants.flywheelRadius.in(Meters)),
-        RadiansPerSecond.of(
-            (calculatedFlywheelVelocity / ShooterConstants.flywheelRadius.in(Meters))
-                * ShooterSolverConstants.lowerFlywheelVelocityMultiplier.get()),
         calculatedPitch,
         finalYaw,
         true);
@@ -473,9 +496,6 @@ public class ShooterCalculations {
 
     return new ShooterControls(
         RadiansPerSecond.of(flywheelRadPerSec / ShooterSolverConstants.flywheelEfficiency.get()),
-        RadiansPerSecond.of(
-            (flywheelRadPerSec / ShooterSolverConstants.flywheelEfficiency.get())
-                * ShooterSolverConstants.lowerFlywheelVelocityMultiplier.get()),
         Radians.of(hoodAngle.getRadians()),
         driveYaw,
         true);

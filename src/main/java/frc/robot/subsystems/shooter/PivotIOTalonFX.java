@@ -9,17 +9,21 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.CANdiConfiguration;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.CANdi;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.ForwardLimitTypeValue;
 import com.ctre.phoenix6.signals.ReverseLimitTypeValue;
+import com.ctre.phoenix6.signals.S1CloseStateValue;
+import com.ctre.phoenix6.signals.S2CloseStateValue;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularAcceleration;
@@ -30,6 +34,7 @@ import edu.wpi.first.units.measure.Voltage;
 public class PivotIOTalonFX implements PivotIO {
   protected final TalonFX pivotMotor;
   protected final CANcoder pivotEncoder;
+  private final CANdi candi;
 
   private final StatusSignal<Angle> pivotPosition;
   private final StatusSignal<Voltage> pivotAppliedVolts;
@@ -52,6 +57,13 @@ public class PivotIOTalonFX implements PivotIO {
   public PivotIOTalonFX() {
     pivotMotor = new TalonFX(ShooterConstants.pivotMotorId, ShooterConstants.shooterCan);
     pivotEncoder = new CANcoder(ShooterConstants.pivotEncoderId, ShooterConstants.shooterCan);
+    candi = new CANdi(ShooterConstants.shooterCandiId, ShooterConstants.shooterCan);
+
+    CANdiConfiguration candiConfig = new CANdiConfiguration();
+    candiConfig.DigitalInputs.S1CloseState = S1CloseStateValue.CloseWhenLow;
+    candiConfig.DigitalInputs.S2CloseState = S2CloseStateValue.CloseWhenLow;
+    tryUntilOk(5, () -> candi.getConfigurator().apply(candiConfig, 0.25));
+
     CANcoderConfiguration encoderConfig = new CANcoderConfiguration();
     encoderConfig.MagnetSensor.MagnetOffset = ShooterConstants.pivotEncoderTotalOffset;
     encoderConfig.MagnetSensor.SensorDirection = ShooterConstants.pivotEncoderDirection;

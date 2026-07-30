@@ -13,6 +13,7 @@ import static frc.robot.util.PhoenixUtil.*;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.PositionVoltage;
@@ -106,8 +107,6 @@ public class ModuleIOTalonFX implements ModuleIO {
 
     // Configure drive motor
     var driveConfig = constants.DriveMotorInitialConfigs;
-    driveConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.1;
-    driveConfig.ClosedLoopRamps.TorqueClosedLoopRampPeriod = 0.1;
     driveConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     driveConfig.Slot0 = constants.DriveMotorGains;
     driveConfig.Feedback.SensorToMechanismRatio = constants.DriveMotorGearRatio;
@@ -267,5 +266,15 @@ public class ModuleIOTalonFX implements ModuleIO {
           case TorqueCurrentFOC -> positionTorqueCurrentRequest.withPosition(
               rotation.getRotations());
         });
+  }
+
+  @Override
+  public void setDrivePID(Slot0Configs gains) {
+    tryUntilOk(5, () -> driveTalon.getConfigurator().apply(gains, 0.25));
+  }
+
+  @Override
+  public void setTurnPID(Slot0Configs gains) {
+    tryUntilOk(5, () -> turnTalon.getConfigurator().apply(gains, 0.25));
   }
 }

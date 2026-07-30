@@ -16,7 +16,7 @@ public class ShooterSolverConstants {
 
   /** Air drag coefficient approximation. */
   public static LoggedTunableNumber drag =
-      new LoggedTunableNumber("Shooter/Air Drag Coefficient", 0.083);
+      new LoggedTunableNumber("Shooter/Air Drag Coefficient", 0.084);
 
   /** Maximum multiplier to apply for drag compensation. */
   public static final double maxDragMultiplier = 3;
@@ -26,12 +26,17 @@ public class ShooterSolverConstants {
    * half the velocity is converted to spin
    */
   public static final LoggedTunableNumber flywheelEfficiency =
-      new LoggedTunableNumber("Flywheel Efficiency", 0.47);
+      new LoggedTunableNumber("Flywheel Efficiency", 0.495);
 
   // CONSTRAINED HEIGHT SOLVER
   /** Vertical clearance required above the hub for specialized constrained shots. */
-  public static LoggedTunableNumber hubHeightClearance =
-      new LoggedTunableNumber("Shooter/Hub Height Clearance Meters", 0.5);
+  public static LoggedTunableNumber closeShotApexHeight =
+      new LoggedTunableNumber("Shooter/Close Shot Apex Height Meters", 0.5);
+
+  public static LoggedTunableNumber farShotApexHeight =
+      new LoggedTunableNumber("Shooter/Far Shot Apex Height Meters", 1.7);
+  public static LoggedTunableNumber farShotDistance =
+      new LoggedTunableNumber("Shooter/Far Shot Distance Meters", 2.8);
 
   public static final LoggedTunableNumber lowerFlywheelVelocityMultiplier =
       new LoggedTunableNumber("Lower Flywheel Velocity Multiplier", 1.15);
@@ -60,4 +65,13 @@ public class ShooterSolverConstants {
       new LoggedTunableNumber("Shooter/Close Shoot Velocity RPS", 47);
   public static final LoggedTunableNumber closeShootAngle =
       new LoggedTunableNumber("Shooter/Close Shoot Angle Deg", 76.5);
+
+  public static final LoggedTunableNumber shooterDistanceAdder =
+      new LoggedTunableNumber("Shooter/Distance Adder", 0.07);
+
+  public static final LoggedTunableNumber mediumShotDistance =
+      new LoggedTunableNumber("Shooter/Medium Shot Distance", 2);
+
+  public static final LoggedTunableNumber mediumShotApexHeight =
+      new LoggedTunableNumber("Shooter/Medium Shot Apex Height Meters", .85);
 }

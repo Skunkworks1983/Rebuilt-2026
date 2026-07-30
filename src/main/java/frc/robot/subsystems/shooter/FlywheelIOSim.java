@@ -6,13 +6,11 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
-import frc.robot.subsystems.shooter.ShooterConstants.FlywheelLevel;
 
 public class FlywheelIOSim extends FlywheelIOTalonFX {
   private final FlywheelSim flywheelSim;
 
-  public FlywheelIOSim(int motorId, FlywheelLevel level) {
-    super(motorId, level);
+  public FlywheelIOSim() {
     flywheelSim =
         new FlywheelSim(
             LinearSystemId.createFlywheelSystem(
@@ -21,12 +19,12 @@ public class FlywheelIOSim extends FlywheelIOTalonFX {
                 ShooterConstants.flywheelGearRatio),
             DCMotor.getKrakenX60Foc(1));
 
-    super.flywheelMotor.getConfigurator().apply(ShooterConstants.simFlywheelConfigs);
+    super.primaryFlywheelMotor.getConfigurator().apply(ShooterConstants.simFlywheelConfigs);
   }
 
   @Override
   public void updateInputs(FlywheelIOInputs inputs) {
-    var talonFXSim = super.flywheelMotor.getSimState();
+    var talonFXSim = super.primaryFlywheelMotor.getSimState();
 
     talonFXSim.Orientation = ChassisReference.Clockwise_Positive;
     talonFXSim.setSupplyVoltage(RobotController.getBatteryVoltage());
@@ -39,10 +37,10 @@ public class FlywheelIOSim extends FlywheelIOTalonFX {
     talonFXSim.setRotorVelocity(
         flywheelSim.getAngularVelocity().times(ShooterConstants.flywheelGearRatio));
 
-    inputs.connected = true;
-    inputs.angularVelocity = flywheelSim.getAngularVelocity();
-    inputs.appliedVolts = primaryAppliedVolts;
-    inputs.statorCurrentAmps = talonFXSim.getSupplyCurrentMeasure();
-    inputs.torqueCurrentAmps = talonFXSim.getTorqueCurrentMeasure();
+    inputs.primaryConnected = true;
+    inputs.primaryAngularVelocity = flywheelSim.getAngularVelocity();
+    inputs.primaryAppliedVolts = primaryAppliedVolts;
+    inputs.primaryStatorCurrentAmps = talonFXSim.getSupplyCurrentMeasure();
+    inputs.primaryTorqueCurrentAmps = talonFXSim.getTorqueCurrentMeasure();
   }
 }

@@ -1,0 +1,141 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.568232502965599,
+        "y": 4.0
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.2659306408302715,
+        "y": 4.163741649180961
+      },
+      "isLocked": false,
+      "linkedName": "Middle 90 Start"
+    },
+    {
+      "anchor": {
+        "x": 1.33,
+        "y": 4.837
+      },
+      "prevControl": {
+        "x": 1.968066430741957,
+        "y": 4.837
+      },
+      "nextControl": {
+        "x": 1.0259990432333672,
+        "y": 4.837
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 0.415,
+        "y": 5.331
+      },
+      "prevControl": {
+        "x": 0.415,
+        "y": 4.926393656211197
+      },
+      "nextControl": {
+        "x": 0.41500000000000004,
+        "y": 5.804214361554646
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 0.415,
+        "y": 6.386
+      },
+      "prevControl": {
+        "x": 0.415,
+        "y": 6.136
+      },
+      "nextControl": {
+        "x": 0.41500000000000004,
+        "y": 6.876095496042672
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.0183036773428242,
+        "y": 7.02067615658363
+      },
+      "prevControl": {
+        "x": 0.7429612470285696,
+        "y": 6.980526836973166
+      },
+      "nextControl": {
+        "x": 1.4243978813665443,
+        "y": 7.079891171031992
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.6530960854092531,
+        "y": 6.3858837485172
+      },
+      "prevControl": {
+        "x": 1.7036788047111462,
+        "y": 6.6912338087298275
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Middle Depot Shoot"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.65,
+      "rotationDegrees": 90.0
+    },
+    {
+      "waypointRelativePos": 2.9,
+      "rotationDegrees": 90.0
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 1.65,
+      "maxWaypointRelativePos": 3.2,
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 2.5,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 2.5,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 139.53777250790665
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 90.0
+  },
+  "useDefaultConstraints": true
+}

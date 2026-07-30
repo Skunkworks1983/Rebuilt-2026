@@ -10,6 +10,7 @@ package frc.robot.subsystems.drive;
 import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.CANBus;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.ModuleConfig;
@@ -53,6 +54,7 @@ import frc.robot.Constants.Mode;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.vision.Vision.VisionConsumer;
 import frc.robot.util.LocalADStarAK;
+import frc.robot.util.LoggedTunableNumber;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
@@ -70,6 +72,37 @@ public class Drive extends SubsystemBase implements VisionConsumer {
   private static final TunerConstants tunerConstants = Constants.tunerConstants;
   private static final SwerveDrivetrainConstants driveConstants =
       tunerConstants.getSwerveDrivetrainConstants();
+
+  private static final Slot0Configs defaultDriveGains =
+      tunerConstants.getFrontLeft().DriveMotorGains;
+  private static final Slot0Configs defaultTurnGains =
+      tunerConstants.getFrontLeft().SteerMotorGains;
+
+  private static final LoggedTunableNumber driveKP =
+      new LoggedTunableNumber("Drive/PID/Drive/kP", defaultDriveGains.kP);
+  private static final LoggedTunableNumber driveKI =
+      new LoggedTunableNumber("Drive/PID/Drive/kI", defaultDriveGains.kI);
+  private static final LoggedTunableNumber driveKD =
+      new LoggedTunableNumber("Drive/PID/Drive/kD", defaultDriveGains.kD);
+  private static final LoggedTunableNumber driveKS =
+      new LoggedTunableNumber("Drive/PID/Drive/kS", defaultDriveGains.kS);
+  private static final LoggedTunableNumber driveKV =
+      new LoggedTunableNumber("Drive/PID/Drive/kV", defaultDriveGains.kV);
+  private static final LoggedTunableNumber driveKA =
+      new LoggedTunableNumber("Drive/PID/Drive/kA", defaultDriveGains.kA);
+
+  private static final LoggedTunableNumber turnKP =
+      new LoggedTunableNumber("Drive/PID/Turn/kP", defaultTurnGains.kP);
+  private static final LoggedTunableNumber turnKI =
+      new LoggedTunableNumber("Drive/PID/Turn/kI", defaultTurnGains.kI);
+  private static final LoggedTunableNumber turnKD =
+      new LoggedTunableNumber("Drive/PID/Turn/kD", defaultTurnGains.kD);
+  private static final LoggedTunableNumber turnKS =
+      new LoggedTunableNumber("Drive/PID/Turn/kS", defaultTurnGains.kS);
+  private static final LoggedTunableNumber turnKV =
+      new LoggedTunableNumber("Drive/PID/Turn/kV", defaultTurnGains.kV);
+  private static final LoggedTunableNumber turnKA =
+      new LoggedTunableNumber("Drive/PID/Turn/kA", defaultTurnGains.kA);
 
   // TunerConstants doesn't include these constants, so they are declared locally
   static final double ODOMETRY_FREQUENCY =
@@ -90,10 +123,10 @@ public class Drive extends SubsystemBase implements VisionConsumer {
                   tunerConstants.getBackRight().LocationY)));
 
   // PathPlanner config constants
-  private static final double ROBOT_MASS_KG = 54.8; // With bumpers and battery
+  private static final double ROBOT_MASS_KG = 48.08; // With bumpers and battery
   private static final double ROBOT_MOI = 6.583;
   private static final double WHEEL_COF = 1.2;
-  private static final AngularVelocity MAX_MODULE_OMEGA_RAD_PER_SEC = RadiansPerSecond.of(18.0);
+  private static final AngularVelocity MAX_MODULE_OMEGA_RAD_PER_SEC = RadiansPerSecond.of(15.0);
   private static final RobotConfig PP_CONFIG =
       new RobotConfig(
           ROBOT_MASS_KG,
@@ -182,7 +215,7 @@ public class Drive extends SubsystemBase implements VisionConsumer {
         this::getChassisSpeeds,
         this::runVelocity,
         new PPHolonomicDriveController(
-            new PIDConstants(8.0, 0.0, 0.0), new PIDConstants(5.0, 0.0, 0.0)),
+            new PIDConstants(7.5, 0.0, 0.0), new PIDConstants(5, 0.0, 0.0)),
         PP_CONFIG,
         () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
         this);
@@ -224,6 +257,54 @@ public class Drive extends SubsystemBase implements VisionConsumer {
     }
     odometryLock.unlock();
 
+    if (Constants.tuningMode) {
+      int hash = hashCode();
+
+      // Drive motor PID
+      LoggedTunableNumber.ifChanged(
+          hash,
+          values -> {
+            Slot0Configs gains = new Slot0Configs();
+            gains.kP = values[0];
+            gains.kI = values[1];
+            gains.kD = values[2];
+            gains.kS = values[3];
+            gains.kV = values[4];
+            gains.kA = values[5];
+            for (Module module : modules) {
+              module.setDrivePID(gains);
+            }
+          },
+          driveKP,
+          driveKI,
+          driveKD,
+          driveKS,
+          driveKV,
+          driveKA);
+
+      // Turn motor PID
+      LoggedTunableNumber.ifChanged(
+          hash,
+          values -> {
+            Slot0Configs gains = new Slot0Configs();
+            gains.kP = values[0];
+            gains.kI = values[1];
+            gains.kD = values[2];
+            gains.kS = values[3];
+            gains.kV = values[4];
+            gains.kA = values[5];
+            for (Module module : modules) {
+              module.setTurnPID(gains);
+            }
+          },
+          turnKP,
+          turnKI,
+          turnKD,
+          turnKS,
+          turnKV,
+          turnKA);
+    }
+
     // Stop moving when disabled
     if (DriverStation.isDisabled()) {
       for (var module : modules) {
@@ -235,6 +316,9 @@ public class Drive extends SubsystemBase implements VisionConsumer {
     if (DriverStation.isDisabled()) {
       Logger.recordOutput("SwerveStates/Setpoints", new SwerveModuleState[] {});
       Logger.recordOutput("SwerveStates/SetpointsOptimized", new SwerveModuleState[] {});
+
+      field.setRobotPose(poseEstimator.getEstimatedPosition());
+      SmartDashboard.putData("Cur Pose", field);
     }
 
     // Update odometry
@@ -270,7 +354,6 @@ public class Drive extends SubsystemBase implements VisionConsumer {
       field.setRobotPose(poseEstimator.getEstimatedPosition());
       SmartDashboard.putData("Cur Pose", field);
     }
-
     // Update gyro alert
     gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);
   }
@@ -382,7 +465,9 @@ public class Drive extends SubsystemBase implements VisionConsumer {
   /** Returns the current odometry pose. */
   @AutoLogOutput(key = "Odometry/Robot")
   public Pose2d getPose() {
-    return poseEstimator.getEstimatedPosition();
+    Pose2d pose = poseEstimator.getEstimatedPosition();
+    field.setRobotPose(pose);
+    return pose;
   }
 
   /** Returns the current odometry rotation. */

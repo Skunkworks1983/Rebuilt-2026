@@ -5,13 +5,13 @@
     "data": {
       "commands": [
         {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Through Far Trench"
+                  "pathName": "Through Close Tunnel"
                 }
               },
               {
@@ -24,19 +24,19 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Collect Close"
+                }
+              },
               {
                 "type": "named",
                 "data": {
                   "name": "Run Collector"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Collect Far"
                 }
               }
             ]
@@ -45,7 +45,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Far Trench Return"
+            "pathName": "Close Trench Return"
           }
         },
         {
@@ -61,32 +61,64 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 5.0
+                  "waitTime": 4.5
                 }
               }
             ]
           }
         },
         {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Collect Outpost"
+                  "pathName": "CloseToHuman"
+                }
+              },
+              {
+                "type": "deadline",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Reverse Collector"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.25
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.25
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "HumanToClose"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Lower Collector"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Run Collector"
+                  "name": "Ramp Shooter"
                 }
               }
             ]

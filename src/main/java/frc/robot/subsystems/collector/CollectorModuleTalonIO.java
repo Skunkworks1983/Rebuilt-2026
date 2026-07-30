@@ -7,7 +7,6 @@ package frc.robot.subsystems.collector;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Radians;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
@@ -31,6 +30,7 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.collector.collectorConstants.CollectorModuleConstants;
 import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
@@ -101,6 +101,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     // Config for turnMotor
     var turnConfig = new TalonFXConfiguration();
     turnConfig.CurrentLimits.SupplyCurrentLimit = constants.turnSupplyCurrent;
+    turnConfig.CurrentLimits.StatorCurrentLimit = constants.turnStatorCurrent;
     turnConfig.Feedback.SensorToMechanismRatio = constants.turnMotorGearRatio;
     turnConfig.MotorOutput.Inverted = constants.turnInvert;
 
@@ -126,25 +127,21 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     intakeConfig.CurrentLimits.SupplyCurrentLimit = constants.intakeSupplyCurrent;
     intakeConfig.MotorOutput.Inverted = constants.intakeInvertedValue;
 
-    if (RobotBase.isReal()) {
-      intakeConfig.Slot0.kP = constants.intakekP;
-      intakeConfig.Slot0.kD = constants.intakekD;
-      intakeConfig.Slot0.kI = constants.intakekI;
-      intakeConfig.Slot0.kV = constants.intakekV;
-      turnSlot0Configs.kP = constants.turnkP;
-      turnSlot0Configs.kD = constants.turnkD;
-      turnSlot0Configs.kI = constants.turnkI;
-    } else if (RobotBase.isSimulation()) {
+    intakeConfig.Slot0.kP = constants.intakekP;
+    intakeConfig.Slot0.kD = constants.intakekD;
+    intakeConfig.Slot0.kI = constants.intakekI;
+    intakeConfig.Slot0.kV = constants.intakekV;
+    turnSlot0Configs.kP = constants.turnkP;
+    turnSlot0Configs.kD = constants.turnkD;
+    turnSlot0Configs.kI = constants.turnkI;
+
+    if (RobotBase.isSimulation()) {
       intakeConfig.Slot0.kP = constants.SimIntakekP;
       intakeConfig.Slot0.kD = constants.SimIntakekD;
       intakeConfig.Slot0.kI = constants.SimIntakekI;
       turnSlot0Configs.kP = constants.SimTurnkP;
       turnSlot0Configs.kD = constants.SimTurnkD;
       turnSlot0Configs.kI = constants.SimTurnkI;
-    } else {
-      turnSlot0Configs.kP = constants.turnkP;
-      turnSlot0Configs.kD = constants.turnkD;
-      turnSlot0Configs.kI = constants.turnkI;
     }
 
     collectorIntakeVelocity =
@@ -153,6 +150,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
 
     // Applying Intake Configs
     tryUntilOk(5, () -> intakeMotor.getConfigurator().apply(intakeConfig, 0.25));
+    tryUntilOk(5, () -> turnMotor.getConfigurator().apply(turnConfig, 0.25));
 
     // Create turn status signals
     turnPosition = turnMotor.getPosition();
@@ -239,12 +237,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
    * @param velocity -Angular Velocity
    */
   public void setCollectorIntakeVelocity(AngularVelocity velocity) {
-    intakeVelocitySetPoint = velocity;
-    if (!velocity.equals(lastVelocity)) {
-      intakeMotor.setControl(
-          new VelocityVoltage(RadiansPerSecond.of(collectorIntakeVelocity.get())));
-      lastVelocity = velocity;
-    }
+    intakeMotor.setControl(new VelocityVoltage(velocity));
   }
 
   /** sets Just the encoder pos */
@@ -324,7 +317,11 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
 
   /** Sets Collector to its up position */
   public void goDown() {
-    setCollectorPos(Radians.of(constants.CollectorDownPos.get()), 0);
+    if (Constants.tuningMode == true) {
+      setCollectorPos(Radians.of(constants.CollectorDownPos.get()), 0);
+    } else {
+      setCollectorPos(CollectorModuleConstants.CollectorDownPosDefault, 0);
+    }
   }
 
   @Override

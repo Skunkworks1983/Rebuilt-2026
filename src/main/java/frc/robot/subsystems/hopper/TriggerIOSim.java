@@ -14,24 +14,23 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
 /** This is the Trigger IO sim */
-public class TriggerIOSim extends TriggerIOTalonFXS {
+public class TriggerIOSim extends TriggerIOTalonFX {
   DCMotorSim triggerMotorSim;
   Voltage voltage;
 
-  public TriggerIOSim(int motorID) {
-    super(motorID);
+  public TriggerIOSim() {
     LinearSystem linearSystem = LinearSystemId.createDCMotorSystem(0.002, 0.02);
 
     double[] stdevs = {0.00, 0.00};
 
-    triggerMotorSim = new DCMotorSim(linearSystem, DCMotor.getMinion(1), stdevs);
+    triggerMotorSim = new DCMotorSim(linearSystem, DCMotor.getKrakenX60(1), stdevs);
   }
 
   @Override
   public void updateInputs(TriggerIOInputs input) {
-    var talonFXSim = super.triggerMotor.getSimState();
+    var talonFXSim = super.primaryTriggerMotor.getSimState();
 
-    talonFXSim.MotorOrientation = ChassisReference.Clockwise_Positive;
+    talonFXSim.Orientation = ChassisReference.Clockwise_Positive;
     talonFXSim.setSupplyVoltage(RobotController.getBatteryVoltage());
 
     Voltage primaryAppliedVolts = talonFXSim.getMotorVoltageMeasure();
@@ -45,10 +44,10 @@ public class TriggerIOSim extends TriggerIOTalonFXS {
 
     triggerMotorSim.update(0.020);
 
-    input.connected = true;
-    input.position = triggerMotorSim.getAngularPosition();
-    input.angularVelocity = triggerMotorSim.getAngularVelocity();
-    input.appliedVolts = primaryAppliedVolts;
-    input.currentAmps = Units.Amps.of(triggerMotorSim.getCurrentDrawAmps());
+    input.primaryConnected = true;
+    input.primaryPosition = triggerMotorSim.getAngularPosition();
+    input.primaryAngularVelocity = triggerMotorSim.getAngularVelocity();
+    input.primaryAppliedVolts = primaryAppliedVolts;
+    input.primaryCurrentAmps = Units.Amps.of(triggerMotorSim.getCurrentDrawAmps());
   }
 }

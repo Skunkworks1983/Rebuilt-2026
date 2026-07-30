@@ -4,30 +4,37 @@
 
 package frc.robot.commands.triggerCommands;
 
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.hopper.BedConstants;
 import frc.robot.subsystems.hopper.Hopper;
 import frc.robot.subsystems.hopper.TriggerConstants;
 import org.littletonrobotics.junction.Logger;
 
-/** Command that runs the trigger in reveres */
-public class ReverseIndexCommand extends Command {
+/** Command that runs the Trigger */
+public class ReverseTriggerCommand extends Command {
   Hopper hopper;
 
-  public ReverseIndexCommand(Hopper hopper) {
+  public ReverseTriggerCommand(Hopper hopper) {
     this.hopper = hopper;
     addRequirements(hopper);
   }
 
   @Override
   public void initialize() {
-    hopper.setTriggerDutyCycle(TriggerConstants.triggerDutyCycleSpeedReverse.get());
-    Logger.recordOutput("Commands/Reverse Index Command is Running", true);
+    hopper.setTriggerVelocity(
+        RotationsPerSecond.of(TriggerConstants.triggerAngularVelocityRotationsPerSecond.get())
+            .unaryMinus());
+    hopper.setHopperDutyCycle(BedConstants.hopperDutyCycleSpeedReverse.get());
+    Logger.recordOutput("Hopper/Reverse Trigger Command is Running", true);
   }
 
   @Override
   public void end(boolean interrupted) {
     hopper.setTriggerDutyCycle(0);
-    Logger.recordOutput("Commands/Reverse Index Command is Running", false);
+    hopper.setHopperDutyCycle(0);
+    Logger.recordOutput("Hopper/Reverse TriggerCommand is Running", false);
   }
 
   @Override

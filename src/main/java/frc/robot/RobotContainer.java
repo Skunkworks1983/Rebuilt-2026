@@ -17,16 +17,24 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveAimedAutoShoot;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.Shooter.AutonomousAimedShoot;
+import frc.robot.commands.Shooter.AnotherAutoAimedShoot;
+import frc.robot.commands.Shooter.AutoAimedShootNeutral;
+import frc.robot.commands.Shooter.NoYawShootHub;
+import frc.robot.commands.Shooter.NoYawShootTransfer;
 import frc.robot.commands.Shooter.ShootPresetSetpoints;
 import frc.robot.commands.Shooter.ShootPresetSetpoints.TargetType;
 import frc.robot.commands.TestPathCommands;
@@ -35,8 +43,10 @@ import frc.robot.commands.collectorCommands.CollectorDown;
 import frc.robot.commands.collectorCommands.CollectorExpel;
 import frc.robot.commands.collectorCommands.CollectorIntake;
 import frc.robot.commands.collectorCommands.CollectorUp;
-import frc.robot.commands.triggerCommands.ReverseIndexCommand;
-import frc.robot.commands.triggerCommands.TriggerAutoUnjam;
+import frc.robot.commands.triggerCommands.ForceRunTrigger;
+import frc.robot.commands.triggerCommands.ReverseTriggerCommand;
+import frc.robot.commands.triggerCommands.RunTrigger;
+import frc.robot.commands.triggerCommands.RunTriggerNoLock;
 import frc.robot.subsystems.collector.Collector;
 import frc.robot.subsystems.collector.CollectorModuleIO;
 import frc.robot.subsystems.collector.CollectorModuleTalonIO;
@@ -47,11 +57,13 @@ import frc.robot.subsystems.drive.GyroIOSim;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.drive.ModuleIOTalonFXSim;
+import frc.robot.subsystems.hopper.BedIO;
+import frc.robot.subsystems.hopper.BedIOSim;
+import frc.robot.subsystems.hopper.BedIOTalonFX;
 import frc.robot.subsystems.hopper.Hopper;
-import frc.robot.subsystems.hopper.TriggerConstants;
 import frc.robot.subsystems.hopper.TriggerIO;
 import frc.robot.subsystems.hopper.TriggerIOSim;
-import frc.robot.subsystems.hopper.TriggerIOTalonFXS;
+import frc.robot.subsystems.hopper.TriggerIOTalonFX;
 import frc.robot.subsystems.shooter.BeamBreakIO;
 import frc.robot.subsystems.shooter.BeamBreakIOSensor;
 import frc.robot.subsystems.shooter.FlywheelIO;
@@ -61,13 +73,14 @@ import frc.robot.subsystems.shooter.PivotIO;
 import frc.robot.subsystems.shooter.PivotIOSim;
 import frc.robot.subsystems.shooter.PivotIOTalonFX;
 import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.shooter.ShooterConstants;
-import frc.robot.subsystems.shooter.ShooterConstants.FlywheelLevel;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
+import frc.robot.util.AutoPreview;
+import frc.robot.util.Elastic;
+import frc.robot.util.NetworkTablesWait;
 import frc.robot.util.sim.SimProjectile;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
@@ -91,7 +104,9 @@ public class RobotContainer {
   // Controller
   private final Joystick leftJoystick;
   private final Joystick rightJoystick;
-  private final Joystick buttonJoystick;
+  private final CommandXboxController buttonJoystick;
+
+  private Field2d autoPreviewField = new Field2d();
 
   /**
    * Xbox Controller for simulation.
@@ -112,7 +127,7 @@ public class RobotContainer {
   public RobotContainer() {
     leftJoystick = new Joystick(Constants.OIConstants.LeftJoystick);
     rightJoystick = new Joystick(Constants.OIConstants.RightJoystick);
-    buttonJoystick = new Joystick(Constants.OIConstants.ButtonJoystick);
+    buttonJoystick = new CommandXboxController(Constants.OIConstants.ButtonJoystick);
 
     switch (Constants.currentMode) {
       case REAL:
@@ -129,11 +144,7 @@ public class RobotContainer {
                 (pose) -> {});
 
         shooter =
-            new Shooter(
-                new FlywheelIOTalonFX(ShooterConstants.upperFlywheelMotorID, FlywheelLevel.Upper),
-                new FlywheelIOTalonFX(ShooterConstants.lowerFlywheelMotorID, FlywheelLevel.Lower),
-                new PivotIOTalonFX(),
-                new BeamBreakIOSensor());
+            new Shooter(new FlywheelIOTalonFX(), new PivotIOTalonFX(), new BeamBreakIOSensor());
 
         vision =
             new Vision(
@@ -146,10 +157,7 @@ public class RobotContainer {
 
         collector = new Collector(new CollectorModuleTalonIO());
 
-        hopper =
-            new Hopper(
-                new TriggerIOTalonFXS(TriggerConstants.leftTriggerMotorID),
-                new TriggerIOTalonFXS(TriggerConstants.rightTriggerMotorID));
+        hopper = new Hopper(new BedIOTalonFX(), new TriggerIOTalonFX());
 
         // The ModuleIOTalonFXS implementation provides an example implementation for
         // TalonFXS controller connected to a CANdi with a PWM encoder. The
@@ -189,12 +197,7 @@ public class RobotContainer {
                     Constants.tunerConstants.getBackRight(), simulation.getModules()[3]),
                 simulation::setSimulationWorldPose);
 
-        shooter =
-            new Shooter(
-                new FlywheelIOSim(ShooterConstants.upperFlywheelMotorID, FlywheelLevel.Upper),
-                new FlywheelIOSim(ShooterConstants.lowerFlywheelMotorID, FlywheelLevel.Lower),
-                new PivotIOSim(),
-                new BeamBreakIO() {});
+        shooter = new Shooter(new FlywheelIOSim(), new PivotIOSim(), new BeamBreakIO() {});
 
         vision =
             new Vision(
@@ -210,10 +213,7 @@ public class RobotContainer {
 
         collector = new Collector(new CollectorModuleIO() {});
 
-        hopper =
-            new Hopper(
-                new TriggerIOSim(TriggerConstants.leftTriggerMotorID),
-                new TriggerIOSim(TriggerConstants.rightTriggerMotorID));
+        hopper = new Hopper(new BedIOSim(), new TriggerIOSim());
 
         break;
 
@@ -227,15 +227,13 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 (pose) -> {});
-        shooter =
-            new Shooter(
-                new FlywheelIO() {}, new FlywheelIO() {}, new PivotIO() {}, new BeamBreakIO() {});
+        shooter = new Shooter(new FlywheelIO() {}, new PivotIO() {}, new BeamBreakIO() {});
 
         vision = new Vision(drive, new VisionIO() {}, new VisionIO() {});
 
         collector = new Collector(new CollectorModuleTalonIO());
 
-        hopper = new Hopper(new TriggerIO() {}, new TriggerIO() {});
+        hopper = new Hopper(new BedIO() {}, new TriggerIO() {});
 
         break;
     }
@@ -243,21 +241,27 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Another Auto Aimed Shoot",
         new ParallelCommandGroup(
-            new AutonomousAimedShoot(
-                drive, shooter, new TriggerAutoUnjam(shooter::getBeamBreak, hopper)),
-            new Agitate(collector)));
+            new AnotherAutoAimedShoot(drive, shooter, new RunTriggerNoLock(hopper, shooter)),
+            new SequentialCommandGroup(new WaitCommand(2), new Agitate(collector, () -> false))));
+    NamedCommands.registerCommand(
+        "Auto Aimed Shoot Neutral",
+        new ParallelCommandGroup(
+            new AutoAimedShootNeutral(drive, shooter, new RunTriggerNoLock(hopper, shooter)),
+            new SequentialCommandGroup(new WaitCommand(2), new Agitate(collector, () -> false))));
 
     NamedCommands.registerCommand(
-        "Intake Shooter/ Trigger", new TriggerAutoUnjam(shooter::getBeamBreak, hopper));
-    NamedCommands.registerCommand(
         "Ramp Shooter", new ShootPresetSetpoints(shooter, TargetType.GOAL));
+
+    NamedCommands.registerCommand("Network Wait", new NetworkTablesWait("Bump Launch"));
     NamedCommands.registerCommand("Lower Collector", new CollectorDown(collector));
     NamedCommands.registerCommand("Raise Collector", new CollectorUp(collector));
     NamedCommands.registerCommand("Run Collector", new CollectorIntake(collector));
+    NamedCommands.registerCommand("Reverse Collector", new CollectorExpel(collector));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
-
+    AutoPreview.initAutoPreview(autoChooser.getSendableChooser(), autoPreviewField);
+    SmartDashboard.putData(autoPreviewField);
     if (Constants.tuningMode) {
       // Set up SysId routines
       autoChooserAddOption(
@@ -321,29 +325,33 @@ public class RobotContainer {
             () -> -leftJoystick.getX(), // -Y (used to be)
             () -> -rightJoystick.getX())); // Confirm if negitive or not
 
-    shootAutoAim = new JoystickButton(rightJoystick, 1);
+    shootAutoAim = new JoystickButton(rightJoystick, Constants.OIConstants.joystickAutoAim);
 
-    shootAutoAim.whileTrue(
+    // Ramp Shooter Hub
+    buttonJoystick.rightTrigger().whileTrue(new NoYawShootHub(shooter, drive));
+    // Ramp Shooter Transfer
+    buttonJoystick.leftTrigger().whileTrue(new NoYawShootTransfer(shooter, drive));
+
+    buttonJoystick.leftBumper().whileTrue(new ShootPresetSetpoints(shooter, TargetType.TRANSFER));
+    buttonJoystick.rightBumper().whileTrue(new ShootPresetSetpoints(shooter, TargetType.GOAL));
+
+    JoystickButton runTriggerDriverStick =
+        new JoystickButton(leftJoystick, Constants.OIConstants.joystickTrigger);
+
+    DriveAimedAutoShoot driveAimedAutoShoot =
         new DriveAimedAutoShoot(
-            drive, shooter, () -> -leftJoystick.getY(), () -> -leftJoystick.getX()));
+            drive,
+            shooter,
+            vision,
+            () -> -leftJoystick.getY(),
+            () -> -leftJoystick.getX(),
+            runTriggerDriverStick::getAsBoolean,
+            new RunTrigger(hopper, shooter).alongWith(new Agitate(collector, () -> false)));
+    shootAutoAim.whileTrue(driveAimedAutoShoot);
 
-    ShootPresetSetpoints shootPresetSetpointsGoal =
-        new ShootPresetSetpoints(shooter, TargetType.GOAL);
-    ShootPresetSetpoints shootPresetSetpointsTransfer =
-        new ShootPresetSetpoints(shooter, TargetType.TRANSFER);
-
-    JoystickButton runTrigger = new JoystickButton(leftJoystick, 1);
-    JoystickButton runTriggerReverse =
-        new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID);
-
-    runTrigger.whileTrue(new TriggerAutoUnjam(shooter::getBeamBreak, hopper));
-
-    runTriggerReverse.whileTrue(new ReverseIndexCommand(hopper));
-
-    runTrigger.whileTrue(new TriggerAutoUnjam(shooter::getBeamBreak, hopper));
-
-    // if the index button is hed and more than a second elapses before the beam
+    // if the trigger button is hed and more than a second elapses before the beam
     // break is broken the
+    // trigger will reverse for 1 second before attempting to intake again
     // trigger will reverse for 1 second before attempting to intake again
 
     Logger.recordOutput("Control Scheme", Constants.controlScheme);
@@ -351,14 +359,16 @@ public class RobotContainer {
     TestPathCommands.publishTestPaths(drive);
 
     shooter.setDefaultCommand(Commands.run(shooter::stop, shooter));
-    new JoystickButton(rightJoystick, Constants.OIConstants.CollectorManualPivotDown)
-        .onTrue(new CollectorDown(collector));
-    new JoystickButton(rightJoystick, Constants.OIConstants.CollectorManualPivotUp)
-        .onTrue(new CollectorUp(collector));
-    new JoystickButton(leftJoystick, Constants.OIConstants.CollectorIntakeID)
-        .whileTrue(new CollectorIntake(collector));
-    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorReverseIntakeID)
-        .whileTrue(new CollectorExpel(collector));
+    buttonJoystick.y().onTrue(new CollectorUp(collector));
+    buttonJoystick.a().whileTrue(new CollectorIntake(collector));
+
+    // Reverse All
+    buttonJoystick
+        .b()
+        .whileTrue(
+            new ParallelCommandGroup(
+                new ReverseTriggerCommand(hopper), new CollectorExpel(collector)));
+    buttonJoystick.x().whileTrue(new ForceRunTrigger(hopper, driveAimedAutoShoot));
   }
 
   /**
@@ -435,5 +445,16 @@ public class RobotContainer {
   public void scheduleBothCollectorsUp() {
     CommandScheduler.getInstance();
     CommandScheduler.getInstance();
+  }
+
+  public void teleopInit() {
+    vision.setBaselineStdDevs(
+        VisionConstants.teleopLinearStdDevBaseline, VisionConstants.teleopAngularStdDevBaseline);
+
+    Elastic.selectTab("Teleop");
+  }
+
+  public void disabledPeriodic() {
+    autoPreviewField.setRobotPose(drive.getPose());
   }
 }

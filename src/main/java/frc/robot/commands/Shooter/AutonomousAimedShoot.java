@@ -1,5 +1,7 @@
 package frc.robot.commands.Shooter;
 
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -7,12 +9,12 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.DriveControlConstants;
 import frc.robot.commands.DriveUtils;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.hopper.Hopper;
+import frc.robot.subsystems.hopper.TriggerConstants;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.Shooter.ShooterSetpoints;
 import frc.robot.util.ShooterCalculations;
@@ -20,27 +22,19 @@ import frc.robot.util.ShooterCalculations.ShooterControls;
 import org.littletonrobotics.junction.Logger;
 
 public class AutonomousAimedShoot extends Command {
+
   private final Drive drive;
   private final Shooter shooter;
-  private final Command feedCommand;
+  private final Hopper hopper;
 
   private final ProfiledPIDController yawController;
 
   private final Debouncer triggerDebounce = new Debouncer(0.5);
-  private final Timer autoUnjamTimer = new Timer();
 
-  private boolean feedEnabled = false;
-
-  /**
-   * Auto-aiming shoot command specifically for auto. It does not allow for driver translation of
-   * the robot and it automatically starts shooting when setpoints are reached
-   *
-   * @param feedCommand The command that should be run to feed balls into the shooter
-   */
-  public AutonomousAimedShoot(Drive drive, Shooter shooter, Command feedCommand) {
+  public AutonomousAimedShoot(Drive drive, Shooter shooter, Hopper hopper) {
     this.drive = drive;
     this.shooter = shooter;
-    this.feedCommand = feedCommand;
+    this.hopper = hopper;
     yawController =
         new ProfiledPIDController(
             DriveControlConstants.YAW_CONTROL_KP.get(),
@@ -52,16 +46,13 @@ public class AutonomousAimedShoot extends Command {
     yawController.enableContinuousInput(-Math.PI, Math.PI);
     yawController.setTolerance(DriveControlConstants.YAW_SETPOINT_TOLERANCE_RADIANS.get());
 
-    addRequirements(shooter);
+    addRequirements(shooter, hopper);
   }
 
   @Override
   public void initialize() {
     yawController.reset(drive.getRotation().getRadians());
-    autoUnjamTimer.stop();
-    autoUnjamTimer.reset();
-    Logger.recordOutput("Auto Shoot/Feed Enabled", false);
-    Logger.recordOutput("Commands/Autonomous Aimed Shoot", true);
+    hopper.setTriggerDutyCycle(0.0);
   }
 
   @Override
@@ -73,15 +64,27 @@ public class AutonomousAimedShoot extends Command {
         ShooterCalculations.getApexConstrainedShooterControls(currentPose, currentSpeeds);
 
     shooter.setShooterSetpoints(
-        new ShooterSetpoints(
-            controls.upperFlywheelVelocity(),
-            controls.lowerFlywheelVelocity(),
-            controls.shooterPitch()));
+        new ShooterSetpoints(controls.flywheelVelocity(), controls.shooterPitch()));
     double currentYawRadians = drive.getRotation().getRadians();
     double targetYawRadians = controls.driveYaw().getRadians();
+    // double targetYawDelta = MathUtil.angleModulus(targetYawRadians - lastFilteredYaw);
 
+    // TrapezoidProfile.State setpoint =
+    //     profile.calculate(
+    //         0.02,
+    //         new TrapezoidProfile.State(
+    //             currentYawRadians, drive.getAngularVelocity().in(RadiansPerSecond)),
+    //         new TrapezoidProfile.State(targetYawRadians, 0));
+
+    // if (Math.abs(targetYawDelta) > DriveControlConstants.largeAngleJumpThreshold.in(Radians)) {
+    //   lastFilteredYaw = targetYawRadians;
+    // } else {
+    //   lastFilteredYaw += yawFilterAlpha * targetYawDelta;
+    // }
+    // double filteredTargetYaw = MathUtil.angleModulus(lastFilteredYaw);
     Logger.recordOutput("Auto Shoot/Target Yaw", targetYawRadians);
     Logger.recordOutput("Auto Shoot/Current Yaw", currentYawRadians);
+    // Logger.recordOutput("Auto Shoot/Filtered Target Yaw", filteredTargetYaw);
     double omegaCalculated;
 
     omegaCalculated = yawController.calculate(currentYawRadians, targetYawRadians);
@@ -105,15 +108,11 @@ public class AutonomousAimedShoot extends Command {
     Logger.recordOutput(
         "Auto Shoot/Debounced", triggerDebounce.calculate(yawController.atSetpoint()));
 
-    boolean readyToFeed = yawController.atGoal() && shooter.isUpperFlywheelAtSetpoint();
+    boolean readyToFeed = yawController.atGoal() && shooter.isFlywheelAtSetpoint();
     Logger.recordOutput("Auto Shoot/Trigger Ready", readyToFeed);
 
-    if (readyToFeed && !feedEnabled) {
-      feedEnabled = true;
-      Logger.recordOutput("Auto Shoot/Feed Enabled", true);
-
-      CommandScheduler.getInstance().schedule(feedCommand);
-    }
+    hopper.setTriggerVelocity(
+        RotationsPerSecond.of(TriggerConstants.triggerAngularVelocityRotationsPerSecond.get()));
   }
 
   @Override
@@ -124,10 +123,6 @@ public class AutonomousAimedShoot extends Command {
   @Override
   public void end(boolean interrupted) {
     shooter.stopFlywheels();
-    feedEnabled = false;
-    Logger.recordOutput("Auto Shoot/Feed Enabled", false);
-    Logger.recordOutput("Auto Shoot/Unjamming", false);
-    Logger.recordOutput("Commands/Autonomous Aimed Shoot", false);
-    feedCommand.cancel();
+    hopper.setTriggerDutyCycle(0);
   }
 }

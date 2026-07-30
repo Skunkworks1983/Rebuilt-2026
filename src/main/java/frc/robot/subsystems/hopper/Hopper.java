@@ -9,6 +9,8 @@ import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -17,21 +19,39 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.util.Elastic;
 import frc.robot.util.LoggedTunableNumber;
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-/** {@summary} Includes the spinning indexing wheels, it takes in two Trigger motor IO's */
+/**
+ * {@summary} Includes the mechanisms for both the Hopper Bed and the Trigger, it takes in one
+ * BedIOTalonFX and one TriggerIOTalonFX
+ */
 public class Hopper extends SubsystemBase {
+  BedIO bed;
+  Alert hopperDisconnectAlert = new Alert(getName(), AlertType.kError);
 
-  TriggerIO leftTrigger;
+  @AutoLogOutput private AngularVelocity triggerSetpoint;
+
+  TriggerIO trigger;
   Alert leftTriggerDisconnectAlert = new Alert(getName(), AlertType.kError);
-
-  TriggerIO rightTrigger;
   Alert rightTriggerDisconnectAlert = new Alert(getName(), AlertType.kError);
 
   private final SysIdRoutine sysId;
 
-  public final TriggerIOInputsAutoLogged leftTriggerInputs = new TriggerIOInputsAutoLogged();
-  public final TriggerIOInputsAutoLogged rightTriggerInputs = new TriggerIOInputsAutoLogged();
+  public final HopperIOInputsAutoLogged hopperInputs = new HopperIOInputsAutoLogged();
+
+  private static final LoggedTunableNumber hopperlKP =
+      new LoggedTunableNumber("Hopper/HopperBed/kP", BedConstants.hopperKP);
+  private static final LoggedTunableNumber hopperlKD =
+      new LoggedTunableNumber("Hopper/HopperBed/kD", BedConstants.hopperKD);
+  private static final LoggedTunableNumber hopperlKS =
+      new LoggedTunableNumber("Hopper/HopperBed/kS", BedConstants.hopperKS);
+  private static final LoggedTunableNumber hopperlKV =
+      new LoggedTunableNumber("Hopper/HopperBed/kV", BedConstants.hopperKV);
+  private static final LoggedTunableNumber hopperlKA =
+      new LoggedTunableNumber("Hopper/HopperBed/kA", BedConstants.hopperKA);
+
+  public final TriggerIOInputsAutoLogged triggerInputs = new TriggerIOInputsAutoLogged();
 
   private static final LoggedTunableNumber triggerlKP =
       new LoggedTunableNumber("Hopper/Trigger/kP", TriggerConstants.triggerKP);
@@ -44,15 +64,15 @@ public class Hopper extends SubsystemBase {
   private static final LoggedTunableNumber triggerlKA =
       new LoggedTunableNumber("Hopper/Trigger/kA", TriggerConstants.triggerKA);
 
-  public Hopper(TriggerIO leftTriggerMotor, TriggerIO rightTriggerMotor) {
-    this.leftTrigger = leftTriggerMotor;
-    this.rightTrigger = rightTriggerMotor;
+  public Hopper(BedIO hopperMotor, TriggerIO trigger) {
+    this.bed = hopperMotor;
+    this.trigger = trigger;
 
     sysId =
         new SysIdRoutine(
             new SysIdRoutine.Config(
-                TriggerConstants.sysIdRampRate,
-                TriggerConstants.sysIdStepSize,
+                BedConstants.sysIdRampRate,
+                BedConstants.sysIdStepSize,
                 null,
                 (state) -> SignalLogger.writeString("Hopper/SysIdState", state.toString())),
             new SysIdRoutine.Mechanism(
@@ -60,23 +80,42 @@ public class Hopper extends SubsystemBase {
   }
 
   private void runHopperTorqueCurrent(double torqueCurrent) {
-    leftTrigger.setOpenLoopTorqueCurrent(Amps.of(torqueCurrent));
-    rightTrigger.setOpenLoopTorqueCurrent(Amps.of(torqueCurrent));
+    bed.setOpenLoopTorqueCurrent(Amps.of(torqueCurrent));
   }
 
   @Override
   public void periodic() {
-    leftTrigger.updateInputs(leftTriggerInputs);
-    rightTrigger.updateInputs(rightTriggerInputs);
+    bed.updateInputs(hopperInputs);
+    trigger.updateInputs(triggerInputs);
 
-    Logger.processInputs("Hopper/Trigger/Left Trigger", leftTriggerInputs);
-    Logger.processInputs("Hopper/Trigger/Right Trigger", rightTriggerInputs);
-    leftTriggerDisconnectAlert.set(!leftTriggerInputs.connected);
-    rightTriggerDisconnectAlert.set(!rightTriggerInputs.connected);
+    Logger.processInputs("Hopper/Bed/", hopperInputs);
+    Logger.processInputs("Hopper/Trigger/", triggerInputs);
+    hopperDisconnectAlert.set(!hopperInputs.connected);
+    leftTriggerDisconnectAlert.set(!triggerInputs.primaryConnected);
+    rightTriggerDisconnectAlert.set(!triggerInputs.followerConnected);
 
     if (Constants.tuningMode) {
 
       int hash = hashCode();
+      if (hopperlKP.hasChanged(hash)
+          || hopperlKD.hasChanged(hash)
+          || hopperlKS.hasChanged(hash)
+          || hopperlKV.hasChanged(hash)
+          || hopperlKA.hasChanged(hash)) {
+        Slot0Configs gains = new Slot0Configs();
+        gains.kP = hopperlKP.get();
+        gains.kD = hopperlKD.get();
+        gains.kS = hopperlKS.get();
+        gains.kV = hopperlKV.get();
+        gains.kA = hopperlKA.get();
+        bed.setPID(gains);
+
+        Elastic.sendNotification(
+            new Elastic.Notification(
+                Elastic.NotificationLevel.INFO,
+                "Hopper PID Update",
+                "Hopper motor PID gains have been updated."));
+      }
 
       if (triggerlKP.hasChanged(hash)
           || triggerlKD.hasChanged(hash)
@@ -89,8 +128,7 @@ public class Hopper extends SubsystemBase {
         gains.kS = triggerlKS.get();
         gains.kV = triggerlKV.get();
         gains.kA = triggerlKA.get();
-        leftTrigger.setPID(gains);
-        rightTrigger.setPID(gains);
+        trigger.setPID(gains);
 
         Elastic.sendNotification(
             new Elastic.Notification(
@@ -101,10 +139,27 @@ public class Hopper extends SubsystemBase {
     }
   }
 
+  public void setHopperDutyCycle(double dutyCycle) {
+    bed.setDutyCycle(dutyCycle);
+  }
+
+  /** sets the velocity of the trigger to the defined velocity */
+  public void setTriggerVelocity(AngularVelocity velocity) {
+    triggerSetpoint = velocity.unaryMinus();
+    trigger.setTriggerVelocity(velocity.unaryMinus());
+  }
+
   /** sets both triggers duty cycle */
   public void setTriggerDutyCycle(double dutyCycle) {
-    leftTrigger.setDutyCycle(dutyCycle);
-    rightTrigger.setDutyCycle(-dutyCycle);
+    trigger.setDutyCycle(dutyCycle);
+  }
+
+  public void triggerRunMaxDutyCycle() {
+    trigger.setDutyCycle(1.0);
+  }
+
+  public void setTriggerVoltageOut(Voltage voltage) {
+    trigger.setVoltageOut(voltage.unaryMinus());
   }
 
   /** Returns a command to run a quasistatic test in the specified direction. */

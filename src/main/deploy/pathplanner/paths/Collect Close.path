@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 5.689,
-        "y": 0.7695848161328582
+        "y": 0.69
       },
       "prevControl": null,
       "nextControl": {
         "x": 7.363800699314605,
-        "y": 0.7695848161328582
+        "y": 0.69
       },
       "isLocked": false,
       "linkedName": "Outside Close Trench"
@@ -32,12 +32,12 @@
     },
     {
       "anchor": {
-        "x": 5.689,
-        "y": 0.7695848161328582
+        "x": 5.6662752075919345,
+        "y": 0.6619928825622776
       },
       "prevControl": {
-        "x": 7.742799525504152,
-        "y": 1.0385646500593122
+        "x": 7.720074733096086,
+        "y": 0.9309727164887316
       },
       "nextControl": null,
       "isLocked": false,
@@ -68,8 +68,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.1,
-    "maxAcceleration": 3.8,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 2.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,

@@ -5,32 +5,34 @@
 package frc.robot.commands.triggerCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.hopper.BedConstants;
 import frc.robot.subsystems.hopper.Hopper;
-import frc.robot.subsystems.hopper.TriggerConstants;
+import frc.robot.subsystems.shooter.Shooter;
 import org.littletonrobotics.junction.Logger;
 
 /** Command that runs the trigger */
-public class TriggerCommand extends Command {
+public class RunTrigger extends Command {
   Hopper hopper;
+  Shooter shooter;
 
-  public TriggerCommand(Hopper hopper) {
+  public RunTrigger(Hopper hopper, Shooter shooter) {
     this.hopper = hopper;
+    this.shooter = shooter;
     addRequirements(hopper);
   }
 
   @Override
   public void initialize() {
-    hopper.setTriggerDutyCycle(TriggerConstants.triggerDutyCycleSpeedFeed.get());
-    Logger.recordOutput("Commands/Trigger Command is Running", true);
+    Logger.recordOutput("Trigger/Run Trigger Command is Running", true);
+    hopper.triggerRunMaxDutyCycle();
+    hopper.setHopperDutyCycle(BedConstants.hopperDutyCycleSpeedFeed.get());
   }
-
-  @Override
-  public void execute() {}
 
   @Override
   public void end(boolean interrupted) {
     hopper.setTriggerDutyCycle(0);
-    Logger.recordOutput("Commands/Trigger Command is Running", false);
+    hopper.setHopperDutyCycle(0);
+    Logger.recordOutput("Trigger/Run Trigger Command is Running", false);
   }
 
   @Override

@@ -5,6 +5,7 @@
 package frc.robot.subsystems.collector.collectorConstants;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
@@ -18,6 +19,7 @@ import frc.robot.util.LoggedTunableNumber;
 
 /** This class is a grouping of constants */
 public class CollectorModuleConstants {
+
   // Collector CanBus
   public CANBus canbus;
 
@@ -67,6 +69,8 @@ public class CollectorModuleConstants {
   public Angle CollectorUpPos;
   public LoggedTunableNumber CollectorDownPos;
   public LoggedTunableNumber CollectorHalfPos;
+  public static final Angle CollectorDownPosDefault = Radians.of(2.198);
+  public Angle CollectorHalfPosDefault;
 
   // Collector Manual pivot velocity
   public double CollectorPivotDutyCycle;
@@ -83,6 +87,7 @@ public class CollectorModuleConstants {
 
   // Collector SupplyCurrents
   public double turnSupplyCurrent;
+  public double turnStatorCurrent;
   public double intakeSupplyCurrent;
 
   // Inverted Value
@@ -94,23 +99,23 @@ public class CollectorModuleConstants {
   public CollectorModuleConstants() {
 
     // Hardware IDs
-    turnMotorID = 32;
-    intakeMotorID = 21;
+    turnMotorID = 24;
+    intakeMotorID = 23;
 
     canbus = new CANBus("peripherals_2026");
 
     // Gear ratio's
-    turnMotorGearRatio = 29.07160494;
+    turnMotorGearRatio = (28.0 / 12.0) * (58.0 / 18.0) * (58.0 / 18.0) * (20.0 / 12);
     turnInvert = InvertedValue.Clockwise_Positive;
     turnSupplyCurrent = 80;
 
     // Real Turn PID
-    turnkP = 40;
+    turnkP = 45;
     turnkD = 0;
     turnkI = 0;
 
     // Real intake upper PID
-    intakekP = 0;
+    intakekP = 5;
     intakekD = 0.0;
     intakekI = 0.0;
     intakekV = (5.0 / 80.0) * 3.5;
@@ -118,18 +123,22 @@ public class CollectorModuleConstants {
     intakekS = 0;
     intakeInvertedValue = InvertedValue.CounterClockwise_Positive;
     intakeSupplyCurrent = 80;
+    turnStatorCurrent = 80;
 
     // Motion Magic constraints
-    motionMagicCruiseVelocity = RotationsPerSecond.of(0.5);
-    motionMagicAcceleration = RotationsPerSecondPerSecond.of(2);
+    motionMagicCruiseVelocity = RotationsPerSecond.of(1.3);
+    motionMagicAcceleration = RotationsPerSecondPerSecond.of(3.5);
 
     // Position
     CollectorUpPos = Rotations.of(0);
-    CollectorDownPos = new LoggedTunableNumber("Collector/Downpose rad", 2.198);
-    CollectorHalfPos = new LoggedTunableNumber("Collector/Halfpose rad", 1);
+    CollectorHalfPosDefault = Radians.of(1);
+    CollectorDownPos =
+        new LoggedTunableNumber("Collector/Downpose rad", CollectorDownPosDefault.in(Radians));
+    CollectorHalfPos =
+        new LoggedTunableNumber("Collector/Halfpose rad", CollectorHalfPosDefault.in(Radians));
 
     // Collector Intake Speeds
-    CollectorIntakeSpeed = RotationsPerSecond.of(40);
+    CollectorIntakeSpeed = RotationsPerSecond.of(105);
 
     // Limit Switch Constants
     UpperLimitChannel = 1;

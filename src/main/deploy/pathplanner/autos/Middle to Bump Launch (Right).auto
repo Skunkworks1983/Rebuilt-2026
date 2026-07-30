@@ -11,26 +11,13 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Through Close Tunnel"
+                  "pathName": "Middle to Depot"
                 }
               },
               {
                 "type": "named",
                 "data": {
                   "name": "Lower Collector"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Collect Close"
                 }
               },
               {
@@ -40,12 +27,6 @@
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Close Trench Return"
           }
         },
         {
@@ -59,49 +40,75 @@
                 }
               },
               {
-                "type": "wait",
+                "type": "named",
                 "data": {
-                  "waitTime": 4.5
+                  "name": "Network Wait"
                 }
               }
             ]
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "CloseToHuman"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.25
-          }
-        },
-        {
-          "type": "deadline",
+          "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
-                  "pathName": "HumanToClose"
+                  "pathName": "Shoot to Right Bump Launch"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Ramp Shooter"
+                  "name": "Raise Collector"
                 }
               }
             ]
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "Another Auto Aimed Shoot"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Close Bump Collet"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Run Collector"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Lower Collector"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Auto Aimed Shoot Neutral"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 5.0
+                }
+              }
+            ]
           }
         }
       ]

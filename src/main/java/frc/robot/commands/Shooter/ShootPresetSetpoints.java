@@ -16,41 +16,32 @@ public class ShootPresetSetpoints extends Command {
   }
 
   private final Shooter shooter;
-  private final TargetType targetType;
   private final LoggedTunableNumber upperVelocitySetpointRPS;
-  private final LoggedTunableNumber lowerVelocitySetpointRPS;
-  private final LoggedTunableNumber pitchSetpointDegrees;
+  private final LoggedTunableNumber pitchSetpointDeg;
 
   public ShootPresetSetpoints(Shooter shooter, TargetType targetType) {
     this.shooter = shooter;
-    this.targetType = targetType;
 
     if (targetType == TargetType.GOAL) {
       upperVelocitySetpointRPS =
           new LoggedTunableNumber(
-              "Shooter/Upper Flywheel/Goal Velocity Default Setpoint [RPS]",
+              "Shooter/Flywheel/Goal Velocity Default Setpoint [RPS]",
               ShooterConstants.defaultUpperFlywheelVelocityGoal.in(RotationsPerSecond));
-      lowerVelocitySetpointRPS =
+
+      pitchSetpointDeg =
           new LoggedTunableNumber(
-              "Shooter/Lower Flywheel/Goal Velocity Default Setpoint [RPS]",
-              ShooterConstants.defaultLowerFlywheelVelocityGoal.in(RotationsPerSecond));
-      pitchSetpointDegrees =
-          new LoggedTunableNumber(
-              "Shooter/Goal Pitch Default Setpoint [Degrees]",
+              "Shooter/Pivot/Goal Default Pitch [Deg]",
               ShooterConstants.defaultPitchGoal.in(Degrees));
     } else {
       upperVelocitySetpointRPS =
           new LoggedTunableNumber(
-              "Shooter/Upper Flywheel/Transfer Velocity Default Setpoint [RPS]",
-              ShooterConstants.defaultVelocityTransfer.in(RotationsPerSecond));
-      lowerVelocitySetpointRPS =
+              "Shooter/Flywheel/Transfer Velocity Default Setpoint [RPS]",
+              ShooterConstants.defaultVelocityTransferFar.in(RotationsPerSecond));
+
+      pitchSetpointDeg =
           new LoggedTunableNumber(
-              "Shooter/Lower Flywheel/Transfer Velocity Default Setpoint [RPS]",
-              ShooterConstants.defaultLowerFlywheelVelocityTransfer.in(RotationsPerSecond));
-      pitchSetpointDegrees =
-          new LoggedTunableNumber(
-              "Shooter/Transfer Pitch Default Setpoint [Degrees]",
-              ShooterConstants.defaultPitchTransfer.in(Degrees));
+              "Shooter/Pivot/Transfer Default Pitch [Deg]",
+              ShooterConstants.defaultPitchTransferFar.in(Degrees));
     }
     addRequirements(shooter);
   }
@@ -61,8 +52,7 @@ public class ShootPresetSetpoints extends Command {
     shooter.setShooterSetpoints(
         new Shooter.ShooterSetpoints(
             RotationsPerSecond.of(upperVelocitySetpointRPS.get()),
-            RotationsPerSecond.of(lowerVelocitySetpointRPS.get()),
-            Degrees.of(pitchSetpointDegrees.get())));
+            Degrees.of(pitchSetpointDeg.get())));
   }
 
   @Override

@@ -24,6 +24,8 @@ public class NoYawShootHub extends Command {
   public NoYawShootHub(Shooter shooter, Drive drive) {
     this.shooter = shooter;
     this.drive = drive;
+
+    addRequirements(shooter);
   }
 
   @Override
@@ -38,10 +40,7 @@ public class NoYawShootHub extends Command {
             drive.getPose(), drive.getChassisSpeeds());
 
     shooter.setShooterSetpoints(
-        new ShooterSetpoints(
-            controls.upperFlywheelVelocity(),
-            controls.lowerFlywheelVelocity(),
-            controls.shooterPitch()));
+        new ShooterSetpoints(controls.flywheelVelocity(), controls.shooterPitch()));
   }
 
   @Override

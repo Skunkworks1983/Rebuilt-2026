@@ -8,11 +8,17 @@ import static edu.wpi.first.units.Units.Radians;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.collector.Collector;
+import frc.robot.subsystems.collector.collectorConstants.CollectorConstants;
+import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class CollectorIntake extends Command {
   Collector collector;
+
+  LoggedTunableNumber collectorIntakeDutyCycle =
+      new LoggedTunableNumber(
+          "Collector/Collector Intake Duty Cycle", CollectorConstants.collectorIntakeDutyCycle);
   /** Creates a new CollectorIntake. */
   public CollectorIntake(Collector collector) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -24,7 +30,7 @@ public class CollectorIntake extends Command {
   public void initialize() {
     Logger.recordOutput("Commands/Collector/CollectorIntake", true);
     collector.setCollectorPos(Radians.of(collector.getConstants().CollectorDownPos.get()), 0);
-    collector.setCollectorIntakeVelocity(collector.getConstants().CollectorIntakeSpeed);
+    collector.setCollectorIntakeDutyCycle(collectorIntakeDutyCycle.get());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
