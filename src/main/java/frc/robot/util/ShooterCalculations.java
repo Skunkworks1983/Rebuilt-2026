@@ -43,7 +43,6 @@ public class ShooterCalculations {
    */
   public record ShooterControls(
       AngularVelocity flywheelVelocity,
-      AngularVelocity deprecatedLowerFlywheelVelocity,
       Angle shooterPitch,
       Rotation2d driveYaw,
       boolean possibleShot) {}
@@ -268,9 +267,6 @@ public class ShooterCalculations {
 
     return new ShooterControls(
         RadiansPerSecond.of(flywheelSurfaceSpeed / ShooterConstants.flywheelRadius.in(Meters)),
-        RadiansPerSecond.of(
-            (flywheelSurfaceSpeed / ShooterConstants.flywheelRadius.in(Meters))
-                * ShooterSolverConstants.lowerFlywheelVelocityMultiplier.get()),
         Radians.of(finalPitch),
         finalDriveYaw,
         true);
@@ -428,9 +424,6 @@ public class ShooterCalculations {
     return new ShooterControls(
         RadiansPerSecond.of(
             calculatedFlywheelVelocity / ShooterConstants.flywheelRadius.in(Meters)),
-        RadiansPerSecond.of(
-            (calculatedFlywheelVelocity / ShooterConstants.flywheelRadius.in(Meters))
-                * ShooterSolverConstants.lowerFlywheelVelocityMultiplier.get()),
         calculatedPitch,
         finalYaw,
         true);
@@ -503,9 +496,6 @@ public class ShooterCalculations {
 
     return new ShooterControls(
         RadiansPerSecond.of(flywheelRadPerSec / ShooterSolverConstants.flywheelEfficiency.get()),
-        RadiansPerSecond.of(
-            (flywheelRadPerSec / ShooterSolverConstants.flywheelEfficiency.get())
-                * ShooterSolverConstants.lowerFlywheelVelocityMultiplier.get()),
         Radians.of(hoodAngle.getRadians()),
         driveYaw,
         true);

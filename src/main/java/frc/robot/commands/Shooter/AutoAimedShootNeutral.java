@@ -32,7 +32,6 @@ public class AutoAimedShootNeutral extends Command {
   private final ShooterControls controls =
       new ShooterControls(
           ShooterConstants.defaultVelocityTransferClose,
-          ShooterConstants.defaultVelocityTransferClose,
           ShooterConstants.defaultPitchTransferClose,
           new Rotation2d(Degrees.of(180)),
           true);

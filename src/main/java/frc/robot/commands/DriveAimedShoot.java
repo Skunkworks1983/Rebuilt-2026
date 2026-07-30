@@ -135,12 +135,10 @@ public class DriveAimedShoot extends Command {
               currentPose, currentSpeeds);
           case TRANSFER_NEUTRAL -> new ShooterControls(
               RotationsPerSecond.of(transferCloseVelocity.get()),
-              RotationsPerSecond.of(transferClosePitch.get()),
-              Degrees.of(transferFarPitch.get()),
+              Degrees.of(transferClosePitch.get()),
               Rotation2d.fromDegrees(180),
               true);
           case TRANSFER_FAR -> new ShooterControls(
-              RotationsPerSecond.of(transferFarVelocity.get()),
               RotationsPerSecond.of(transferFarVelocity.get()),
               Degrees.of(transferFarPitch.get()),
               Rotation2d.fromDegrees(180),
