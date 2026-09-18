@@ -19,8 +19,7 @@ import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
-import frc.robot.Constants;
-import frc.robot.Constants.Mode;
+import edu.wpi.first.wpilibj.RobotBase;
 
 public class FlywheelIOTalonFX implements FlywheelIO {
   protected final TalonFX primaryFlywheelMotor; // Protected for the sim
@@ -88,7 +87,10 @@ public class FlywheelIOTalonFX implements FlywheelIO {
 
     followerFlywheelConfig.Feedback.SensorToMechanismRatio = ShooterConstants.flywheelGearRatio;
 
-    if (Constants.currentMode == Mode.SIM) {
+    // if (Constants.currentMode == Mode.SIM) {
+    //   primaryFlywheelConfig.Slot0 = ShooterConstants.simFlywheelConfigs;
+    // }
+    if (RobotBase.isSimulation()) {
       primaryFlywheelConfig.Slot0 = ShooterConstants.simFlywheelConfigs;
     }
     tryUntilOk(5, () -> primaryFlywheelMotor.getConfigurator().apply(primaryFlywheelConfig, 0.25));

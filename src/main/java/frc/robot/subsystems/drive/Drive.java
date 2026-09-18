@@ -44,13 +44,13 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
-import frc.robot.Constants.Mode;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.vision.Vision.VisionConsumer;
 import frc.robot.util.LocalADStarAK;
@@ -355,7 +355,8 @@ public class Drive extends SubsystemBase implements VisionConsumer {
       SmartDashboard.putData("Cur Pose", field);
     }
     // Update gyro alert
-    gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);
+    // gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);
+    gyroDisconnectedAlert.set(!gyroInputs.connected && RobotBase.isSimulation() == false);
   }
 
   /**
@@ -477,7 +478,11 @@ public class Drive extends SubsystemBase implements VisionConsumer {
 
   /** Resets the current odometry pose. */
   private void setPose(Pose2d pose) {
-    if (Constants.currentMode == Mode.SIM) {
+    // if (Constants.currentMode == Mode.SIM) {
+    //   // In simulation also reset the simulation field pose
+    //   resetSimulationPoseCallBack.accept(pose);
+    // }
+    if (RobotBase.isSimulation()) {
       // In simulation also reset the simulation field pose
       resetSimulationPoseCallBack.accept(pose);
     }

@@ -7,10 +7,10 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.Constants.Mode;
 import frc.robot.HubShiftUtil.ShiftInfo;
 import frc.robot.util.Elastic;
 import org.ironmaple.simulation.SimulatedArena;
@@ -53,26 +53,38 @@ public class Robot extends LoggedRobot {
     }
 
     // Set up data receivers & replay source
-    switch (Constants.currentMode) {
-      case REAL:
-        // Running on a real robot, log to a USB stick ("/U/logs")
-        Logger.addDataReceiver(new WPILOGWriter("/U/logs"));
-        Logger.addDataReceiver(new NT4Publisher());
-        break;
+    // switch (Constants.currentMode) {
+    //   case REAL:
+    //     // Running on a real robot, log to a USB stick ("/U/logs")
+    //     Logger.addDataReceiver(new WPILOGWriter("/U/logs"));
+    //     Logger.addDataReceiver(new NT4Publisher());
+    //     break;
 
-      case SIM:
-        // Running a physics simulator, log to NT
-        Logger.addDataReceiver(new NT4Publisher());
-        Logger.addDataReceiver(new WPILOGWriter());
-        break;
+    //   case SIM:
+    //     // Running a physics simulator, log to NT
+    //     Logger.addDataReceiver(new NT4Publisher());
+    //     Logger.addDataReceiver(new WPILOGWriter());
+    //     break;
 
-      case REPLAY:
-        // Replaying a log, set up replay source
-        setUseTiming(false); // Run as fast as possible
-        String logPath = LogFileUtil.findReplayLog();
-        Logger.setReplaySource(new WPILOGReader(logPath));
-        Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
-        break;
+    //   case REPLAY:
+    //     // Replaying a log, set up replay source
+    //     setUseTiming(false); // Run as fast as possible
+    //     String logPath = LogFileUtil.findReplayLog();
+    //     Logger.setReplaySource(new WPILOGReader(logPath));
+    //     Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
+    //     break;
+    // }
+    if (RobotBase.isSimulation()) {
+      Logger.addDataReceiver(new NT4Publisher());
+      Logger.addDataReceiver(new WPILOGWriter());
+    } else if (RobotBase.isReal()) {
+      Logger.addDataReceiver(new WPILOGWriter("/U/logs"));
+      Logger.addDataReceiver(new NT4Publisher());
+    } else {
+      setUseTiming(false); // Run as fast as possible
+      String logPath = LogFileUtil.findReplayLog();
+      Logger.setReplaySource(new WPILOGReader(logPath));
+      Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
     }
 
     // Start AdvantageKit logger
@@ -105,7 +117,10 @@ public class Robot extends LoggedRobot {
   @Override
   public void disabledInit() {
     // NetworkTableInstance.getDefault().getTable("limelight").getEntry("throttle_set").setNumber(200);
-    if (Constants.currentMode == Mode.SIM) {
+    // if (Constants.currentMode == Mode.SIM) {
+    //   robotContainer.resetSimulationField();
+    // }
+    if (RobotBase.isSimulation()) {
       robotContainer.resetSimulationField();
     }
 
@@ -115,7 +130,10 @@ public class Robot extends LoggedRobot {
   /** This function is called periodically when disabled. */
   @Override
   public void disabledPeriodic() {
-    if (Constants.currentMode == Mode.SIM) {
+    // if (Constants.currentMode == Mode.SIM) {
+    //   robotContainer.resetSimRobotPose();
+    // }
+    if (RobotBase.isSimulation()) {
       robotContainer.resetSimRobotPose();
     }
 
@@ -126,7 +144,10 @@ public class Robot extends LoggedRobot {
   @Override
   public void autonomousInit() {
     // NetworkTableInstance.getDefault().getTable("limelight").getEntry("throttle_set").setNumber(0);
-    if (Constants.currentMode == Mode.SIM) {
+    // if (Constants.currentMode == Mode.SIM) {
+    //   SimulatedArena.getInstance().resetFieldForAuto();
+    // }
+    if (RobotBase.isSimulation()) {
       SimulatedArena.getInstance().resetFieldForAuto();
     }
 
