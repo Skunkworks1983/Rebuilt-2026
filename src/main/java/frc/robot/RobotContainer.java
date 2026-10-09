@@ -25,7 +25,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -104,7 +103,7 @@ public class RobotContainer {
   // Controller
   private final Joystick leftJoystick;
   private final Joystick rightJoystick;
-  private final CommandXboxController buttonJoystick;
+  private final Joystick buttonJoystick;
 
   private Field2d autoPreviewField = new Field2d();
 
@@ -127,7 +126,7 @@ public class RobotContainer {
   public RobotContainer() {
     leftJoystick = new Joystick(Constants.OIConstants.LeftJoystick);
     rightJoystick = new Joystick(Constants.OIConstants.RightJoystick);
-    buttonJoystick = new CommandXboxController(Constants.OIConstants.ButtonJoystick);
+    buttonJoystick = new Joystick(Constants.OIConstants.ButtonJoystick);
 
     switch (Constants.currentMode) {
       case REAL:
@@ -328,12 +327,16 @@ public class RobotContainer {
     shootAutoAim = new JoystickButton(rightJoystick, Constants.OIConstants.joystickAutoAim);
 
     // Ramp Shooter Hub
-    buttonJoystick.rightTrigger().whileTrue(new NoYawShootHub(shooter, drive));
+    new JoystickButton(buttonJoystick, Constants.OIConstants.ShooterShootHubID)
+        .whileTrue(new NoYawShootHub(shooter, drive));
     // Ramp Shooter Transfer
-    buttonJoystick.leftTrigger().whileTrue(new NoYawShootTransfer(shooter, drive));
+    new JoystickButton(buttonJoystick, Constants.OIConstants.ShooterShootTransferID)
+        .whileTrue(new NoYawShootTransfer(shooter, drive));
 
-    buttonJoystick.leftBumper().whileTrue(new ShootPresetSetpoints(shooter, TargetType.TRANSFER));
-    buttonJoystick.rightBumper().whileTrue(new ShootPresetSetpoints(shooter, TargetType.GOAL));
+    // new JoystickButton(buttonJoystick, Constants.OIConstants).whileTrue(new
+    // ShootPresetSetpoints(shooter, TargetType.TRANSFER));
+    // new JoystickButton(buttonJoystick, Constants.OIConstants).whileTrue(new
+    // ShootPresetSetpoints(shooter, TargetType.GOAL));
 
     JoystickButton runTriggerDriverStick =
         new JoystickButton(leftJoystick, Constants.OIConstants.joystickTrigger);
@@ -359,16 +362,19 @@ public class RobotContainer {
     TestPathCommands.publishTestPaths(drive);
 
     shooter.setDefaultCommand(Commands.run(shooter::stop, shooter));
-    buttonJoystick.y().onTrue(new CollectorUp(collector));
-    buttonJoystick.a().whileTrue(new CollectorIntake(collector));
+    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorPivotUp)
+        .onTrue(new CollectorUp(collector));
+    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorIntakeID)
+        .whileTrue(new CollectorIntake(collector));
 
     // Reverse All
-    buttonJoystick
-        .b()
+    new JoystickButton(buttonJoystick, Constants.OIConstants.ShooterReverseTriggerID)
         .whileTrue(
             new ParallelCommandGroup(
                 new ReverseTriggerCommand(hopper), new CollectorExpel(collector)));
-    buttonJoystick.x().whileTrue(new ForceRunTrigger(hopper, driveAimedAutoShoot));
+
+    new JoystickButton(buttonJoystick, Constants.OIConstants.ShooterTriggerID)
+        .whileTrue(new ForceRunTrigger(hopper, driveAimedAutoShoot));
   }
 
   /**
