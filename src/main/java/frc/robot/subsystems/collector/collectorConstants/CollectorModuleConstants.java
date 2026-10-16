@@ -107,7 +107,7 @@ public class CollectorModuleConstants {
     // Gear ratio's
     turnMotorGearRatio = (28.0 / 12.0) * (58.0 / 18.0) * (58.0 / 18.0) * (20.0 / 12);
     turnInvert = InvertedValue.Clockwise_Positive;
-    turnSupplyCurrent = 20;
+    turnSupplyCurrent = 15;
 
     // Real Turn PID
     turnkP = 45;
