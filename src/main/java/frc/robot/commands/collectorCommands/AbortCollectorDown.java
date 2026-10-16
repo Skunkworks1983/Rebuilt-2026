@@ -30,11 +30,11 @@ public class AbortCollectorDown extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (collector.getCurrent().in(Amps) >= .5) {
+    if (collector.getCurrent().baseUnitMagnitude() >= .5) {
       collector.goUp();
     }
     // System.out.println("CURRENT AMPS: " + collector.getCurrent().in(Amps));
-    Logger.recordOutput("Seen motor currents", collector.getCurrent().in(Amps));
+    Logger.recordOutput("Seen motor currents", collector.getCurrent().baseUnitMagnitude());
   }
 
   // Called once the command ends or is interrupted.
