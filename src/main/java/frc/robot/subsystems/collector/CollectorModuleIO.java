@@ -135,5 +135,5 @@ public interface CollectorModuleIO {
 
   public default void setMotionConstraints(MotionMagicConfigs motionMagicConfigs) {}
 
-  public default Current getCurrent() {return Amps.of(0)}
+  public default Current getCurrent() {return Amps.of(0);}
 }
