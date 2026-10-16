@@ -338,4 +338,8 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
   public void setMotionConstraints(MotionMagicConfigs motionMagicConfigs) {
     tryUntilOk(5, () -> turnMotor.getConfigurator().apply(motionMagicConfigs, 0.25));
   }
+
+  public Current getCurrent(){
+    return turnMotor.getSupplyCurrent().getValue();
+  }
 }

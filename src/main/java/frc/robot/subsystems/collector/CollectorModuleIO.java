@@ -134,4 +134,6 @@ public interface CollectorModuleIO {
   public default void setIntakeGains(Slot0Configs slot0Configs) {}
 
   public default void setMotionConstraints(MotionMagicConfigs motionMagicConfigs) {}
+
+  public default Current getCurrent() {return Amps.of(0)}
 }

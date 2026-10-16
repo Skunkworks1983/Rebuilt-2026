@@ -168,7 +168,7 @@ public class Collector extends SubsystemBase {
   }
 
   public Current getCurrent() {
-    return inputs.turnCurrentAmps;
+    return collectorIO.getCurrent();
   }
 
   /**
