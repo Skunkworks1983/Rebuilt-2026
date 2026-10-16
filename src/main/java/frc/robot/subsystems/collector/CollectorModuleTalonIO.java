@@ -339,7 +339,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     tryUntilOk(5, () -> turnMotor.getConfigurator().apply(motionMagicConfigs, 0.25));
   }
 
-  public Current getCurrent(){
+  public Current getCurrent() {
     return turnMotor.getSupplyCurrent().getValue();
   }
 }
