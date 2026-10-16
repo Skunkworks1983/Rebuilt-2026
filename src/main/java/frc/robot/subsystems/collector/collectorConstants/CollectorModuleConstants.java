@@ -107,7 +107,7 @@ public class CollectorModuleConstants {
     // Gear ratio's
     turnMotorGearRatio = (28.0 / 12.0) * (58.0 / 18.0) * (58.0 / 18.0) * (20.0 / 12);
     turnInvert = InvertedValue.Clockwise_Positive;
-    turnSupplyCurrent = 15;
+    turnSupplyCurrent = 80;
 
     // Real Turn PID
     turnkP = 45;
@@ -126,7 +126,7 @@ public class CollectorModuleConstants {
     turnStatorCurrent = 80;
 
     // Motion Magic constraints
-    motionMagicCruiseVelocity = RotationsPerSecond.of(1.3);
+    motionMagicCruiseVelocity = RotationsPerSecond.of(1.0);
     motionMagicAcceleration = RotationsPerSecondPerSecond.of(3.5);
 
     // Position
