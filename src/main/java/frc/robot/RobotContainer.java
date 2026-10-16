@@ -367,6 +367,9 @@ public class RobotContainer {
     new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorIntakeID)
         .whileTrue(new CollectorIntake(collector));
 
+    new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorPivotDown)
+        .whileTrue(new CollectorDown(collector));
+
     // Reverse All
     new JoystickButton(buttonJoystick, Constants.OIConstants.ShooterReverseTriggerID)
         .whileTrue(
