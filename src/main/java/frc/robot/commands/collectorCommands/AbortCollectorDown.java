@@ -28,7 +28,7 @@ public class AbortCollectorDown extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (collector.getCurrent().baseUnitMagnitude() >= .5) {
+    if (collector.getCurrent().baseUnitMagnitude() >= 15) {
       collector.goUp();
     }
     // System.out.println("CURRENT AMPS: " + collector.getCurrent().in(Amps));
