@@ -156,7 +156,7 @@ public class CollectorModuleTalonIO implements CollectorModuleIO {
     turnPosition = turnMotor.getPosition();
     turnVelocity = turnMotor.getVelocity();
     turnAppliedVolts = turnMotor.getMotorVoltage();
-    turnCurrent = turnMotor.getStatorCurrent();
+    turnCurrent = turnMotor.getSupplyCurrent();
     turnError = turnMotor.getClosedLoopError();
     turnSetPoint = turnMotor.getClosedLoopReference();
 

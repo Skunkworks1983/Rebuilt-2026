@@ -4,8 +4,6 @@
 
 package frc.robot.commands.collectorCommands;
 
-import static edu.wpi.first.units.Units.Amps;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.collector.Collector;
 import org.littletonrobotics.junction.Logger;
@@ -34,7 +32,7 @@ public class AbortCollectorDown extends Command {
       collector.goUp();
     }
     // System.out.println("CURRENT AMPS: " + collector.getCurrent().in(Amps));
-    Logger.recordOutput("Seen motor currents", collector.getCurrent().baseUnitMagnitude());
+    Logger.recordOutput("Seen motor currents", collector.getCurrent());
   }
 
   // Called once the command ends or is interrupted.
