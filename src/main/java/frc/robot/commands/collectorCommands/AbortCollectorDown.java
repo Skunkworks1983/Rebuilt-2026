@@ -8,8 +8,6 @@ import static edu.wpi.first.units.Units.Amps;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.collector.Collector;
-
-import org.littletonrobotics.conduit.schema.SystemData;
 import org.littletonrobotics.junction.Logger;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -35,7 +33,8 @@ public class AbortCollectorDown extends Command {
     if (collector.getCurrent().in(Amps) >= .5) {
       collector.goUp();
     }
-    System.out.println("CURRENT AMPS: " + collector.getCurrent().in(Amps));
+   // System.out.println("CURRENT AMPS: " + collector.getCurrent().in(Amps));
+   Logger.recordOutput("Seen motor currents", collector.getCurrent().in(Amps));
   }
 
   // Called once the command ends or is interrupted.
