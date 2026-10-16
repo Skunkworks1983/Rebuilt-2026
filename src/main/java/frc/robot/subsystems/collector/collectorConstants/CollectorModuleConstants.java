@@ -126,7 +126,7 @@ public class CollectorModuleConstants {
     turnStatorCurrent = 80;
 
     // Motion Magic constraints
-    motionMagicCruiseVelocity = RotationsPerSecond.of(1.0);
+    motionMagicCruiseVelocity = RotationsPerSecond.of(0.6);
     motionMagicAcceleration = RotationsPerSecondPerSecond.of(3.5);
 
     // Position
