@@ -33,8 +33,8 @@ public class AbortCollectorDown extends Command {
     if (collector.getCurrent().in(Amps) >= .5) {
       collector.goUp();
     }
-   // System.out.println("CURRENT AMPS: " + collector.getCurrent().in(Amps));
-   Logger.recordOutput("Seen motor currents", collector.getCurrent().in(Amps));
+    // System.out.println("CURRENT AMPS: " + collector.getCurrent().in(Amps));
+    Logger.recordOutput("Seen motor currents", collector.getCurrent().in(Amps));
   }
 
   // Called once the command ends or is interrupted.
