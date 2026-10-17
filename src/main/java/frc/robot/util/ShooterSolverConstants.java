@@ -16,7 +16,7 @@ public class ShooterSolverConstants {
 
   /** Air drag coefficient approximation. */
   public static LoggedTunableNumber drag =
-      new LoggedTunableNumber("Shooter/Air Drag Coefficient", 0.084);
+      new LoggedTunableNumber("Shooter/Air Drag Coefficient", 0.09); // Original value: 0.084
 
   /** Maximum multiplier to apply for drag compensation. */
   public static final double maxDragMultiplier = 3;

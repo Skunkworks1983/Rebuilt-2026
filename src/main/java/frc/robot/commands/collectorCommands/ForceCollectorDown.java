@@ -41,7 +41,7 @@ public class ForceCollectorDown extends Command {
       goingUp = true;
       upstartTime = System.currentTimeMillis();
     }
-   // if (collector.isCollectorUp() == true) { 
+    // if (collector.isCollectorUp() == true) {
     if (goingUp && System.currentTimeMillis() > upstartTime + 1000) {
       collector.goDown();
       Logger.recordOutput("Collector/CollectorGoingDown", true);
