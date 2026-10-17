@@ -335,10 +335,10 @@ public class RobotContainer {
     new JoystickButton(buttonJoystick, Constants.OIConstants.ShooterShootTransferID)
         .whileTrue(new NoYawShootTransfer(shooter, drive));
 
-    // new JoystickButton(buttonJoystick, Constants.OIConstants).whileTrue(new
-    // ShootPresetSetpoints(shooter, TargetType.TRANSFER));
-    // new JoystickButton(buttonJoystick, Constants.OIConstants).whileTrue(new
-    // ShootPresetSetpoints(shooter, TargetType.GOAL));
+    new JoystickButton(buttonJoystick, Constants.OIConstants.ShooterFlywheelSwitchID)
+        .whileTrue(new ShootPresetSetpoints(shooter, TargetType.TRANSFER));
+    new JoystickButton(buttonJoystick, Constants.OIConstants.ShooterHoldToAimID)
+        .whileTrue(new ShootPresetSetpoints(shooter, TargetType.GOAL));
 
     JoystickButton runTriggerDriverStick =
         new JoystickButton(leftJoystick, Constants.OIConstants.joystickTrigger);
