@@ -33,7 +33,8 @@ public class ForceCollectorDown extends Command {
     if (collector.getCurrent().baseUnitMagnitude() >= 12) {
       collector.goUp();
       Logger.recordOutput("Collector/CollectorGoingDown", false);
-    } else if (collector.isCollectorUp() == true) {
+    } 
+    if (collector.isCollectorUp() == true) {
       collector.goDown();
       Logger.recordOutput("Collector/CollectorGoingDown", true);
     }
