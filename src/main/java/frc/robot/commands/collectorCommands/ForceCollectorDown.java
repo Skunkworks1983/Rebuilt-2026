@@ -27,16 +27,23 @@ public class ForceCollectorDown extends Command {
     Logger.recordOutput("Collector/CollectorGoingDown", true);
   }
 
+  private long upstartTime = 0; 
+  private boolean goingUp = false; 
+
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     if (collector.getCurrent().baseUnitMagnitude() >= 12) {
       collector.goUp();
       Logger.recordOutput("Collector/CollectorGoingDown", false);
-    } 
-    if (collector.isCollectorUp() == true) {
+      goingUp = true; 
+      upstartTime = System.currentTimeMillis(); 
+    }
+    // if (collector.isCollectorUp() == true) {
+    if (goingUp && System.currentTimeMillis() > upstartTime + 1000) {
       collector.goDown();
       Logger.recordOutput("Collector/CollectorGoingDown", true);
+      goingUp = false; 
     }
 
     // System.out.println("CURRENT AMPS: " + collector.getCurrent().in(Amps));
