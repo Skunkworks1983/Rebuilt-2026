@@ -37,7 +37,6 @@ import frc.robot.commands.Shooter.NoYawShootTransfer;
 import frc.robot.commands.Shooter.ShootPresetSetpoints;
 import frc.robot.commands.Shooter.ShootPresetSetpoints.TargetType;
 import frc.robot.commands.TestPathCommands;
-import frc.robot.commands.collectorCommands.AbortCollectorDown;
 import frc.robot.commands.collectorCommands.Agitate;
 import frc.robot.commands.collectorCommands.CollectorDown;
 import frc.robot.commands.collectorCommands.CollectorExpel;
@@ -371,8 +370,7 @@ public class RobotContainer {
 
     new JoystickButton(buttonJoystick, Constants.OIConstants.CollectorPivotDown)
         .whileTrue(new ForceCollectorDown(collector));
-       // .whileTrue(new AbortCollectorDown(collector))
-
+    // .whileTrue(new AbortCollectorDown(collector))
 
     // Reverse All
     new JoystickButton(buttonJoystick, Constants.OIConstants.ShooterReverseTriggerID)
