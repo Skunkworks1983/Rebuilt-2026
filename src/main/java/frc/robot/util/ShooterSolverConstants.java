@@ -67,7 +67,7 @@ public class ShooterSolverConstants {
       new LoggedTunableNumber("Shooter/Close Shoot Angle Deg", 76.5);
 
   public static final LoggedTunableNumber shooterDistanceAdder =
-      new LoggedTunableNumber("Shooter/Distance Adder", 0.5); //.07
+      new LoggedTunableNumber("Shooter/Distance Adder", 0.5); // .07
 
   public static final LoggedTunableNumber mediumShotDistance =
       new LoggedTunableNumber("Shooter/Medium Shot Distance", 2);
