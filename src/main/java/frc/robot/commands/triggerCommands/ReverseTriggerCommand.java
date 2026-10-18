@@ -4,12 +4,9 @@
 
 package frc.robot.commands.triggerCommands;
 
-import static edu.wpi.first.units.Units.RotationsPerSecond;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.hopper.BedConstants;
 import frc.robot.subsystems.hopper.Hopper;
-import frc.robot.subsystems.hopper.TriggerConstants;
 import org.littletonrobotics.junction.Logger;
 
 /** Command that runs the Trigger */
