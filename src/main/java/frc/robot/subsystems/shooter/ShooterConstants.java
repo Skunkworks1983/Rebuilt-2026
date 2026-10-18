@@ -161,7 +161,7 @@ public class ShooterConstants {
   public static final AngularVelocity defaultVelocityTransferFar = RotationsPerSecond.of(75);
   public static final AngularVelocity defaultLowerFlywheelVelocityTransfer =
       defaultVelocityTransferFar.times(1.15);
-  public static final Angle defaultPitchTransferFar = Degrees.of(50);
+  public static final Angle defaultPitchTransferFar = Degrees.of(55);
 
   // SENSOR CONSTANTS
   public static final int pivotEncoderId = 28;
