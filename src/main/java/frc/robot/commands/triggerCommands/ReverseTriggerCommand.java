@@ -23,9 +23,7 @@ public class ReverseTriggerCommand extends Command {
 
   @Override
   public void initialize() {
-    hopper.setTriggerVelocity(
-        RotationsPerSecond.of(TriggerConstants.triggerAngularVelocityRotationsPerSecond.get())
-            .unaryMinus());
+    hopper.setTriggerDutyCycle(-.5);
     hopper.setHopperDutyCycle(BedConstants.hopperDutyCycleSpeedReverse.get());
     Logger.recordOutput("Hopper/Reverse Trigger Command is Running", true);
   }
