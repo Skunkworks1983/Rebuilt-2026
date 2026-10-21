@@ -134,4 +134,21 @@ public interface CollectorModuleIO {
   public default void setIntakeGains(Slot0Configs slot0Configs) {}
 
   public default void setMotionConstraints(MotionMagicConfigs motionMagicConfigs) {}
+
+  /**
+   * Gets the position of the collector
+   *
+   * @return -WPILib Angle
+   */
+  public default Angle getPosition() {
+    return null;
+  }
+
+  public default void removeSimFuel() {}
+
+  public default int getCollectedSimFuel() {
+    return 0;
+  }
+
+  public default void removeCollectedSimFuel() {}
 }

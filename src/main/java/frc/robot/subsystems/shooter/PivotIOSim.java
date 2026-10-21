@@ -1,10 +1,13 @@
 package frc.robot.subsystems.shooter;
 
+import static edu.wpi.first.units.Units.Radians;
+
 import com.ctre.phoenix6.sim.ChassisReference;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
@@ -29,5 +32,9 @@ public class PivotIOSim extends PivotIOTalonFX {
     inputs.pivotPosition = pivotSim.getAngularPosition();
     inputs.pivotStatorCurrentAmps = pivotTalonFX.getSupplyCurrentMeasure();
     inputs.pivotTorqueCurrentAmps = pivotTalonFX.getTorqueCurrentMeasure();
+  }
+
+  public void setPosition(Angle position) {
+    pivotSim.setAngle(position.in(Radians) * -1);
   }
 }

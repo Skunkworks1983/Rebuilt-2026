@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.collector;
 
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
 
@@ -57,7 +59,7 @@ public class Collector extends SubsystemBase {
       loggedMechanism2d.getRoot(
           "collector",
           CollectorConstants.collectorLeftOriginTranslation.getX(),
-          CollectorConstants.collectorLeftOriginTranslation.getY());
+          CollectorConstants.collectorRightOriginTranslation.getY());
   LoggedMechanismLigament2d collectorLigament;
 
   private CollectorModuleIO collectorIO;
@@ -108,12 +110,18 @@ public class Collector extends SubsystemBase {
         new LoggedTunableNumber(
             modulePrefix + "Intake/Velocity",
             collectorIO.getConstants().CollectorIntakeSpeed.baseUnitMagnitude());
+
+    collectorLigament =
+        root.append(new LoggedMechanismLigament2d("collector", Meters.of(0.25), Degrees.of(-90)));
   }
 
   @Override
   public void periodic() {
     collectorIO.updateInputs(inputs);
     Logger.processInputs("Collector", inputs);
+
+    collectorLigament.setAngle(
+        collectorIO.getPosition().plus(collectorIO.getConstants().CollectorDownPosAngle));
 
     if (Constants.tuningMode) {
       int hash = hashCode();
@@ -256,5 +264,17 @@ public class Collector extends SubsystemBase {
   // Sets collector down
   public void goDown() {
     collectorIO.goDown();
+  }
+
+  public void removeSimulatedGamePieces() {
+    collectorIO.removeSimFuel();
+  }
+
+  public int getCollectedSimFuel() {
+    return collectorIO.getCollectedSimFuel();
+  }
+
+  public void removeCollectedSimFuel() {
+    collectorIO.removeCollectedSimFuel();
   }
 }

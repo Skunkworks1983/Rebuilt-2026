@@ -38,9 +38,14 @@ public class FlywheelIOSim extends FlywheelIOTalonFX {
         flywheelSim.getAngularVelocity().times(ShooterConstants.flywheelGearRatio));
 
     inputs.primaryConnected = true;
-    inputs.primaryAngularVelocity = flywheelSim.getAngularVelocity();
+    inputs.primaryAngularVelocity =
+        flywheelSim.getAngularVelocity().times(ShooterConstants.flywheelGearRatio);
     inputs.primaryAppliedVolts = primaryAppliedVolts;
     inputs.primaryStatorCurrentAmps = talonFXSim.getSupplyCurrentMeasure();
     inputs.primaryTorqueCurrentAmps = talonFXSim.getTorqueCurrentMeasure();
   }
+
+  // public void setVelocity(AngularVelocity velocity) {
+  //   flywheelSim.setAngularVelocity(velocity.in(RadiansPerSecond));
+  // }
 }

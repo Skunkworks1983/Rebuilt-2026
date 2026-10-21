@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -17,6 +18,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -49,7 +51,7 @@ import frc.robot.commands.triggerCommands.ReverseTriggerCommand;
 import frc.robot.commands.triggerCommands.RunTrigger;
 import frc.robot.commands.triggerCommands.RunTriggerNoLock;
 import frc.robot.subsystems.collector.Collector;
-import frc.robot.subsystems.collector.CollectorModuleIO;
+import frc.robot.subsystems.collector.CollectorModuleSimIO;
 import frc.robot.subsystems.collector.CollectorModuleTalonIO;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -161,7 +163,7 @@ public class RobotContainer {
                   VisionConstants.robotToCamera1,
                   simulation::getSimulatedDriveTrainPose));
 
-      collector = new Collector(new CollectorModuleIO() {});
+      collector = new Collector(new CollectorModuleSimIO(simulation));
 
       hopper = new Hopper(new BedIOSim(), new TriggerIOSim());
     } else if (RobotBase.isReal()) {
@@ -496,6 +498,8 @@ public class RobotContainer {
     SimulatedArena.getInstance().resetFieldForAuto();
   }
 
+  private double lastLaunchTime = 0.0;
+
   /**
    * This method is called during the periodic cycle during sim. The simulation state is updated and
    * game pieces positions are logged for AdvantageScope visualization
@@ -508,9 +512,22 @@ public class RobotContainer {
     if (RobotBase.isSimulation() == false) return;
 
     SimulatedArena.getInstance().simulationPeriodic();
+    collector.removeSimulatedGamePieces();
     Logger.recordOutput("FieldSimulation/RobotPosition", simulation.getSimulatedDriveTrainPose());
     Logger.recordOutput(
         "FieldSimulation/Fuel", SimulatedArena.getInstance().getGamePiecesArrayByType("Fuel"));
+
+    double flywheelVelocity = Math.abs(shooter.getFlywheelVelocity().in(RotationsPerSecond));
+
+    if (flywheelVelocity >= 50) {
+
+      double currentTime = Timer.getFPGATimestamp();
+
+      if (currentTime - lastLaunchTime >= 0.2) {
+        lastLaunchTime = currentTime;
+        launchSimFuel(flywheelVelocity);
+      }
+    }
   }
 
   /**
@@ -530,7 +547,10 @@ public class RobotContainer {
   }
 
   /** Creates a new simulated fuel and launches it from the current robot position and speeds */
-  public void launchSimFuel() {
+  public void launchSimFuel(double fv) {
+    if (collector.getCollectedSimFuel() <= 0) {
+      return;
+    }
     SimulatedArena.getInstance()
         .addGamePieceProjectile(
             SimProjectile.getProjectile(
@@ -538,6 +558,7 @@ public class RobotContainer {
                 simulation.getDriveTrainSimulatedChassisSpeedsFieldRelative(),
                 shooter.getShooterForwardLinearVelocity(),
                 shooter.getPivotAngle()));
+    collector.removeCollectedSimFuel();
   }
 
   /** auto chooser option that dosent crash robot when ran slong side holdPosition */

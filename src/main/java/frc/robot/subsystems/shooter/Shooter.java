@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.util.Elastic;
 import frc.robot.util.LoggedTunableNumber;
+import frc.robot.util.ShooterSolverConstants;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -206,7 +207,9 @@ public class Shooter extends SubsystemBase {
   public LinearVelocity getShooterForwardLinearVelocity() {
     return MetersPerSecond.of(
         flywheelInputs.primaryAngularVelocity.in(RadiansPerSecond)
-            * ShooterConstants.flywheelRadius.in(Meters));
+            * ShooterConstants.flywheelRadius.in(Meters)
+            * ShooterSolverConstants.flywheelEfficiency.get()
+            * 0.85);
   }
 
   /**

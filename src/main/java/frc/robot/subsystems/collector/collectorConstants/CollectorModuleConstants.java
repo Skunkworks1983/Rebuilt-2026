@@ -68,6 +68,7 @@ public class CollectorModuleConstants {
   // Position
   public Angle CollectorUpPos;
   public LoggedTunableNumber CollectorDownPos;
+  public Angle CollectorDownPosAngle;
   public LoggedTunableNumber CollectorHalfPos;
   public static final Angle CollectorDownPosDefault = Radians.of(2.198);
   public Angle CollectorHalfPosDefault;
@@ -113,11 +114,17 @@ public class CollectorModuleConstants {
     turnkP = 45;
     turnkD = 0;
     turnkI = 0;
+    SimTurnkP = 225;
+    SimTurnkD = 100;
+    SimTurnkI = 40;
 
     // Real intake upper PID
     intakekP = 5;
     intakekD = 0.0;
     intakekI = 0.0;
+    SimIntakekP = 5;
+    SimIntakekD = 0.0;
+    SimIntakekI = 0.0;
     intakekV = (5.0 / 80.0) * 3.5;
     intakekA = 0;
     intakekS = 0;
@@ -134,6 +141,7 @@ public class CollectorModuleConstants {
     CollectorHalfPosDefault = Radians.of(1);
     CollectorDownPos =
         new LoggedTunableNumber("Collector/Downpose rad", CollectorDownPosDefault.in(Radians));
+    CollectorDownPosAngle = Angle.ofBaseUnits(CollectorDownPosDefault.in(Radians), Radians);
     CollectorHalfPos =
         new LoggedTunableNumber("Collector/Halfpose rad", CollectorHalfPosDefault.in(Radians));
 

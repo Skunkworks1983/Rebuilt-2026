@@ -1,4 +1,9 @@
 {
+  "FMS": {
+    "window": {
+      "visible": false
+    }
+  },
   "keyboardJoysticks": [
     {
       "axisConfig": [
@@ -75,12 +80,12 @@
       "axisCount": 2,
       "buttonCount": 6,
       "buttonKeys": [
-        260,
-        268,
-        266,
-        261,
-        269,
-        267
+        84,
+        89,
+        85,
+        73,
+        79,
+        80
       ],
       "povCount": 0
     },
@@ -96,6 +101,9 @@
     },
     {
       "guid": "Keyboard1"
+    },
+    {
+      "guid": "Keyboard2"
     }
   ]
 }

@@ -38,7 +38,8 @@ public class SimProjectile {
                 && DriverStation.getAlliance().get() == Alliance.Blue
             ? FieldConstants.blueGoal
             : FieldConstants.redGoal;
-
+    Logger.recordOutput("Shooter/angle", shooterAngle);
+    Logger.recordOutput("Shooter/speed", launchVelocity);
     return new RebuiltFuelOnFly(
             drivePoseFieldRelative.getTranslation(),
             new Translation2d(),
